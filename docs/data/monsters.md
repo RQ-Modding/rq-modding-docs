@@ -332,7 +332,7 @@
 | 444 | `ABNORMAL_RURONTA_444` | Abnormal Ruronta | Lv 0, Guy Monster |
 | 445 | `ABNORMAL_RURONTA_445` | Abnormal Ruronta | Lv 0, Guy Monster |
 | 446 | `ABNORMAL_UPPY` | Abnormal Uppy | Lv 5, Insect |
-| 448 | `RANCE_COPYPASTE` | Rance CopyPaste | Lv 0, Guy Monster |
+| 448 | `COPYPASTE` | CopyPaste | Lv 0, Guy Monster |
 | 449 | `KING_SQUIDMAN_LOVE` | King Squidman (Love) | Lv 45, Guy Monster |
 | 450 | `CONTAMINATED_FIGHTER_WEAK` | Contaminated Fighter (Weak) | Lv 20, Contaminated |
 | 451 | `TROLL` | Troll | Lv 45, Guy Monster |
