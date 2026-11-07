@@ -1,17 +1,605 @@
+/*
+ * RQ MOD docs theme.
+ * Dark (default): the game's Config screen. Teal scanline backdrop, charcoal title bar, green
+ *   tabs with a cyan active tab, slate panels with a light border, grey bevelled buttons.
+ * Light: parchment. Textured paper, dark green bars with a brass rule, green title bars.
+ * Textures are procedural PNGs in ./textures (grain, a softer grain, and soft blotches).
+ * Mockups: the "RQ MOD docs restyle" design canvas (C = light, D = dark).
+ */
+
+@font-face {
+  font-family: 'Japanese Brush';
+  src: url(./fonts/japanese-brush.ttf) format('truetype');
+  font-display: swap;
+}
+
 :root {
-  --vp-c-brand-1: #b4233a;
-  --vp-c-brand-2: #c8364d;
-  --vp-c-brand-3: #a01d32;
-  --vp-c-brand-soft: rgba(180, 35, 58, 0.14);
-  --vp-home-hero-image-background-image: linear-gradient(-45deg, #b4233a 40%, #e0a030 60%);
-  --vp-home-hero-image-filter: blur(56px);
+  --rq-grain: url(./textures/grain.png);
+  --rq-grain-soft: url(./textures/grain-soft.png);
+  --rq-mottle: url(./textures/mottle.png);
+  --rq-font-ui: 'M PLUS 1p', var(--vp-font-family-base);
+  --rq-font-serif: 'Alegreya', Georgia, serif;
+  --rq-font-serif-sc: 'Alegreya SC', Georgia, serif;
+
+  /* Light: parchment */
+  --vp-c-bg: #efe6c8;
+  --vp-c-bg-alt: #e0d4ab;
+  --vp-c-bg-soft: #e6dab4;
+  --vp-c-bg-elv: #fbf6e4;
+  --vp-c-text-1: #2a2414;
+  --vp-c-text-2: #4f4632;
+  --vp-c-text-3: #786b4e;
+  --vp-c-divider: #d2c08a;
+  --vp-c-border: #b9a670;
+  --vp-c-gutter: #d8ca9c;
+  --vp-c-default-soft: #e6dab4;
+  --vp-c-brand-1: #2c6a33;
+  --vp-c-brand-2: #3a7a3a;
+  --vp-c-brand-3: #2b5e2c;
+  --vp-c-brand-soft: rgba(63, 122, 58, 0.14);
+  --vp-code-color: #7a2a12;
+  --vp-code-bg: #e9dcb4;
+  --vp-code-block-bg: #f7f0da;
+  --vp-nav-bg-color: #1d3b22;
+  --vp-sidebar-bg-color: #ddd0a6;
+  --vp-local-nav-bg-color: #e0d4ab;
+  --vp-nav-screen-bg-color: #efe6c8;
+  --vp-home-hero-image-background-image: radial-gradient(circle, rgba(63, 122, 58, 0.55) 0%, rgba(63, 122, 58, 0.2) 45%, rgba(63, 122, 58, 0) 70%);
+  --vp-home-hero-image-filter: blur(28px);
 }
 
 .dark {
-  --vp-c-brand-1: #f0687c;
-  --vp-c-brand-2: #e2546a;
-  --vp-c-brand-3: #c8364d;
-  --vp-c-brand-soft: rgba(240, 104, 124, 0.16);
+  /* Dark: the Config screen */
+  --vp-c-bg: #285e50;
+  --vp-c-bg-alt: #1f3135;
+  --vp-c-bg-soft: #26393e;
+  --vp-c-bg-elv: #22343a;
+  --vp-c-text-1: #f2f5f5;
+  --vp-c-text-2: #c9d6d4;
+  --vp-c-text-3: #93a6a4;
+  --vp-c-divider: #3c5357;
+  --vp-c-border: #a8bcbc;
+  --vp-c-gutter: #0d1a1c;
+  --vp-c-default-soft: #2c4146;
+  --vp-c-brand-1: #9fe6ee;
+  --vp-c-brand-2: #c4f4f7;
+  --vp-c-brand-3: #45b3c6;
+  --vp-c-brand-soft: rgba(140, 240, 255, 0.14);
+  --vp-code-color: #bdf3ef;
+  --vp-code-bg: rgba(0, 0, 0, 0.3);
+  --vp-code-block-bg: #142225;
+  --vp-nav-bg-color: #2e2e2e;
+  --vp-sidebar-bg-color: #1f3135;
+  --vp-local-nav-bg-color: #1f3135;
+  --vp-nav-screen-bg-color: #1f3135;
+  --vp-home-hero-image-background-image: radial-gradient(circle, rgba(200, 255, 225, 0.35) 0%, rgba(200, 255, 225, 0.12) 45%, rgba(200, 255, 225, 0) 70%);
+  --vp-home-hero-image-filter: blur(22px);
+}
+
+/* ---------- Page backdrop ---------- */
+
+html:not(.dark) body {
+  background-image: var(--rq-grain-soft), var(--rq-mottle),
+    radial-gradient(ellipse at 50% 0%, #f3ebcf 0%, #e9dfbd 50%, #dccd9f 100%);
+  background-size: 160px, 640px, 100% 100%;
+  background-attachment: scroll, scroll, fixed;
+}
+
+html.dark body {
+  background-image: var(--rq-grain), var(--rq-mottle),
+    repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0 1px, rgba(0, 0, 0, 0.07) 1px 2px, transparent 2px 4px),
+    radial-gradient(ellipse at 40% 0%, rgba(190, 255, 210, 0.2), rgba(190, 255, 210, 0) 60%),
+    linear-gradient(180deg, #3b8170 0%, #306f60 45%, #235748 100%);
+  background-size: 160px, 640px, auto, 100% 100%, 100% 100%;
+  background-attachment: scroll, scroll, scroll, fixed, fixed;
+}
+
+.VPDoc .aside-curtain {
+  display: none;
+}
+
+/* ---------- Brand title ---------- */
+
+.rq-brand {
+  position: relative;
+  display: inline-block;
+  font-family: 'Japanese Brush', var(--rq-font-serif);
+  font-weight: 400;
+  letter-spacing: 0;
+  word-spacing: -0.32em;
+  white-space: nowrap;
+  line-height: 1.15;
+}
+
+.rq-brand__back {
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #fff;
+  -webkit-text-stroke: 0.14em #fff;
+  filter: drop-shadow(0 3px 0 #10261e) drop-shadow(0 0 1px #10261e);
+}
+
+.rq-brand__front {
+  position: relative;
+  background: linear-gradient(180deg, #973a17 0%, #742512 25%, #5a1e08 48%, #3a1207 72%, #1c0803 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: #5a1e0a;
+}
+
+.rq-brand--hero {
+  font-size: 44px;
+}
+
+@media (min-width: 640px) {
+  .rq-brand--hero {
+    font-size: 72px;
+  }
+}
+
+@media (min-width: 960px) {
+  .rq-brand--hero {
+    font-size: 86px;
+  }
+}
+
+.rq-brand--nav {
+  font-size: 21px;
+  line-height: 1.1;
+}
+
+.rq-brand--nav .rq-brand__back {
+  -webkit-text-stroke: 4px #fff;
+  filter: drop-shadow(0 1px 0 #0d200f);
+}
+
+/* The dark theme's title bar keeps a plain title, like the game's Config window. */
+html.dark .rq-brand--nav .rq-brand__back {
+  display: none;
+}
+
+html.dark .rq-brand--nav .rq-brand__front {
+  background: none;
+  -webkit-text-fill-color: currentColor;
+  color: #f2f2f2;
+  font-family: var(--rq-font-ui);
+  font-size: 19px;
+  font-weight: 500;
+  word-spacing: 0;
+  text-shadow: 0 1px 0 #000;
+}
+
+/* ---------- Nav bar ---------- */
+
+.VPNavBar .content-body,
+.VPNavBar .title,
+.VPNavBarTitle .title {
+  background: transparent !important;
+  border-bottom: 0 !important;
+}
+
+.VPNavBar .divider {
+  display: none;
+}
+
+.VPNavBar::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  pointer-events: none;
+}
+
+.VPNavBarTitle .title {
+  gap: 10px;
+}
+
+.VPNavBarTitle .logo {
+  width: 32px;
+  height: 32px;
+  margin-right: 2px;
+  image-rendering: pixelated;
+}
+
+/* Light: dark green bar with a brass rule */
+html:not(.dark) .VPNavBar {
+  --vp-c-text-1: #f3ecd6;
+  --vp-c-text-2: #d6dcc4;
+  --vp-c-text-3: #aab79e;
+  --vp-c-brand-1: #e4d9a6;
+  --vp-c-divider: #4c6f45;
+  --vp-c-gutter: #4c6f45;
+  --vp-c-bg-alt: rgba(10, 30, 12, 0.45);
+  --vp-c-default-soft: rgba(10, 30, 12, 0.45);
+  --vp-input-switch-bg-color: rgba(10, 30, 12, 0.45);
+  --vp-input-border-color: #4c6f45;
+  --vp-c-bg: #1d3b22;
+  background-image: var(--rq-grain), var(--rq-mottle),
+    repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 3px),
+    linear-gradient(180deg, #24482a, #173219) !important;
+  background-size: 160px, 640px, auto, auto !important;
+}
+
+html:not(.dark) .VPNavBar::after {
+  background: linear-gradient(180deg, #d8c886, #8a7a3c 60%, #4a3f18);
+}
+
+html:not(.dark) .VPNavBarTitle .logo {
+  border: 1px solid #b5df95;
+  box-shadow: 0 0 0 1px #0d200f;
+}
+
+html:not(.dark) .VPNavBarMenuLink.active {
+  text-decoration: underline 2px #c9bb86;
+  text-underline-offset: 7px;
+}
+
+.VPNavBarMenu {
+  align-items: center;
+}
+
+html:not(.dark) .VPNavBarMenu > .VPNavBarMenuLink:last-child {
+  margin-left: 6px;
+  padding: 0 9px;
+  height: 24px;
+  line-height: 22px;
+  border: 1px solid #a99a5a;
+  border-radius: 3px;
+  background: rgba(10, 30, 12, 0.4);
+  font-size: 12px;
+}
+
+/* Flyouts opened from the bar sit on paper again. */
+html:not(.dark) .VPNavBar .VPMenu {
+  --vp-c-text-1: #2a2414;
+  --vp-c-text-2: #4f4632;
+  --vp-c-text-3: #786b4e;
+  --vp-c-brand-1: #2c6a33;
+  --vp-c-divider: #d2c08a;
+  --vp-c-bg-alt: #e6dab4;
+  --vp-c-default-soft: #e6dab4;
+  --vp-c-bg: #efe6c8;
+}
+
+/* Dark: the Config window's title bar, with the sections as its tabs */
+html.dark .VPNavBar {
+  --vp-c-text-1: #f2f2f2;
+  --vp-c-text-2: #c9c9c9;
+  --vp-c-text-3: #9a9a9a;
+  --vp-c-brand-1: #bdf3ef;
+  --vp-c-divider: #5a5a5a;
+  --vp-c-bg-alt: #1a1a1a;
+  --vp-c-default-soft: #1a1a1a;
+  --vp-input-switch-bg-color: #1a1a1a;
+  --vp-input-border-color: #5a5a5a;
+  background-image: var(--rq-grain), linear-gradient(180deg, #4a4a4a, #2e2e2e 55%, #232323) !important;
+  background-size: 160px, auto !important;
+  box-shadow: inset 0 1px 0 #7a7a7a;
+}
+
+html.dark .VPNavBar::after {
+  height: 2px;
+  background: #0e0e0e;
+}
+
+html.dark .VPNavBarTitle .logo {
+  border: 1px solid #8a8a8a;
+}
+
+html.dark .VPNavBar .VPMenu {
+  --vp-c-text-1: #f2f5f5;
+  --vp-c-text-2: #c9d6d4;
+  --vp-c-brand-1: #9fe6ee;
+  --vp-c-divider: #3c5357;
+  --vp-c-bg-alt: #1f3135;
+  --vp-c-default-soft: #2c4146;
+  --vp-c-bg: #22343a;
+}
+
+html.dark .VPNavBarMenuLink {
+  margin: 0 2px;
+  padding: 0 11px;
+  height: 34px;
+  line-height: 30px;
+  box-sizing: border-box;
+  font-family: var(--rq-font-ui);
+  font-size: 14px;
+  font-weight: 700;
+  color: #e7f5dc;
+  text-shadow: 0 1px 0 #0f260d, 0 0 3px rgba(0, 0, 0, 0.6);
+  background-image: var(--rq-grain), linear-gradient(180deg, #66a858 0%, #3e7f38 50%, #2c6229 100%);
+  background-size: 160px, auto;
+  border: 2px solid #142a12;
+  box-shadow: inset 0 0 0 2px #93cf72, inset 0 3px 6px rgba(255, 255, 255, 0.15);
+}
+
+html.dark .VPNavBarMenuLink:hover {
+  color: #ffffff;
+  filter: brightness(1.12);
+}
+
+html.dark .VPNavBarMenuLink.active {
+  font-weight: 800;
+  color: #0b2a33;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+  background-image: linear-gradient(180deg, #e2fffd 0%, #8ae6ee 45%, #45b3c6 100%);
+  border-color: #14343a;
+  box-shadow: inset 0 0 0 2px #dffcff, 0 0 10px rgba(140, 240, 255, 0.45);
+}
+
+html.dark .VPNavBarMenu > .VPNavBarMenuLink:last-child {
+  margin-left: 8px;
+  padding: 0 9px;
+  height: 24px;
+  line-height: 22px;
+  border: 1px solid #6a6a6a;
+  background: #1a1a1a;
+  box-shadow: none;
+  color: #bdf3ef;
+  text-shadow: none;
+  font-size: 12px;
+}
+
+html.dark .VPNavBar .DocSearch-Button {
+  border-radius: 0;
+  border: 1px solid #5a5a5a;
+  box-shadow: inset 0 1px 3px #000;
+}
+
+html.dark .VPNavBar .DocSearch-Button-Key {
+  border-radius: 0;
+}
+
+/* ---------- Sidebar ---------- */
+
+@media (min-width: 960px) {
+  .VPSidebar {
+    padding-top: calc(var(--vp-nav-height) + 14px);
+  }
+}
+
+html:not(.dark) .VPSidebar {
+  background-image: var(--rq-grain-soft), var(--rq-mottle), linear-gradient(90deg, #e0d4ab, #d8ca9c);
+  background-size: 160px, 640px, auto;
+  box-shadow: inset -1px 0 0 #b9a670, inset -4px 0 8px rgba(90, 70, 20, 0.12);
+}
+
+html:not(.dark) .VPSidebarItem.level-0 > .item > .text {
+  font-family: var(--rq-font-serif-sc);
+  font-size: 16px;
+  font-weight: 700;
+  color: #2f5a2c;
+}
+
+html:not(.dark) .VPSidebarItem.is-link.is-active > .item > .link {
+  margin-left: -10px;
+  padding: 0 10px;
+  border: 1px solid #16341a;
+  border-radius: 3px;
+  background-image: var(--rq-grain), linear-gradient(180deg, #5f9a52 0%, #3f7a3a 50%, #2b5e2c 100%);
+  background-size: 160px, auto;
+  box-shadow: inset 0 1px 0 #b5df95;
+}
+
+html:not(.dark) .VPSidebarItem.is-link.is-active > .item > .link > .text {
+  color: #f8f2dc !important;
+  font-weight: 600;
+  text-shadow: 0 1px 0 #13300f;
+}
+
+html:not(.dark) .VPSidebarItem.is-active > .item > .indicator {
+  display: none;
+}
+
+html.dark .VPSidebar {
+  background-image: var(--rq-grain), linear-gradient(180deg, #22353a, #1a2a2e);
+  background-size: 160px, auto;
+  box-shadow: inset -2px 0 0 #a8bcbc, inset -3px 0 0 #0d1a1c, inset -10px 0 16px rgba(0, 0, 0, 0.3);
+}
+
+/* Group titles read as labels, not links: small caps in a muted teal over a rule. */
+html.dark .VPSidebarItem.level-0 > .item {
+  margin-bottom: 4px;
+  border-bottom: 1px solid #3c5357;
+}
+
+html.dark .VPSidebarItem.level-0 > .item > .text {
+  font-family: var(--rq-font-ui);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #86c9bd;
+}
+
+html.dark .VPSidebarItem.level-0.is-link > .item {
+  margin-bottom: 0;
+  border-bottom: 0;
+}
+
+html.dark .VPSidebarItem.level-0.is-link > .item > .link > .text {
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+html.dark .VPSidebarItem.level-1 > .item {
+  padding-left: 8px;
+}
+
+html.dark .VPSidebarItem .link > .text {
+  font-family: var(--rq-font-ui);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #e6eeee;
+}
+
+/* !important: the default theme's per-level active rules are more specific. */
+html.dark .VPSidebarItem.is-active > .item > .link > .text {
+  color: #a9b2ff !important;
+  text-shadow: 0 0 6px rgba(140, 150, 255, 0.7);
+}
+
+html.dark .VPSidebarItem.is-active > .item > .indicator {
+  background-color: #a9b2ff;
+}
+
+/* ---------- Doc pages ---------- */
+
+html:not(.dark) .vp-doc h1,
+html:not(.dark) .vp-doc h2,
+html:not(.dark) .vp-doc h3 {
+  font-family: var(--rq-font-serif);
+  color: #23401f;
+}
+
+html:not(.dark) .vp-doc h1 {
+  font-size: 40px;
+}
+
+html:not(.dark) .vp-doc h2 {
+  border-top: 3px solid transparent;
+  border-image: linear-gradient(90deg, rgba(31, 74, 36, 0), #3d7a3c 15%, #8fbf72 50%, #3d7a3c 85%, rgba(31, 74, 36, 0)) 1;
+}
+
+html:not(.dark) .vp-doc table {
+  border: 2px solid #3d7a3c;
+  box-shadow: 0 0 0 1px #16341a, 0 3px 0 rgba(60, 50, 20, 0.2);
+  background-image: var(--rq-grain-soft), linear-gradient(180deg, #fbf6e4, #efe5c6);
+  background-size: 160px, auto;
+}
+
+html:not(.dark) .vp-doc th {
+  font-family: var(--rq-font-serif-sc);
+  font-size: 15px;
+  color: #f8f2dc;
+  text-shadow: 0 1px 0 #13300f;
+  background-image: var(--rq-grain), linear-gradient(180deg, #5f9a52 0%, #3f7a3a 50%, #2b5e2c 100%);
+  background-size: 160px, auto;
+  border-color: #2b5e2c;
+}
+
+html:not(.dark) .vp-doc td {
+  border-color: #ddcf9f;
+}
+
+html:not(.dark) .vp-doc tr:nth-child(2n) {
+  background-color: rgba(143, 191, 114, 0.12);
+}
+
+html:not(.dark) .vp-doc tr {
+  background-color: transparent;
+}
+
+html:not(.dark) .vp-doc :not(pre) > code {
+  box-shadow: inset 0 0 0 1px #d2c08a;
+}
+
+html:not(.dark) .vp-doc div[class*='language-'] {
+  box-shadow: inset 0 0 0 1px #cdb98a;
+}
+
+/* Dark: the page sits in a slate panel on the teal backdrop. */
+html.dark .VPDoc .content-container {
+  padding: 24px 20px 28px;
+  background-image: var(--rq-grain), linear-gradient(180deg, #26393e, #1f3135);
+  background-size: 160px, auto;
+  border: 2px solid #a8bcbc;
+  box-shadow: 0 0 0 1px #0d1a1c, inset 0 0 0 1px #0d1a1c, inset 0 6px 14px rgba(0, 0, 0, 0.35);
+}
+
+@media (min-width: 768px) {
+  html.dark .VPDoc .content-container {
+    padding: 32px 36px 36px;
+  }
+}
+
+html.dark .vp-doc h1,
+html.dark .vp-doc h2,
+html.dark .vp-doc h3 {
+  font-family: var(--rq-font-ui);
+  font-weight: 800;
+}
+
+html.dark .vp-doc h2 {
+  border-top-color: #4d6266;
+}
+
+html.dark .vp-doc th {
+  color: #a9b2ff;
+  letter-spacing: 0.04em;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+html.dark .vp-doc th,
+html.dark .vp-doc td {
+  border-color: #3a5054;
+}
+
+html.dark .vp-doc tr {
+  background-color: transparent;
+}
+
+html.dark .vp-doc tr:nth-child(2n) {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+html.dark .vp-doc div[class*='language-'] {
+  box-shadow: inset 0 0 0 1px #3a5054;
+}
+
+html.dark .VPDocAsideOutline {
+  padding: 12px 14px;
+  background-image: var(--rq-grain), linear-gradient(180deg, #26393e, #1f3135);
+  background-size: 160px, auto;
+  border: 2px solid #a8bcbc;
+  box-shadow: 0 0 0 1px #0d1a1c, inset 0 0 0 1px #0d1a1c;
+}
+
+/* A long outline (the changelog) scrolls inside its own box, which never runs past the window. */
+@media (min-width: 1280px) {
+  /* Sticky inside the aside column (instead of fixed), so it stops where the page content stops. */
+  .VPDoc .aside-container {
+    position: sticky;
+    top: calc(var(--vp-nav-height) + 24px);
+    padding-top: 0;
+    height: auto;
+    overflow-y: hidden;
+  }
+
+  .VPDoc .aside-content {
+    min-height: 0;
+    padding-bottom: 0;
+  }
+
+  /* The content column ends 128px above the page bottom; the sticky box stops there too. */
+  .VPDoc .aside {
+    padding-bottom: 128px;
+  }
+
+  .VPDocAsideOutline {
+    max-height: calc(100vh - var(--vp-nav-height) - 72px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+
+  html:not(.dark) .VPDocAsideOutline {
+    scrollbar-color: #b9a670 transparent;
+  }
+
+  html.dark .VPDocAsideOutline {
+    scrollbar-color: #5b7377 transparent;
+  }
+}
+
+html.dark .VPDocAsideOutline .outline-link.active {
+  color: #a9b2ff;
+  text-shadow: 0 0 6px rgba(140, 150, 255, 0.6);
 }
 
 /* Reference tables carry long types such as fun(ctx: rq.BuyCtx): let them wrap. */
@@ -25,24 +613,364 @@
   font-size: 0.8em;
 }
 
-/* The RQ MOD icon is 48x48 pixel art: scale it in whole steps and keep the pixels sharp. */
-.VPHero .image-src {
-  width: 192px;
-  height: 192px;
-  max-width: 192px;
-  max-height: 192px;
-  image-rendering: pixelated;
+/* ---------- Buttons ---------- */
+
+html:not(.dark) .VPButton.brand {
+  border-radius: 4px;
+  border: 1px solid #16341a;
+  color: #fbf6e2;
+  text-shadow: 0 1px 0 #13300f;
+  background-image: var(--rq-grain-soft), linear-gradient(180deg, #5f9a52, #2f6a30);
+  background-size: 160px, auto;
+  box-shadow: inset 0 1px 0 #b5df95, inset 0 0 0 1px rgba(181, 223, 149, 0.35), 0 2px 0 #16341a;
 }
 
-.VPNavBarTitle .logo {
-  image-rendering: pixelated;
+html:not(.dark) .VPButton.alt {
+  border-radius: 4px;
+  border: 1px solid #6f8f58;
+  color: #2a3a1c;
+  background-image: var(--rq-grain-soft), linear-gradient(180deg, #fbf6e4, #e6dab4);
+  background-size: 160px, auto;
+  box-shadow: inset 0 1px 0 #fff, 0 2px 0 #9a8c5c;
+}
+
+html.dark .VPButton.brand {
+  border-radius: 0;
+  border: 2px solid #14343a;
+  color: #0b2a33;
+  font-family: var(--rq-font-ui);
+  font-weight: 800;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+  background-image: linear-gradient(180deg, #e2fffd 0%, #8ae6ee 45%, #45b3c6 100%);
+  box-shadow: inset 0 0 0 2px #dffcff, 0 0 10px rgba(140, 240, 255, 0.45);
+}
+
+html.dark .VPButton.alt {
+  border-radius: 0;
+  border: 2px solid #262626;
+  color: #ffffff;
+  font-family: var(--rq-font-ui);
+  font-weight: 500;
+  text-shadow: 0 1px 0 #1d1d1d, 0 0 3px rgba(0, 0, 0, 0.6);
+  background-image: var(--rq-grain), linear-gradient(180deg, #a3a3a3 0%, #7c7c7c 45%, #5c5c5c 100%);
+  background-size: 160px, auto;
+  box-shadow: inset 0 1px 0 #e2e2e2, inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+
+.VPButton.brand:hover,
+.VPButton.alt:hover {
+  filter: brightness(1.08);
+}
+
+/* ---------- Home hero ---------- */
+
+.rq-hero-heading {
+  gap: 6px;
+}
+
+.VPHero .rq-hero-heading .text {
+  font-size: 30px;
+  line-height: 1.15;
+}
+
+@media (min-width: 640px) {
+  .VPHero .rq-hero-heading .text {
+    font-size: 36px;
+  }
 }
 
 @media (min-width: 960px) {
-  .VPHero .image-src {
-    width: 288px;
-    height: 288px;
-    max-width: 288px;
-    max-height: 288px;
+  .VPHero .rq-hero-heading .text {
+    font-size: 42px;
   }
+}
+
+html:not(.dark) .VPHero .rq-hero-heading .text {
+  font-family: var(--rq-font-serif);
+  font-weight: 700;
+  color: #23401f;
+}
+
+html.dark .VPHero .rq-hero-heading .text {
+  font-family: var(--rq-font-ui);
+  font-weight: 800;
+}
+
+html.dark .VPHero .rq-hero-heading .text,
+html.dark .VPHero .tagline,
+html.dark .rq-cfg__label,
+html.dark .rq-cfg__check {
+  color: #ffffff;
+  text-shadow: 0 1px 0 #163a2e, 1px 0 0 #163a2e, -1px 0 0 #163a2e, 0 -1px 0 #163a2e, 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+html.dark .VPHero .tagline {
+  font-family: var(--rq-font-ui);
+  font-weight: 500;
+}
+
+.rq-hero-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: max-content;
+  padding: 8px;
+}
+
+.rq-hero-icon img {
+  display: block;
+  max-width: none;
+  width: 144px;
+  height: 144px;
+  image-rendering: pixelated;
+}
+
+@media (min-width: 640px) {
+  .rq-hero-icon img {
+    width: 192px;
+    height: 192px;
+  }
+}
+
+@media (min-width: 960px) {
+  .rq-hero-icon img {
+    width: 216px;
+    height: 216px;
+  }
+}
+
+html:not(.dark) .rq-hero-icon {
+  border-radius: 4px;
+  background-image: var(--rq-grain-soft), linear-gradient(180deg, #8fbf72, #3d7a3c 50%, #1f4a24);
+  background-size: 160px, auto;
+  box-shadow: 0 0 0 2px #16341a, inset 0 0 0 2px #b5df95, 0 14px 30px rgba(60, 50, 20, 0.35);
+}
+
+html:not(.dark) .rq-hero-icon img {
+  border: 2px solid #16341a;
+}
+
+html.dark .rq-hero-icon {
+  padding: 10px;
+}
+
+/* ---------- Slate panel (dark) ---------- */
+
+.rq-slate {
+  background-image: var(--rq-grain), linear-gradient(180deg, #26393e, #1f3135);
+  background-size: 160px, auto;
+  border: 2px solid #a8bcbc;
+  box-shadow: 0 0 0 1px #0d1a1c, inset 0 0 0 1px #0d1a1c, inset 0 6px 14px rgba(0, 0, 0, 0.35);
+}
+
+html.dark .rq-hero-icon {
+  background-image: var(--rq-grain), linear-gradient(180deg, #26393e, #1f3135);
+  background-size: 160px, auto;
+  border: 2px solid #a8bcbc;
+  box-shadow: 0 0 0 1px #0d1a1c, inset 0 0 0 1px #0d1a1c, 0 14px 30px rgba(0, 0, 0, 0.35);
+}
+
+/* ---------- Home features ---------- */
+
+.rq-features {
+  padding: 0 24px;
+  margin-bottom: 64px;
+}
+
+@media (min-width: 640px) {
+  .rq-features {
+    padding: 0 48px;
+  }
+}
+
+@media (min-width: 960px) {
+  .rq-features {
+    padding: 0 64px;
+  }
+}
+
+.rq-features__inner {
+  max-width: 1152px;
+  margin: 0 auto;
+}
+
+/* Light: cards */
+.rq-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+}
+
+.rq-card {
+  overflow: hidden;
+  border: 3px solid transparent;
+  border-radius: 6px;
+  background: var(--rq-grain-soft) padding-box, linear-gradient(180deg, #fbf6e4, #efe5c6) padding-box,
+    linear-gradient(180deg, #8fbf72, #3d7a3c 45%, #1f4a24) border-box;
+  background-size: 160px, auto, auto;
+  box-shadow: 0 0 0 1px #16341a, 0 3px 0 rgba(60, 50, 20, 0.25), inset 0 0 18px rgba(120, 100, 40, 0.18);
+}
+
+.rq-card__title {
+  margin: 0;
+  padding: 9px 16px;
+  font-family: var(--rq-font-serif-sc);
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+  color: #f8f2dc;
+  text-shadow: 0 1px 0 #13300f, 0 0 2px rgba(0, 0, 0, 0.5);
+  background-image: var(--rq-grain),
+    repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0 1px, rgba(0, 0, 0, 0.05) 1px 2px, transparent 2px 3px),
+    linear-gradient(180deg, #5f9a52 0%, #3f7a3a 50%, #2b5e2c 100%);
+  background-size: 160px, auto, auto;
+  box-shadow: inset 0 1px 0 #b5df95, inset 0 -1px 0 #183a1a;
+}
+
+.rq-card__body {
+  margin: 0;
+  padding: 14px 18px 20px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #3f3826;
+}
+
+/* Dark: the Config screen's 3D tab */
+.rq-cfg {
+  display: none;
+}
+
+html.dark .rq-cards {
+  display: none;
+}
+
+html.dark .rq-cfg {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 22px;
+  align-items: stretch;
+  font-family: var(--rq-font-ui);
+}
+
+.rq-cfg__checks {
+  flex: 1 1 220px;
+  max-width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.rq-cfg__label {
+  margin: 0 0 4px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.rq-cfg__check {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  text-align: left;
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.rq-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 26px;
+  height: 26px;
+  background: linear-gradient(180deg, #5d7d66, #3f5d48);
+  border: 2px solid #1f3326;
+  box-shadow: inset 0 0 0 1px #8fae95;
+}
+
+.rq-check svg {
+  margin: -4px -2px 0 2px;
+}
+
+.rq-cfg__list {
+  flex: 1 1 260px;
+  max-width: 330px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rq-cfg__item {
+  padding: 3px 4px;
+  text-align: left;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #f2f5f5;
+}
+
+.rq-cfg__item.is-on {
+  color: #a9b2ff;
+  text-shadow: 0 0 6px rgba(140, 150, 255, 0.7);
+}
+
+.rq-cfg__text {
+  flex: 999 1 320px;
+  min-height: 180px;
+  padding: 16px 18px;
+}
+
+.rq-cfg__text-title {
+  margin: 0 0 10px;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #a9b2ff;
+  text-shadow: 0 0 6px rgba(140, 150, 255, 0.6);
+}
+
+.rq-cfg__text-body {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.7;
+  color: #f2f5f5;
+}
+
+/* ---------- Footer ---------- */
+
+html:not(.dark) .VPFooter {
+  border-top: 0;
+  background-image: var(--rq-grain), var(--rq-mottle),
+    repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 3px),
+    linear-gradient(180deg, #24482a, #173219);
+  background-size: 160px, 640px, auto, auto;
+  box-shadow: inset 0 3px 0 #8a7a3c;
+}
+
+html:not(.dark) .VPFooter .message,
+html:not(.dark) .VPFooter .copyright {
+  color: #cfd6bd;
+}
+
+html:not(.dark) .VPFooter a {
+  color: #e4d9a6;
+}
+
+html.dark .VPFooter {
+  border-top: 0;
+  background-image: var(--rq-grain), linear-gradient(180deg, #2a2a2a, #121212);
+  background-size: 160px, auto;
+  box-shadow: inset 0 2px 0 #4a4a4a;
+}
+
+html.dark .VPFooter .message,
+html.dark .VPFooter .copyright {
+  color: #c9c9c9;
+}
+
+html.dark .VPFooter a {
+  color: #bdf3ef;
 }

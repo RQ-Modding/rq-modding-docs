@@ -87,13 +87,28 @@ export default defineConfig({
   base: process.env.DOCS_BASE || '/',
   cleanUrls: true,
   lastUpdated: false,
-  head: [['link', { rel: 'icon', type: 'image/png', href: `${process.env.DOCS_BASE || '/'}rq-mod.png` }]],
+  // Dark (the game's Config screen) is the default; light is the parchment theme.
+  appearance: 'dark',
+  head: [
+    ['link', { rel: 'icon', type: 'image/png', href: `${process.env.DOCS_BASE || '/'}rq-mod.png` }],
+    ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
+    ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
+    [
+      'link',
+      {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@700;800&family=Alegreya:wght@700&family=M+PLUS+1p:wght@500;700;800&display=swap',
+      },
+    ],
+  ],
   markdown: {
     anchor: { slugify: githubSlug },
     lineNumbers: false,
   },
   themeConfig: {
     logo: '/rq-mod.png',
+    // The theme draws the title itself (RqBrand), styled per theme.
+    siteTitle: false,
     nav: [
       { text: 'Guide', link: '/guide/first-mod', activeMatch: '/guide/' },
       { text: 'API reference', link: '/reference/', activeMatch: '/reference/' },

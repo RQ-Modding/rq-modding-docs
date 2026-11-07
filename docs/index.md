@@ -19,7 +19,8 @@ hero:
       text: API reference
       link: /reference/
 
-features:
+# Drawn by the theme (RqFeatures), not the default feature cards.
+rqFeatures:
   - title: Plain Lua 5.4
     details: A mod is a folder with an init.lua and a mod.json. Drop it into the mods folder and start the game.
   - title: The game's own pieces
