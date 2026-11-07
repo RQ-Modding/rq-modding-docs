@@ -11,6 +11,14 @@ say whether you made changes, and share your adapted version under the same lice
 Summary: https://creativecommons.org/licenses/by-sa/4.0/
 Legal code: https://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+Code examples are not covered by the license above. Every code example in the documentation
+(code blocks in the pages, and the examples in the generated API reference) is dedicated to the
+public domain under CC0 1.0 Universal: copy it into your mod, under any license, with no credit
+needed.
+
+CC0: https://creativecommons.org/publicdomain/zero/1.0/
+Legal code: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+
 The site's build scripts (scripts/, docs/.vitepress/) and the JSON schema
 (docs/public/schemas/mod.schema.json) are released under the MIT License, the same as the
 RQ Modding mods. The RQ MOD engine itself is GPL-2.0 and is not covered by this file.

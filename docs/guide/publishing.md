@@ -11,7 +11,8 @@ A mod is its folder. To share it, zip the folder so that the zip holds the folde
   [API reference](../reference/index.md) shows when it was added and changed.
 - **`version`** goes up with every release, so players and bug reports can tell them apart.
 - **A README** for players: what the mod does, its keys and settings, and what it changes in a save.
-- **A license.** Without one, others may not reuse your code. The RQ Modding mods use MIT.
+- **A license.** Without one, others may not reuse your code. The RQ Modding mods use MIT. Code examples from these docs are public domain (CC0), so they can go
+  into a mod under any license.
 
 Only files in the mod's folder are reachable from its Lua, so ship everything it reads (images,
 sounds, data) inside the folder.

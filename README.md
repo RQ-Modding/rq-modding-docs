@@ -40,5 +40,6 @@ publishes it to GitHub Pages on every push to `main`.
 ## License
 
 The documentation text is [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/): share
-and adapt it with credit, under the same license. The build scripts and the `mod.json` schema are
-MIT. See [LICENSE](LICENSE).
+and adapt it with credit, under the same license. The code examples are public domain
+([CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/)): copy them into a mod under any
+license. The build scripts and the `mod.json` schema are MIT. See [LICENSE](LICENSE).
