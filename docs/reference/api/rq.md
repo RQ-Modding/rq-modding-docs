@@ -40,7 +40,7 @@ end)
 | [`rq.debug`](rq.debug.md) | Adds rows to the engine's F3 debug menu. |
 | [`rq.dungeon`](rq.dungeon.md) | Reads and changes the dungeon: the map, the player's place, objects on it, and the camera. |
 | [`rq.hud`](rq.hud.md) | Draws text, boxes and CGs over the game, and reads clicks on them. |
-| [`rq.ids`](rq.ids.md) | The game's numbers by name: characters, items, quests, skills, and the small lists the game names (classes, states, races, character types, elements, item kinds, skill targets). |
+| [`rq.ids`](rq.ids.md) | The game's numbers by name: characters, items, monsters, quests, skills, and the small lists the game names (classes, states, races, character types, elements, item kinds, skill targets). |
 | [`rq.image`](rq.image.md) | Images from a mod's folder, shown by the game as CGs. |
 | [`rq.input`](rq.input.md) | Reads the mouse and keyboard, and drives them for the game. |
 | [`rq.item`](rq.item.md) | Defines, gives and changes items. |

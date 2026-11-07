@@ -490,7 +490,7 @@ end)()
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `opts` | `{enemies: integer[], exp?: integer}` | `enemies`: up to five monster numbers in rank order, 0 for an empty rank. `exp`: experience for the win. Default 0. |
+| `opts` | `{enemies: integer[], exp?: integer}` | `enemies`: up to five monster numbers (`rq.ids.monster`) in rank order, 0 for an empty rank. `exp`: experience for the win. Default 0. |
 
 | Returns | Type | Description |
 | --- | --- | --- |

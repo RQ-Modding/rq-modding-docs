@@ -68,6 +68,7 @@ const data: DefaultTheme.SidebarItem[] = [
       { text: 'Elements', link: '/data/elements' },
       { text: 'Items', link: '/data/items' },
       { text: 'Item kinds', link: '/data/item-kinds' },
+      { text: 'Monsters', link: '/data/monsters' },
       { text: 'Quests', link: '/data/quests' },
       { text: 'Races', link: '/data/races' },
       { text: 'Skills', link: '/data/skills' },
