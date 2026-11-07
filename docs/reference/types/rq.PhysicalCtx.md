@@ -16,4 +16,4 @@ What `rq.combat.on_physical` gets for one physical hit.
 
 ## Used by
 
-[`rq.combat.on_physical`](../api/rq.combat.md#rqcombaton_physical)
+[`rq.StatusDef`](rq.StatusDef.md), [`rq.combat.on_physical`](../api/rq.combat.md#rqcombaton_physical)

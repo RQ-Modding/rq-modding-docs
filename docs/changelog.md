@@ -5,6 +5,19 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.2.0
+
+`rq.status`: battle states made by mods, such as a burn, a bleed, a regeneration, a freeze or a weaken, in one registry every mod shares.
+- `define(id, def)` takes an id `"<mod>:<name>"` and a definition: kind ("bad" / "good"), turns, how adding it again stacks ("refresh", "add", "keep" or a most-stacks number), what cures it, tags, an icon, and callbacks for each of the bearer's turn starts (`on_turn`, with the `rq.battle.on_turn` context), for its coming and going, and for physical hits, spells and accuracy by or on the bearer.
+- `add`, `get`, `list`, `remove` and `cure` (by id, kind or tag, for a mod's own medicine) work on any mod's state; `info` tells about a definition; `on_add` and `on_remove` report every mod's.
+
+Rules:
+- A state lives only in its fight. It goes when the fight ends, when its bearer goes down (unless `keep_on_down`), when its turns run out, when it is cured, or when a mod removes it.
+- Turns are the bearer's own: they count down at the end of each of its turns, and a state added in the bearer's own turn skips that one.
+- The game's cure skills cure mod states too: Status Restore, Encourage and Self-Healing every state cured by `"all"` (the default for bad states), First Aid those cured by `"poison"`. A support skill number in `cured_by` cures it too.
+- A state with an icon shows as a buff on the card, with its turns left.
+- Lua inside the engine (`src/lua/status.lua`), built on the 2.1.0 events and public calls.
+
 ## 2.1.0
 
 The first part of battle states made by mods: three events a mod state is built on. The shared state system, `rq.status`, comes next.

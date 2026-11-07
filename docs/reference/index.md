@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.1.0.
+Loader version 2.2.0.
 
 ## Namespaces
 
@@ -38,6 +38,7 @@ Loader version 2.1.0.
 | [`rq.sound`](api/rq.sound.md) | Plays sounds: a game sound number, a file in the mod folder, or a sound inside a game Flash file. |
 | [`rq.speed`](api/rq.speed.md) | Runs the game clock faster or slower than real time. |
 | [`rq.sprite`](api/rq.sprite.md) | Sprites a mod makes once and changes later, drawn among the game's own in z order. |
+| [`rq.status`](api/rq.status.md) | Battle states made by mods, such as a burn, a bleed, a regeneration, a freeze or a weaken, that live beside the game's poison, stun and ▲▼, in one registry every mod shares. |
 | [`rq.store`](api/rq.store.md) | Small key and value storage for each mod and each save. |
 | [`rq.store.global`](api/rq.store.global.md) | The same calls as `rq.store`, in one file for every save profile. |
 | [`rq.ui`](api/rq.ui.md) | Reads what is on the screen and saves screenshots. |
@@ -131,6 +132,9 @@ Loader version 2.1.0.
 | [`rq.SpriteAttach`](types/rq.SpriteAttach.md) | What an attached sprite follows. Give one of these. |
 | [`rq.SpriteMotion`](types/rq.SpriteMotion.md) | The values `Sprite:to` moves to, and how. |
 | [`rq.SpriteOpts`](types/rq.SpriteOpts.md) | Options for `rq.sprite.new` and `Sprite:set`. |
+| [`rq.StatusDef`](types/rq.StatusDef.md) | What `rq.status.define` takes. |
+| [`rq.StatusInfo`](types/rq.StatusInfo.md) | What `rq.status.info` gives about a definition. |
+| [`rq.StatusInstance`](types/rq.StatusInstance.md) | A state on one character, from `rq.status.add`, `get` and `list`. |
 | [`rq.UiBox`](types/rq.UiBox.md) | A row or column for `rq.uikit.row` and `col`. |
 | [`rq.UiMenuItem`](types/rq.UiMenuItem.md) | One entry of `rq.uikit.menu`. |
 | [`rq.UiPiece`](types/rq.UiPiece.md) | A part of a CG drawn at any size: the edges stay as they are, the middle stretches. |

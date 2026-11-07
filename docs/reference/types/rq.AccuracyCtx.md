@@ -12,4 +12,4 @@ What `rq.combat.on_accuracy` gets for one accuracy check.
 
 ## Used by
 
-[`rq.combat.on_accuracy`](../api/rq.combat.md#rqcombaton_accuracy)
+[`rq.StatusDef`](rq.StatusDef.md), [`rq.combat.on_accuracy`](../api/rq.combat.md#rqcombaton_accuracy)

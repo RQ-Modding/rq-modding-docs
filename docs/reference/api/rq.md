@@ -59,6 +59,7 @@ end)
 | [`rq.sound`](rq.sound.md) | Plays sounds: a game sound number, a file in the mod folder, or a sound inside a game Flash file. |
 | [`rq.speed`](rq.speed.md) | Runs the game clock faster or slower than real time. |
 | [`rq.sprite`](rq.sprite.md) | Sprites a mod makes once and changes later, drawn among the game's own in z order. |
+| [`rq.status`](rq.status.md) | Battle states made by mods, such as a burn, a bleed, a regeneration, a freeze or a weaken, that live beside the game's poison, stun and ▲▼, in one registry every mod shares. |
 | [`rq.store`](rq.store.md) | Small key and value storage for each mod and each save. |
 | [`rq.ui`](rq.ui.md) | Reads what is on the screen and saves screenshots. |
 | [`rq.uikit`](rq.uikit.md) | Widgets in the look of the game's Config screen. |

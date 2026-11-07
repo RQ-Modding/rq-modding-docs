@@ -18,4 +18,4 @@ What `rq.combat.on_magic` gets for one spell.
 
 ## Used by
 
-[`rq.combat.on_magic`](../api/rq.combat.md#rqcombaton_magic)
+[`rq.StatusDef`](rq.StatusDef.md), [`rq.combat.on_magic`](../api/rq.combat.md#rqcombaton_magic)

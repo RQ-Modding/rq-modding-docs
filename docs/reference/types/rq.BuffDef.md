@@ -20,4 +20,4 @@ turns in one spot, fading in and out, 1.5 seconds each; a single mark stays stil
 
 ## Used by
 
-[`rq.battle.set_buff`](../api/rq.battle.md#rqbattleset_buff), [`rq.battle.set_rank_buff`](../api/rq.battle.md#rqbattleset_rank_buff)
+[`rq.StatusDef`](rq.StatusDef.md), [`rq.battle.set_buff`](../api/rq.battle.md#rqbattleset_buff), [`rq.battle.set_rank_buff`](../api/rq.battle.md#rqbattleset_rank_buff)

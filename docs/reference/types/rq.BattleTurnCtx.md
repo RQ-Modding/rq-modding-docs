@@ -99,4 +99,4 @@ Raises an error for a value that is not a string.
 
 ## Used by
 
-[`rq.battle.on_turn`](../api/rq.battle.md#rqbattleon_turn)
+[`rq.StatusDef`](rq.StatusDef.md), [`rq.battle.on_turn`](../api/rq.battle.md#rqbattleon_turn)
