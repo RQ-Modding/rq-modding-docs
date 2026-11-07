@@ -47,6 +47,7 @@ Raises an error when the AIN is not loaded or a hook cannot be placed.
 | [`rq.combat.on_physical`](#rqcombaton_physical) | Calls `fn` for each physical hit, to change the attack and the final damage. |
 | [`rq.combat.on_accuracy`](#rqcombaton_accuracy) | Calls `fn` for each accuracy check, to add to the hit chance. |
 | [`rq.combat.on_crit`](#rqcombaton_crit) | Calls `fn` where the game rolls a critical (the `確率演算` call in `クリティカル計算`). |
+| [`rq.combat.on_magic`](#rqcombaton_magic) | Calls `fn` for each magic hit, to change its final damage by a percent. |
 
 ### rq.combat.on_physical
 
@@ -130,3 +131,37 @@ end)
 > Changed in 0.13.0: Every mod's callback runs until one decides.
 
 > Changed in 0.23.0: Returns a remover.
+
+### rq.combat.on_magic
+
+```lua
+rq.combat.on_magic(fn) -> fun()
+```
+
+`since 2.1.0`
+
+Calls `fn` for each magic hit, to change its final damage by a percent.
+
+`fn` returns a percent of the final damage (100 is unchanged, 50 half, 0 none) or nil to keep it.
+The percents of every callback multiply, and the damage is rounded down. It runs after the game's
+last damage step (`最終ダメージ計算`), so the barrier, immunities and the game's magic resistance
+are already in `damage`; a spell that does 0 is not reported. The battle forecast is not changed.
+It is the magic twin of the final percent of `rq.combat.on_physical`.
+
+Raises an error, logged, for a return that is not a whole number of 0 or more.
+
+```lua
+rq.combat.on_magic(function(ctx)
+  if weakened[ctx.attacker] then return 70 end  -- a weakened caster does 70%
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(ctx:` [`rq.MagicCtx`](../types/rq.MagicCtx.md) `): integer\|nil` | Returns the percent, or nil. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |
+
+See also: [`rq.combat.on_physical`](rq.combat.md#rqcombaton_physical)

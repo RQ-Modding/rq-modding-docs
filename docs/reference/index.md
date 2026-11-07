@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.0.0.
+Loader version 2.1.0.
 
 ## Namespaces
 
@@ -55,12 +55,14 @@ Loader version 2.0.0.
 | [`rq.BattleActor`](types/rq.BattleActor.md) | The ally whose turn it is, from `rq.battle.actor`. |
 | [`rq.BattleDownCtx`](types/rq.BattleDownCtx.md) | What `rq.battle.on_down` gets. |
 | [`rq.BattleEndCtx`](types/rq.BattleEndCtx.md) | What `rq.battle.on_end` gets. |
+| [`rq.BattleHitCtx`](types/rq.BattleHitCtx.md) | What `rq.battle.on_hit` gets for one hit. |
 | [`rq.BattleSelectKeyCtx`](types/rq.BattleSelectKeyCtx.md) | What `rq.battle.on_select_key` gets. |
 | [`rq.BattleSnap`](types/rq.BattleSnap.md) | What `rq.battle.snapshot` returns: a copy of the fight screen. |
 | [`rq.BattleStartCtx`](types/rq.BattleStartCtx.md) | What `rq.battle.on_start` gets. |
 | [`rq.BattleStates`](types/rq.BattleStates.md) | Every state of a character, from `rq.battle.states`. |
 | [`rq.BattleSupportCtx`](types/rq.BattleSupportCtx.md) | What `rq.battle.on_support` gets. |
 | [`rq.BattleSwitchCtx`](types/rq.BattleSwitchCtx.md) | What `rq.battle.on_switch` gets for one rank. |
+| [`rq.BattleTurnCtx`](types/rq.BattleTurnCtx.md) | What `rq.battle.on_turn` gets: the character whose turn starts, and what can change it. |
 | [`rq.BattleUseEvent`](types/rq.BattleUseEvent.md) | What `rq.battle.on_use` gets. |
 | [`rq.BuffDef`](types/rq.BuffDef.md) | A mod's buff on a card, for `rq.battle.set_buff` and `set_rank_buff`. |
 | [`rq.BuffInfo`](types/rq.BuffInfo.md) | One mark a card shows, from `rq.battle.buffs`. |
@@ -99,6 +101,7 @@ Loader version 2.0.0.
 | [`rq.ItemInfo`](types/rq.ItemInfo.md) | What `rq.item.get` returns. |
 | [`rq.LootAdd`](types/rq.LootAdd.md) | An item for `rq.loot.add`. |
 | [`rq.LootItem`](types/rq.LootItem.md) | An item the player will find, from `rq.loot.list`. |
+| [`rq.MagicCtx`](types/rq.MagicCtx.md) | What `rq.combat.on_magic` gets for one spell. |
 | [`rq.MapCtx`](types/rq.MapCtx.md) | What `rq.dungeon.on_map` gets. |
 | [`rq.MarkDef`](types/rq.MarkDef.md) | How `rq.battle.set_mark` shows one of the game's marks. |
 | [`rq.NewThisRun`](types/rq.NewThisRun.md) | What `rq.quests.new_this_run` returns. |

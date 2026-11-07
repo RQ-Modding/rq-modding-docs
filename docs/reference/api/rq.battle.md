@@ -574,6 +574,8 @@ Returns a copy of what the fight screen shows.
 | [`rq.battle.on_down`](#rqbattleon_down) | Calls `fn` when the game sets a character to downed (`Ｃ状態変化` 3). |
 | [`rq.battle.on_switch`](#rqbattleon_switch) | Calls `fn` for each ally rank that holds someone else after a switch in a fight. |
 | [`rq.battle.on_use`](#rqbattleon_use) | Calls `fn` each time a skill is carried out, before its effects. |
+| [`rq.battle.on_turn`](#rqbattleon_turn) | Calls `fn` at the start of every turn in a fight, for allies, enemies and familiars. |
+| [`rq.battle.on_hit`](#rqbattleon_hit) | Calls `fn` after each physical or magic attack on a target, with its result. |
 | [`rq.battle.on_hp`](#rqbattleon_hp) | Calls `fn` in a fight each time a character's HP changes. |
 
 ### rq.battle.on_select_key
@@ -762,6 +764,85 @@ end)
 | Returns | Type | Description |
 | --- | --- | --- |
 | `remove` | `fun()` | Removes this callback. |
+
+### rq.battle.on_turn
+
+```lua
+rq.battle.on_turn(fn) -> fun()
+```
+
+`since 2.1.0`
+
+Calls `fn` at the start of every turn in a fight, for allies, enemies and familiars.
+
+It runs after the game's own start of a turn (`Ｔ行動開始`): the stun has ended, the poison and
+regeneration have been done, and nothing is shown yet. Damage and healing from `ctx` then show
+with the game's own number and effect, as poison and regeneration do. It also runs on the turn a
+stun ends, and for a petrified Kaloria, with `ctx.passing` true. A familiar's turn has no card,
+so its damage and healing are not shown. Callbacks run in load order; an error in one is logged
+and the next still runs.
+
+This is where a mod state does its work each turn: a burn's damage, a regeneration, a freeze
+that skips the turn.
+
+```lua
+local burning = {}  -- iic -> turns left
+rq.battle.on_turn(function(ctx)
+  local left = burning[ctx.iic]
+  if not left then return end
+  local hp_max = rq.chara.get(ctx.iic).hp_max
+  ctx:damage(math.max(1, hp_max // 20))
+  ctx:log(" " .. rq.chara.get(ctx.iic).short .. " is burning.")
+  burning[ctx.iic] = left > 1 and left - 1 or nil
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(ctx:` [`rq.BattleTurnCtx`](../types/rq.BattleTurnCtx.md) `)` | Gets the turn. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |
+
+See also: [`rq.battle.on_hit`](rq.battle.md#rqbattleon_hit)
+
+### rq.battle.on_hit
+
+```lua
+rq.battle.on_hit(fn) -> fun()
+```
+
+`since 2.1.0`
+
+Calls `fn` after each physical or magic attack on a target, with its result.
+
+It runs once per target and per hit: each hit of a multi-hit skill, each target of a skill on
+many, and a counter, for allies, enemies and familiars. A miss is reported too, with `missed`
+true. The damage is already taken from the HP, and the hit is not shown yet. The turn a skill
+only starts to charge is not a hit and is not reported. Special and support skills are not
+attacks; use `rq.battle.on_support` or `rq.battle.on_use` for them.
+
+This is where a hit gives a mod state.
+
+```lua
+rq.battle.on_hit(function(ctx)
+  if ctx.skill == FIRE_SLASH and not ctx.missed and not ctx.downed and math.random(100) <= 40 then
+    burning[ctx.defender] = 3
+    ctx:log(" (Burn)")
+  end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(ctx:` [`rq.BattleHitCtx`](../types/rq.BattleHitCtx.md) `)` | Gets the hit. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |
+
+See also: [`rq.battle.on_turn`](rq.battle.md#rqbattleon_turn), [`rq.battle.on_use`](rq.battle.md#rqbattleon_use)
 
 ### rq.battle.on_hp
 

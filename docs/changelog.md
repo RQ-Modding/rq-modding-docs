@@ -5,6 +5,16 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.1.0
+
+The first part of battle states made by mods: three events a mod state is built on. The shared state system, `rq.status`, comes next.
+
+- `rq.battle.on_turn(fn)` runs at the start of every turn in a fight, for allies, enemies and familiars, after the game's own start of a turn (the stun ended, the poison and regeneration done). `ctx:damage(n)` takes HP and shows it as the game's damage number, stopping at 1 HP as poison does; `ctx:heal(n)` gives HP, up to the most HP, with the game's regeneration effect; `ctx:skip()` makes the turn pass, as a stun does; `ctx:log(text)` adds to the turn's log line. It also runs on the turn a stun ends, with `ctx.passing` true. `ctx` has `iic`, `unit`, `side` and `turn`.
+- `rq.battle.on_hit(fn)` runs after each physical or magic attack on a target, once per hit (multi-hit skills, skills on many targets, counters), with `attacker`, `defender`, `skill`, `kind`, `damage`, `missed`, `crit`, `downed` and `counter`. `ctx:log(text)` adds to that hit's log line. A turn that only starts a charge is not reported.
+- `rq.combat.on_magic(fn)` returns a percent of a spell's final damage, as the final percent of `on_physical` does for physical hits. The percents of every callback multiply.
+
+Each returns a remover. An error in one callback is logged and the next still runs. The three are Lua inside the engine (`src/lua/battle.lua`), over `rq.ain.hook`.
+
 ## 2.0.0
 
 Each mod has its own global variables and its own `require` cache. Before, all mods shared one global table and `package.loaded`: a global set without `local` in one mod was seen and overwritten by every other, and when two mods each had a `util.lua`, `require("util")` gave the second mod the first one's. Now a global stays in its mod, and so does every chunk the mod loads (`init.lua`, `require`, and `load`, `loadfile` and `dofile` when given no `env`), with the callbacks made there. Names a mod has not set itself (`rq`, `string`, `pairs`...) are still found as before. Inside a mod `_G` is its own table, `package.loaded` its own cache, and `pairs(_G)` lists only its own globals. The metatable of `_G` is protected, so `setmetatable(_G, ...)` raises an error.

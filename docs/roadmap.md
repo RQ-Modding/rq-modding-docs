@@ -20,7 +20,7 @@ In order of priority: first what the most mods, existing or new, would use.
 
 | Area | What |
 | --- | --- |
-| States | States made by mods, such as a burn, a bleed or a regeneration, that live beside the game's own. |
+| States | States made by mods, such as a burn, a bleed or a regeneration, that live beside the game's own and that every mod shares (`rq.status`). The events they are built on came in 2.1.0: `rq.battle.on_turn`, `rq.battle.on_hit` and `rq.combat.on_magic`. Next: states that can down someone at the start of a turn, when the state says so. |
 | Music | Music from a mod file in place of the game's, for soundtrack replacements and music per quest or fight. |
 | UI kit | More of the game's own UI beyond Config (message and help windows, skill and item buttons, lists, scrollbars, number fonts, gauges); arrow-key moves between kit widgets; a key for the Mods tab; lists inside a mod's own clip. |
 | Faces and pictures | Enemy pictures, and faces in skill cut-ins, big pictures and the status pages. Animated faces, portraits and backgrounds. |
