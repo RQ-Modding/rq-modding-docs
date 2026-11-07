@@ -5,6 +5,14 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.5.0
+
+The game's own font for mod text, the first piece of the UI kit for the hub (`notes/plans/plan-ui-kit-hub.md` in the workspace).
+- `rq.hud.text` takes `font = "game"`: the game draws the text in its own font (`face` 256, 257 or 258), letter by letter with the spacing its English text uses, as on its buttons, lists and the castle. `outline` and `shadow` give its edges, `space` and `spacing` its letter spacing, and `valign = "center"` centers it as the game centers button labels. Each different text is drawn once and kept; up to 512 different texts draw on one update. `rq.hud.text_width` takes the same style and then also gives the height.
+- `rq.image.compose` text layers take `font = "game"` with the same fields.
+- `rq.hud.clip_push(x, y, w, h)` narrows the clip to a box inside the one before, and `rq.hud.clip_pop()` goes back. `rq.hud.clip(x, y, w, h)` is the box they start from. `rq.uikit.list` uses them, so a list stays inside a clip of your own (before, its clip replaced yours).
+- `rqmod-ctl cgdump` answers on a screen that draws no frame, such as the disclaimer (before, it waited until the pipe's timeout, and the pipe stopped answering).
+
 ## 2.4.0
 
 `rq.music`: a mod's own music file plays where the game plays one of its tracks.

@@ -126,7 +126,7 @@ Use it to read a game CG's size before drawing art for it.
 rq.image.compose(target, layers, opts) -> integer
 ```
 
-`since 1.8.0`
+`since 1.8.0` `changed 2.5.0`
 
 Makes a CG from parts of other CGs, fills and text.
 
@@ -135,8 +135,12 @@ replaces that CG, and `rq.image.restore` undoes it. The size is `opts.w` by `opt
 CG's own, else the first layer's extent. Other CGs are read as they are when it is built, mod images
 included. Calling it again with the same key or number rebuilds it.
 
+A text layer with `font = "game"` is drawn by the game when `compose` is called, or, before the
+game runs (in `init.lua`), when the CG is first built.
+
 Raises an error for no layers or more than 256, a layer without `cg`, `text` or `fill`, an unknown
-`mode`, or a size it cannot work out (then give `opts.w` and `opts.h`, 1 to 4096).
+`mode`, or a size it cannot work out (then give `opts.w` and `opts.h`, 1 to 4096), and for a text
+layer's style as `rq.hud.text` does.
 
 ```lua
 local TAB = rq.image.compose("mymod:tab", {
@@ -154,6 +158,8 @@ local TAB = rq.image.compose("mymod:tab", {
 | Returns | Type | Description |
 | --- | --- | --- |
 | `cg` | `integer` | The CG number. |
+
+> Changed in 2.5.0: Text layers take `font = "game"`.
 
 ### rq.image.add_gif
 

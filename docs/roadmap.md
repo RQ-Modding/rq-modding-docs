@@ -21,7 +21,7 @@ In order of priority: first what the most mods, existing or new, would use.
 | Area | What |
 | --- | --- |
 | States | States made by mods came in 2.2.0 (`rq.status`), on the events of 2.1.0, and in 2.3.0 a state can down someone at the start of a turn when its definition says so. Later: a damage number per state, the AI's cures and the battle forecast knowing them, the game's buff dispels taking good states. |
-| UI kit | More of the game's own UI beyond Config (message and help windows, skill and item buttons, lists, scrollbars, number fonts, gauges); arrow-key moves between kit widgets; a key for the Mods tab; lists inside a mod's own clip. |
+| UI kit | The hub's widgets, in four steps. 2.5.0 brought the game's own font for mod text and clips inside clips. Next: the hub's buttons and rows (Rance Castle, the quest list, Frostbuy's racks, the sort column, the game's scroll bar); the game's options menu opened from the hub; the vault's item lists, storage and filters. Later: message and help windows, gauges, arrow-key moves between kit widgets, a key for the Mods tab. |
 | Faces and pictures | Enemy pictures, and faces in skill cut-ins, big pictures and the status pages. Animated faces, portraits and backgrounds. |
 | Dungeons | Which dungeon and floor `rq.dungeon.on_map` is on, so a mod can act per dungeon, and then names for them in `rq.ids`. |
 | Buff icons | Several buffs on one card shown side by side, shrunk to fit, instead of taking turns. |

@@ -231,11 +231,11 @@ Raises an error without `w` and `h`.
 rq.uikit.list(items, index, opts) -> integer|nil, boolean
 ```
 
-`since 1.7.0`
+`since 1.7.0` `changed 2.5.0`
 
 Draws rows on a dark block that scroll by the wheel.
 
-A bar shows when the rows do not fit. A list's clip replaces a clip of your own.
+A bar shows when the rows do not fit. The list stays inside a clip of your own (`rq.hud.clip_push`).
 
 Raises an error without `w` and `h`.
 
@@ -249,6 +249,8 @@ Raises an error without `w` and `h`.
 | --- | --- | --- |
 | `index` | `integer\|nil` | The chosen row. |
 | `changed` | `boolean` | true on the update it changed. |
+
+> Changed in 2.5.0: Stays inside a clip of your own; before, its clip replaced yours.
 
 ### rq.uikit.menu
 
