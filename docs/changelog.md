@@ -5,6 +5,15 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.7.0
+
+The options list, phase 3 of the hub UI kit (`notes/plans/plan-ui-kit-hub.md` in the workspace).
+- `rq.ui.choose(items, fn, opts)`: opens the game's own choice menu outside a scene, on the hub or any of the game's screens, and calls `fn` with the picked row's id (0 when cancelled). Rows as in `rq.scene.choice`, with any value as an id; `message` rows on top, a Return row (`back`), `cursor`, `x`, `y`. It opens at the next update and waits for the System menu, Config, a scene, or another choice menu.
+- `rq.ui.choosing()`: true while the game's choice menu shows (the game's own, `rq.scene.choice` or `rq.ui.choose`).
+- `rq.uikit.options(items, opts)`: the choice menu's look as a widget inside a page, not modal: the green base, the grey rows (tall with fewer than 3), separators, a text panel, comments and a Return row. The hub theme has its pieces (`options`).
+- While the game's choice menu shows, the HUD is drawn under it (before, a mod's HUD covered it), `rq.uikit` widgets take no input and are not listed for `rqmod-ctl`, and `rq.hud.capture_mouse` does nothing. A `rq.uikit.page` stays open under the menu; the right click, Space or Esc that ends the menu does not close it.
+- The game's choice menu now counts as a modal screen for Item Previews (the wrap on `T_Select` named a method the game does not have, so nothing was wrapped).
+
 ## 2.6.0
 
 The hub's widgets in `rq.uikit`, phase 2 of the hub UI kit (`notes/plans/plan-ui-kit-hub.md` in the workspace). They are drawn from the game's own CGs and write in its own font.

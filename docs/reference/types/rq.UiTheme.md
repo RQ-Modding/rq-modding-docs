@@ -41,6 +41,7 @@ A look for the kit: pieces, text styles, colors and sounds.
 | `scroll` *(optional)* | [`rq.UiScrollPieces`](rq.UiScrollPieces.md) | The game's scroll bar. A theme with it gives `rq.uikit.list` that bar. Since 2.6.0. |
 | `close` *(optional)* | `{normal:` [`rq.UiPiece`](rq.UiPiece.md) `, hover:` [`rq.UiPiece`](rq.UiPiece.md) `}` | The close button. Since 2.6.0. |
 | `hub_page` *(optional)* | `table` | A page over the hub: `x`, `y`, `w`, `h`, `dim`, `outer`, `line` (colors), `title` (a text style), `pad`. Since 2.6.0. |
+| `options` *(optional)* | `table` | The choice menu's look for `rq.uikit.options`: `base` (the menu's background), `sep`, `panels` (the text row's pieces for 1 to 3 lines, with `ph`, their height), `text`, `text_fit`, `comment` (text styles). Since 2.7.0. |
 
 ## Used by
 

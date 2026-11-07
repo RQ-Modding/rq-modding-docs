@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.6.0.
+Loader version 2.7.0.
 
 ## Namespaces
 
@@ -142,7 +142,9 @@ Loader version 2.6.0.
 | [`rq.StatusInstance`](types/rq.StatusInstance.md) | A state on one character, from `rq.status.add`, `get` and `list`. |
 | [`rq.UiBox`](types/rq.UiBox.md) | A row or column for `rq.uikit.row` and `col`. |
 | [`rq.UiButtonStyle`](types/rq.UiButtonStyle.md) | A button style of the hub theme: two states of a grey button and its text. |
+| [`rq.UiChoice`](types/rq.UiChoice.md) | One row of `rq.ui.choose`. |
 | [`rq.UiMenuItem`](types/rq.UiMenuItem.md) | One entry of `rq.uikit.menu`. |
+| [`rq.UiOptionRow`](types/rq.UiOptionRow.md) | One row of `rq.uikit.options`. |
 | [`rq.UiPiece`](types/rq.UiPiece.md) | A part of a CG drawn at any size: the edges stay as they are, the middle stretches. |
 | [`rq.UiPlace`](types/rq.UiPlace.md) | Where a widget goes. |
 | [`rq.UiScrollPieces`](types/rq.UiScrollPieces.md) | The pieces of the game's scroll bar. |

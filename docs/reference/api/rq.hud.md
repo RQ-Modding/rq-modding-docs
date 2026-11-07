@@ -1,12 +1,13 @@
 # rq.hud
 
-`since 0.2.0`
+`since 0.2.0` `changed 2.7.0`
 
 Draws text, boxes and CGs over the game, and reads clicks on them.
 
 The HUD is immediate mode: draw everything again on every `rq.on_frame`, and it shows for that
 frame. It is drawn on the game's own picture, after the game's scene, in game pixels. Every frame
-can hold up to 480 draw calls; past that, a call draws nothing.
+can hold up to 480 draw calls; past that, a call draws nothing. While the game's choice menu
+shows (`rq.ui.choosing`), the HUD is drawn under the menu, so a mod's page does not cover it.
 
 ```lua
 local function button(x, y, w, h, label)
@@ -378,7 +379,7 @@ Call it on every update while a modal HUD is open. The mouse buttons are not aff
 rq.hud.capture_mouse()
 ```
 
-`since 2.6.0`
+`since 2.6.0` `changed 2.7.0`
 
 Hides the whole mouse from the game for this update: where it is, its buttons and the wheel.
 
@@ -388,6 +389,9 @@ no click or wheel step reaches it. Unlike `rq.hud.block_game_input`, it also hid
 it comes up, also when the call stops. `rq.input.mouse`, `rq.input.scroll` and the HUD calls still
 see everything. Call it on every update while the page shows; `rq.uikit.page` does.
 
+While the game's choice menu shows (`rq.ui.choosing`), the call does nothing: the menu, drawn over
+the page, needs the mouse.
+
 ```lua
 rq.on_frame(function()
   if not open then return end
@@ -396,6 +400,8 @@ rq.on_frame(function()
   rq.hud.rect(0, 56, 1024, 536, 0, 0, 0, 200)
 end)
 ```
+
+> Changed in 2.7.0: Does nothing while the game's choice menu shows.
 
 ### rq.hud.text_begin
 

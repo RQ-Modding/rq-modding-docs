@@ -8,8 +8,9 @@ They are drawn with `rq.hud` from the game's own pictures: Config draws its labe
 pictures, so the kit cuts out the parts that carry no text and writes its own text on them. The kit
 is Lua on the public `rq.hud` calls. The hub's widgets write in the game's own font: grey buttons
 in four sizes, Rance Castle's room rows, quest rows and the quest list, the town tabs, Frostbuy's
-rack tiles, the sort column, the game's scroll bar and close button, and a page that covers the
-hub. They take their pieces from the theme in use, else from `themes.hub`.
+rack tiles, the sort column, the game's scroll bar and close button, a page that covers the
+hub, and (2.7.0) the choice menu's look. They take their pieces from the theme in use, else from
+`themes.hub`.
 
 It works in immediate mode: call the widgets from `rq.on_frame` on every update they show, keep the
 values yourself, and pass them back in. Each widget returns the new value and whether it changed on
@@ -70,6 +71,7 @@ end)
 | [`rq.uikit.rack`](#rquikitrack) | Draws a Frostbuy rack tile: a dark see-through square in the shop's black and yellow lines, with yellow text. |
 | [`rq.uikit.sort`](#rquikitsort) | Draws the sort column: "SORT" over up to 16 buttons, 30 apart, the current one framed in yellow. |
 | [`rq.uikit.page`](#rquikitpage) | Draws a page of a mod's own over the hub and runs `fn` in a column inside it. |
+| [`rq.uikit.options`](#rquikitoptions) | Draws the game's choice menu as a widget: its green base, grey rows, separators and a text panel at the top, laid out as the game lays out the menu. It is not modal and does not wait: it returns the picked row's id on the update it is clicked. Use it inside a page; `rq.ui.choose` opens the game's own menu instead. |
 
 ### rq.uikit.label
 
@@ -693,7 +695,7 @@ under it unless `opts.back = false`. A long label gets smaller until it fits.
 rq.uikit.page(opts, fn) -> boolean
 ```
 
-`since 2.6.0`
+`since 2.6.0` `changed 2.7.0`
 
 Draws a page of a mod's own over the hub and runs `fn` in a column inside it.
 
@@ -704,6 +706,9 @@ page closes by its close button at the top right, a right click, or Esc; the rig
 close when let go, so the game does not get them. Keep the page's state yourself: draw it while
 it is open, and stop when it returns false. It does not open by itself; open it from a button of
 your own or a key.
+
+A choice menu from `rq.ui.choose` shows over the page. While it does, the page leaves the mouse and
+the keys to the menu, and the right click, Space or Esc that ends the menu does not close the page.
 
 ```lua
 local open = false
@@ -723,3 +728,41 @@ end)
 | Returns | Type | Description |
 | --- | --- | --- |
 | `open` | `boolean` | false on the update it closes. |
+
+> Changed in 2.7.0: Stays open, under it, while the game's choice menu shows over it.
+
+### rq.uikit.options
+
+```lua
+rq.uikit.options(items, opts) -> any|nil
+```
+
+`since 2.7.0`
+
+Draws the game's choice menu as a widget: its green base, grey rows, separators and a text panel
+at the top, laid out as the game lays out the menu. It is not modal and does not wait: it returns
+the picked row's id on the update it is clicked. Use it inside a page; `rq.ui.choose` opens the
+game's own menu instead.
+
+The list is 380 wide. With fewer than 3 rows to pick it draws the tall buttons, as the game does.
+`message` goes in the text panel at the top, in up to 3 lines of 346 pixels. A long row text gets
+smaller until it fits.
+
+Raises an error without a list or with a row without text.
+
+```lua
+local pick = rq.uikit.options({ "Attack", "Defense", "-", { id = "hp", text = "HP" } },
+  { id = "sortby", message = "Sort by", back = true })
+if pick == 0 then open = false elseif pick then sort_by(pick) end
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `items` | `(string\|` [`rq.UiOptionRow`](../types/rq.UiOptionRow.md) `)[]` | The rows: a text, `"-"` for a separator, or a table. |
+| `opts` *(optional)* | [`rq.UiPlace`](../types/rq.UiPlace.md) `\|{message?: string, back?: string\|boolean}` | Place and `id`; `message` (the text panel at the top); `back` (a Return row, true or its text; picking it gives 0). |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `id` | `any\|nil` | The picked row's id on the update it is clicked (0 for Return); nil otherwise. |
+
+See also: [`rq.ui.choose`](rq.ui.md#rquichoose)
