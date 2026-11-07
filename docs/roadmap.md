@@ -6,7 +6,8 @@ item ships, it moves to the [Changelog](changelog.md).
 ## Planned
 
 - **More names.** `rq.ids` (1.15.0) names characters, classes, items, quests, skills and states.
-  Still to come: enemies, maps and dungeons, races and elements.
+  Still to come: enemies, maps (the dungeons), races, character types, elements and item kinds
+  (sword, spear, glove, ...), and a plain key for a name the game uses more than once.
 - **A mod template.** A repository to start a mod from: `mod.json` with its schema, `init.lua`,
   editor settings for `rq.lua`, a README, a changelog, a license, and a workflow that zips a release.
 - **One page of docs in the release.** The API reference as one HTML file inside the release zip, for
