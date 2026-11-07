@@ -7,7 +7,7 @@ Plays sounds: a game sound number, a file in the mod folder, or a sound inside a
 They play on the game's sound effect mixer, so Config's sound volume applies, and at real time:
 `rq.speed` does not change them. A file or Flash sound is read once and kept in memory, so a sound
 played on every hit reads the disk once. At most 32 mod sounds play at once; one more raises an
-error. Music is not covered: these play beside the game's music.
+error. These play beside the game's music; `rq.music` puts a file in place of a music track.
 
 ```lua
 -- Berserk's sound, from its Flash file

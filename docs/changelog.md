@@ -5,6 +5,18 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.4.0
+
+`rq.music`: a mod's own music file plays where the game plays one of its tracks.
+- `replace(no, path, opts)` puts a file behind a game track's number, wherever the game plays it, and `restore(no)` takes the calling mod's back. The game goes on with the number, so its crossfades, Config's music volume, saves and the system bar work as before. `opts`: `loop_start` / `loop_end` in seconds, `volume` (the file's own, 0 to 100), and `name`, which the extras' music room shows.
+- Files: OGG (Vorbis or Opus), FLAC, WAV or MP3, mono or stereo, streamed from the disk. A file loops forever unless the game plays the track once. It loops between its loop points: the options, else `LOOPSTART` with `LOOPLENGTH` or `LOOPEND` tags in the file, in samples, else the whole file.
+- `on_play(fn)` runs before the game starts a track, with `ctx.no`, `ctx.playing`, `ctx.kind` ("fight", "dungeon" or "other"), `ctx.quest` and `ctx.loops`. `ctx:file(path, opts)` plays a file for this time only, and `ctx:track(no)` another game track. When a track already plays with another file than it should now, it starts again.
+- `info(no)` gives a track's name, whether the game has it, the mod's file with its loop points and length, or the game track's length. `current()` gives the track that plays now: its number, name, the mod's file, the position and the length. `play(no, opts)` plays a track as the game does (`restart`, `once`), and `stop()` stops the music.
+- Two mods on one track: the later one in load order wins, and the log names both. A number the game has not raises an error. In `init.lua`, before the game opens its music, it is instead checked at the first frame, logged and dropped.
+- The C half is in `src/modloader_music.c`: when the game prepares a music channel, the engine asks it first. The file plays on the track's own mixer, with a volume scale on top of the game's fades. The rest is Lua inside the engine (`src/lua/music.lua`).
+
+`rq.ids.music`: the game's 59 named tracks (`音楽の名前`), such as `INDOOR_CRAWL_R8` (1) and `BATTLE_2_R8` (52). `rq.ids.find`, `find_all` and `name` take the kind `music`.
+
 ## 2.3.0
 
 Lethal turn damage: a mod state may now down its bearer.

@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.3.0.
+Loader version 2.4.0.
 
 ## Namespaces
 
@@ -26,6 +26,7 @@ Loader version 2.3.0.
 | [`rq.items`](api/rq.items.md) | Lists the item instances the player owns. |
 | [`rq.loot`](api/rq.loot.md) | Chest loot: what the pools roll, and the items the player will find, known in advance. |
 | [`rq.mod`](api/rq.mod.md) | Finds out about other mods, and reaches what they share. |
+| [`rq.music`](api/rq.music.md) | Music from a mod's own file, in place of one of the game's tracks. |
 | [`rq.orb`](api/rq.orb.md) | The blue Recovery Spring on the map (`回復の泉`, object 203). |
 | [`rq.party`](api/rq.party.md) | Reads and changes who is in the party. |
 | [`rq.quests`](api/rq.quests.md) | Lists the quests and follows them: clears, endings, quest moments and state. |
@@ -105,6 +106,10 @@ Loader version 2.3.0.
 | [`rq.MagicCtx`](types/rq.MagicCtx.md) | What `rq.combat.on_magic` gets for one spell. |
 | [`rq.MapCtx`](types/rq.MapCtx.md) | What `rq.dungeon.on_map` gets. |
 | [`rq.MarkDef`](types/rq.MarkDef.md) | How `rq.battle.set_mark` shows one of the game's marks. |
+| [`rq.MusicInfo`](types/rq.MusicInfo.md) | What `rq.music.info` tells about a track. |
+| [`rq.MusicNow`](types/rq.MusicNow.md) | What `rq.music.current` gives: the track that plays now. |
+| [`rq.MusicOpts`](types/rq.MusicOpts.md) | How `rq.music.replace` and `ctx:file` play a file. |
+| [`rq.MusicPlayCtx`](types/rq.MusicPlayCtx.md) | What `rq.music.on_play` gets: a track the game is about to play. |
 | [`rq.NewThisRun`](types/rq.NewThisRun.md) | What `rq.quests.new_this_run` returns. |
 | [`rq.Offer`](types/rq.Offer.md) | A row `rq.chara.on_offer` adds to the skill buy list. |
 | [`rq.OfferCtx`](types/rq.OfferCtx.md) | What `rq.chara.on_offer` gets for the character whose buy list the game just filled. |

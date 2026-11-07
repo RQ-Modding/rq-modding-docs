@@ -13,6 +13,7 @@ The game's numbers, with the [`rq.ids`](../reference/api/rq.ids.md) key and the 
 | [Items](items.md) | 304 | item numbers, not instances: `rq.item.give(rq.ids.item.SKILL_AGAIN)` makes one |
 | [Item kinds](item-kinds.md) | 17 | item kinds (`種類詳細`): the weapon or armor kind, as in an item's `subtype` |
 | [Monsters](monsters.md) | 372 | monster numbers, as `rq.battle.start` takes them and `rq.battle.snap()` gives them (`enemies[i].no`) |
+| [Music](music.md) | 59 | music track numbers, as `rq.music.replace` and `rq.music.play` take them and `rq.music.current()` gives them |
 | [Quests](quests.md) | 199 | quest numbers, as in `rq.quests()` and `rq.quests.start` |
 | [Races](races.md) | 16 | races (`種族`), as in `rq.chara.get(iic).race` and the damage hooks' `ctx.race` |
 | [Skills](skills.md) | 486 | skill numbers, as in `rq.skill.get` |
