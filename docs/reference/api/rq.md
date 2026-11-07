@@ -40,6 +40,7 @@ end)
 | [`rq.debug`](rq.debug.md) | Adds rows to the engine's F3 debug menu. |
 | [`rq.dungeon`](rq.dungeon.md) | Reads and changes the dungeon: the map, the player's place, objects on it, and the camera. |
 | [`rq.hud`](rq.hud.md) | Draws text, boxes and CGs over the game, and reads clicks on them. |
+| [`rq.ids`](rq.ids.md) | The game's numbers by name: characters, classes, items, quests, skills and states. |
 | [`rq.image`](rq.image.md) | Images from a mod's folder, shown by the game as CGs. |
 | [`rq.input`](rq.input.md) | Reads the mouse and keyboard, and drives them for the game. |
 | [`rq.item`](rq.item.md) | Defines, gives and changes items. |
@@ -66,7 +67,7 @@ end)
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `version` | `string` | The loader version, such as "1.14.2". A mod whose `mod.json` asks for a newer `loader` is not loaded. |
+| `version` | `string` | The loader version, such as "1.15.0". A mod whose `mod.json` asks for a newer `loader` is not loaded. |
 | `game_dir` | `string` | The game folder (where the AIN is). |
 | `mods_dir` | `string` | The `mods` folder, ending in a backslash. |
 

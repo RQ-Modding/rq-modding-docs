@@ -5,6 +5,10 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 1.15.0
+
+`rq.ids`: the game's numbers by name, so a mod can write `rq.ids.skill.FORTUNE_448` or `rq.ids.item.POISON_MASK` instead of 448 or 195. Six kinds: `chara` (89 characters), `class` (8), `item` (304), `quest` (199), `skill` (486) and `state` (4). Keys are the English name in upper snake case; a name the game uses for several numbers gets the number as a suffix on each. A missing key raises an error, and nothing in `rq.ids` can be changed. `rq.ids.find(kind, name)` looks up a name (without case or punctuation, é as e) and says when it is ambiguous, `rq.ids.find_all(kind, text)` lists every number whose name holds a text, and `rq.ids.name(kind, no)` gives a number's name. Editors complete the keys from the new `lua/rq_ids.lua`. The names come from the game through the public calls (`tools/ids/extract.lua`) into `data/ids`, and `tools/ids/gen_ids.py` builds the module, the annotations and the docs' data tables from them; only names and numbers, no game text.
+
 ## 1.14.2
 
 Docs. Every namespace, function and type in `rq.lua` is written in the reference format (summary, details, `Since:` and `Changed:` lines, parameters with units and defaults, named returns, examples), with the details of the old HTML guide merged in and each claim checked against the engine. Corrections: `rq.chara.set_buff` does not need `install_flame`; `rq.battle.set_drop` raises an error only for a value of the wrong type; `rq.hud.block_keys` and the `text_*` calls date from 0.3.0; `rq.item.equipped` takes one argument. The 22 `rq.scene` commands that had no entry are documented. No behavior changed.

@@ -59,11 +59,41 @@ Two text ids can land on the same number; `define` then raises an error, and a n
 Never change a text id after players have it in a save. Start the id with your mod's id, so two mods
 do not pick the same text.
 
+## Names instead of numbers
+
+`rq.ids` (loader 1.15.0) names the base game's numbers, so the code says what it means:
+
+```lua
+local FORTUNE = rq.ids.skill.FORTUNE_448        -- 448
+local MASK = rq.ids.item.POISON_MASK            -- 195
+local iic = rq.chara.find(rq.ids.chara.KAORU_QUINCY)
+if c.class == rq.ids.class.BRAWLER and c.status == rq.ids.state.POISON then ... end
+```
+
+There are six kinds: `chara`, `class`, `item`, `quest`, `skill` and `state`. A key is the in-game
+English name in upper snake case. When the game gives one name to several numbers, as it does with
+four skills called Fortune, each key ends in its number (`FORTUNE_158` ... `FORTUNE_448`); the
+[Game data](../data/index.md) tables list every key with its number and name. Editors complete the
+keys as you type, with the number and the name beside each.
+
+A key that does not exist raises an error when the line runs, so a typo is caught at once. The
+tables hold only the base game; for something a mod defines, use its text id.
+
+For a name from a config file or a player, look it up:
+
+```lua
+local no, err = rq.ids.find("item", "Poison Mask")   -- 195; case and punctuation do not matter
+rq.ids.find_all("skill", "fortune")                  -- every skill whose name holds "fortune"
+rq.ids.name("skill", 448)                            -- "Fortune"
+```
+
+`find` returns nil and a message when the name is unknown or belongs to more than one number.
+
 ## Finding a number
 
-The game's numbers are not named in the API yet; names for characters, skills, items and quests are
-planned (see the [Roadmap](../roadmap.md)). Until then:
-
+- The [Game data](../data/index.md) tables, or `rq.ids.find` and `rq.ids.find_all`.
 - `rq.units()` and `rq.items()` list what the save has, and `rq.quests()` every quest, with names.
-- `rq.skill.get(no).name` and `rq.chara.get(iic).name` give a name for a number.
-- `rq.ain.find("part of a name")` writes the game functions whose names contain it to the log, for `rq.ain.call` and `rq.ain.hook`.
+- `rq.skill.get(no).name` and `rq.chara.get(iic).name` give a name for a number, also for things a
+  mod defined.
+- `rq.ain.find("part of a name")` writes the game functions whose names contain it to the log, for
+  `rq.ain.call` and `rq.ain.hook`.

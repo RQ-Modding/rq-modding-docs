@@ -57,6 +57,21 @@ const reference: DefaultTheme.SidebarItem[] = [
   { text: 'Types', collapsed: true, items: pages('reference/types', '/reference/types') },
 ]
 
+const data: DefaultTheme.SidebarItem[] = [
+  {
+    text: 'Game data',
+    items: [
+      { text: 'Overview', link: '/data/' },
+      { text: 'Characters', link: '/data/characters' },
+      { text: 'Classes', link: '/data/classes' },
+      { text: 'Items', link: '/data/items' },
+      { text: 'Quests', link: '/data/quests' },
+      { text: 'Skills', link: '/data/skills' },
+      { text: 'States', link: '/data/states' },
+    ],
+  },
+]
+
 export default defineConfig({
   title: 'RQ MOD',
   description: 'Lua mods for Rance Quest Magnum: guides and the rq.* API reference.',
@@ -75,6 +90,7 @@ export default defineConfig({
     nav: [
       { text: 'Guide', link: '/guide/first-mod', activeMatch: '/guide/' },
       { text: 'API reference', link: '/reference/', activeMatch: '/reference/' },
+      { text: 'Game data', link: '/data/', activeMatch: '/data/' },
       { text: 'Changelog', link: '/changelog' },
       { text: 'Roadmap', link: '/roadmap' },
       { text: `Loader ${engine.version}`, link: '/changelog' },
@@ -82,6 +98,7 @@ export default defineConfig({
     sidebar: {
       '/guide/': guide,
       '/reference/': reference,
+      '/data/': data,
     },
     outline: { level: [2, 3], label: 'On this page' },
     search: { provider: 'local' },
@@ -92,6 +109,8 @@ export default defineConfig({
       pattern: ({ filePath }) => {
         if (filePath.startsWith('reference/'))
           return 'https://github.com/RQ-Modding/RQ-Mod/edit/main/dist/lua/rq.lua'
+        if (filePath.startsWith('data/'))
+          return 'https://github.com/RQ-Modding/RQ-Mod/tree/main/data/ids'
         if (filePath === 'changelog.md')
           return 'https://github.com/RQ-Modding/RQ-Mod/edit/main/CHANGELOG.md'
         return 'https://github.com/RQ-Modding/rq-modding-docs/edit/main/docs/' + filePath
