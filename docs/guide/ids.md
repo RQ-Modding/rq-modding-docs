@@ -117,4 +117,4 @@ number and none of them has the plain key ("Fortune" gives 448; "Attack" gives n
 - `rq.skill.get(no).name` and `rq.chara.get(iic).name` give a name for a number, also for things a
   mod defined.
 - `rq.ain.find("part of a name")` writes the game functions whose names contain it to the log, for
-  `rq.ain.call` and `rq.ain.hook`.
+  `rq.ain.call` and `rq.ain.hook` ([The game's own code](game-code.md)).

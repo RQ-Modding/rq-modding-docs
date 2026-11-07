@@ -280,13 +280,19 @@ Swallows the engine's own error boxes for the TADA and HTTP network checks (`get
 rq.ain.find(needle) -> integer
 ```
 
-`since 0.2.0`
+`since 0.2.0` `changed 1.16.1`
 
 Writes the AIN functions whose name contains `needle` to the log.
 
-Each line is `find '<needle>' fno=<number>`. At most 40 are listed.
+Each line is `find '<needle>' fno=<number> <name>`, and the name is what `rq.ain.call` and
+`rq.ain.hook` take (a method as `Class@method`). The match is on the game's own spelling, so
+case and full-width letters count. At most 40 are listed; a longer needle narrows the list.
 
 Raises an error when the AIN is not loaded.
+
+```lua
+rq.ain.find("Encount")   -- [rqmod] find 'Encount' fno=... T_Player@checkEncount, ...
+```
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -295,3 +301,5 @@ Raises an error when the AIN is not loaded.
 | Returns | Type | Description |
 | --- | --- | --- |
 | `count` | `integer` | How many were listed. |
+
+> Changed in 1.16.1: Each line also gives the function's name.

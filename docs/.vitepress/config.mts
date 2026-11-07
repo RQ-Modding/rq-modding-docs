@@ -44,6 +44,7 @@ const guide: DefaultTheme.SidebarItem[] = [
       { text: 'mod.json', link: '/guide/manifest' },
       { text: 'What a mod can reach', link: '/guide/sandbox' },
       { text: 'Numbers and ids', link: '/guide/ids' },
+      { text: "The game's own code", link: '/guide/game-code' },
       { text: 'Editor setup', link: '/guide/editor-setup' },
       { text: 'Logs and debugging', link: '/guide/debugging' },
       { text: 'Sharing a mod', link: '/guide/publishing' },

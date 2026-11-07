@@ -5,6 +5,10 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 1.16.1
+
+`rq.ain.find` writes each function's name in its log line (`find 'Encount' fno=10733 T_Player@checkEncount`); before, the line gave only the number, which no `rq.ain` call takes. The docs gain a guide on finding and using the game's functions.
+
 ## 1.16.0
 
 More kinds in `rq.ids`: `monster` (372 monsters, as `rq.battle.start` takes them: `rq.ids.monster.COCKROACH` is 358; the extractor loads each number into the game's scratch slot, as the game does to name one), and, each read from the game's own name functions, `race` (16, `rq.ids.race.HANNY` is 8), `chara_type` (6, `HUMANOID` is 22), `element` (6, `NOTHING` to `FIRE`), `item_kind` (17 weapon and armor kinds, `SWORD`, `SHORTSWORD`, `SPEAR`, `GLOVE`, ...) and `target` (8 skill target codes, `MELEE` to `RANDOM_TARGET`; the game names these in Japanese only, so their English names are ours). `rq.ids.find`, `find_all` and `name` take the new kinds, and the error for an unknown kind lists them all. Some repeated names now have keys without the number beside their numbered ones, from `data/ids/preferred.tsv`: the plain key for the version players know (`rq.ids.skill.FORTUNE` is 448, `FIRE_BLAST` is 169, `rq.ids.chara.RICK_ADDISON` is 93; 19 in all) and keys of their own for the other versions (`CAPTURE_EX`, `USE_IBEPROFUN_EX`, `USE_IBEPROFUN_EX_PLUS`, `STAMINA_BOOST_1`, `ATTACK_BOOST_1`, `MAGIC_BOOST_1`). `rq.ids.find` gives the plain key's number for a repeated name ("Fortune" is 448) and finds the keys of their own. The extractor also reads the game's class and state lists, and `gen_ids.py` fails when they differ from `rq.ids.class` and `rq.ids.state`. The engine's CI runs `gen_ids.py --check`. The numbers of existing keys did not change.
