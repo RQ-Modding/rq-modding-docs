@@ -4,7 +4,7 @@
 
 `rq.ids.chara`: character numbers (`no`), not roster slots: `rq.chara.find(rq.ids.chara.KAORU_QUINCY)` gives the slot. 89 entries.
 
-3 names are used for more than one number; each of those keys ends in its number.
+3 names are used for more than one number; each of those keys ends in its number. 3 of those numbers also have a key without the number (the one players know, or a name of its own such as `CAPTURE_EX`), listed after the numbered key.
 
 | Number | Key | Name | Class |
 | ---: | --- | --- | --- |
@@ -13,7 +13,7 @@
 | 4 | `KENSHIN_UESUGI` | Kenshin Uesugi | Fighter |
 | 5 | `KATSUKO_UESUGI` | Katsuko Uesugi | Fighter |
 | 6 | `TILDE_SHARP` | Tilde Sharp | Fighter |
-| 7 | `ARMS_ARC_7` | Arms Arc | Fighter |
+| 7 | `ARMS_ARC_7`, `ARMS_ARC` | Arms Arc | Fighter |
 | 8 | `RICK_ADDISON_8` | Rick Addison | Fighter |
 | 9 | `TERU_MOURI` | Teru Mouri | Guard |
 | 10 | `ELENOA_RAN` | Elenoa Ran | Fighter |
@@ -40,7 +40,7 @@
 | 31 | `MEGADETH_MOROMI` | Megadeth Moromi | Gunner |
 | 32 | `ZIMA_BAKASKO` | Zima Bakasko | Gunner |
 | 33 | `CROOK_MOFUS` | Crook Mofus | Healer |
-| 34 | `MARIS_AMARYLLIS_34` | Maris Amaryllis | Healer |
+| 34 | `MARIS_AMARYLLIS_34`, `MARIS_AMARYLLIS` | Maris Amaryllis | Healer |
 | 35 | `SEL_CURCHGOLF` | Sel Curchgolf | Healer |
 | 36 | `NOAH_HAKOBUNE` | Noah Hakobune | Healer |
 | 38 | `TORAKO_UESUGI` | Torako Uesugi | Sorcerer |
@@ -94,6 +94,6 @@
 | 90 | `ANDY` | Andy | Guard |
 | 91 | `KOJIKA_YAMANAKA` | Kojika Yamanaka | Fighter |
 | 92 | `DARK_RANCE` | Dark Rance | Fighter |
-| 93 | `RICK_ADDISON_93` | Rick Addison | Fighter |
+| 93 | `RICK_ADDISON_93`, `RICK_ADDISON` | Rick Addison | Fighter |
 | 94 | `AM_YISAEL` | Am Yisael | Healer |
 | 112 | `ARMS_ARC_112` | Arms Arc | Fighter |

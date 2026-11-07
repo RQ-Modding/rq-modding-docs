@@ -4,7 +4,7 @@
 
 `rq.ids.skill`: skill numbers, as in `rq.skill.get`. 486 entries.
 
-21 names are used for more than one number; each of those keys ends in its number.
+21 names are used for more than one number; each of those keys ends in its number. 22 of those numbers also have a key without the number (the one players know, or a name of its own such as `CAPTURE_EX`), listed after the numbered key.
 
 | Number | Key | Name | Kind |
 | ---: | --- | --- | --- |
@@ -35,7 +35,7 @@
 | 124 | `TRAIN_SLASH` | Train Slash | physical |
 | 125 | `MIRAGE_SWORD` | Mirage Sword | physical |
 | 126 | `FLAME_SLASH` | Flame Slash | physical |
-| 127 | `FLAMETHROWER_127` | Flamethrower | physical |
+| 127 | `FLAMETHROWER_127`, `FLAMETHROWER` | Flamethrower | physical |
 | 128 | `FLAMETHROWER_2` | Flamethrower 2 | physical |
 | 129 | `FLAMETHROWER_ALL` | Flamethrower/All | physical |
 | 130 | `FROSTBLOWER` | Frostblower | physical |
@@ -72,39 +72,39 @@
 | 163 | `SELF_DESTRUCT_PREPARATION_1` | Self-Destruct Preparation 1 | support |
 | 164 | `SELF_DESTRUCT_PREPARATION_2` | Self-Destruct Preparation 2 | support |
 | 165 | `SELF_DESTRUCT` | Self-Destruct | physical |
-| 166 | `CAPTURE_166` | Capture | special |
+| 166 | `CAPTURE_166`, `CAPTURE` | Capture | special |
 | 167 | `EXPLOSIVE_ROUNDS` | Explosive Rounds | physical |
 | 168 | `FLAME_ARROW` | Flame Arrow | magic |
-| 169 | `FIRE_BLAST_169` | Fire Blast | magic |
+| 169 | `FIRE_BLAST_169`, `FIRE_BLAST` | Fire Blast | magic |
 | 170 | `FIRE_BLAST_170` | Fire Blast | magic |
-| 171 | `HELLFIRE_BLAST_171` | Hellfire Blast | magic |
+| 171 | `HELLFIRE_BLAST_171`, `HELLFIRE_BLAST` | Hellfire Blast | magic |
 | 172 | `HELLFIRE_BLAST_172` | Hellfire Blast | magic |
 | 173 | `FIRE_LASER` | Fire Laser | magic |
-| 174 | `ICE_ARROW_174` | Ice Arrow | magic |
+| 174 | `ICE_ARROW_174`, `ICE_ARROW` | Ice Arrow | magic |
 | 175 | `ICE_ARROW_175` | Ice Arrow | magic |
 | 176 | `GLACIAL_STORM` | Glacial Storm | magic |
 | 177 | `MOLLUSC_FREEZER` | Mollusc Freezer | magic |
-| 178 | `SIBERIA_178` | Siberia | magic |
+| 178 | `SIBERIA_178`, `SIBERIA` | Siberia | magic |
 | 179 | `SIBERIA_179` | Siberia | magic |
 | 180 | `SNOW_LASER` | Snow Laser | magic |
 | 181 | `THUNDERSTRIKE` | Thunderstrike | magic |
 | 182 | `EM_FIELD` | EM Field | magic |
 | 183 | `ELECTROSHOCK` | Electroshock | magic |
-| 184 | `EM_STORM_184` | EM Storm | magic |
+| 184 | `EM_STORM_184`, `EM_STORM` | EM Storm | magic |
 | 185 | `EM_STORM_185` | EM Storm | magic |
 | 186 | `ZEUS_LIGHTNING` | Zeus Lightning | magic |
-| 187 | `LIGHT_187` | Light | magic |
+| 187 | `LIGHT_187`, `LIGHT` | Light | magic |
 | 188 | `LIGHT_188` | Light | magic |
 | 189 | `A_CUTTER` | A Cutter | magic |
-| 190 | `LIGHT_BOMB_190` | Light Bomb | magic |
+| 190 | `LIGHT_BOMB_190`, `LIGHT_BOMB` | Light Bomb | magic |
 | 191 | `LIGHT_BOMB_191` | Light Bomb | magic |
 | 192 | `BOOK_HEINES` | Book Heines | magic |
 | 193 | `WHITE_DESTRUCTION_BEAM` | White Destruction Beam | magic |
 | 194 | `DARKNESS` | Darkness | magic |
 | 195 | `DEVIL_BEAM` | Devil Beam | magic |
-| 196 | `DEATH_BOMB_196` | Death Bomb | magic |
+| 196 | `DEATH_BOMB_196`, `DEATH_BOMB` | Death Bomb | magic |
 | 197 | `DEATH_BOMB_197` | Death Bomb | magic |
-| 198 | `BLACK_DESTRUCTION_BEAM_198` | Black Destruction Beam | magic |
+| 198 | `BLACK_DESTRUCTION_BEAM_198`, `BLACK_DESTRUCTION_BEAM` | Black Destruction Beam | magic |
 | 199 | `BLACK_DESTRUCTION_BEAM_199` | Black Destruction Beam | magic |
 | 200 | `WEAKNESS_SEARCH` | Weakness Search | special |
 | 201 | `WEAKENER` | Weakener | special |
@@ -112,9 +112,9 @@
 | 203 | `TIGER` | Tiger | magic |
 | 204 | `STUKA` | Stuka | magic |
 | 205 | `PURIFICATION` | Purification | magic |
-| 206 | `USE_IBEPROFUN_206` | Use Ibeprofun | support |
-| 207 | `USE_IBEPROFUN_207` | Use Ibeprofun | support |
-| 208 | `USE_IBEPROFUN_208` | Use Ibeprofun | support |
+| 206 | `USE_IBEPROFUN_206`, `USE_IBEPROFUN` | Use Ibeprofun | support |
+| 207 | `USE_IBEPROFUN_207`, `USE_IBEPROFUN_EX` | Use Ibeprofun | support |
+| 208 | `USE_IBEPROFUN_208`, `USE_IBEPROFUN_EX_PLUS` | Use Ibeprofun | support |
 | 209 | `USE_EPINEPHREND` | Use Epinephrend | support |
 | 210 | `USE_KEY` | Use Key | ability |
 | 211 | `ESCAPE` | Escape | support |
@@ -181,9 +181,9 @@
 | 273 | `BERSERKER` | Berserker | ability |
 | 274 | `PEPSI_SWORDPLAY` | Pepsi Swordplay | ability |
 | 275 | `SOLO_FIGHTER` | Solo Fighter | ability |
-| 276 | `STAMINA_BOOST_276` | Stamina Boost | ability |
-| 277 | `ATTACK_BOOST_277` | Attack Boost | ability |
-| 278 | `MAGIC_BOOST_278` | Magic Boost | ability |
+| 276 | `STAMINA_BOOST_276`, `STAMINA_BOOST` | Stamina Boost | ability |
+| 277 | `ATTACK_BOOST_277`, `ATTACK_BOOST` | Attack Boost | ability |
+| 278 | `MAGIC_BOOST_278`, `MAGIC_BOOST` | Magic Boost | ability |
 | 279 | `ACCURACY_BOOST` | Accuracy Boost | ability |
 | 280 | `EVASION_BOOST` | Evasion Boost | ability |
 | 281 | `CRITICAL_BOOST` | Critical Boost | ability |
@@ -353,16 +353,16 @@
 | 445 | `TONGUE_LASH` | Tongue Lash | physical |
 | 446 | `ATTACK_446` | Attack | physical |
 | 447 | `ATTACK_10FAR_WHIP` | Attack 10Far/Whip | physical |
-| 448 | `FORTUNE_448` | Fortune | physical |
+| 448 | `FORTUNE_448`, `FORTUNE` | Fortune | physical |
 | 449 | `PILFER` | Pilfer | special |
 | 450 | `DRUG_RESISTANCE` | Drug Resistance | ability |
-| 451 | `CAPTURE_451` | Capture | special |
+| 451 | `CAPTURE_451`, `CAPTURE_EX` | Capture | special |
 | 452 | `MAGIC_INVULNERABILITY` | Magic Invulnerability | ability |
 | 453 | `WILD_DANCE` | Wild Dance | physical |
 | 454 | `QUICK_CASTING` | Quick Casting | ability |
-| 455 | `STAMINA_BOOST_455` | Stamina Boost | ability |
-| 456 | `ATTACK_BOOST_456` | Attack Boost | ability |
-| 457 | `MAGIC_BOOST_457` | Magic Boost | ability |
+| 455 | `STAMINA_BOOST_455`, `STAMINA_BOOST_1` | Stamina Boost | ability |
+| 456 | `ATTACK_BOOST_456`, `ATTACK_BOOST_1` | Attack Boost | ability |
+| 457 | `MAGIC_BOOST_457`, `MAGIC_BOOST_1` | Magic Boost | ability |
 | 458 | `ROYAL_FLASH` | Royal Flash | physical |
 | 459 | `BY_LA_WAY` | By La Way | physical |
 | 460 | `WINDING_WHEEL_SWORD` | Winding Wheel Sword | physical |

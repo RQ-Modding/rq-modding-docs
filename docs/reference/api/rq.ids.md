@@ -9,9 +9,10 @@ Each kind is a table of constants, so `rq.ids.skill.FORTUNE_448` is 448 and `rq.
 is 306. Editors complete them from `lua/rq_ids.lua`, with each entry's number and in-game name. A
 key is the English name in upper snake case. A name the game gives to more than one number gets
 the number as a suffix on each of them (`FORTUNE_158`, `FORTUNE_448`), and a key that would start
-with a digit starts with `N_` (`N_10_TON_HAMMER`). A few repeated names also have a plain key for
-the number players know, beside the numbered keys; the docs' data tables mark them. Every entry is
-in the docs' data tables.
+with a digit starts with `N_` (`N_10_TON_HAMMER`). Some repeated names also have a key without the
+number, beside the numbered keys: the plain key for the one players know (`FORTUNE` is 448,
+`RICK_ADDISON` is 93), or a key of its own for another version (`CAPTURE_EX`, `USE_IBEPROFUN_EX`,
+`STAMINA_BOOST_1`). The docs' data tables list every entry and mark those keys.
 
 The tables hold the base game only, not what mods define; use a mod's text id for those. Reading
 a key that does not exist raises an error, so a typo stops the mod at once instead of passing
@@ -33,7 +34,7 @@ changed. It works at the top level of `init.lua`.
 | `target` | skill target codes (`対象`): `MELEE`, `RANGED`, `ALL_ENEMIES`, `ROW`, `SELF`, `ALLY`, `ALL_ALLIES`, `RANDOM_TARGET` |
 
 ```lua
-local FORTUNE = rq.ids.skill.FORTUNE_448
+local FORTUNE = rq.ids.skill.FORTUNE  -- 448, also FORTUNE_448
 local iic = rq.chara.find(rq.ids.chara.KAORU_QUINCY)
 if rq.item.number(ii) == rq.ids.item.POISON_MASK then ... end
 if ctx.race == rq.ids.race.HANNY then return nil, 50 end
@@ -75,15 +76,16 @@ rq.ids.find(kind, name) -> integer|nil, string?
 Returns the number of the thing with this name.
 
 The name is compared without case, spaces or punctuation, and é matches e, so "spear knowledge"
-finds Spear Knowledge. A key works too (`"FORTUNE_448"`). When the game uses the name for more
-than one number, nothing is returned and the message lists the numbers; `rq.ids.find_all` gives
-them all.
+finds Spear Knowledge. A key works too (`"FORTUNE_448"`, `"CAPTURE_EX"`). When the game uses the
+name for more than one number, the number of its plain key is returned ("Fortune" gives 448); a
+repeated name with no plain key returns nothing, and the message lists the numbers.
+`rq.ids.find_all` gives them all.
 
 Raises an error for an unknown kind or a name that is not a string.
 
 ```lua
 local no, err = rq.ids.find("item", cfg.item)
-if not no then rq.log(err) end  -- such as: more than one skill is named "Fortune": 158, 159, 160, 448
+if not no then rq.log(err) end  -- such as: more than one skill is named "Attack": 155, 386, ...
 ```
 
 | Parameter | Type | Description |
@@ -96,7 +98,7 @@ if not no then rq.log(err) end  -- such as: more than one skill is named "Fortun
 | `no` | `integer\|nil` | The number, or nil when no entry or more than one has that name. |
 | `err` | `string?` | Why there is no number. |
 
-> Changed in 1.16.0: Takes the kinds `chara_type`, `element`, `item_kind`, `race` and `target`.
+> Changed in 1.16.0: Takes the kinds `chara_type`, `element`, `item_kind`, `race` and `target`. A repeated name with a plain key gives that key's number.
 
 See also: [`rq.ids.find_all`](rq.ids.md#rqidsfind_all)
 

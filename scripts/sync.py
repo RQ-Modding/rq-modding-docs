@@ -96,16 +96,16 @@ def write_data(engine, out):
                  "# %s" % k["title"], "",
                  "`rq.ids.%s`: %s. %d entries." % (k["kind"], k["what"], len(k["entries"])), ""]
         if dup:
-            plain = sum(1 for e in k["entries"] if e.get("alias"))
+            more = sum(1 for e in k["entries"] if e.get("aliases"))
             note = "%d names are used for more than one number; each of those keys ends in its number." % dup
-            if plain:
-                note += (" %d of them also have a plain key, for the number players know, listed after the"
-                         " numbered key." % plain)
+            if more:
+                note += (" %d of those numbers also have a key without the number (the one players know, or a"
+                         " name of its own such as `CAPTURE_EX`), listed after the numbered key." % more)
             lines += [note, ""]
         lines += ["| Number | Key | Name |" + (" %s |" % head if head else ""),
                   "| ---: | --- | --- |" + (" --- |" if head else "")]
         for e in k["entries"]:
-            key = "`%s`" % e["key"] + (", `%s`" % e["alias"] if e.get("alias") else "")
+            key = ", ".join("`%s`" % x for x in [e["key"]] + e.get("aliases", []))
             row = "| %d | %s | %s |" % (e["no"], key, cell(e["name"]))
             if head:
                 row += " %s |" % cell(e["detail"])

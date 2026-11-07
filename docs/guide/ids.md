@@ -89,8 +89,9 @@ The kinds:
 
 A key is the in-game English name in upper snake case. When the game gives one name to several
 numbers, as it does with four skills called Fortune, each key ends in its number (`FORTUNE_158` ...
-`FORTUNE_448`). A few of those also have a plain key for the number players know; the tables show it
-after the numbered key. The [Game data](../data/index.md) tables list every key with its number and
+`FORTUNE_448`). Some of those also have a key without the number: the plain key for the one players
+know (`FORTUNE` is 448), or a key of its own for another version (`CAPTURE_EX`, `USE_IBEPROFUN_EX`).
+The tables show them after the numbered key. The [Game data](../data/index.md) tables list every key with its number and
 name. Editors complete the keys as you type, with the number and the name beside each. The game
 names skill targets only in Japanese, so their English names are ours; the table shows both.
 
@@ -105,7 +106,8 @@ rq.ids.find_all("skill", "fortune")                  -- every skill whose name h
 rq.ids.name("skill", 448)                            -- "Fortune"
 ```
 
-`find` returns nil and a message when the name is unknown or belongs to more than one number.
+`find` returns nil and a message when the name is unknown, or when it belongs to more than one
+number and none of them has the plain key ("Fortune" gives 448; "Attack" gives nil and the list).
 
 ## Finding a number
 
