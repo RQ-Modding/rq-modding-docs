@@ -5,6 +5,17 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.6.0
+
+The hub's widgets in `rq.uikit`, phase 2 of the hub UI kit (`notes/plans/plan-ui-kit-hub.md` in the workspace). They are drawn from the game's own CGs and write in its own font.
+- `rq.uikit.themes.hub`: Config's theme with the hub's pieces added. Hub widgets take their pieces from the theme in use, else from it, so a copy of it can change some.
+- `rq.uikit.button` takes `opts.style`: "large" (Rance Castle's rooms), "choice" and "choice_tall" (the choice menu's), "short" (the footer's Vault and Trivia). A long text gets smaller and tighter until it fits, as the game's `FitText2` does. With the hub theme in use, a button without a style is "large".
+- `rq.uikit.tabs` takes `opts.style = "town"`: the hub's town tabs, the current one orange.
+- New: `castle_row` (a castle room with its face, NEW and heart or MORU RUN mark), `quest_row` (number, yellow name, the clear count in its box), `quest_list` (13 rows with the game's scroll bar; the wheel, the arrows, the track and a drag scroll it), `scrollbar` (the game's scroll bar on its own), `rack` (a Frostbuy rack tile, drawn from shapes since the shop's are painted), `sort` (the sort column), `close` (the windows' close button) and `page` (a page of a mod's own over the hub: modal, closed by its close button, a right click or Esc).
+- `rq.uikit.list` has the game's scroll bar with a theme that has `scroll`, such as the hub theme.
+- `rq.hud.capture_mouse()`: for this update the game sees no mouse, buttons or wheel, also when `rqmod-ctl` drives the mouse, so a page over the game works for agents as for players. `rq.uikit.page` uses it.
+- The hub's widgets are in their own file, `src/lua/uikit_hub.lua`, built into the exe beside `uikit.lua`.
+
 ## 2.5.0
 
 The game's own font for mod text, the first piece of the UI kit for the hub (`notes/plans/plan-ui-kit-hub.md` in the workspace).

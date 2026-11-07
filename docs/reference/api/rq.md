@@ -63,7 +63,7 @@ end)
 | [`rq.status`](rq.status.md) | Battle states made by mods, such as a burn, a bleed, a regeneration, a freeze or a weaken, that live beside the game's poison, stun and ▲▼, in one registry every mod shares. |
 | [`rq.store`](rq.store.md) | Small key and value storage for each mod and each save. |
 | [`rq.ui`](rq.ui.md) | Reads what is on the screen and saves screenshots. |
-| [`rq.uikit`](rq.uikit.md) | Widgets in the look of the game's Config screen. |
+| [`rq.uikit`](rq.uikit.md) | Widgets in the look of the game's Config screen and, since 2.6.0, of its hub. |
 | [`rq.units`](rq.units.md) | Lists the recruited characters. |
 
 ## Properties

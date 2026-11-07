@@ -17,4 +17,4 @@ A part of a CG drawn at any size: the edges stay as they are, the middle stretch
 
 ## Used by
 
-[`rq.UiTheme`](rq.UiTheme.md), [`rq.uikit.draw`](../api/rq.uikit.md#rquikitdraw), [`rq.uikit.layers`](../api/rq.uikit.md#rquikitlayers)
+[`rq.UiButtonStyle`](rq.UiButtonStyle.md), [`rq.UiScrollPieces`](rq.UiScrollPieces.md), [`rq.UiTabsStyle`](rq.UiTabsStyle.md), [`rq.UiTheme`](rq.UiTheme.md), [`rq.uikit.draw`](../api/rq.uikit.md#rquikitdraw), [`rq.uikit.layers`](../api/rq.uikit.md#rquikitlayers)

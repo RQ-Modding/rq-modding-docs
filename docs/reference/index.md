@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.5.0.
+Loader version 2.6.0.
 
 ## Namespaces
 
@@ -43,7 +43,7 @@ Loader version 2.5.0.
 | [`rq.store`](api/rq.store.md) | Small key and value storage for each mod and each save. |
 | [`rq.store.global`](api/rq.store.global.md) | The same calls as `rq.store`, in one file for every save profile. |
 | [`rq.ui`](api/rq.ui.md) | Reads what is on the screen and saves screenshots. |
-| [`rq.uikit`](api/rq.uikit.md) | Widgets in the look of the game's Config screen. |
+| [`rq.uikit`](api/rq.uikit.md) | Widgets in the look of the game's Config screen and, since 2.6.0, of its hub. |
 | [`rq.units`](api/rq.units.md) | Lists the recruited characters. |
 
 ## Types
@@ -141,9 +141,12 @@ Loader version 2.5.0.
 | [`rq.StatusInfo`](types/rq.StatusInfo.md) | What `rq.status.info` gives about a definition. |
 | [`rq.StatusInstance`](types/rq.StatusInstance.md) | A state on one character, from `rq.status.add`, `get` and `list`. |
 | [`rq.UiBox`](types/rq.UiBox.md) | A row or column for `rq.uikit.row` and `col`. |
+| [`rq.UiButtonStyle`](types/rq.UiButtonStyle.md) | A button style of the hub theme: two states of a grey button and its text. |
 | [`rq.UiMenuItem`](types/rq.UiMenuItem.md) | One entry of `rq.uikit.menu`. |
 | [`rq.UiPiece`](types/rq.UiPiece.md) | A part of a CG drawn at any size: the edges stay as they are, the middle stretches. |
 | [`rq.UiPlace`](types/rq.UiPlace.md) | Where a widget goes. |
+| [`rq.UiScrollPieces`](types/rq.UiScrollPieces.md) | The pieces of the game's scroll bar. |
+| [`rq.UiTabsStyle`](types/rq.UiTabsStyle.md) | A tabs style of the hub theme. |
 | [`rq.UiTheme`](types/rq.UiTheme.md) | A look for the kit: pieces, text styles, colors and sounds. |
 | [`rq.Unit`](types/rq.Unit.md) | A recruited character, from `rq.units()`. |
 | [`rq.VanillaSave`](types/rq.VanillaSave.md) | What `rq.saves.vanilla` returns. |

@@ -38,6 +38,7 @@ end
 | [`rq.hud.clicked`](#rqhudclicked) | Returns whether the left button went down inside a box on this update. |
 | [`rq.hud.block_game_input`](#rqhudblock_game_input) | Hides the mouse buttons from the game, so a click on the HUD does not also click the game. |
 | [`rq.hud.block_keys`](#rqhudblock_keys) | Hides the keyboard from the game for this update. |
+| [`rq.hud.capture_mouse`](#rqhudcapture_mouse) | Hides the whole mouse from the game for this update: where it is, its buttons and the wheel. |
 | [`rq.hud.text_begin`](#rqhudtext_begin) | Starts reading typed text. |
 | [`rq.hud.text_value`](#rqhudtext_value) | Returns the typed text and whether reading is on. |
 | [`rq.hud.text_end`](#rqhudtext_end) | Stops reading typed text. |
@@ -370,6 +371,31 @@ Hides the keyboard from the game for this update.
 
 Call it on every update while a modal HUD is open. The mouse buttons are not affected (use
 `rq.hud.block_game_input`), and `rq.input.key` still reads the real keys.
+
+### rq.hud.capture_mouse
+
+```lua
+rq.hud.capture_mouse()
+```
+
+`since 2.6.0`
+
+Hides the whole mouse from the game for this update: where it is, its buttons and the wheel.
+
+The game sees the cursor off the screen, so its buttons under a mod's page are not hovered, and
+no click or wheel step reaches it. Unlike `rq.hud.block_game_input`, it also hides the mouse that
+`rqmod-ctl` drives, so an agent gets what a player gets. A button that was down stays hidden until
+it comes up, also when the call stops. `rq.input.mouse`, `rq.input.scroll` and the HUD calls still
+see everything. Call it on every update while the page shows; `rq.uikit.page` does.
+
+```lua
+rq.on_frame(function()
+  if not open then return end
+  rq.hud.capture_mouse()
+  rq.hud.block_keys()
+  rq.hud.rect(0, 56, 1024, 536, 0, 0, 0, 200)
+end)
+```
 
 ### rq.hud.text_begin
 

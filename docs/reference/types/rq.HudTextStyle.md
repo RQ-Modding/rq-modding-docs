@@ -26,4 +26,4 @@ How `rq.hud.text` draws text.
 
 ## Used by
 
-[`rq.UiTheme`](rq.UiTheme.md), [`rq.hud.text`](../api/rq.hud.md#rqhudtext), [`rq.hud.text_width`](../api/rq.hud.md#rqhudtext_width)
+[`rq.UiButtonStyle`](rq.UiButtonStyle.md), [`rq.UiTabsStyle`](rq.UiTabsStyle.md), [`rq.UiTheme`](rq.UiTheme.md), [`rq.hud.text`](../api/rq.hud.md#rqhudtext), [`rq.hud.text_width`](../api/rq.hud.md#rqhudtext_width)
