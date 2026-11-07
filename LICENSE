@@ -1,0 +1,16 @@
+RQ MOD documentation
+Copyright (c) 2026 Moru Zerinho6 and the RQ Modding contributors
+
+The text of this documentation (everything under docs/, including the pages generated from
+the engine's rq.lua annotations) is licensed under the Creative Commons Attribution-ShareAlike
+4.0 International License (CC BY-SA 4.0).
+
+You may share and adapt it for any purpose, as long as you give credit, link to the license,
+say whether you made changes, and share your adapted version under the same license.
+
+Summary: https://creativecommons.org/licenses/by-sa/4.0/
+Legal code: https://creativecommons.org/licenses/by-sa/4.0/legalcode
+
+The site's build scripts (scripts/, docs/.vitepress/) and the JSON schema
+(docs/public/schemas/mod.schema.json) are released under the MIT License, the same as the
+RQ Modding mods. The RQ MOD engine itself is GPL-2.0 and is not covered by this file.

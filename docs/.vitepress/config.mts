@@ -119,6 +119,7 @@ export default defineConfig({
     },
     footer: {
       message: `API reference generated from RQ MOD ${engine.version}${engine.commit ? ` (${engine.commit})` : ''}. RQ MOD is built on xsystem4.`,
+      copyright: 'Docs text under <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.',
     },
   },
 })

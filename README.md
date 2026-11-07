@@ -36,3 +36,9 @@ npm run build     # the static site, in docs/.vitepress/dist
 
 `.github/workflows/deploy.yml` checks the reference against the engine's `main`, builds the site and
 publishes it to GitHub Pages on every push to `main`.
+
+## License
+
+The documentation text is [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/): share
+and adapt it with credit, under the same license. The build scripts and the `mod.json` schema are
+MIT. See [LICENSE](LICENSE).
