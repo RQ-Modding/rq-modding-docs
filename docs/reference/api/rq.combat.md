@@ -85,7 +85,10 @@ rq.combat.on_accuracy(fn) -> fun()
 
 Calls `fn` for each accuracy check, to add to the hit chance.
 
-The returned numbers of every callback add up; nil counts as 0.
+The returned numbers of every callback add up; nil counts as 0. The game's own limits come after
+them: the chance is at most 100; an ally's attack hits at least 20% of the time; an enemy's at
+least 40% (20% or 60% by the target's class, more after the target dodged several times in a
+row) and at most 80% to 100% by the target's evasion.
 
 | Parameter | Type | Description |
 | --- | --- | --- |

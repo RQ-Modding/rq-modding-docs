@@ -771,7 +771,7 @@ end)
 rq.battle.on_turn(fn) -> fun()
 ```
 
-`since 2.1.0`
+`since 2.1.0` `changed 2.3.0`
 
 Calls `fn` at the start of every turn in a fight, for allies, enemies and familiars.
 
@@ -783,7 +783,7 @@ so its damage and healing are not shown. Callbacks run in load order; an error i
 and the next still runs.
 
 This is where a mod state does its work each turn: a burn's damage, a regeneration, a freeze
-that skips the turn.
+that skips the turn. A lethal `ctx:damage` may down the character (see `BattleTurnCtx:damage`).
 
 ```lua
 local burning = {}  -- iic -> turns left
@@ -804,6 +804,8 @@ end)
 | Returns | Type | Description |
 | --- | --- | --- |
 | `remove` | `fun()` | Removes this callback. |
+
+> Changed in 2.3.0: Lethal damage, and `ctx.downed`.
 
 See also: [`rq.battle.on_hit`](rq.battle.md#rqbattleon_hit)
 

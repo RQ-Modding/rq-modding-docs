@@ -5,6 +5,18 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.3.0
+
+Lethal turn damage: a mod state may now down its bearer.
+- `ctx:damage(n, opts)` in `rq.battle.on_turn` takes `{ lethal = true, source = killer }`. With `lethal`, the HP may reach 0. The character then goes down, shown as the game shows a death: the enemy fades and drops its gold, or the ally's card turns red. `rq.battle.on_down` runs, and the turn passes. Without `lethal`, the HP still stops at 1, as poison's does.
+- The dying character's own death skills act: Hanny Zippo brings it back at full HP, once a fight, and Rich Enemy doubles the gold. With a `source` that is in the fight and not down, the game's own death handling runs with that killer, so Kalar's curse acts too.
+- When the action ends, the game checks for the end of the fight, as it does after an attack: the last enemy's death wins the fight, and the last ally's loses it.
+- `ctx.downed` is true once a lethal damage downed the character. After that, `ctx:damage` and `ctx:heal` do nothing in that turn start.
+- `rq.status` definitions take `lethal = true`, default false. Their `on_turn` damage may then down the bearer, with the state's `source` as the killer, and `rq.status.info` reports it. Once the bearer is down, the states after it do not tick that turn.
+- A familiar never goes down this way. Persevere does not save a character from lethal turn damage, as it does not from poison.
+
+Docs: `rq.combat.on_accuracy` now names the game's limits that come after its callbacks. An ally's attack hits at least 20% of the time, an enemy's at least 40%, and an enemy's at most 80% to 100% by the target's evasion.
+
 ## 2.2.0
 
 `rq.status`: battle states made by mods, such as a burn, a bleed, a regeneration, a freeze or a weaken, in one registry every mod shares.

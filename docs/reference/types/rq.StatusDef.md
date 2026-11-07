@@ -18,6 +18,7 @@ next callback still runs.
 | `cured_by` *(optional)* | `(string\|integer)[]` | What cures it: "all" (Status Restore, Encourage, Self-Healing), "poison" (First Aid), or support skill numbers. Default `{ "all" }` for a bad state, `{}` for a good one. |
 | `tags` *(optional)* | `string[]` | Names for families of states, for `rq.status.cure(iic, { tag = ... })`. |
 | `keep_on_down` *(optional)* | `boolean` | Stays when the bearer goes down, until the fight ends. Default false. |
+| `lethal` *(optional)* | `boolean` | Its `on_turn` damage may bring the HP to 0 and down the bearer, with `source` as the killer; `ctx:damage(n, { lethal = false })` still stops at 1. Default false, as poison. Since 2.3.0. |
 | `icon` *(optional)* | [`rq.BuffDef`](rq.BuffDef.md) | The buff on the card; its `text` is set by `rq.status`. |
 | `text` *(optional)* | `fun(s:` [`rq.StatusInstance`](rq.StatusInstance.md) `): string` | The icon's text, at most 15 bytes. Default the turns left, else the stacks when more than 1. |
 | `on_turn` *(optional)* | `fun(s:` [`rq.StatusInstance`](rq.StatusInstance.md) `, ctx:` [`rq.BattleTurnCtx`](rq.BattleTurnCtx.md) `)` | Runs at each of the bearer's turn starts, as `rq.battle.on_turn`: damage, heal, skip, log. |

@@ -1,6 +1,6 @@
 # rq.status
 
-`since 2.2.0`
+`since 2.2.0` `changed 2.3.0`
 
 Battle states made by mods, such as a burn, a bleed, a regeneration, a freeze or a weaken, that
 live beside the game's poison, stun and ▲▼, in one registry every mod shares.
@@ -26,6 +26,11 @@ are skills too, and none of them cures a state.
 **On the card** a state with an `icon` shows as a buff (`rq.battle.set_buff`), with the turns
 left as its text, or its stacks when it has no turns. A character holds up to 8 buffs, the
 mods' own and the states' together.
+
+**Lethal.** A state's damage stops at 1 HP, as poison's does, unless its definition has
+`lethal = true`: then `ctx:damage` in its `on_turn` may down the bearer, with the state's
+`source` as the killer (see `BattleTurnCtx:damage`). Once the bearer is down, the states after
+it do not tick that turn.
 
 ```lua
 local BURN_ICON = rq.image.add("burn", "burn.png", { fit = "contain", w = 56, h = 56 })

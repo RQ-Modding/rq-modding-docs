@@ -17,6 +17,7 @@ What `rq.status.info` gives about a definition.
 | `cured_by` | `(string\|integer)[]` | What cures it. |
 | `tags` | `string[]` | Its tags. |
 | `keep_on_down` | `boolean` | Whether it stays when the bearer goes down. |
+| `lethal` | `boolean` | Whether its damage may down the bearer. Since 2.3.0. |
 
 ## Used by
 
