@@ -9,7 +9,7 @@ An item template for `rq.item.define`.
 | `id` | `string` | The text id, such as "mymod:binoculars". It becomes a stable number from 1000 up. |
 | `name` | `string` | The name. |
 | `type` *(optional)* | `"weapon"\|"armor"\|"item"\|"special"\|"quest"\|"none"` | The slot: weapon (1), armor (11), item (17), special (21), quest (22), none (23, cannot be equipped). Default "item". |
-| `subtype` *(optional)* | `integer` | The detailed kind (`種類詳細`); a familiar is 20. |
+| `subtype` *(optional)* | `integer` | The detailed kind (`種類詳細`, `rq.ids.item_kind`); a familiar is 20. |
 | `rank` *(optional)* | `integer` | The kind rank (`種類ランク`). Default 10. |
 | `icon` *(optional)* | `integer\|string` | A game CG number or a file in the mod's folder (shown at 100×100, proportions kept). Default: a grey question mark (since 0.15.0). |
 | `price` *(optional)* | `integer` | The price. |

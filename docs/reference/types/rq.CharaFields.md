@@ -16,7 +16,7 @@ The fields `rq.chara.define` and `rq.chara.edit` share.
 | `level` *(optional)* | `integer` | The level. `define` only. |
 | `level_max` *(optional)* | `integer` | The highest level. `define` only. |
 | `slots` *(optional)* | `integer` | Skill rows the character can equip. The hotbar has 6 positions. |
-| `type` *(optional)* | `integer` | The game's type value (`タイプ`). Also `race`, `model`, `boss` and any other `rq.CharaState` name. |
+| `type` *(optional)* | `integer` | The game's type value (`タイプ`, `rq.ids.chara_type`). Also `race`, `model`, `boss` and any other `rq.CharaState` name. |
 | `init` *(optional)* | [`rq.CharaInit`](rq.CharaInit.md) | Bonuses each recalculation adds. |
 | `skills` *(optional)* | [`rq.CharaSkillGrant`](rq.CharaSkillGrant.md) `[]` | Skills learned when the character is created. `define` only. |
 | `weapon` *(optional)* | `integer\|string` | An item number or text id, created and equipped when the character is created, before `on_create`. An item of the wrong kind is logged and not given. Since 0.15.0. |

@@ -12,7 +12,7 @@ It also holds every field `rq.SkillPatch` lists.
 | `name` | `string` | The name. |
 | `kinou` | `integer` | The function code (`機能`). |
 | `bairitsu` | `integer` | The multiplier (`倍率`). |
-| `target` | `integer` | The target code (`対象`). |
+| `target` | `integer` | The target code (`対象`); names in `rq.ids.target`. |
 | `koudou` | `integer` | The action kind (`行動種類`): 1 physical, 2 magic, 3 special, 4 support, 0 ability. |
 | `kouka` | `integer` | The effect code (`効果`). |
 | `desc1` | `string` | The raw description (`説明文１`); it may still hold `$`. |

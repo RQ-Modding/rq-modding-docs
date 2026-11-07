@@ -21,10 +21,10 @@ Fields for `rq.skill.patch`, named after the game's.
 | `type` *(optional)* | `integer` | `タイプ`: 10 active, 30 knowledge. |
 | `action` *(optional)* | `integer` | `行動種類`, the action kind. |
 | `panel` *(optional)* | `integer` | `パネル色`, the panel color. |
-| `target` *(optional)* | `integer` | `対象`, the target code. |
+| `target` *(optional)* | `integer` | `対象`, the target code (`rq.ids.target`). |
 | `bairitsu` *(optional)* | `integer` | `倍率`, the multiplier. |
 | `cap` *(optional)* | `integer` | `ダメージ上限`, the damage cap. |
-| `element` *(optional)* | `integer` | `属性`, the element. |
+| `element` *(optional)* | `integer` | `属性`, the element (`rq.ids.element`). |
 | `flat` *(optional)* | `integer` | `付与ダメージ`, added damage. |
 | `no_first_turn` *(optional)* | `integer` | `初ターン使用禁止技`: not on the first turn. |
 | `once_per_battle` *(optional)* | `integer` | `同一戦闘一度のみ技`: once per fight. |

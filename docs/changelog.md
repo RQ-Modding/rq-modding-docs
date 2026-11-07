@@ -5,6 +5,10 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 1.16.0
+
+More kinds in `rq.ids`, each read from the game's own name functions: `race` (16, `rq.ids.race.HANNY` is 8), `chara_type` (6, `HUMANOID` is 22), `element` (6, `NOTHING` to `FIRE`), `item_kind` (17 weapon and armor kinds, `SWORD`, `SHORTSWORD`, `SPEAR`, `GLOVE`, ...) and `target` (8 skill target codes, `MELEE` to `RANDOM_TARGET`; the game names these in Japanese only, so their English names are ours). `rq.ids.find`, `find_all` and `name` take the new kinds, and the error for an unknown kind lists them all. A repeated name can now have a plain key beside its numbered ones, from `data/ids/preferred.tsv` (none yet). The extractor also reads the game's class and state lists, and `gen_ids.py` fails when they differ from `rq.ids.class` and `rq.ids.state`. The engine's CI runs `gen_ids.py --check`. The numbers of existing keys did not change.
+
 ## 1.15.0
 
 `rq.ids`: the game's numbers by name, so a mod can write `rq.ids.skill.FORTUNE_448` or `rq.ids.item.POISON_MASK` instead of 448 or 195. Six kinds: `chara` (89 characters), `class` (8), `item` (304), `quest` (199), `skill` (486) and `state` (4). Keys are the English name in upper snake case; a name the game uses for several numbers gets the number as a suffix on each. A missing key raises an error, and nothing in `rq.ids` can be changed. `rq.ids.find(kind, name)` looks up a name (without case or punctuation, é as e) and says when it is ambiguous, `rq.ids.find_all(kind, text)` lists every number whose name holds a text, and `rq.ids.name(kind, no)` gives a number's name. Editors complete the keys from the new `lua/rq_ids.lua`. The names come from the game through the public calls (`tools/ids/extract.lua`) into `data/ids`, and `tools/ids/gen_ids.py` builds the module, the annotations and the docs' data tables from them; only names and numbers, no game text.

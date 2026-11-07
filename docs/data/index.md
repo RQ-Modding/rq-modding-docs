@@ -7,10 +7,15 @@ The game's numbers, with the [`rq.ids`](../reference/api/rq.ids.md) key and the 
 | Kind | Entries | What the number is |
 | --- | --- | --- |
 | [Characters](characters.md) | 89 | character numbers (`no`), not roster slots: `rq.chara.find(rq.ids.chara.KAORU_QUINCY)` gives the slot |
+| [Character types](chara-types.md) | 6 | character type values (`タイプ`), as in `rq.chara.get(iic).type` |
 | [Classes](classes.md) | 8 | class numbers, as in `rq.chara.get(iic).class` |
+| [Elements](elements.md) | 6 | element numbers (`属性`), as in a skill's `element` and `rq.chara.get(iic).weak_element` |
 | [Items](items.md) | 304 | item numbers, not instances: `rq.item.give(rq.ids.item.SKILL_AGAIN)` makes one |
+| [Item kinds](item-kinds.md) | 17 | item kinds (`種類詳細`): the weapon or armor kind, as in an item's `subtype` |
 | [Quests](quests.md) | 199 | quest numbers, as in `rq.quests()` and `rq.quests.start` |
+| [Races](races.md) | 16 | races (`種族`), as in `rq.chara.get(iic).race` and the damage hooks' `ctx.race` |
 | [Skills](skills.md) | 486 | skill numbers, as in `rq.skill.get` |
 | [States](states.md) | 4 | status values (`状態変化`), as in `rq.chara.get(iic).status` |
+| [Skill targets](targets.md) | 8 | skill target codes (`対象`), as in a skill's `target` |
 
 To look a name up from Lua: `rq.ids.find(kind, name)`, `rq.ids.find_all(kind, text)` and `rq.ids.name(kind, no)`. Things mods define are not here: they have text ids ([Numbers and ids](../guide/ids.md#text-ids)).

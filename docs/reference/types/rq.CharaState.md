@@ -44,14 +44,14 @@ for the game's own characters it writes them again first, so use `rq.chara.edit`
 | `thunder_res` | `integer` | Thunder resistance. |
 | `light_res` | `integer` | Light resistance. |
 | `dark_res` | `integer` | Dark resistance. |
-| `weak_element` | `integer` | The weak element. |
+| `weak_element` | `integer` | The weak element (`rq.ids.element`). |
 | `weapon` | `integer` | The equipped weapon's item instance. |
 | `armor` | `integer` | The equipped armor's item instance. |
 | `item` | `integer` | The held item's instance. |
 | `special` | `integer` | The option slot's item instance. |
 | `skill_points` | `integer` | Free skill points. |
-| `race` | `integer` | The race. |
-| `type` | `integer` | The type value. |
+| `race` | `integer` | The race (`rq.ids.race`). |
+| `type` | `integer` | The type value (`rq.ids.chara_type`). |
 | `model` | `integer` | The 3D model. |
 | `boss` | `integer` | Non-zero for a boss. |
 | `weakness_known` | `boolean` | The player knows the weakness. |

@@ -11,7 +11,7 @@ A new skill for `rq.skill.define`.
 | `name` *(optional)* | `string` | The name. |
 | `flavor` *(optional)* | `string` | The battle-log verb (`Ｓ表示文`). |
 | `desc` *(optional)* | `string` | The hover text; `$` is a line break. |
-| `target` *(optional)* | `integer` | 1 melee (front row), 2 ranged, 3 all enemies, 4 needs two or more front-row enemies. |
+| `target` *(optional)* | `integer` | 1 melee (front row), 2 ranged, 3 all enemies, 4 needs two or more front-row enemies (`rq.ids.target`). |
 | `bairitsu` *(optional)* | `integer` | The multiplier (`倍率`). |
 | `flat` *(optional)* | `integer` | Added damage (`付与ダメージ`). |
 | `kinou` *(optional)* | `integer` | The function code (`機能`). |

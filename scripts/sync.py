@@ -60,9 +60,10 @@ def generate(engine, out):
         f.write("\n")
 
 
-DATA_PAGES = {"chara": "characters", "class": "classes", "item": "items", "quest": "quests",
-              "skill": "skills", "state": "states"}
-DETAIL = {"chara": "Class", "item": "Slot", "skill": "Kind"}
+DATA_PAGES = {"chara": "characters", "chara_type": "chara-types", "class": "classes",
+              "element": "elements", "item": "items", "item_kind": "item-kinds", "quest": "quests",
+              "race": "races", "skill": "skills", "state": "states", "target": "targets"}
+DETAIL = {"chara": "Class", "item": "Slot", "skill": "Kind", "target": "In the game"}
 
 
 def cell(s):
@@ -95,11 +96,17 @@ def write_data(engine, out):
                  "# %s" % k["title"], "",
                  "`rq.ids.%s`: %s. %d entries." % (k["kind"], k["what"], len(k["entries"])), ""]
         if dup:
-            lines += ["%d names are used for more than one number; each of those keys ends in its number." % dup, ""]
+            plain = sum(1 for e in k["entries"] if e.get("alias"))
+            note = "%d names are used for more than one number; each of those keys ends in its number." % dup
+            if plain:
+                note += (" %d of them also have a plain key, for the number players know, listed after the"
+                         " numbered key." % plain)
+            lines += [note, ""]
         lines += ["| Number | Key | Name |" + (" %s |" % head if head else ""),
                   "| ---: | --- | --- |" + (" --- |" if head else "")]
         for e in k["entries"]:
-            row = "| %d | `%s` | %s |" % (e["no"], e["key"], cell(e["name"]))
+            key = "`%s`" % e["key"] + (", `%s`" % e["alias"] if e.get("alias") else "")
+            row = "| %d | %s | %s |" % (e["no"], key, cell(e["name"]))
             if head:
                 row += " %s |" % cell(e["detail"])
             lines.append(row)

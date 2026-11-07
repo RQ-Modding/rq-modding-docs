@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 1.15.0.
+Loader version 1.16.0.
 
 ## Namespaces
 
@@ -19,7 +19,7 @@ Loader version 1.15.0.
 | [`rq.debug`](api/rq.debug.md) | Adds rows to the engine's F3 debug menu. |
 | [`rq.dungeon`](api/rq.dungeon.md) | Reads and changes the dungeon: the map, the player's place, objects on it, and the camera. |
 | [`rq.hud`](api/rq.hud.md) | Draws text, boxes and CGs over the game, and reads clicks on them. |
-| [`rq.ids`](api/rq.ids.md) | The game's numbers by name: characters, classes, items, quests, skills and states. |
+| [`rq.ids`](api/rq.ids.md) | The game's numbers by name: characters, items, quests, skills, and the small lists the game names (classes, states, races, character types, elements, item kinds, skill targets). |
 | [`rq.image`](api/rq.image.md) | Images from a mod's folder, shown by the game as CGs. |
 | [`rq.input`](api/rq.input.md) | Reads the mouse and keyboard, and drives them for the game. |
 | [`rq.item`](api/rq.item.md) | Defines, gives and changes items. |

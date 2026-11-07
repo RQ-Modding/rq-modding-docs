@@ -68,13 +68,31 @@ local FORTUNE = rq.ids.skill.FORTUNE_448        -- 448
 local MASK = rq.ids.item.POISON_MASK            -- 195
 local iic = rq.chara.find(rq.ids.chara.KAORU_QUINCY)
 if c.class == rq.ids.class.BRAWLER and c.status == rq.ids.state.POISON then ... end
+if ctx.race == rq.ids.race.HANNY then return nil, 50 end   -- since 1.16.0
 ```
 
-There are six kinds: `chara`, `class`, `item`, `quest`, `skill` and `state`. A key is the in-game
-English name in upper snake case. When the game gives one name to several numbers, as it does with
-four skills called Fortune, each key ends in its number (`FORTUNE_158` ... `FORTUNE_448`); the
-[Game data](../data/index.md) tables list every key with its number and name. Editors complete the
-keys as you type, with the number and the name beside each.
+The kinds:
+
+| Kind | What the number is |
+| --- | --- |
+| `chara` | a character (`no`), not a roster slot |
+| `chara_type` | a character type (`タイプ`): `FLYING`, `HUMANOID`, ... (1.16.0) |
+| `class` | a class: `FIGHTER` to `CIVILIAN` |
+| `element` | an element (`属性`): `NOTHING`, `LIGHT`, `DARKNESS`, `ELECTRIC`, `ICE`, `FIRE` (1.16.0) |
+| `item` | an item number, not an instance |
+| `item_kind` | a weapon or armor kind (`種類詳細`): `SWORD`, `SHORTSWORD`, `SPEAR`, `CLOTHING`, ... (1.16.0) |
+| `quest` | a quest |
+| `race` | a race (`種族`): `HUMAN`, `HANNY`, `FIEND`, ... (1.16.0) |
+| `skill` | a skill |
+| `state` | a status value: `NONE`, `POISON`, `STUN`, `DOWNED` |
+| `target` | a skill target code (`対象`): `MELEE`, `RANGED`, `ALL_ENEMIES`, `ROW`, ... (1.16.0) |
+
+A key is the in-game English name in upper snake case. When the game gives one name to several
+numbers, as it does with four skills called Fortune, each key ends in its number (`FORTUNE_158` ...
+`FORTUNE_448`). A few of those also have a plain key for the number players know; the tables show it
+after the numbered key. The [Game data](../data/index.md) tables list every key with its number and
+name. Editors complete the keys as you type, with the number and the name beside each. The game
+names skill targets only in Japanese, so their English names are ours; the table shows both.
 
 A key that does not exist raises an error when the line runs, so a typo is caught at once. The
 tables hold only the base game; for something a mod defines, use its text id.
