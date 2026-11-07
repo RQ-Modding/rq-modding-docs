@@ -13,8 +13,8 @@ an error.
 | --- | --- |
 | `io.open`, `io.lines`, `io.input`, `io.output` | A file in the mod's folder. An absolute path works only when it is inside the folder. |
 | `os.remove`, `os.rename` | Files in the mod's folder. |
-| `dofile`, `loadfile` | A relative path in the mod's folder. Every absolute path is refused. |
-| `load` | Works. The chunk belongs to the mod that loads it, whatever name it asks for, so its `rq.log` lines and `io` calls are that mod's. |
+| `dofile`, `loadfile` | A relative path in the mod's folder. Every absolute path is refused. The chunk runs with the mod's globals, unless `loadfile` is given an `env`. |
+| `load` | Works. The chunk belongs to the mod that loads it, whatever name it asks for, so its `rq.log` lines and `io` calls are that mod's. It runs with the mod's globals, unless `load` is given an `env`. |
 | `io.popen`, `io.tmpfile`, `os.tmpname`, `os.execute` | Not available: they raise an error. |
 | `package.loadlib`, C modules | Not available. |
 | `debug` | Not there. `rq.traceback` gives what `debug.traceback` would. |
@@ -32,17 +32,81 @@ local draw = require("ui.draw")       -- ui\draw.lua, or ui\draw\init.lua
 ```
 
 A module name with `:`, `/`, `\` or `..` is refused. `require("rq")` gives the `rq` table, and
-`require("rq.hud")` gives `rq.hud`; both are also there as globals.
+`require("rq.hud")` gives `rq.hud`; both are also there as globals. The standard libraries work
+too: `require("string")` is `string`.
 
-::: warning Mods share one Lua state
-All mods run in the same Lua state, so they share global variables and `require`'s cache
-(`package.loaded`). When two mods both `require("util")`, the second one gets the first one's module.
-Keep your code in `local` variables, and put your modules in a folder named after your mod:
+Each mod has its own cache (its `package.loaded`), so a module runs once per mod, and two mods that
+each have a `util.lua` each get their own. The module runs with the mod's globals. As in Lua 5.4,
+`require` also returns the module's file path the first time. A module file that does not compile
+raises `error loading module ...` with the line.
+
+## Globals
+
+Each mod has its own global variables. A global set in one mod, with or without `_G.`, is not seen
+by any other mod. Inside a mod, `_G` is the mod's own table, and `pairs(_G)` lists only what the
+mod set. Names the mod did not set itself, such as `rq`, `string`, `pairs` or `print`, are found as
+usual.
+
+Everything the mod's code makes keeps its globals: functions defined in `init.lua`, callbacks given
+to `rq.on_frame` and the `on_*` calls, modules from `require`, and chunks from `load`, `loadfile`
+and `dofile`.
+
+`setmetatable(_G, ...)` raises an error, so helpers that make undefined globals an error ("strict
+mode") do not work. `local` is still the better habit: it is faster and easier to read.
+
+::: warning Shared tables are still shared
+The `rq` table and the standard library tables (`string`, `table`, `math`...) are the same tables
+for every mod. A mod that writes `rq.log = f` or `string.trim = f` changes them for all mods.
+Don't: keep your helpers in your own `local` table.
+
+After each mod's `init.lua`, the loader writes a line to `logs\rqmod.log` for each field it added,
+changed or removed in these tables:
+
+```
+[rqmod] my-mod added string.trim, in a table every mod shares
+```
+
+It only logs; the change stays. It looks three levels into `rq` (`rq.hud.box`, `rq.ids.skill.X`),
+skips names that start with `_`, and writes at most 20 lines per mod. A change made later, in a
+callback, is not logged.
+:::
+
+## Sharing with other mods
+
+A mod shares only what its `init.lua` returns:
 
 ```lua
-local util = require("hellomod.util")  -- hellomod\util.lua in your mod's folder
+-- mods/ui-lib/init.lua   (mod.json: "id": "ui-lib")
+local M = {}
+function M.title(text) rq.log("title: " .. text) end
+return M
 ```
-:::
+
+Another mod that lists that id in `dependencies` in its [mod.json](manifest.md) gets it with
+`require`:
+
+```lua
+-- mods/my-mod/init.lua   (mod.json: "dependencies": ["ui-lib"])
+local ui = require("ui-lib")
+ui.title("Hello")
+```
+
+- It is the same value, not a copy, so a library can keep state in it, and every mod sees that state.
+- The library's own modules, globals and files stay its own, also when another mod calls its
+  functions: inside `M.title`, `require("x")` and `io.open("x")` are the library's.
+- `require` of a mod that is not in `dependencies` raises an error that says so. A file of that
+  name in your own folder comes first.
+- For optional support, without `dependencies`, use [`rq.mod.get`](../reference/api/rq.mod.md): it gives
+  the value, or `nil` when that mod is not installed. List the mod in `loadAfter`, so it loads
+  before yours when it is there.
+
+```lua
+-- mod.json: "loadAfter": ["ui-lib"]
+local ui = rq.mod.get("ui-lib")
+if ui then ui.title("Hello") end
+```
+
+`rq.mod.id()` gives your mod's id, and `rq.mod.list()` the ids of the mods that finished loading.
 
 ## When code runs
 

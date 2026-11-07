@@ -5,6 +5,20 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.0.0
+
+Each mod has its own global variables and its own `require` cache. Before, all mods shared one global table and `package.loaded`: a global set without `local` in one mod was seen and overwritten by every other, and when two mods each had a `util.lua`, `require("util")` gave the second mod the first one's. Now a global stays in its mod, and so does every chunk the mod loads (`init.lua`, `require`, and `load`, `loadfile` and `dofile` when given no `env`), with the callbacks made there. Names a mod has not set itself (`rq`, `string`, `pairs`...) are still found as before. Inside a mod `_G` is its own table, `package.loaded` its own cache, and `pairs(_G)` lists only its own globals. The metatable of `_G` is protected, so `setmetatable(_G, ...)` raises an error.
+
+Mods share on purpose instead: what a mod's `init.lua` returns is its shared value. A mod that lists its id in `dependencies` gets it with `require("<id>")`; any mod gets it with the new `rq.mod.get(id)`. It is the same value, not a copy. A library's own modules and globals stay its own, also when another mod calls its functions. Added `rq.mod`: `get`, `id` (the calling mod's id) and `list` (the mods that finished loading).
+
+The `rq` table and the standard library tables (`string`, `table`, `math`, `utf8`, `coroutine`, `os`, `io`) stay one table for every mod. After each mod's `init.lua`, the loader logs each field it added, changed or removed in them, such as `my-mod changed rq.log, in a table every mod shares` (`rq` three levels deep, names starting with `_` skipped, at most 20 lines per mod). It only logs; the change stays. Changes made later, in callbacks, are not logged.
+
+Also: a module file that does not compile now raises `error loading module ...` (before, `require` said the file was not found). `loadfile` takes its third argument, `env`, as Lua's does (it was ignored). The mod a call belongs to (for files, `require` and `rq.mod.id`) is the one whose code is nearest on the stack, so a library's code counts as the library.
+
+Tools: `rqmod-ctl where` samples the game thread five times, 200 ms apart, and writes its native stack (with symbols), the AIN call stack and the last log lines to `logs\rqmod-where-<time>.txt`, for a game that hangs. The pipe answers it while the game thread is stuck.
+
+Major, because code that relied on another mod's globals no longer sees them. No shipped mod did. Mods keep running on 2.0.0 unchanged; only a mod that uses `rq.mod` or shares a value needs `"loader": "2.0.0"`.
+
 ## 1.16.1
 
 `rq.ain.find` writes each function's name in its log line (`find 'Encount' fno=10733 T_Player@checkEncount`); before, the line gave only the number, which no `rq.ain` call takes. The docs gain a guide on finding and using the game's functions.

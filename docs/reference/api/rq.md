@@ -46,6 +46,7 @@ end)
 | [`rq.item`](rq.item.md) | Defines, gives and changes items. |
 | [`rq.items`](rq.items.md) | Lists the item instances the player owns. |
 | [`rq.loot`](rq.loot.md) | Chest loot: what the pools roll, and the items the player will find, known in advance. |
+| [`rq.mod`](rq.mod.md) | Finds out about other mods, and reaches what they share. |
 | [`rq.orb`](rq.orb.md) | The blue Recovery Spring on the map (`回復の泉`, object 203). |
 | [`rq.party`](rq.party.md) | Reads and changes who is in the party. |
 | [`rq.quests`](rq.quests.md) | Lists the quests and follows them: clears, endings, quest moments and state. |

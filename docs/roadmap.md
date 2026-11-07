@@ -18,7 +18,7 @@ item ships, it moves to the [Changelog](changelog.md).
 
 | Area | What |
 | --- | --- |
-| Lua state | A `require` cache per mod by default, so two mods with a `util.lua` do not meet, and an explicit way for library mods to share code and data with the mods that depend on them. Today mods share one Lua state ([What a mod can reach](guide/sandbox.md#require)). |
+| Lua state | Changes to the shared `rq` and standard library tables: a log line also for changes made in callbacks, and refusing such changes if mods turn out to make them. 2.0.0 logs the ones each `init.lua` makes ([What a mod can reach](guide/sandbox.md#globals)). |
 | Quests | `rq.quests.start` from the shop, party and castle tabs, not only the hub and the quest list. |
 | Game code | `rq.ain.call` with reference and struct arguments, and methods. |
 | Sprites | Clicks on sprites; attaching a sprite to a part of the game's interface; following a target's scale and rotation. |

@@ -28,7 +28,7 @@ skipped, with `skip <folder>: no mod.json` in the log.
 | `author` | string | Who made it. The engine does not read it. |
 | `loader` | string | The lowest RQ MOD version the mod needs, such as `"1.8.0"`. A newer loader than the running one skips the mod. Leave it out and the mod always loads. |
 | `priority` | number | Breaks ties in load order: lower loads first. Default 0. |
-| `dependencies` | string[] | Mod ids that must be loaded. They load first; if one is missing, this mod is skipped. |
+| `dependencies` | string[] | Mod ids that must be loaded. They load first; if one is missing, this mod is skipped. `require("<id>")` of one gives what its `init.lua` returns ([Sharing with other mods](sandbox.md#sharing-with-other-mods)). |
 | `loadAfter` | string[] | Mod ids that load first when they are there. A missing one is fine. |
 | `loadBefore` | string[] | Mod ids that load after this one when they are there. |
 | `conflicts` | string[] | Mod ids that cannot run with this one. When one of them is loaded, this mod is skipped. |
