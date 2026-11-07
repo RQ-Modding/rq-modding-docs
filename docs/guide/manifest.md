@@ -7,7 +7,7 @@ skipped, with `skip <folder>: no mod.json` in the log.
 {
   "id": "loot-preview",
   "name": "Loot Preview",
-  "author": "Magnum Mods",
+  "author": "Moru Zerinho6",
   "version": "1.0.0",
   "loader": "0.2.0",
   "priority": 0,
