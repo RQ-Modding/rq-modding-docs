@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rq-modding.github.io/rq-modding-docs/schemas/mod.schema.json",
+  "title": "RQ MOD mod.json",
+  "description": "The manifest of a Rance Quest Magnum mod for RQ MOD. See the docs' mod.json page.",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 63,
+      "description": "The mod's id. Other mods name it in their lists, and rq.store keeps the mod's data under it. Default: the folder's name. Keep it the same across versions."
+    },
+    "name": {
+      "type": "string",
+      "description": "The name for players. Recorded with version in a save profile's mod list. Default: the id."
+    },
+    "version": {
+      "type": "string",
+      "description": "The mod's own version. Not used to order or gate anything."
+    },
+    "author": {
+      "type": "string",
+      "description": "Who made it. The engine does not read it."
+    },
+    "loader": {
+      "type": "string",
+      "pattern": "^[0-9]+(\\.[0-9]+(\\.[0-9]+)?)?$",
+      "description": "The lowest RQ MOD loader version the mod needs, such as \"1.8.0\". A newer one than the running loader skips the mod."
+    },
+    "priority": {
+      "type": "number",
+      "default": 0,
+      "description": "Breaks ties in load order: lower loads first."
+    },
+    "dependencies": {
+      "$ref": "#/$defs/idList",
+      "description": "Mod ids that must be loaded. They load first; if one is missing, this mod is skipped."
+    },
+    "loadAfter": {
+      "$ref": "#/$defs/idList",
+      "description": "Mod ids that load first when they are there."
+    },
+    "loadBefore": {
+      "$ref": "#/$defs/idList",
+      "description": "Mod ids that load after this one when they are there."
+    },
+    "conflicts": {
+      "$ref": "#/$defs/idList",
+      "description": "Mod ids that cannot run with this one. When one of them is loaded, this mod is skipped."
+    }
+  },
+  "$defs": {
+    "idList": {
+      "type": "array",
+      "maxItems": 16,
+      "items": { "type": "string", "minLength": 1, "maxLength": 63 }
+    }
+  }
+}

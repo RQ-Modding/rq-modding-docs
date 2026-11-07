@@ -1,0 +1,14 @@
+{
+  "name": "rq-modding-docs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "sync": "python -I -X utf8 scripts/sync.py",
+    "dev": "vitepress dev docs",
+    "build": "vitepress build docs",
+    "preview": "vitepress preview docs"
+  },
+  "devDependencies": {
+    "vitepress": "1.6.4"
+  }
+}

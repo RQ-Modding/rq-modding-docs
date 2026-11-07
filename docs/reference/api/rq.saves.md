@@ -1,0 +1,252 @@
+# rq.saves
+
+`since 0.3.0`
+
+Save profiles: whole save folders the player can switch between.
+
+The base profile is the engine's own `SaveData` folder and can never be deleted. Every other profile
+is a full copy under `<parent of SaveData>\Profiles\<id>\save`, with a `profile.json`;
+`Profiles\active.txt` holds the active id. The engine picks the folder at boot, so switching
+restarts the game. Calls that fail return nil and a message. The vanilla game's own save is only
+ever read.
+
+```lua
+if rq.saves.title() then
+  for _, p in ipairs(rq.saves.list()) do
+    rq.log(p.name, p.active and "(active)" or "", p.summary.gold)
+  end
+end
+local id = rq.saves.clone("base", "Friend test")
+if id then rq.saves.switch(id) end
+```
+
+## Functions
+
+| Name | Summary |
+| --- | --- |
+| [`rq.saves.install`](#rqsavesinstall) | Wraps `T_Title@checkSelect` so `rq.saves.title` works. |
+| [`rq.saves.title`](#rqsavestitle) | Returns whether the title screen waits for a choice. |
+| [`rq.saves.active`](#rqsavesactive) | Returns the active profile's id. |
+| [`rq.saves.list`](#rqsaveslist) | Lists the profiles: the base first, then the others by creation time. |
+| [`rq.saves.current_mods`](#rqsavescurrent_mods) | Lists the mods loaded in this session. |
+| [`rq.saves.vanilla`](#rqsavesvanilla) | Reads the vanilla game's save in `Documents\AliceSoft\<game>\SaveData`. |
+| [`rq.saves.create`](#rqsavescreate) | Makes a new, empty profile. |
+| [`rq.saves.clone`](#rqsavesclone) | Copies a whole profile into a new one. |
+| [`rq.saves.import_vanilla`](#rqsavesimport_vanilla) | Copies the vanilla game's save folder into a new profile, byte for byte. |
+| [`rq.saves.rename`](#rqsavesrename) | Renames a profile. |
+| [`rq.saves.delete`](#rqsavesdelete) | Deletes a profile. |
+| [`rq.saves.switch`](#rqsavesswitch) | Makes a profile active and restarts the game on it. |
+
+### rq.saves.install
+
+```lua
+rq.saves.install() -> boolean
+```
+
+`since 0.3.0`
+
+Wraps `T_Title@checkSelect` so `rq.saves.title` works.
+
+The engine already calls it at boot; calling it again is harmless.
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `ok` | `boolean` | true when the hook is in place. |
+
+### rq.saves.title
+
+```lua
+rq.saves.title() -> boolean
+```
+
+`since 0.3.0`
+
+Returns whether the title screen waits for a choice.
+
+It is false inside the title's sub-menus (load, config).
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `waiting` | `boolean` | true on the title's main choice. |
+
+### rq.saves.active
+
+```lua
+rq.saves.active() -> string
+```
+
+`since 0.3.0`
+
+Returns the active profile's id.
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `id` | `string` | "base" for the original save. |
+
+### rq.saves.list
+
+```lua
+rq.saves.list() -> rq.SaveProfile[]
+```
+
+`since 0.3.0`
+
+Lists the profiles: the base first, then the others by creation time.
+
+It reads every profile's save file, so call it when a window opens, not every frame.
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `profiles` | [`rq.SaveProfile`](../types/rq.SaveProfile.md) `[]` | The profiles. |
+
+### rq.saves.current_mods
+
+```lua
+rq.saves.current_mods() -> rq.SaveMod[]
+```
+
+`since 0.3.0`
+
+Lists the mods loaded in this session.
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `mods` | [`rq.SaveMod`](../types/rq.SaveMod.md) `[]` | The mods. |
+
+### rq.saves.vanilla
+
+```lua
+rq.saves.vanilla() -> rq.VanillaSave
+```
+
+`since 0.3.0`
+
+Reads the vanilla game's save in `Documents\AliceSoft\<game>\SaveData`.
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `save` | [`rq.VanillaSave`](../types/rq.VanillaSave.md) | What was found. |
+
+### rq.saves.create
+
+```lua
+rq.saves.create(name) -> string|nil, string?
+```
+
+`since 0.3.0`
+
+Makes a new, empty profile.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `name` | `string` | The name. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `id` | `string\|nil` | The new profile's id, or nil. |
+| `err` | `string?` | Why it failed. |
+
+### rq.saves.clone
+
+```lua
+rq.saves.clone(src_id, name) -> string|nil, string?
+```
+
+`since 0.3.0`
+
+Copies a whole profile into a new one.
+
+The game's own `Backup` folder is skipped.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `src_id` | `string` | The profile to copy. |
+| `name` | `string` | The new profile's name. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `id` | `string\|nil` | The new profile's id, or nil. |
+| `err` | `string?` | Why it failed. |
+
+### rq.saves.import_vanilla
+
+```lua
+rq.saves.import_vanilla(name) -> string|nil, string?
+```
+
+`since 0.3.0`
+
+Copies the vanilla game's save folder into a new profile, byte for byte.
+
+It never writes to the source.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `name` | `string` | The new profile's name. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `id` | `string\|nil` | The new profile's id, or nil. |
+| `err` | `string?` | Why it failed. |
+
+### rq.saves.rename
+
+```lua
+rq.saves.rename(id, name) -> boolean|nil, string?
+```
+
+`since 0.3.0`
+
+Renames a profile.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `id` | `string` | The profile. |
+| `name` | `string` | The new name, up to 40 bytes. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `ok` | `boolean\|nil` | true, or nil. |
+| `err` | `string?` | Why it failed. |
+
+### rq.saves.delete
+
+```lua
+rq.saves.delete(id) -> boolean|nil, string?
+```
+
+`since 0.3.0`
+
+Deletes a profile.
+
+It refuses "base" and the active profile.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `id` | `string` | The profile. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `ok` | `boolean\|nil` | true, or nil. |
+| `err` | `string?` | Why it failed. |
+
+### rq.saves.switch
+
+```lua
+rq.saves.switch(id) -> nil, string?
+```
+
+`since 0.3.0`
+
+Makes a profile active and restarts the game on it.
+
+It records the choice, starts a new process (which waits for this one to exit) and exits this one.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `id` | `string` | The profile. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `ok` | `nil` | Nothing: on success it does not return. |
+| `err` | `string?` | Why the choice could not be recorded. |

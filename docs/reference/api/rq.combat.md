@@ -1,0 +1,132 @@
+# rq.combat
+
+`since 0.2.0`
+
+Changes physical damage, accuracy and criticals.
+
+Physical attacks keep the game's own path: defense, variance, cap, then the usual multipliers. Lua
+can replace the attack before defense, scale the final damage, add to the hit chance at the same
+place as the game's own -5 and -10 for some skills, and force or deny a critical. The callbacks
+need `rq.combat.install` (or `rq.chara.install`), and hold up to 16 each.
+
+```lua
+rq.combat.install()
+rq.combat.on_physical(function(ctx)
+  if ctx.race == 8 then return nil, 50 end  -- half damage to a hanny
+end)
+```
+
+## Functions
+
+| Name | Summary |
+| --- | --- |
+| [`rq.combat.install`](#rqcombatinstall) | Installs the hooks the combat callbacks need. |
+
+### rq.combat.install
+
+```lua
+rq.combat.install() -> boolean
+```
+
+`since 0.2.0`
+
+Installs the hooks the combat callbacks need.
+
+It is the same call as `rq.chara.install`; calling either again does nothing more.
+
+Raises an error when the AIN is not loaded or a hook cannot be placed.
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `ok` | `boolean` | Always true; a failure raises an error. |
+
+## Events
+
+| Name | Summary |
+| --- | --- |
+| [`rq.combat.on_physical`](#rqcombaton_physical) | Calls `fn` for each physical hit, to change the attack and the final damage. |
+| [`rq.combat.on_accuracy`](#rqcombaton_accuracy) | Calls `fn` for each accuracy check, to add to the hit chance. |
+| [`rq.combat.on_crit`](#rqcombaton_crit) | Calls `fn` where the game rolls a critical (the `確率演算` call in `クリティカル計算`). |
+
+### rq.combat.on_physical
+
+```lua
+rq.combat.on_physical(fn) -> fun()
+```
+
+`since 0.2.0` `changed 0.13.0` `changed 0.23.0`
+
+Calls `fn` for each physical hit, to change the attack and the final damage.
+
+`fn` returns nothing to keep the game's numbers, a new attack before defense, or an attack (nil
+keeps it) and a percent of the final damage, applied after `最終ダメージ計算` (100 is unchanged, 50
+half). Each callback sees the attack the one before left, and the percents multiply.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(ctx:` [`rq.PhysicalCtx`](../types/rq.PhysicalCtx.md) `): integer\|nil,` | integer\|nil Returns the attack, then the percent. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |
+
+> Changed in 0.13.0: Every mod's callback runs (before, the last one won).
+
+> Changed in 0.23.0: Returns a remover.
+
+### rq.combat.on_accuracy
+
+```lua
+rq.combat.on_accuracy(fn) -> fun()
+```
+
+`since 0.2.0` `changed 0.13.0` `changed 0.23.0`
+
+Calls `fn` for each accuracy check, to add to the hit chance.
+
+The returned numbers of every callback add up; nil counts as 0.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(ctx:` [`rq.AccuracyCtx`](../types/rq.AccuracyCtx.md) `): integer\|nil` | Returns points to add to the hit chance; negative lowers it. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |
+
+> Changed in 0.13.0: Every mod's callback runs and the numbers add up (before, the last one won).
+
+> Changed in 0.23.0: Returns a remover.
+
+### rq.combat.on_crit
+
+```lua
+rq.combat.on_crit(fn) -> fun()
+```
+
+`since 0.12.0` `changed 0.13.0` `changed 0.23.0`
+
+Calls `fn` where the game rolls a critical (the `確率演算` call in `クリティカル計算`).
+
+Return true to force the critical, false to deny it, nil to roll as the game does. The first
+callback that returns a boolean decides. A forced critical still adds the game's +30 to the damage
+multiplier, and it also happens for skills whose multiplier is above 150, which never roll one in
+the game.
+
+```lua
+rq.combat.on_crit(function(ctx)
+  if ctx.defender_type == 22 then return true end  -- humanoids always take a critical
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(ctx:` [`rq.CritCtx`](../types/rq.CritCtx.md) `): boolean\|nil` | Returns true, false, or nil to roll. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |
+
+> Changed in 0.13.0: Every mod's callback runs until one decides.
+
+> Changed in 0.23.0: Returns a remover.

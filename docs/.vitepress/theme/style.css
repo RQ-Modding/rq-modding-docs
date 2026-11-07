@@ -1,0 +1,48 @@
+:root {
+  --vp-c-brand-1: #b4233a;
+  --vp-c-brand-2: #c8364d;
+  --vp-c-brand-3: #a01d32;
+  --vp-c-brand-soft: rgba(180, 35, 58, 0.14);
+  --vp-home-hero-image-background-image: linear-gradient(-45deg, #b4233a 40%, #e0a030 60%);
+  --vp-home-hero-image-filter: blur(56px);
+}
+
+.dark {
+  --vp-c-brand-1: #f0687c;
+  --vp-c-brand-2: #e2546a;
+  --vp-c-brand-3: #c8364d;
+  --vp-c-brand-soft: rgba(240, 104, 124, 0.16);
+}
+
+/* Reference tables carry long types such as fun(ctx: rq.BuyCtx): let them wrap. */
+.vp-doc table code {
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+/* The "since" and "changed" lines under each entry read as small badges. */
+.vp-doc p > code:first-child:is([class=""], :not([class])) {
+  font-size: 0.8em;
+}
+
+/* The RQ MOD icon is 48x48 pixel art: scale it in whole steps and keep the pixels sharp. */
+.VPHero .image-src {
+  width: 192px;
+  height: 192px;
+  max-width: 192px;
+  max-height: 192px;
+  image-rendering: pixelated;
+}
+
+.VPNavBarTitle .logo {
+  image-rendering: pixelated;
+}
+
+@media (min-width: 960px) {
+  .VPHero .image-src {
+    width: 288px;
+    height: 288px;
+    max-width: 288px;
+    max-height: 288px;
+  }
+}

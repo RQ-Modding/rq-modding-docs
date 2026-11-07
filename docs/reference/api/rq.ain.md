@@ -1,0 +1,297 @@
+# rq.ain
+
+`since 0.2.0`
+
+Reaches into the game's own code (the AIN): call, hook and patch its functions, and read and write
+its globals.
+
+Names are the game's own, in UTF-8, such as `Ｔ戦闘前初期化` or `T_BattleSelect@select`; find them
+with `rq.ain.find`. They can change with the game's data, so a mod that patches by number should
+check the count it gets back.
+
+## Functions
+
+| Name | Summary |
+| --- | --- |
+| [`rq.ain.patch_float`](#rqainpatch_float) | Replaces float constants in one AIN function. |
+| [`rq.ain.patch_int`](#rqainpatch_int) | Replaces integer constants in one AIN function, such as a hard-coded skill number. |
+| [`rq.ain.patch_int_after`](#rqainpatch_int_after) | Replaces the first integer constant `from` that follows a read of a global. |
+| [`rq.ain.call`](#rqaincall) | Calls any AIN function by its name. |
+| [`rq.ain.hook`](#rqainhook) | Runs Lua before and after any AIN function. |
+| [`rq.ain.global`](#rqainglobal) | Reads a game global that holds an int, bool, float or string. |
+| [`rq.ain.set_global`](#rqainset_global) | Writes a game global, as `rq.ain.global` reads it: `set_global(name, [step, ...,] value)`. |
+| [`rq.ain.global_len`](#rqainglobal_len) | Returns the size of an array global. |
+| [`rq.ain.skip_msgbox`](#rqainskip_msgbox) | Removes the game's message boxes whose text contains `needle`. |
+| [`rq.ain.skip_sdl_msgbox`](#rqainskip_sdl_msgbox) | Swallows the engine's own error boxes for the TADA and HTTP network checks (`getserverversion`). |
+| [`rq.ain.find`](#rqainfind) | Writes the AIN functions whose name contains `needle` to the log. |
+
+### rq.ain.patch_float
+
+```lua
+rq.ain.patch_float(name, from, to, n) -> integer
+```
+
+`since 0.2.0` `changed 1.3.0`
+
+Replaces float constants in one AIN function.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `name` | `string` | The function's name. |
+| `from` | `number` | The value to find. |
+| `to` | `number` | The new value. |
+| `n` *(optional)* | `integer` | Which occurrence, from 0. Default: all of them. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `count` | `integer` | How many constants were replaced. |
+
+> Changed in 1.3.0: Reaches the game's code of a function the loader wraps (such as `Ｔ戦闘前初期化`); before, it patched only the wrapper and found nothing.
+
+### rq.ain.patch_int
+
+```lua
+rq.ain.patch_int(name, from, to, n) -> integer
+```
+
+`since 0.17.0` `changed 1.3.0`
+
+Replaces integer constants in one AIN function, such as a hard-coded skill number.
+
+Occurrences count every constant of that value in the function, so they can differ between
+versions of the game's AIN; to find one constant by what it follows, use `patch_int_after`.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `name` | `string` | The function's name. |
+| `from` | `integer` | The value to find. |
+| `to` | `integer` | The new value. |
+| `n` *(optional)* | `integer` | Which occurrence, from 0. Default: all of them. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `count` | `integer` | How many constants were replaced. |
+
+> Changed in 1.3.0: Reaches the game's code of a function the loader wraps.
+
+See also: [`rq.ain.patch_int_after`](rq.ain.md#rqainpatch_int_after)
+
+### rq.ain.patch_int_after
+
+```lua
+rq.ain.patch_int_after(name, global, from, to, nth_ref, window) -> integer
+```
+
+`since 1.3.0`
+
+Replaces the first integer constant `from` that follows a read of a global.
+
+It looks at the `window` instructions after the read, as for the 2 in
+`if (◆２倍モード == 1) { x = x * 2; }`. A variable's index is never taken for the constant.
+
+Raises an error for an unknown function or global.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `name` | `string` | The function's name. |
+| `global` | `string` | The global's name. |
+| `from` | `integer` | The value to find. |
+| `to` | `integer` | The new value. |
+| `nth_ref` *(optional)* | `integer` | Which read of the global in the function, from 0. Default: after every read. |
+| `window` *(optional)* | `integer` | How many instructions to look at after the read. Default 8. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `count` | `integer` | How many constants were replaced. |
+
+### rq.ain.call
+
+```lua
+rq.ain.call(name, ...) -> any
+```
+
+`since 0.18.0` `changed 0.26.0` `changed 0.27.0`
+
+Calls any AIN function by its name.
+
+The arguments must be int, bool, float or string, and all of them are needed. A scene command
+blocks until it ends, so call it from a callback the game runs, not at the top level of a mod. A
+function that reaches a save under this call gets the game's own "save failed" message and nothing
+is written; one that reaches a load closes the game with an error. A bad index passed to a game
+function is a fatal error in the game, and this call cannot check it.
+
+Raises an error for an unknown name, a wrong number of arguments, a reference or struct argument, a
+method (`Class@method`, which needs an object), or `SYS_セーブ実行` and `SYS_ロード実行`.
+
+```lua
+local name = rq.ain.call("クエスト_名前", 126)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `name` | `string` | The function's name. |
+| `...` | `integer\|boolean\|number\|string` | The arguments. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `result` | `any` | What the function returns; nil for none or a struct. |
+
+> Changed in 0.26.0: Refuses `SYS_セーブ実行` and `SYS_ロード実行`.
+
+> Changed in 0.27.0: A save under the call fails safely.
+
+### rq.ain.hook
+
+```lua
+rq.ain.hook(name, opts) -> fun()
+```
+
+`since 0.18.0` `changed 0.23.0`
+
+Runs Lua before and after any AIN function.
+
+A method is named `Class@method`. Many hooks may sit on one function. The function does not fire
+its hooks again while one of its callbacks runs. A table with neither side does nothing.
+
+```lua
+rq.ain.hook("message", { before = function(h)
+  h.args[3] = h.args[3]:gsub("Rance", "Ranse")  -- rewrite every line of text
+end })
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `name` | `string` | The function's name. |
+| `opts` | `{before?: fun(h:` [`rq.AinHookCtx`](../types/rq.AinHookCtx.md) `), after?: fun(h:` [`rq.AinHookCtx`](../types/rq.AinHookCtx.md) `)}` | The callbacks. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes both sides of this hook. |
+
+> Changed in 0.23.0: Returns a remover.
+
+### rq.ain.global
+
+```lua
+rq.ain.global(name, ...) -> integer|boolean|number|string
+```
+
+`since 0.22.0` `changed 0.24.0`
+
+Reads a game global that holds an int, bool, float or string.
+
+Give the game's own index for an array element, and a field name to go into a struct, mixed as the
+game does.
+
+Raises an error for an unknown name or field, an index out of range, a step that does not fit the
+value, a whole array or a struct.
+
+```lua
+local fa = rq.ain.global("FA", 87)          -- FA[87]
+local name = rq.ain.global("Ｑ", 126, "名前")  -- Ｑ[126].名前
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `name` | `string` | The global's name. |
+| `...` | `integer\|string` | Indexes and field names. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `value` | `integer\|boolean\|number\|string` | The value. |
+
+> Changed in 0.24.0: Field names reach into structs.
+
+### rq.ain.set_global
+
+```lua
+rq.ain.set_global(name, ...)
+```
+
+`since 0.22.0`
+
+Writes a game global, as `rq.ain.global` reads it: `set_global(name, [step, ...,] value)`.
+
+It is the game's own state and goes into the next save, so restore what a test changes.
+
+Raises an error as `rq.ain.global` does.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `name` | `string` | The global's name. |
+| `...` | `any` | Indexes and field names, then the value. |
+
+### rq.ain.global_len
+
+```lua
+rq.ain.global_len(name, ...) -> integer
+```
+
+`since 0.22.0`
+
+Returns the size of an array global.
+
+Many game arrays start at 1 and leave 0 unused, so the size can be one more than the entries.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `name` | `string` | The global's name. |
+| `...` | `integer\|string` | Indexes and field names to reach an inner array. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `size` | `integer` | The number of elements. |
+
+### rq.ain.skip_msgbox
+
+```lua
+rq.ain.skip_msgbox(needle) -> integer
+```
+
+`since 0.2.0`
+
+Removes the game's message boxes whose text contains `needle`.
+
+Every `system.MsgBox` call that shows a string holding `needle` is taken out of the code.
+
+Raises an error when the AIN is not loaded.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `needle` | `string` | Part of the message, in UTF-8. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `sites` | `integer` | How many calls were taken out. |
+
+### rq.ain.skip_sdl_msgbox
+
+```lua
+rq.ain.skip_sdl_msgbox()
+```
+
+`since 1.0.0`
+
+Swallows the engine's own error boxes for the TADA and HTTP network checks (`getserverversion`).
+
+### rq.ain.find
+
+```lua
+rq.ain.find(needle) -> integer
+```
+
+`since 0.2.0`
+
+Writes the AIN functions whose name contains `needle` to the log.
+
+Each line is `find '<needle>' fno=<number>`. At most 40 are listed.
+
+Raises an error when the AIN is not loaded.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `needle` | `string` | Part of a name, in UTF-8. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `count` | `integer` | How many were listed. |

@@ -1,0 +1,105 @@
+import { defineConfig, type DefaultTheme } from 'vitepress'
+import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const here = path.dirname(fileURLToPath(import.meta.url))
+const docs = path.resolve(here, '..')
+const engine: { version: string; commit: string } = JSON.parse(
+  fs.readFileSync(path.join(here, 'engine.json'), 'utf8'),
+)
+
+const ORG = 'https://github.com/RQ-Modding'
+
+// Headings get the anchor GitHub gives them ("rq.shop.stock" -> "rqshopstock"), so the generated
+// pages link the same way on GitHub and on the site.
+function githubSlug(s: string): string {
+  return s
+    .trim()
+    .toLowerCase()
+    .replace(/<[^>]*>/g, '')
+    .replace(/[^\p{L}\p{N}\s_-]/gu, '')
+    .replace(/\s/g, '-')
+}
+
+// One sidebar entry per generated page, read from the folder so new namespaces show up by themselves.
+function pages(dir: string, prefix: string): DefaultTheme.SidebarItem[] {
+  return fs
+    .readdirSync(path.join(docs, dir))
+    .filter((f) => f.endsWith('.md'))
+    .map((f) => f.slice(0, -3))
+    .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+    .map((name) => ({ text: name, link: `${prefix}/${name}` }))
+}
+
+const guide: DefaultTheme.SidebarItem[] = [
+  {
+    text: 'Players',
+    items: [{ text: 'Install', link: '/guide/install' }],
+  },
+  {
+    text: 'Making mods',
+    items: [
+      { text: 'Your first mod', link: '/guide/first-mod' },
+      { text: 'mod.json', link: '/guide/manifest' },
+      { text: 'What a mod can reach', link: '/guide/sandbox' },
+      { text: 'Numbers and ids', link: '/guide/ids' },
+      { text: 'Editor setup', link: '/guide/editor-setup' },
+      { text: 'Logs and debugging', link: '/guide/debugging' },
+      { text: 'Sharing a mod', link: '/guide/publishing' },
+    ],
+  },
+]
+
+const reference: DefaultTheme.SidebarItem[] = [
+  { text: 'Overview', link: '/reference/' },
+  { text: 'Namespaces', collapsed: false, items: pages('reference/api', '/reference/api') },
+  { text: 'Types', collapsed: true, items: pages('reference/types', '/reference/types') },
+]
+
+export default defineConfig({
+  title: 'RQ MOD',
+  description: 'Lua mods for Rance Quest Magnum: guides and the rq.* API reference.',
+  lang: 'en-US',
+  // GitHub Pages serves a project site under /<repo>/; the deploy workflow sets DOCS_BASE.
+  base: process.env.DOCS_BASE || '/',
+  cleanUrls: true,
+  lastUpdated: false,
+  head: [['link', { rel: 'icon', type: 'image/png', href: `${process.env.DOCS_BASE || '/'}rq-mod.png` }]],
+  markdown: {
+    anchor: { slugify: githubSlug },
+    lineNumbers: false,
+  },
+  themeConfig: {
+    logo: '/rq-mod.png',
+    nav: [
+      { text: 'Guide', link: '/guide/first-mod', activeMatch: '/guide/' },
+      { text: 'API reference', link: '/reference/', activeMatch: '/reference/' },
+      { text: 'Changelog', link: '/changelog' },
+      { text: 'Roadmap', link: '/roadmap' },
+      { text: `Loader ${engine.version}`, link: '/changelog' },
+    ],
+    sidebar: {
+      '/guide/': guide,
+      '/reference/': reference,
+    },
+    outline: { level: [2, 3], label: 'On this page' },
+    search: { provider: 'local' },
+    socialLinks: [{ icon: 'github', link: ORG }],
+    editLink: {
+      // The reference and the changelog come from the engine; send their edits there.
+      // This function runs in the browser, so it cannot use the constants above.
+      pattern: ({ filePath }) => {
+        if (filePath.startsWith('reference/'))
+          return 'https://github.com/RQ-Modding/RQ-Mod/edit/main/dist/lua/rq.lua'
+        if (filePath === 'changelog.md')
+          return 'https://github.com/RQ-Modding/RQ-Mod/edit/main/CHANGELOG.md'
+        return 'https://github.com/RQ-Modding/rq-modding-docs/edit/main/docs/' + filePath
+      },
+      text: 'Edit this page on GitHub',
+    },
+    footer: {
+      message: `API reference generated from RQ MOD ${engine.version}${engine.commit ? ` (${engine.commit})` : ''}. RQ MOD is built on xsystem4.`,
+    },
+  },
+})
