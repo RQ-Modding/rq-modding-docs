@@ -18,6 +18,7 @@ check the count it gets back.
 | [`rq.ain.patch_int_after`](#rqainpatch_int_after) | Replaces the first integer constant `from` that follows a read of a global. |
 | [`rq.ain.call`](#rqaincall) | Calls any AIN function by its name. |
 | [`rq.ain.hook`](#rqainhook) | Runs Lua before and after any AIN function. |
+| [`rq.ain.method`](#rqainmethod) | Calls a method of the game on the object a global reaches. |
 | [`rq.ain.global`](#rqainglobal) | Reads a game global that holds an int, bool, float or string. |
 | [`rq.ain.set_global`](#rqainset_global) | Writes a game global, as `rq.ain.global` reads it: `set_global(name, [step, ...,] value)`. |
 | [`rq.ain.global_len`](#rqainglobal_len) | Returns the size of an array global. |
@@ -169,6 +170,42 @@ end })
 | `remove` | `fun()` | Removes both sides of this hook. |
 
 > Changed in 0.23.0: Returns a remover.
+
+### rq.ain.method
+
+```lua
+rq.ain.method(path, name, ...) -> any
+```
+
+`since 2.16.0`
+
+Calls a method of the game on the object a global reaches.
+
+`path` is a global's name, then indexes and field names as `rq.ain.global` takes them, and it must
+end on a struct: `{"g_sSystemMenu"}`, `{"g_sCastle", "m_sList"}`. The method's class must be that
+struct's (`T_SystemMenu@createButton` on a `T_SystemMenu`). The arguments are as `rq.ain.call`'s:
+int, bool, float or string, all of them. The same cautions hold: a method that draws or waits
+runs inside this call, and a bad value passed to the game can be a fatal error there.
+
+Raises an error for a path that is not a table, does not start with a known global or does not
+reach a struct, an unknown function, a function that is not a method or not the struct's, a wrong
+number of arguments, or a reference or struct argument.
+
+```lua
+local rows = rq.ain.method({ "g_sSystemMenu", "m_sButton" }, "T_ButtonGroup@getButtonCount")
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `path` | `(string\|integer)[]` | The global's name, then indexes and field names to the object. |
+| `name` | `string` | The method, `Class@method`. |
+| `...` | `integer\|boolean\|number\|string` | The arguments. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `result` | `any` | What the method returns; nil for none or a struct. |
+
+See also: [`rq.ain.call`](rq.ain.md#rqaincall)
 
 ### rq.ain.global
 

@@ -5,6 +5,14 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.16.0
+
+Phase 5 of what the hub UI kit left (`notes/plans/plan-ui-kit-leftovers.md` in the workspace, section 10): buttons of mods in the game's own menus, made by the game itself. All of it is Lua over one new C call.
+- `rq.castle.room(spec)`: a mod's room in Rance Castle. It is one of the game's own castle areas (30 to 50, which the game leaves free), made each time the castle opens, as the Gal monsters and Poster rooms are: the game draws its button, name, face and NEW mark and moves the keys to it. It goes on its floor (default B2F), or the nearest floor with a free cell that time; the game's rooms never move. A click runs `on_enter`; the castle stays open. The handle has `area`, `floor`, `where`, `set` and `remove`. `rq.castle.rooms()` lists them. `rq.castle()` and `rq.castle.get()` are as before.
+- `rq.gamebutton.add(spec)`: an entry in the SYSTEM menu. While any entry exists the menu has one more row, MODS, under Save (or Suspend Save), in the menu's painted look (its own letters and the game's key icon, through `rq.image.compose`); the keys reach it, and it is greyed while no entry is enabled. Picking it lists the enabled entries in the game's choice menu, with their `tip`. The handle has `id`, `set` and `remove`. `rq.gamebutton.groups()` lists them.
+- `rq.ain.method(path, name, ...)`: calls a method of the game on the struct a global reaches, with plain arguments as `rq.ain.call`.
+- `rq.ui.get` and `rqmod-ctl ui`: the MODS row is the control `mods` of the `system-menu` screen.
+
 ## 2.15.0
 
 Phase 4 of what the hub UI kit left (`notes/plans/plan-ui-kit-leftovers.md` in the workspace), its last part: the game's skill tile. All of it is Lua.

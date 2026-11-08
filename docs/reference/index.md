@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.15.0.
+Loader version 2.16.0.
 
 ## Namespaces
 
@@ -18,6 +18,7 @@ Loader version 2.15.0.
 | [`rq.counter`](api/rq.counter.md) | Lets the Counter skill (259) work after Ally Guard. |
 | [`rq.debug`](api/rq.debug.md) | Adds rows to the engine's F3 debug menu. |
 | [`rq.dungeon`](api/rq.dungeon.md) | Reads and changes the dungeon: the map, the player's place, objects on it, and the camera. |
+| [`rq.gamebutton`](api/rq.gamebutton.md) | Buttons of mods in the game's own menus, made by the game itself. |
 | [`rq.hud`](api/rq.hud.md) | Draws text, boxes and CGs over the game, and reads clicks on them. |
 | [`rq.ids`](api/rq.ids.md) | The game's numbers by name: characters, items, monsters, quests, skills, and the small lists the game names (classes, states, races, character types, elements, item kinds, skill targets). |
 | [`rq.image`](api/rq.image.md) | Images from a mod's folder, shown by the game as CGs. |
@@ -71,6 +72,10 @@ Loader version 2.15.0.
 | [`rq.BuyCtx`](types/rq.BuyCtx.md) | What an `rq.shop.on_buy` callback gets. |
 | [`rq.Castle`](types/rq.Castle.md) | The castle's state, from `rq.castle()`. |
 | [`rq.CastleRoom`](types/rq.CastleRoom.md) | A castle room, from `rq.castle()`. |
+| [`rq.CastleRoomHandle`](types/rq.CastleRoomHandle.md) | A mod's room, from `rq.castle.room`. |
+| [`rq.CastleRoomInfo`](types/rq.CastleRoomInfo.md) | A mod's room, as `rq.castle.rooms` lists it. |
+| [`rq.CastleRoomPlace`](types/rq.CastleRoomPlace.md) | Where a mod's room is this time, from a room's `where()`. |
+| [`rq.CastleRoomSpec`](types/rq.CastleRoomSpec.md) | A mod's room in Rance Castle, for `rq.castle.room`. |
 | [`rq.CharaDef`](types/rq.CharaDef.md) | A character template for `rq.chara.define`. |
 | [`rq.CharaEdit`](types/rq.CharaEdit.md) | A patch for `rq.chara.edit`. `level`, `level_max`, `skills` and `lines` do not apply. |
 | [`rq.CharaFields`](types/rq.CharaFields.md) | The fields `rq.chara.define` and `rq.chara.edit` share. |
@@ -89,6 +94,10 @@ Loader version 2.15.0.
 | [`rq.DungeonInfo`](types/rq.DungeonInfo.md) | Where the party is in a dungeon, from `rq.dungeon.info()`. |
 | [`rq.FlashSound`](types/rq.FlashSound.md) | A sound inside a Flash file, from `rq.sound.flash_info`. |
 | [`rq.ForgetCtx`](types/rq.ForgetCtx.md) | What `rq.chara.on_forget` gets. |
+| [`rq.GameButtonGroup`](types/rq.GameButtonGroup.md) | A group, from `rq.gamebutton.groups`. |
+| [`rq.GameButtonHandle`](types/rq.GameButtonHandle.md) | An entry, from `rq.gamebutton.add`. |
+| [`rq.GameButtonInfo`](types/rq.GameButtonInfo.md) | An entry, as `rq.gamebutton.groups` lists it. |
+| [`rq.GameButtonSpec`](types/rq.GameButtonSpec.md) | An entry for `rq.gamebutton.add`. |
 | [`rq.GifInfo`](types/rq.GifInfo.md) | What `rq.image.gif_info` returns. |
 | [`rq.GifOpts`](types/rq.GifOpts.md) | Options for `rq.image.add_gif`. |
 | [`rq.HpEvent`](types/rq.HpEvent.md) | What `rq.battle.on_hp` gets. |

@@ -46,6 +46,7 @@ const guide: DefaultTheme.SidebarItem[] = [
       { text: 'Numbers and ids', link: '/guide/ids' },
       { text: "The game's own code", link: '/guide/game-code' },
       { text: 'Replacing music', link: '/guide/music' },
+      { text: "Buttons in the game's menus", link: '/guide/game-menus' },
       { text: 'Editor setup', link: '/guide/editor-setup' },
       { text: 'Logs and debugging', link: '/guide/debugging' },
       { text: 'Sharing a mod', link: '/guide/publishing' },

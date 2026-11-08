@@ -39,6 +39,7 @@ end)
 | [`rq.counter`](rq.counter.md) | Lets the Counter skill (259) work after Ally Guard. |
 | [`rq.debug`](rq.debug.md) | Adds rows to the engine's F3 debug menu. |
 | [`rq.dungeon`](rq.dungeon.md) | Reads and changes the dungeon: the map, the player's place, objects on it, and the camera. |
+| [`rq.gamebutton`](rq.gamebutton.md) | Buttons of mods in the game's own menus, made by the game itself. |
 | [`rq.hud`](rq.hud.md) | Draws text, boxes and CGs over the game, and reads clicks on them. |
 | [`rq.ids`](rq.ids.md) | The game's numbers by name: characters, items, monsters, quests, skills, and the small lists the game names (classes, states, races, character types, elements, item kinds, skill targets). |
 | [`rq.image`](rq.image.md) | Images from a mod's folder, shown by the game as CGs. |

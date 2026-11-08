@@ -50,7 +50,13 @@ local name = rq.ain.call("クエスト_名前", 126)   -- the quest's name
 ```
 
 The arguments are int, bool, float or string, and every one is needed. A function that takes a
-reference or a struct, and a method, cannot be called this way. A scene command waits until it ends,
+reference or a struct cannot be called this way. A method (`Class@method`) needs its object:
+`rq.ain.method` (2.16.0) calls it on the struct a global reaches.
+
+```lua
+local rows = rq.ain.method({ "g_sSystemMenu", "m_sButton" }, "T_ButtonGroup@getButtonCount")
+```
+ A scene command waits until it ends,
 so call it from a callback the game runs, not at the top level. See
 [`rq.ain.call`](../reference/api/rq.ain.md#rqaincall) for what happens when the call reaches a save
 or a load.
