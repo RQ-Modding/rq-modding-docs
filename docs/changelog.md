@@ -5,6 +5,29 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.15.0
+
+Phase 4 of what the hub UI kit left (`notes/plans/plan-ui-kit-leftovers.md` in the workspace), its last part: the game's skill tile. All of it is Lua.
+- `rq.uikit.skill_button(skill, opts)`: a skill's tile as the status page draws it, to the pixel: the CG of its panel color, the name fitted in the game's font, a mark for each rank above 1 (`rank`, or the character's with `chara`), the uses in the level digits (`count`, or the character's), `long` (the 167-wide tile), `disabled` (greyed as the game greys a skill), the hovered look and the game's frames. Its tip is the game's comment for the skill. With `skill` nil and `slot`, the empty slot with its number.
+- `rq.uikit.number`: `tint`.
+- `rq.ui.get` and `rqmod-ctl ui`: a tile is listed with the type "skill" and the skill number as `value`; an empty slot with the type "slot", which is never the `hover` and never makes a game control `covered`.
+
+## 2.14.0
+
+Phase 4 of what the hub UI kit left (`notes/plans/plan-ui-kit-leftovers.md` in the workspace), its second part: the game's gauges and digit fonts. All of it is Lua.
+- `rq.uikit.bar(value, max, opts)`: the game's bars (`T_Bar`), a CG cut to `value / max`, to the pixel: `style` for the game's own (HP on the cards, the mini cards and monsters, EXP, charisma, quests, the upright Magnum gauge), or any `cg`, or a `color`; `dir = "up"`; `anim`, the value moving in a straight line as the game's bars do. Only the bar; the frames are parts of each screen's background. It takes no click; `tip` works on it.
+- `rq.uikit.number`: the game's digit fonts by name (`"hp"`, `"level"`, `"level_max"`, `"status"`, `"small"`, `"world"`, `"gallery"`, with `"gold"`) or any CG cut in 10 cells; `hyphen` for an 11th cell, "-". It returns its place. A negative number with a digit font draws as 0, as the game's (before, the gold digits left out the minus).
+- `rq.ui.get` and `rqmod-ctl ui`: a bar is listed with the type "bar" and the value it shows. A bar or a comment window is never the `hover`, and never makes a game control `covered`.
+
+## 2.13.0
+
+Phase 4 of what the hub UI kit left (`notes/plans/plan-ui-kit-leftovers.md` in the workspace), its first part: the game's comment window. All of it is Lua but one field.
+- `rq.uikit.comment(text, opts)`: the game's comment window (`T_Comment`), its look and layout to the pixel: the paper window with three borders and a shadow, a `header`, the text wrapped at 520 pixels as the game wraps it, red `sub` lines, and the game's red `style`. At the mouse, or at `x`, `y`, kept on the screen as the game's. On the top layer; it takes no clicks and covers no game control. `rq.uikit.comment_size` gives its size.
+- `tip` and `tip_wait` on every widget that takes a click: the comment window after the mouse or the keys' cursor stays on the widget 500 ms, with the game's sound; at the mouse, or at the widget's edge from the keys. `tips` on `tabs`, `choice` and `sort`, `tip` on `list` and `quest_list` rows.
+- `rq.uikit.options`: a row's `comment` is the game's comment window right of the menu, at the row, after 500 ms, as the game's menu shows it (before, a plain box at once). The hub theme's `options.comment` style is gone.
+- `rq.hud.text_width`: `measure = true` with `font = "game"` gives the width as the game's windows reckon it (its `MeasureText`), not the drawn line's.
+- `rq.ui.get` and `rqmod-ctl ui`: a comment window is listed with the type "comment" and its text as `value`; it never makes a game control `covered`.
+
 ## 2.12.0
 
 Phase 3 of what the hub UI kit left (`notes/plans/plan-ui-kit-leftovers.md` in the workspace): the keyboard, as the game's own screens use it. All of it is Lua but one field.

@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.12.0.
+Loader version 2.15.0.
 
 ## Namespaces
 
@@ -140,9 +140,11 @@ Loader version 2.12.0.
 | [`rq.StatusDef`](types/rq.StatusDef.md) | What `rq.status.define` takes. |
 | [`rq.StatusInfo`](types/rq.StatusInfo.md) | What `rq.status.info` gives about a definition. |
 | [`rq.StatusInstance`](types/rq.StatusInstance.md) | A state on one character, from `rq.status.add`, `get` and `list`. |
+| [`rq.UiBarOpts`](types/rq.UiBarOpts.md) | What `rq.uikit.bar` takes. |
 | [`rq.UiBox`](types/rq.UiBox.md) | A row or column for `rq.uikit.row` and `col`. |
 | [`rq.UiButtonStyle`](types/rq.UiButtonStyle.md) | A button style of the hub theme: two states of a grey button and its text. |
 | [`rq.UiChoice`](types/rq.UiChoice.md) | One row of `rq.ui.choose`. |
+| [`rq.UiCommentOpts`](types/rq.UiCommentOpts.md) | What `rq.uikit.comment` takes besides the text. |
 | [`rq.UiFilterState`](types/rq.UiFilterState.md) | A filter state for `rq.uikit.filters` and `rq.uikit.item_filter`: what the vault's filter column has picked. 0 or nil is "all". |
 | [`rq.UiItemRow`](types/rq.UiItemRow.md) | An item row's data, as `rq.uikit.item_data` reads it from the game. A table of your own with the same fields draws a made-up row. |
 | [`rq.UiMenuItem`](types/rq.UiMenuItem.md) | One entry of `rq.uikit.menu`. |
@@ -150,8 +152,10 @@ Loader version 2.12.0.
 | [`rq.UiPiece`](types/rq.UiPiece.md) | A part of a CG drawn at any size: the edges stay as they are, the middle stretches. |
 | [`rq.UiPlace`](types/rq.UiPlace.md) | Where a widget goes. |
 | [`rq.UiScrollPieces`](types/rq.UiScrollPieces.md) | The pieces of the game's scroll bar. |
+| [`rq.UiSkillOpts`](types/rq.UiSkillOpts.md) | What `rq.uikit.skill_button` takes. |
 | [`rq.UiTabsStyle`](types/rq.UiTabsStyle.md) | A tabs style of the hub theme. |
 | [`rq.UiTheme`](types/rq.UiTheme.md) | A look for the kit: pieces, text styles, colors and sounds. |
+| [`rq.UiTip`](types/rq.UiTip.md) | A widget's tip: what `rq.uikit.comment` shows, and where. |
 | [`rq.Unit`](types/rq.Unit.md) | A recruited character, from `rq.units()`. |
 | [`rq.VanillaSave`](types/rq.VanillaSave.md) | What `rq.saves.vanilla` returns. |
 

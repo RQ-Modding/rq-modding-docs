@@ -135,7 +135,7 @@ See also: [`rq.hud.text_width`](rq.hud.md#rqhudtext_width)
 rq.hud.text_width(str, size_or_style) -> integer, integer|nil
 ```
 
-`since 0.2.0` `changed 2.5.0`
+`since 0.2.0` `changed 2.5.0` `changed 2.13.0`
 
 Returns how wide `rq.hud.text` draws a text.
 
@@ -143,10 +143,21 @@ Only `size` and `bold` of a style count, and with `font = "game"` also `face`, `
 `shadow`, `space` and `spacing`. With `font = "game"` it also gives the height of the line the game
 draws, which `valign` centers.
 
+With `font = "game"` and `measure = true` it gives the width the game's own windows reckon instead
+(its `MeasureText`): the letters' advances by its kerning tables, without the spacing after the
+last letter, and the font size as the height. The game sizes its comment window and wraps its texts
+by it, so a window laid out by it matches the game's to the pixel. It can be a pixel or two off the
+line `rq.hud.text` draws.
+
+```lua
+local st = { font = "game", face = 258, size = 20, spacing = 0.95, space = -6, measure = true }
+local w = rq.hud.text_width("Use for organization", st) -- 134, as the game's comment window
+```
+
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `str` | `string` | The text. |
-| `size_or_style` *(optional)* | `number\|` [`rq.HudTextStyle`](../types/rq.HudTextStyle.md) | A font size, or a style. Default size 16. |
+| `size_or_style` *(optional)* | `number\|` [`rq.HudTextStyle`](../types/rq.HudTextStyle.md) `\|{measure?: boolean}` | A font size, or a style; `measure` with `font = "game"`. Default size 16. |
 
 | Returns | Type | Description |
 | --- | --- | --- |
@@ -154,6 +165,8 @@ draws, which `valign` centers.
 | `h` | `integer\|nil` | With `font = "game"`: the height in pixels. nil for the HUD font. |
 
 > Changed in 2.5.0: Takes `font = "game"`, and then also gives the height.
+
+> Changed in 2.13.0: `measure`.
 
 ### rq.hud.wrap
 

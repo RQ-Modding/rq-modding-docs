@@ -13,7 +13,7 @@ One row of `rq.uikit.options`.
 | `r` *(optional)* | `integer` | Red, 0 to 255. Default: the game's grey. |
 | `g` *(optional)* | `integer` | Green, 0 to 255. Default: the game's grey. |
 | `b` *(optional)* | `integer` | Blue, 0 to 255. Default: the game's grey. |
-| `comment` *(optional)* | `string` | Shown in a box right of the list while the row is under the mouse. |
+| `comment` *(optional)* | `string` | Shown in the game's comment window right of the list, at the row, while the mouse or the keys' cursor stays on the row (as the game's menu shows it). Before 2.13.0, a plain box at once. |
 | `disabled` *(optional)* | `boolean` | Greyed out; it cannot be picked. |
 
 ## Used by

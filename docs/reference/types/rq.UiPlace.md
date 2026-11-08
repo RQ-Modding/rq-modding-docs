@@ -15,6 +15,8 @@ where it says and does not move the row on.
 | `h` *(optional)* | `integer` | Height in pixels. |
 | `id` *(optional)* | `any` | Keeps the widget's state across updates (a drag, a list's scroll). Without one a widget is known by the order of the calls, so give one to widgets that show or hide. |
 | `nav` *(optional)* | `false\|{up?: any, down?: any, left?: any, right?: any}\|fun(dir: "up"\|"down"\|"left"\|"right"): any` | Where the arrow keys go from this widget, by the other widget's `id`, in place of the nearest one that way; a function returns the id or nil. false: the keys' cursor skips it. Since 2.12.0. |
+| `tip` *(optional)* | `string\|` [`rq.UiTip`](rq.UiTip.md) | On a widget that takes a click: the game's comment window after the mouse or the keys' cursor stays on it `tip_wait` ms (see `rq.uikit.comment`). A text, or a table with a header and more; false for none where a widget has a tip of its own (`skill_button`). Since 2.13.0. |
+| `tip_wait` *(optional)* | `integer` | How long the cursor stays on the widget before its tip shows, in ms. Default 500, as the game's. Since 2.13.0. |
 
 ## Used by
 

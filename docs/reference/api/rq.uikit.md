@@ -1,6 +1,6 @@
 # rq.uikit
 
-`since 1.7.0` `changed 2.12.0`
+`since 1.7.0` `changed 2.12.0` `changed 2.13.0`
 
 Widgets in the look of the game's Config screen and, since 2.6.0, of its hub.
 
@@ -31,6 +31,13 @@ by Page Up and Page Down. A held key moves again after 250 ms, then every 50 ms,
 The kit takes the keys only on an update where `rq.uikit.keys` is called: inside `page`, on
 Config's Mods tab, and where a mod calls it. Elsewhere its widgets over the game's screens are
 for the mouse, and the arrows stay the game's.
+
+Tips (2.13.0): every widget that takes a click has `tip`, the game's comment window
+(`rq.uikit.comment`) shown when the mouse or the keys' cursor has stayed on it 500 ms, with the
+game's sound 5001. Under the mouse it goes at the mouse, as the game's; from the keys, at the
+widget's right edge (left of it when it does not fit). It goes when the cursor leaves. A disabled
+widget shows its tip under the mouse too. `tabs`, `choice` and `sort` take `tips`, one for each
+entry; `list` and `quest_list` rows take `tip`.
 
 ```lua
 local ui = rq.uikit
@@ -72,6 +79,10 @@ end)
 | [`rq.uikit.space`](#rquikitspace) | Leaves empty space in a row or column. |
 | [`rq.uikit.last`](#rquikitlast) | Returns where the last widget went, as for a tooltip beside it. |
 | [`rq.uikit.hovered`](#rquikithovered) | Returns whether the mouse was over a kit widget on this update so far. |
+| [`rq.uikit.comment`](#rquikitcomment) | Draws the game's comment window, its tooltip, on this update. |
+| [`rq.uikit.comment_size`](#rquikitcomment_size) | Returns the size the comment window would have, without drawing it. |
+| [`rq.uikit.bar`](#rquikitbar) | Draws one of the game's bars, a gauge: its CG cut to `value / max` of its width, as the game's `T_Bar`. |
+| [`rq.uikit.skill_button`](#rquikitskill_button) | Draws a skill's tile, as the game's status page draws it, and returns whether it was clicked. |
 | [`rq.uikit.top`](#rquikittop) | Runs a function now and draws what it draws on top of every widget, as `rq.hud.top` does. |
 | [`rq.uikit.keys`](#rquikitkeys) | Lets the kit take the arrow keys, Enter, Page Up and Page Down on this update. |
 | [`rq.uikit.focused`](#rquikitfocused) | Returns the widget under the keys' cursor. |
@@ -96,7 +107,7 @@ end)
 | [`rq.uikit.item_list`](#rquikititem_list) | Draws the vault's item list: rows 128 apart and the game's scroll bar beside them. |
 | [`rq.uikit.item_dropped`](#rquikititem_dropped) | Returns the row dropped on this update on another list of a drag group (`item_list`'s `drag`). |
 | [`rq.uikit.item_storage`](#rquikititem_storage) | Draws the game's storage screen: the storage's red list on the left and the vault's list right of it (437 pixels apart, as the game places them), each with its scroll bar, the vault's count and the storage's in their boxes, and the vault's filter column and SORT. Drag a row from one list to the other to move the item (`rq.item.store`). |
-| [`rq.uikit.number`](#rquikitnumber) | Draws a number as the vault does: its counters (`font = "count"`: the game's font, 20 pixels, bold, white), or the gold digits (`"gold"`: CG 11103, 16 by 23 each). |
+| [`rq.uikit.number`](#rquikitnumber) | Draws a number as the game does: the vault's counters (`font = "count"`: the game's font, 20 pixels, bold, white), or one of the game's digit fonts. |
 | [`rq.uikit.filters`](#rquikitfilters) | Draws the vault's filter column and returns what is picked: the categories (Special, Weapon, Armor, Item / Other), the classes, and Locked / Unlocked, on the column's grey with its "[FILTERING]" heads; and, while a category with sub-filters is picked, its panel of sub-filters over the list's first row. |
 | [`rq.uikit.item_filter`](#rquikititem_filter) | Returns the items of a list that pass a filter state, tested as the vault tests them (`アイテム倉庫_一覧_種類確認`, `_職業確認`, `_装備タイプ確認`, `_ＬＯＣＫタイプ確認`). |
 | [`rq.uikit.item_sort`](#rquikititem_sort) | Sorts a list of items in place as the vault sorts it, with the game's own comparers (`compItem_*`). |
@@ -199,7 +210,7 @@ Draws one of several checkboxes, as the 3D tab's quality.
 | --- | --- | --- |
 | `list` | `string[]` | The texts. |
 | `index` *(optional)* | `integer` | The checked one; nil for none. |
-| `opts` *(optional)* | [`rq.UiPlace`](../types/rq.UiPlace.md) `\|{dir?: "col"\|"row", gap?: integer, disabled?: boolean}` | `dir` (default "col"), `gap` in pixels (default 20), `disabled`. |
+| `opts` *(optional)* | [`rq.UiPlace`](../types/rq.UiPlace.md) `\|{dir?: "col"\|"row", gap?: integer, disabled?: boolean, tips?: (string\|` [`rq.UiTip`](../types/rq.UiTip.md) `)[]}` | `dir` (default "col"), `gap` in pixels (default 20), `disabled`, `tips` (2.13.0: one for each checkbox). |
 
 | Returns | Type | Description |
 | --- | --- | --- |
@@ -252,7 +263,7 @@ by 45 and 8 apart, the current one orange.
 | --- | --- | --- |
 | `list` | `string[]` | The tab texts. |
 | `index` | `integer` | The current tab. |
-| `opts` *(optional)* | [`rq.UiPlace`](../types/rq.UiPlace.md) `\|{style?: "town"\|string, gap?: integer}` | Place; `w` is each tab's width (default 120, or the style's). `style`, and `gap` between styled tabs. |
+| `opts` *(optional)* | [`rq.UiPlace`](../types/rq.UiPlace.md) `\|{style?: "town"\|string, gap?: integer, tips?: (string\|` [`rq.UiTip`](../types/rq.UiTip.md) `)[]}` | Place; `w` is each tab's width (default 120, or the style's). `style`, and `gap` between styled tabs. `tips` (2.13.0): one for each tab. |
 
 | Returns | Type | Description |
 | --- | --- | --- |
@@ -305,7 +316,7 @@ Raises an error without `w` and `h`.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `items` | `(string\|{text: string, disabled?: boolean})[]` | The rows. |
+| `items` | `(string\|{text: string, disabled?: boolean, tip?: string\|` [`rq.UiTip`](../types/rq.UiTip.md) `})[]` | The rows; `tip` since 2.13.0. |
 | `index` *(optional)* | `integer` | The chosen row; nil for none. |
 | `opts` | [`rq.UiPlace`](../types/rq.UiPlace.md) `\|{row_h?: integer, block?: boolean}` | `w` and `h` are needed. `row_h` (default 30), `block = false` leaves out the dark block. |
 
@@ -433,6 +444,163 @@ Returns whether the mouse was over a kit widget on this update so far.
 | Returns | Type | Description |
 | --- | --- | --- |
 | `hovered` | `boolean` | true when a widget drawn so far is under the mouse. |
+
+### rq.uikit.comment
+
+```lua
+rq.uikit.comment(text, opts) -> integer|nil, integer|nil, integer|nil, integer|nil
+```
+
+`since 2.13.0`
+
+Draws the game's comment window, its tooltip, on this update.
+
+It is the game's own look (`T_Comment`): a paper window with three thin borders, a shadow, a
+header, the text in the game's font and red `sub` lines under it, laid out as the game lays its
+own out, to the pixel. The text wraps at 520 pixels, as the game's, and shows 20 lines at most.
+It is drawn on the top layer (`rq.uikit.top`), over every widget. Call it on every update it
+should show; it does not wait. For a tip that waits for the mouse, give a widget `tip`.
+
+Without `x` and `y` it goes at the mouse, 11 right and 20 under it; past the screen's right edge it
+goes left of the mouse, and past the bottom it ends at 736, as the game's. A given `x` past the
+right edge ends at 1024. It takes no clicks and covers no game control: `rqmod-ctl` lists it in
+the section "kit" with the type "comment" and its text as `value`.
+
+Raises an error when the text, `header` or `sub` is not a string, `style` is unknown or `opts` is
+not a table.
+
+```lua
+rq.on_frame(function()
+  if hovering_my_icon then
+    rq.uikit.comment("Doubles the gold from quests.", { header = "Golden Touch", sub = "Not in the tutorial." })
+  end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `text` | `string\|nil` | The text. `\n` breaks a line. |
+| `opts` *(optional)* | [`rq.UiCommentOpts`](../types/rq.UiCommentOpts.md) | `header`, `sub`, `style`, `x`, `y`, `game`, `id`. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `x` | `integer\|nil` | The window's left edge, or nil when there is nothing to show (no text, header or sub). |
+| `y` | `integer\|nil` | Its top edge. |
+| `w` | `integer\|nil` | Its width, without the 5-pixel shadow. |
+| `h` | `integer\|nil` | Its height, without the shadow. |
+
+See also: [`rq.uikit.comment_size`](rq.uikit.md#rquikitcomment_size)
+
+### rq.uikit.comment_size
+
+```lua
+rq.uikit.comment_size(text, opts) -> integer|nil, integer|nil
+```
+
+`since 2.13.0`
+
+Returns the size the comment window would have, without drawing it.
+
+Raises an error as `comment` does.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `text` | `string\|nil` | The text. |
+| `opts` *(optional)* | [`rq.UiCommentOpts`](../types/rq.UiCommentOpts.md) | `header`, `sub`, `style`, `game`. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `w` | `integer\|nil` | The width without the 5-pixel shadow; nil when there is nothing to show. |
+| `h` | `integer\|nil` | The height without the shadow. |
+
+### rq.uikit.bar
+
+```lua
+rq.uikit.bar(value, max, opts) -> number
+```
+
+`since 2.14.0`
+
+Draws one of the game's bars, a gauge: its CG cut to `value / max` of its width, as the game's
+`T_Bar`.
+
+With `dir = "up"` it is cut to that part of its height and fills from the bottom. A value above 0
+shows at least 1 pixel. A value is kept between 0 and `max`; a `max` under 1 draws nothing. With
+`anim` the value shown moves from the old value to a new one over that many ms.
+
+Only the bar: the frames round the game's bars are parts of each screen's background. It takes no
+click and is not on the keys' cursor; `tip` shows under the mouse. It is listed for `rqmod-ctl
+ui` with the type "bar" and the value it shows, and never covers a game control.
+
+Raises an error for a `value` or `max` that is not a number, an unknown `style` or `dir`, a CG that
+is not there, no `style`, `cg` or `color`, or an `anim` that is not a whole number of 0 or more.
+
+```lua
+rq.on_frame(function()
+  local c = rq.chara.get(1)
+  rq.uikit.bar(c.hp, c.hp_max, { style = "hp", x = 74, y = 394, id = "hp", anim = 250 })
+  rq.uikit.bar(fuel, 100, { color = { 255, 200, 0 }, x = 400, y = 600, w = 120, h = 6, tip = "Fuel" })
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `value` | `number` | The value. |
+| `max` | `number` | The value of a full bar. |
+| `opts` *(optional)* | [`rq.UiBarOpts`](../types/rq.UiBarOpts.md) | `style`, `cg` or `color`; `dir`, `anim`; place, `id`, `tip`. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `shown` | `number` | The value the bar shows on this update (moving with `anim`). |
+
+### rq.uikit.skill_button
+
+```lua
+rq.uikit.skill_button(skill, opts) -> boolean
+```
+
+`since 2.15.0`
+
+Draws a skill's tile, as the game's status page draws it, and returns whether it was clicked.
+
+The tile is the CG of the skill's panel color, the game's own pick (`スキルボタン_ＣＧ番号`), 142 by
+24. The name is in the game's font, fitted as the game fits it: 18 pixels, else 16, 14 or 12 until
+the name and the rank marks fit, then squeezed. Under the mouse it shows the CG's hovered look
+and the game's yellow frame; Enter and the keys' cursor work as on every widget.
+
+Its `tip` is the game's comment for the skill, its name and `スキル_説明文１`, right of the tile as
+the status page shows it; give a `tip` of your own, or false for none. With `skill` nil and `slot`
+it draws the empty slot (CG 10121) with its number.
+
+It is listed for `rqmod-ctl ui` with the type "skill" and the skill number as `value`; an empty
+slot with the type "slot", which takes no click.
+
+Raises an error for a skill that is not a whole number above 0 or has no tile (no long tile, with
+`long`), no `slot` without a skill, or a `rank`, `chara`, `count` or `count_max` that is not a whole
+number.
+
+```lua
+rq.on_frame(function()
+  if not open then return end
+  open = rq.uikit.page({ id = "skills", title = "Skills" }, function(x, y)
+    for i, skill in ipairs(my_skills) do
+      if rq.uikit.skill_button(skill, { x = x + 20, y = y + i * 26, chara = chara, id = skill }) then
+        pick(skill)
+      end
+    end
+    rq.uikit.skill_button(nil, { x = x + 200, y = y + 26, slot = 1 })
+  end)
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `skill` | `integer\|nil` | A skill number, or nil for an empty slot. |
+| `opts` *(optional)* | [`rq.UiSkillOpts`](../types/rq.UiSkillOpts.md) | `rank` or `chara`, `long`, `count`, `count_max`, `disabled`, `slot`; place, `id`, `tip`, `nav`. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `clicked` | `boolean` | true on the update it is clicked. |
 
 ### rq.uikit.top
 
@@ -737,7 +905,7 @@ end)
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `rows` | `{no?: integer\|string, name?: string, mark?: integer\|string, disabled?: boolean}[]` | The rows. |
+| `rows` | `{no?: integer\|string, name?: string, mark?: integer\|string, disabled?: boolean, tip?: string\|` [`rq.UiTip`](../types/rq.UiTip.md) `}[]` | The rows; `tip` since 2.13.0. |
 | `index` *(optional)* | `integer` | The current row; nil for none. |
 | `opts` *(optional)* | [`rq.UiPlace`](../types/rq.UiPlace.md) `\|{shown?: integer}` | Place, `id`, and `shown` (rows at once, default 13). |
 
@@ -828,7 +996,7 @@ its second one opens the sort menu each time.
 | --- | --- | --- |
 | `list` | `string[]` | The labels. |
 | `index` *(optional)* | `integer` | The current one; nil for none. |
-| `opts` *(optional)* | [`rq.UiPlace`](../types/rq.UiPlace.md) `\|{back?: boolean, again?: boolean\|integer, disabled?: boolean}` | Place, `back`, `again` (true, or the index of the button that can be clicked while current), `disabled`. |
+| `opts` *(optional)* | [`rq.UiPlace`](../types/rq.UiPlace.md) `\|{back?: boolean, again?: boolean\|integer, disabled?: boolean, tips?: (string\|` [`rq.UiTip`](../types/rq.UiTip.md) `)[]}` | Place, `back`, `again` (true, or the index of the button that can be clicked while current), `disabled`, `tips` (2.13.0: one for each button). |
 
 | Returns | Type | Description |
 | --- | --- | --- |
@@ -890,7 +1058,7 @@ end)
 rq.uikit.options(items, opts) -> any|nil
 ```
 
-`since 2.7.0` `changed 2.9.0` `changed 2.10.0` `changed 2.11.0` `changed 2.12.0`
+`since 2.7.0` `changed 2.9.0` `changed 2.10.0` `changed 2.11.0` `changed 2.12.0` `changed 2.13.0`
 
 Draws the game's choice menu as a widget: its green base, grey rows, separators and a text panel
 at the top, laid out as the game lays out the menu. It is not modal and does not wait: it returns
@@ -936,6 +1104,8 @@ if pick == 0 then open = false elseif pick then sort_by(pick) end
 > Changed in 2.11.0: A row's `comment` box is drawn on the top layer, over widgets drawn later.
 
 > Changed in 2.12.0: The rows are on the kit's keys cursor; Left and Right leave the list.
+
+> Changed in 2.13.0: A row's `comment` is the game's comment window, after 500 ms, as the game's menu shows it.
 
 See also: [`rq.ui.choose`](rq.ui.md#rquichoose)
 
@@ -1165,27 +1335,57 @@ end)
 ### rq.uikit.number
 
 ```lua
-rq.uikit.number(value, opts)
+rq.uikit.number(value, opts) -> integer, integer, integer, integer
 ```
 
-`since 2.8.0` `changed 2.9.0`
+`since 2.8.0` `changed 2.9.0` `changed 2.14.0` `changed 2.15.0`
 
-Draws a number as the vault does: its counters (`font = "count"`: the game's font, 20 pixels, bold,
-white), or the gold digits (`"gold"`: CG 11103, 16 by 23 each).
+Draws a number as the game does: the vault's counters (`font = "count"`: the game's font, 20
+pixels, bold, white), or one of the game's digit fonts.
 
-Raises an error for a number that is not whole, another font, or another `align`.
+A digit font is a CG cut across into 10 equal cells, 0 to 9, as the game's `T_NumberCg`. By name:
+
+| `font` | CG | Where the game uses it |
+| --- | --- | --- |
+| `"gold"` | 11103 | The vault's and the shop's gold, 16 by 23 |
+| `"hp"` | 10096 | HP in battle, skill uses on the mini cards |
+| `"level"` | 10122 | Levels and maximums on the cards, skill uses on the status page |
+| `"level_max"` | 10124 | A level at its maximum, on the cards (red) |
+| `"status"` | 10321 | The status page's points, EXP and gold; the level up; the results |
+| `"small"` | 10210 | Skill uses on the mini-mini cards |
+| `"world"` | 10507 | The world level on the title |
+| `"gallery"` | 12252 | The CG mode's page numbers |
+
+Any other CG number works as a font too, a mod image from `rq.image.add` included. With `hyphen` its
+CG has an 11th cell, a "-", and a negative number gets it; without, a negative number draws as 0,
+as the game's.
+
+Raises an error for a number that is not whole, an unknown font name, a CG that is not there, or
+another `align`.
 
 ```lua
 rq.uikit.number(#list, { x = 957, y = 31, w = 39 })
 rq.uikit.number(price, { x = 758, y = 2, font = "gold", w = 118, align = "right", gap = 1 }) -- the shop's
+rq.uikit.number(level, { x = 300, y = 200, font = level >= max and "level_max" or "level" })
 ```
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `value` | `integer` | The number; it should not be negative. |
-| `opts` *(optional)* | [`rq.UiPlace`](../types/rq.UiPlace.md) `\|{font?: "count"\|"gold", digits?: integer, align?: "left"\|"center"\|"right", gap?: integer}` | Place (`w` with `align` places it in that width, default centered); `font` (default "count"); `digits` (pads with zeros to that many); `gap` (pixels between gold digits, default 0). |
+| `value` | `integer` | The number. |
+| `opts` *(optional)* | [`rq.UiPlace`](../types/rq.UiPlace.md) `\|{font?: "count"\|"gold"\|"hp"\|"level"\|"level_max"\|"status"\|"small"\|"world"\|"gallery"\|integer, digits?: integer, align?: "left"\|"center"\|"right", gap?: integer, hyphen?: boolean, tint?: integer[]}` | Place (`w` with `align` places it in that width, default centered); `font` (default "count"; a name or a CG number); `digits` (pads with zeros to that many); `gap` (pixels between digits, default 0); `hyphen` (the CG has an 11th cell, "-"); `tint` (2.15.0: multiplies a digit font's colors, as `rq.hud.cg`'s). |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `x` | `integer` | The left edge of what was drawn. |
+| `y` | `integer` | Its top edge. |
+| `w` | `integer` | Its width, in pixels. |
+| `h` | `integer` | Its height. |
 
 > Changed in 2.9.0: `align` and `gap`.
+
+> Changed in 2.14.0: The game's digit fonts by name or CG number, `hyphen`, and it returns its place.
+
+> Changed in 2.15.0: `tint`.
 
 ### rq.uikit.filters
 
