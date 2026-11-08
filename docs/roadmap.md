@@ -26,11 +26,11 @@ In order of priority: first what the most mods, existing or new, would use.
 | Dungeons | Which dungeon and floor `rq.dungeon.on_map` is on, so a mod can act per dungeon, and then names for them in `rq.ids`. |
 | Buff icons | Several buffs on one card shown side by side, shrunk to fit, instead of taking turns. |
 | Sprites | Clicks on sprites; attaching a sprite to a part of the game's interface; following a target's scale and rotation. |
-| Quests | `rq.quests.start` from the shop, party and castle tabs, not only the hub and the quest list. |
+| Quests | `rq.quests.start` from the shop, party and castle tabs, not only the hub and the quest list. An event when the player takes a quest from the list, before the autosave, that can cancel it (`rq.quests.on_take`); the list's buttons drawn again after a change. `rq.quests.set_state(no, 1)` on a quest that is not locked does nothing today (the game's rule): the reference should say so, or the call should write it. |
 | Equipment | Changing a base-game character's equipment, with a choice to overwrite what they wear (today a replaced weapon goes to the vault). |
 | Screens | A screen name and controls for the town's Rance Castle tab in `rq.ui`. The status page for mods: the character shown (`rq.ui.get().status.chara` is 0 today, a bug), a refresh of the card after a change, an event when it opens or changes character. The game's Yes/No and OK dialogs as calls (`rq.ui.confirm`, `rq.ui.notice`). |
 | Characters | The items the Morurun absorbed: read the five slots and change one with the game's rules (`rq.chara.absorbed`, `set_absorbed`). |
-| Items | An item's row data (name, icon, stats line) from its number, with no instance. An icon button in the kit (`rq.uikit.button` with a CG). |
+| Items | An item's row data (name, icon, stats line) from its number, with no instance. An icon button in the kit (`rq.uikit.button` with a CG). An item number's instances by place (`rq.item.find`, `rq.item.count`). The game's dialog with any number of choices (`rq.ui.menu`). |
 | Animation | Sources with full color and soft edges (PNG sequences, animated WebP) beside GIF. |
 | Game code | `rq.ain.call` with reference and struct arguments, and methods. |
 | Lua state | Changes to the shared `rq` and standard library tables: a log line also for changes made in callbacks, and refusing such changes if mods turn out to make them. 2.0.0 logs the ones each `init.lua` makes ([What a mod can reach](guide/sandbox.md#globals)). |
