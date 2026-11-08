@@ -91,6 +91,11 @@ Indexes and field names follow the global's name, mixed as the game nests them.
 What `set_global` writes is the game's own state and goes into the next save, so put back what you
 change for a test.
 
+`rq.ain.set_global_len` (2.18.0) makes an array longer or shorter, as the game's own `Realloc`
+does, so the game's code that reads it by its size reads more rows. The new size goes into the save,
+and a save made before brings back the old one, so grow it where it is used, for example in a
+`before` hook of the function that fills it. `rq.skilllist` grows the skill buy list this way.
+
 ## Changing constants in the code
 
 `rq.ain.patch_int` and `rq.ain.patch_float` replace a number written in a function, such as a skill

@@ -5,6 +5,15 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.18.0
+
+The rest of Potential Skill Pages in Lua (`notes/plans/plan-ui-kit-leftovers.md` in the workspace, section 12): `rq.skilllist` is Lua over the game's own code (`src/lua/skilllist.lua`), and the engine's 1170 lines of C for it (`modloader_skilllist.c`, its bytecode patches and replaced bodies) are gone.
+- `rq.ain.set_global_len(name, ..., size)`: makes an array global longer or shorter, as the game's `Realloc` does.
+- `rq.skilllist`: the game's three buy-list arrays are made 145 long (rows 1 to 144, were 143 in the engine's copy) whenever the game fills them, `スキルポン` stops at row 145, and while the window builds its list the game's own count and row reads answer the page's 36. The game's buy and its cost read the arrays as they are. Rows 61 to 144 are emptied when the window closes, so a save holds what the game's own 60 rows would. Callbacks have no limit (were 16).
+- `rq.skilllist.install()` with buttons: Previous Page and Next Page are now the calling mod's `"skill-window"` entries (`<mod id>.skilllist-prev` / `-next`), placed in the order entries were added; `on_buttons` gets their ids (200101 to 200104, were 200037 and 200038). Their look is the same.
+- `rq.chara.offers` and `set_offer` work on the game's arrays only.
+- `rqmod-ctl ui`: `skillShop.page` and `pages` come from `rq.skilllist.page()` and `page_count()`.
+
 ## 2.17.0
 
 Phase 5 of what the hub UI kit left (`notes/plans/plan-ui-kit-leftovers.md` in the workspace, section 11), its second part: the skill window. Lua over the game's own buttons; the only C change is an option of `rq.skilllist.install`.

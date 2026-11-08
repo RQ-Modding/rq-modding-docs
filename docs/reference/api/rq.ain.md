@@ -22,6 +22,7 @@ check the count it gets back.
 | [`rq.ain.global`](#rqainglobal) | Reads a game global that holds an int, bool, float or string. |
 | [`rq.ain.set_global`](#rqainset_global) | Writes a game global, as `rq.ain.global` reads it: `set_global(name, [step, ...,] value)`. |
 | [`rq.ain.global_len`](#rqainglobal_len) | Returns the size of an array global. |
+| [`rq.ain.set_global_len`](#rqainset_global_len) | Makes an array global longer or shorter, as the game's own `Realloc` does. |
 | [`rq.ain.skip_msgbox`](#rqainskip_msgbox) | Removes the game's message boxes whose text contains `needle`. |
 | [`rq.ain.skip_sdl_msgbox`](#rqainskip_sdl_msgbox) | Swallows the engine's own error boxes for the TADA and HTTP network checks (`getserverversion`). |
 | [`rq.ain.find`](#rqainfind) | Writes the AIN functions whose name contains `needle` to the log. |
@@ -278,6 +279,33 @@ Many game arrays start at 1 and leave 0 unused, so the size can be one more than
 | Returns | Type | Description |
 | --- | --- | --- |
 | `size` | `integer` | The number of elements. |
+
+### rq.ain.set_global_len
+
+```lua
+rq.ain.set_global_len(name, ...)
+```
+
+`since 2.18.0`
+
+Makes an array global longer or shorter, as the game's own `Realloc` does.
+
+Values that fit are kept; new elements are 0, false, an empty string or an empty struct. Only an
+array of one dimension. The array is the game's own state and goes into the next save at its new
+size, and a save made before brings back the old size, so grow it again where it is used (for
+example in a `before` hook). It is there only once the game runs, not while `init.lua` loads.
+
+Raises an error for an unknown name, a value that is not an array, more than one dimension, or a
+size below 0 or above 65536.
+
+```lua
+if rq.ain.global_len("取得可能スキル") < 145 then rq.ain.set_global_len("取得可能スキル", 145) end
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `name` | `string` | The global's name. |
+| `...` | `integer\|string` | Indexes and field names to reach an inner array, then the new size. |
 
 ### rq.ain.skip_msgbox
 

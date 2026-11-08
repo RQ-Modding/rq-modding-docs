@@ -1,17 +1,26 @@
 # rq.skilllist
 
-`since 0.2.0`
+`since 0.2.0` `changed 2.18.0`
 
 Pages the Potential Skills grid, 36 skills a page.
 
-The engine keeps up to 144 buy-list rows (index 0 to 143) and cuts each page's 36. Lua decides the
-page. Opening the menu goes back to page 1. Known Skills is not paged. A page is 36 rows of the
-filtered buy list in the order they were added, then sorted with `compSkill`.
+The game keeps the skills a character can buy in rows 1 to 60 of three arrays (`取得可能スキル`,
+`取得可能スキルポイント`, `取得不可能スキル説明`) and shows the first 36. With `install`, the arrays
+hold rows 1 to 144 and the list shows them 36 at a time. A page is 36 rows of the game's own
+filtered list (no panel color 104, none the character holds) in the order they were added, then
+sorted with `compSkill` as the game sorts. Opening the window goes back to page 1. Known Skills is
+not paged.
+
+It is Lua over the game's own code (`src/lua/skilllist.lua`): the arrays are made longer with
+`rq.ain.set_global_len` whenever the game fills them, `スキルポン` stops at row 145 instead of 54,
+and while the window builds its list `取得可能スキル_数` and `取得可能スキル_番号` answer the page's
+rows. The buy is the game's own. Rows 61 to 144 are emptied when the window closes, so a save holds
+only what the game's 60 rows would.
 
 The page buttons are a mod's own: `install{ buttons = false }`, then `rq.gamebutton` entries in the
 `"skill-window"` group that set the page and call `rq.skilllist.refresh`. `install()` with no
-options also draws the engine's old Previous Page and Next Page, for mods made before 2.17.0;
-`on_buttons` belongs to those.
+options adds two such entries for the mod, Previous Page and Next Page (`<mod id>.skilllist-prev`
+and `-next`), for mods made before 2.17.0; `on_page` greys them and `on_buttons` gets their ids.
 
 ```lua
 rq.skilllist.install({ buttons = false })
@@ -28,7 +37,7 @@ rq.gamebutton.add({ group = "skill-window", id = "next", label = "Next Page",
 
 | Name | Summary |
 | --- | --- |
-| [`rq.skilllist.install`](#rqskilllistinstall) | Patches the buy list and the cut at 36, and with `buttons` the engine's two page buttons. |
+| [`rq.skilllist.install`](#rqskilllistinstall) | Turns the paged list on, and with `buttons` adds Previous Page and Next Page. |
 | [`rq.skilllist.set_page`](#rqskilllistset_page) | Sets the page used the next time the grid is cut. |
 | [`rq.skilllist.page`](#rqskilllistpage) | Returns the page the grid shows, or will show when it is next cut. |
 | [`rq.skilllist.refresh`](#rqskilllistrefresh) | Builds the Potential Skills list again for the character shown, as the game does after a buy. |
@@ -40,24 +49,28 @@ rq.gamebutton.add({ group = "skill-window", id = "next", label = "Next Page",
 rq.skilllist.install(opts) -> boolean
 ```
 
-`since 0.2.0` `changed 2.17.0`
+`since 0.2.0` `changed 2.17.0` `changed 2.18.0`
 
-Patches the buy list and the cut at 36, and with `buttons` the engine's two page buttons.
+Turns the paged list on, and with `buttons` adds Previous Page and Next Page.
 
-Calling it again does nothing more, except that a call with `buttons` adds the engine's buttons
-when an earlier call left them out.
+Calling it again does nothing more, except that a call with `buttons` adds the two buttons when an
+earlier call left them out.
 
-picture.
+Raises an error for `opts` that is not a table, or when `スキルポン`'s stop at 54 is not found.
+
+entries were added (before, they always took the first row).
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `opts` *(optional)* | `{buttons?: boolean}` | `buttons = false` leaves out the engine's Previous Page and Next Page, for a mod that makes its own with `rq.gamebutton`. Default true. |
+| `opts` *(optional)* | `{buttons?: boolean}` | `buttons = false` leaves out Previous Page and Next Page, for a mod that makes its own with `rq.gamebutton`. Default true. |
 
 | Returns | Type | Description |
 | --- | --- | --- |
 | `ok` | `boolean` | true when the patch is in place. |
 
-> Changed in 2.17.0: `opts.buttons`; the engine's buttons are at y 660 (were 652), under the list's
+> Changed in 2.17.0: `opts.buttons`; the buttons are at y 660 (were 652), under the list's picture.
+
+> Changed in 2.18.0: The buttons are the calling mod's `"skill-window"` entries, placed in the order
 
 ### rq.skilllist.set_page
 
@@ -131,7 +144,7 @@ Raises an error before `rq.skilllist.install`.
 | --- | --- |
 | [`rq.skilllist.on_open`](#rqskillliston_open) | Calls `fn` when the Potential Skills menu opens, after the page is set to 1 and before the grid is built. |
 | [`rq.skilllist.on_page`](#rqskillliston_page) | Calls `fn` to decide the page. |
-| [`rq.skilllist.on_buttons`](#rqskillliston_buttons) | Calls `fn` after the engine's Previous and Next were made, and again whenever the window makes them again. |
+| [`rq.skilllist.on_buttons`](#rqskillliston_buttons) | Calls `fn` after each build of the list, with the ids of the Previous and Next that `install()` added. |
 
 ### rq.skilllist.on_open
 
@@ -139,12 +152,10 @@ Raises an error before `rq.skilllist.install`.
 rq.skilllist.on_open(fn) -> fun()
 ```
 
-`since 0.2.0` `changed 0.14.0` `changed 0.23.0`
+`since 0.2.0` `changed 2.18.0` `changed 0.14.0` `changed 0.23.0`
 
 Calls `fn` when the Potential Skills menu opens, after the page is set to 1 and before the grid is
 built.
-
-Up to 16 callbacks.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -153,6 +164,8 @@ Up to 16 callbacks.
 | Returns | Type | Description |
 | --- | --- | --- |
 | `remove` | `fun()` | Removes this callback. |
+
+> Changed in 2.18.0: No limit on the number of callbacks (was 16).
 
 > Changed in 0.14.0: Every mod's callback runs.
 
@@ -164,13 +177,14 @@ Up to 16 callbacks.
 rq.skilllist.on_page(fn) -> fun()
 ```
 
-`since 0.2.0` `changed 0.14.0` `changed 0.23.0`
+`since 0.2.0` `changed 0.14.0` `changed 2.18.0` `changed 0.23.0`
 
 Calls `fn` to decide the page.
 
 It is also called once per arrow while the buttons are built: false or nil greys that arrow out, so
 its click plays the game's deny sound and does not call Lua. An enabled click calls it again. The
-last callback that answers (not nil) decides; all nil denies. Up to 16 callbacks.
+last callback that answers (not nil) decides; all nil denies. With no callback, the page moves while it
+stays between 1 and the page count.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -182,6 +196,8 @@ last callback that answers (not nil) decides; all nil denies. Up to 16 callbacks
 
 > Changed in 0.14.0: Every mod's callback runs; the last answer decides.
 
+> Changed in 2.18.0: No limit on the number of callbacks (was 16).
+
 > Changed in 0.23.0: Returns a remover.
 
 ### rq.skilllist.on_buttons
@@ -190,13 +206,15 @@ last callback that answers (not nil) decides; all nil denies. Up to 16 callbacks
 rq.skilllist.on_buttons(fn) -> fun()
 ```
 
-`since 0.2.0` `changed 0.14.0` `changed 0.23.0`
+`since 0.2.0` `changed 0.14.0` `changed 2.18.0` `changed 0.23.0`
 
-Calls `fn` after the engine's Previous and Next were made, and again whenever the window makes them again.
+Calls `fn` after each build of the list, with the ids of the Previous and Next that `install()` added.
 
-Pass the ids to `rq.agent.control` so tests can press them. Only with the engine's buttons
-(`install()` without `buttons = false`); a mod's own buttons are named by `rq.gamebutton`. Up to 16
-callbacks.
+Pass the ids to `rq.agent.control` so tests can press them. Only with those buttons (`install()`
+without `buttons = false`); they are also agent controls already, `<mod id>.skilllist-prev` and
+`-next`, as every `rq.gamebutton` entry.
+
+200038); no limit on the number of callbacks (was 16).
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -207,5 +225,7 @@ callbacks.
 | `remove` | `fun()` | Removes this callback. |
 
 > Changed in 0.14.0: Every mod's callback runs.
+
+> Changed in 2.18.0: The ids are those of `"skill-window"` cells, 200101 to 200104 (were 200037 and
 
 > Changed in 0.23.0: Returns a remover.

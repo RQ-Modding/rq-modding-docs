@@ -231,16 +231,17 @@ Call it from `rq.chara.on_recalc`, so it is applied on every recalculation.
 rq.chara.offers() -> rq.OfferRow[]
 ```
 
-`since 0.2.0`
+`since 0.2.0` `changed 2.18.0`
 
 Lists the rows of the skill buy list that hold a skill.
 
-With the paged buy list of `rq.skilllist` on, these are the rows its buttons read; otherwise the
-game's `取得可能スキル`.
+They are the game's `取得可能スキル`: rows 1 to 60, or 1 to 144 with `rq.skilllist` on.
 
 | Returns | Type | Description |
 | --- | --- | --- |
 | `rows` | [`rq.OfferRow`](../types/rq.OfferRow.md) `[]` | The rows in order; empty when there is no buy list. |
+
+> Changed in 2.18.0: With `rq.skilllist`, the game's own arrays (made longer) instead of the engine's copy.
 
 ### rq.chara.set_offer
 
@@ -252,7 +253,7 @@ rq.chara.set_offer(index, skillId, points)
 
 Replaces the skill in a buy-list row.
 
-It writes both the game's list and the paged list's copy. The row's level text stays as it is.
+It writes the game's list. The row's level text stays as it is.
 
 Raises an error for an index outside the list, or for `points` when the game has no price list.
 

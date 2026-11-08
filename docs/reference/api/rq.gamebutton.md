@@ -14,9 +14,7 @@ row as the control `mods` of the `system-menu` screen, and the entries as that c
 `"skill-window"` (2.17.0): buttons under the Potential Skills list (status, then Skills), in the
 look of the castle's buttons (CG 11153, 206 × 30, the label in the game's font, shrunk to fit).
 They sit two to a row under the list's picture: x 531 and 745, y 660 and 692, in the order they
-were added; a fifth is not placed (`placed` false, and the log says so). With the engine's own page
-buttons (`rq.skilllist.install()` without `buttons = false`) they take the first row, and entries
-start on the second. The window makes them again on each build of its list (open, a buy, a
+were added; a fifth is not placed (`placed` false, and the log says so). The window makes them again on each build of its list (open, a buy, a
 character change, `rq.skilllist.refresh`), asking `enabled` each time. A greyed button is the
 game's inactive look and plays the deny sound. The arrow keys reach them: Down from a column's last
 skill goes to the button under it (a greyed one is skipped); from a button Up goes to that column's
