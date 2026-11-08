@@ -42,6 +42,8 @@ A look for the kit: pieces, text styles, colors and sounds.
 | `close` *(optional)* | `{normal:` [`rq.UiPiece`](rq.UiPiece.md) `, hover:` [`rq.UiPiece`](rq.UiPiece.md) `}` | The close button. Since 2.6.0. |
 | `hub_page` *(optional)* | `table` | A page over the hub: `x`, `y`, `w`, `h`, `dim`, `outer`, `line` (colors), `title` (a text style), `pad`. Since 2.6.0. |
 | `options` *(optional)* | `table` | The choice menu's look for `rq.uikit.options`: `base` (the menu's background), `sep`, `panels` (the text row's pieces for 1 to 3 lines, with `ph`, their height), `text`, `text_fit`, `comment` (text styles). Since 2.7.0. |
+| `vault` *(optional)* | `table` | The vault's item rows: `rows` (the backgrounds by style: vault, storage, and since 2.9.0 shop and equip), `name`, `info`, `number`, `level_text`, `count` (text styles), `name_fit`, `info_fit`, `level_fit`, `level`, `locked`, `count_box`, `stock_box` (2.9.0) (pieces), `rank` (the first rank badge CG), `kinds` (the kind marks' CGs), `current` (a color), `buttons` (the row buttons' pieces and places), `gold` (the gold digits), `price` (2.9.0: the shop's price place, cells and gap). Since 2.8.0. |
+| `filters` *(optional)* | `table` | The vault's filter column: `back`, `backs` (2.9.0: the column's grey by style), `cats`, `classes`, `lock`, `equip` (2.9.0) (each with `lit` and `dim` pieces), and `sub` (the sub-filters' panel: `base`, `title`, and by category `title`, `cgs`, `names`). Since 2.8.0. |
 
 ## Used by
 

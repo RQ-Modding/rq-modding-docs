@@ -39,6 +39,11 @@ rq.item.transform(ii, "mymod:broken_lens")                       -- later, it br
 | [`rq.item.equipped`](#rqitemequipped) | Returns the instances a character has equipped. |
 | [`rq.item.number`](#rqitemnumber) | Returns the item number of an instance. |
 | [`rq.item.id_of`](#rqitemid_of) | Returns the text id of a defined item number. |
+| [`rq.item.lock`](#rqitemlock) | Locks an item in the vault or the storage, or unlocks it, as the vault's LOCK and UNDO LOCK do (`アイテム_ＬＯＣＫ`, `アイテム_ＵＮＬＯＣＫ`). |
+| [`rq.item.sell`](#rqitemsell) | Sells an item from the vault, the storage or a character's gear, as the vault's SELL does (`アイテム_売却`): the game asks "Sell ...?" first, and on Yes the item goes, the shop restocks it, and you get 100 gold for an item priced over 1000, else 10. |
+| [`rq.item.donate`](#rqitemdonate) | Donates an item from the vault, the storage or a character's gear, as the vault's DONATE does (`アイテム_寄付`): the game asks "Donate ...?" first, and on Yes the item goes, the shop restocks it, and the donations count goes up by one. |
+| [`rq.item.store`](#rqitemstore) | Moves an item between the vault and the storage, as dragging a row on the game's storage screen does (`アイテム_存在設定` 7 or 11). |
+| [`rq.item.buy`](#rqitembuy) | Buys an item from the shop's stock, as the shop's drag of a row onto the vault or a party member does (`T_EquitItem::setItem`): the game asks "Purchase ...?" first, and on Yes the item goes into the vault, its price comes off the money, and the shop's spent total goes up by it. |
 
 ### rq.item.define
 
@@ -258,6 +263,169 @@ Returns the text id of a defined item number.
 | Returns | Type | Description |
 | --- | --- | --- |
 | `id` | `string\|nil` | The text id, or nil when no mod defined that number. |
+
+### rq.item.lock
+
+```lua
+rq.item.lock(ii, on) -> boolean
+```
+
+`since 2.9.0`
+
+Locks an item in the vault or the storage, or unlocks it, as the vault's LOCK and UNDO LOCK do
+(`アイテム_ＬＯＣＫ`, `アイテム_ＵＮＬＯＣＫ`).
+
+A locked item cannot be sold or donated. `rq.uikit` rows show the change at once.
+
+Raises an error when `ii` is not a whole number.
+
+```lua
+rq.item.lock(ii)        -- lock
+rq.item.lock(ii, false) -- unlock
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `ii` | `integer` | The instance. |
+| `on` *(optional)* | `boolean` | false unlocks; default true. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `done` | `boolean` | false when there is no such instance, it is not in the vault or the storage, or it already was. |
+
+### rq.item.sell
+
+```lua
+rq.item.sell(ii, opts) -> boolean
+```
+
+`since 2.9.0` `changed 2.10.0`
+
+Sells an item from the vault, the storage or a character's gear, as the vault's SELL does
+(`アイテム_売却`): the game asks "Sell ...?" first, and on Yes the item goes, the shop restocks it,
+and you get 100 gold for an item priced over 1000, else 10.
+
+The game's question waits inside the call: call it from a callback, not in a loop. While it asks,
+another `sell`, `donate` or `buy` returns false. With `ask = false` it sells at once, with the
+game's sound and the same steps. An item the game will not let go (a quest item) gets the game's
+"cannot be sold" notice, or false without asking. The money on the system bar updates.
+
+An item a character wears comes off first (`キャラ_装備設定` with 0), after the question. One the
+game will not take off gets its "cannot be removed" notice (or false without asking), and one
+that vanishes when taken off is refused. The game never sells worn gear itself; this is the
+vault's steps on an item taken off.
+
+Raises an error when `ii` is not a whole number, or `opts` is not a table.
+
+```lua
+if rq.item.sell(ii, { ask = false }) then rq.log("sold", ii) end
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `ii` | `integer` | The instance. |
+| `opts` *(optional)* | `{ask?: boolean}` | `ask` (default true): the game's question first. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `sold` | `boolean` | false when it was not sold: no such instance, not in the vault, the storage or a character's gear, locked, a quest item, one that cannot come off or vanishes when it does, No, or another question showing. |
+
+> Changed in 2.10.0: Items a character wears.
+
+### rq.item.donate
+
+```lua
+rq.item.donate(ii, opts) -> boolean
+```
+
+`since 2.9.0` `changed 2.10.0`
+
+Donates an item from the vault, the storage or a character's gear, as the vault's DONATE does
+(`アイテム_寄付`): the game asks "Donate ...?" first, and on Yes the item goes, the shop restocks
+it, and the donations count goes up by one.
+
+The game's question waits inside the call, as with `sell`. With `ask = false` it donates at once.
+An item the game will not let go gets its "cannot be donated" notice, or false without asking. An
+item a character wears comes off first, as with `sell`.
+
+Raises an error when `ii` is not a whole number, or `opts` is not a table.
+
+```lua
+rq.item.donate(ii)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `ii` | `integer` | The instance. |
+| `opts` *(optional)* | `{ask?: boolean}` | `ask` (default true): the game's question first. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `donated` | `boolean` | false when it was not donated, as with `sell`. |
+
+> Changed in 2.10.0: Items a character wears.
+
+### rq.item.store
+
+```lua
+rq.item.store(ii, where) -> boolean
+```
+
+`since 2.9.0`
+
+Moves an item between the vault and the storage, as dragging a row on the game's storage screen
+does (`アイテム_存在設定` 7 or 11).
+
+Raises an error when `ii` is not a whole number, or `where` is not "vault" or "storage".
+
+```lua
+rq.item.store(ii, "storage")
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `ii` | `integer` | The instance. |
+| `where` | `"vault"\|"storage"` | Where it goes. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `moved` | `boolean` | false when there is no such instance or it is in neither. |
+
+### rq.item.buy
+
+```lua
+rq.item.buy(ii, opts) -> boolean
+```
+
+`since 2.10.0`
+
+Buys an item from the shop's stock, as the shop's drag of a row onto the vault or a party member
+does (`T_EquitItem::setItem`): the game asks "Purchase ...?" first, and on Yes the item goes into
+the vault, its price comes off the money, and the shop's spent total goes up by it.
+
+With `chara` the item is bought onto that character and equipped (`キャラ_装備設定`), as the drag
+onto a party member does: the character must be able to wear it ("Unable to equip."), and the
+slot's old item must come off, with the game's notice or questions for one that cannot or that
+vanishes. Short of money, the game says "Not enough money.". The notices show only when asking;
+with `ask = false` it buys at once and returns false where the game would have said no, and an
+old item that vanishes when taken off also stops it. The question waits inside the call, as with
+`sell`. The money on the system bar updates. Buying does not restock the shop.
+
+Raises an error when `ii` or `chara` is not a whole number, or `opts` is not a table.
+
+```lua
+local ii = rq.uikit.item_picker({ x = 538, y = 0, id = "shop", where = "shop" })
+if ii and rq.item.buy(ii) then rq.log("bought", ii) end
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `ii` | `integer` | The instance, in the shop's stock (place 6). |
+| `opts` *(optional)* | `{ask?: boolean, chara?: integer}` | `ask` (default true): the game's question and notices. `chara`: a roster slot to buy onto. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `bought` | `boolean` | false when it was not bought: not in the shop's stock, not enough money, a character who cannot wear it, an old item that cannot come off, No, or another question showing. |
 
 ## Events
 

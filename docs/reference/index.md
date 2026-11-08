@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.7.0.
+Loader version 2.10.0.
 
 ## Namespaces
 
@@ -143,6 +143,8 @@ Loader version 2.7.0.
 | [`rq.UiBox`](types/rq.UiBox.md) | A row or column for `rq.uikit.row` and `col`. |
 | [`rq.UiButtonStyle`](types/rq.UiButtonStyle.md) | A button style of the hub theme: two states of a grey button and its text. |
 | [`rq.UiChoice`](types/rq.UiChoice.md) | One row of `rq.ui.choose`. |
+| [`rq.UiFilterState`](types/rq.UiFilterState.md) | A filter state for `rq.uikit.filters` and `rq.uikit.item_filter`: what the vault's filter column has picked. 0 or nil is "all". |
+| [`rq.UiItemRow`](types/rq.UiItemRow.md) | An item row's data, as `rq.uikit.item_data` reads it from the game. A table of your own with the same fields draws a made-up row. |
 | [`rq.UiMenuItem`](types/rq.UiMenuItem.md) | One entry of `rq.uikit.menu`. |
 | [`rq.UiOptionRow`](types/rq.UiOptionRow.md) | One row of `rq.uikit.options`. |
 | [`rq.UiPiece`](types/rq.UiPiece.md) | A part of a CG drawn at any size: the edges stay as they are, the middle stretches. |

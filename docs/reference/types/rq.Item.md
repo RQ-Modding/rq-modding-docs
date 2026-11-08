@@ -17,4 +17,4 @@ An owned item instance, from `rq.items()`.
 
 ## Used by
 
-[`rq.items.list`](../api/rq.items.md#rqitemslist)
+[`rq.items.list`](../api/rq.items.md#rqitemslist), [`rq.uikit.item_filter`](../api/rq.uikit.md#rquikititem_filter), [`rq.uikit.item_sort`](../api/rq.uikit.md#rquikititem_sort)

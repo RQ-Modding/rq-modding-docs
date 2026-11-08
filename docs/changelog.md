@@ -5,6 +5,42 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.10.0
+
+Phase 1 of what the hub UI kit left (`notes/plans/plan-ui-kit-leftovers.md` in the workspace): the lists and the shop, as the game does them. All of it is Lua over the game's own calls.
+- `rq.item.buy(ii, opts)`: buys an item from the shop's stock as the shop's drag does, with the game's "Purchase ...?" question, its "Not enough money." notice, the money and the shop's spent total. `chara` buys onto a character and equips it, as the drag onto a party member does. `ask = false` buys at once.
+- `rq.item.sell` and `donate` take an item a character wears: it comes off first, after the game's question, with the game's "cannot be removed" notice for one that cannot; one that vanishes when taken off is refused.
+- `rq.uikit.scrollbar`: the arrows and the track move on the press, as the game's; held, they wait 250 ms and move again on every update. The track stops at the mouse. (Before, they moved once, on the release.)
+- `rq.uikit.sort`: `again` (a button that can be clicked while current) and a third return, the button clicked.
+- `rq.uikit.item_picker`: the game's SORT ("Default Sort" and the mode's short name) at the bottom right of the column, in place of the sort button under it; the column's grey goes down to the panel's foot. The sort starts at the stores' saved mode (`アイテムソートモード`) and a new one is saved, as the game's stores do; the menu has the game's rows (no "Default" row). A new sort goes back to the top.
+- `rq.uikit.item_storage`: the vault's filter column and SORT, applied to both lists, as the game's storage screen does; the counts are of the lists as filtered. Fix: it sorted by item number whatever the stores' saved mode, so its order differed from the game's when the player had picked a sort.
+- `rq.uikit.options`: `h` (default and at most 762); past it the rows under the message scroll, with the game's scroll bar right of the base, by the wheel, the bar and the keys' cursor.
+
+## 2.9.0
+
+What phase 4 of the hub UI kit left for later: a mod can lock, sell, donate and store items as the vault does, and the vault's widgets get the shop's and a character's lists, keys, dragging and two-line names. All of it is Lua over the game's own calls (`src/lua/item.lua`, `src/lua/uikit_vault.lua`).
+- `rq.item.lock(ii, on)`, `rq.item.sell(ii, opts)`, `rq.item.donate(ii, opts)`, `rq.item.store(ii, where)`: what the vault's LOCK / UNDO LOCK, SELL and DONATE buttons and the storage screen's drag do, with the game's own calls, sounds, restock, gold and donation count. Sell and donate ask the game's question first (`ask = false` skips it); they refuse a locked item, as the vault hides those buttons on one. Only items in the vault or the storage.
+- `rq.uikit.item_row` and `item_list`: the shop's style (`"shop"`: green, the price in gold digits, no LOCKED) and a character's equip list (`"equip"`). A name too long at 12 pixels wraps in two lines of 12, as the game's does, instead of being cut. A locked row no longer shows SELL and DONATE. `item_data` has `discard` (the game lets it go).
+- `rq.uikit.item_list`: `keys` (Up, Down, Page Up, Page Down, Home, End, Enter, and L, S, D on the current row, repeating as the game's) and a fifth return, `chosen`; `drag` (a group: rows are dragged between the group's lists, and `rq.uikit.item_dropped(group)` returns the row dropped).
+- `rq.uikit.item_storage(opts)`: the game's storage screen, the storage and the vault side by side with their counts; dragging a row moves the item (`rq.item.store`).
+- `rq.uikit.filters`: `style` ("vault", "shop" without Locked / Unlocked, "equip" with Equippable / Unequippable); the state has `equip` and `chara`, and `item_filter` tests them with the vault's `アイテム倉庫_一覧_装備タイプ確認`.
+- `rq.uikit.item_picker`: `where = "shop"` (the shop's stock, place 6) and `"quest"` (the quest storage, place 8), `chara` (a character's equip list), `keys`; the row style and the column follow the place. It lists again after an `rq.item` change. A click on the current row picks it again.
+- `rq.uikit.options`: `keys` (Up and Down move a cursor that wraps, Enter picks, Esc picks Return).
+- `rq.uikit.number`: `align` and `gap`.
+- Fix: the picker's list did not go back to its top when a filter changed (it reset a state of the wrong name).
+
+## 2.8.0
+
+The vault's lists and filters, phase 4 of the hub UI kit (`notes/plans/plan-ui-kit-hub.md` in the workspace). The widgets are drawn from the game's own CGs, and the data, the filters and the sorts are the game's own calls.
+- `rq.uikit.item_data(ii)`: an item instance's row data from the game (name, level line, stats line, icon, rank, kind, lock, price, place, the classes that may equip it). `rq.uikit.item_refresh(ii)` makes lists read it again at once.
+- `rq.uikit.item_row(row, opts)`: a vault item row, as the game draws it, with the stats line wrapped and colored as the game's (its `|` and backquote marks, white numbers), the vault or storage background, and the LOCK / UNDO LOCK, SELL and DONATE buttons. A row can be an instance or a table of your own.
+- `rq.uikit.item_list(rows, index, opts)`: the vault's list of 6 rows with the game's scroll bar.
+- `rq.uikit.filters(state, opts)`: the vault's filter column (categories, classes, Locked / Unlocked) and the sub-filter panel of the picked category, with the vault's toggles; `rq.uikit.item_filter(list, state)` applies a state with the vault's own tests.
+- `rq.uikit.item_sort(list, mode)` sorts with the vault's comparers; `rq.uikit.item_sorts()` lists the modes with the game's names.
+- `rq.uikit.number(value, opts)`: the vault's counter font, or the gold digits.
+- `rq.uikit.item_picker(opts)`: a picker over the items in the vault, the storage or both, laid out as the vault (list, filters, count, a sort button that opens the game's sort menu). It returns the instance picked and moves nothing.
+- The hub theme has the vault's pieces (`vault`, `filters`). The vault's widgets are in their own file, `src/lua/uikit_vault.lua`.
+
 ## 2.7.0
 
 The options list, phase 3 of the hub UI kit (`notes/plans/plan-ui-kit-hub.md` in the workspace).
