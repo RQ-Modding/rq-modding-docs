@@ -5,6 +5,13 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.17.0
+
+Phase 5 of what the hub UI kit left (`notes/plans/plan-ui-kit-leftovers.md` in the workspace, section 11), its second part: the skill window. Lua over the game's own buttons; the only C change is an option of `rq.skilllist.install`.
+- `rq.gamebutton`'s group `"skill-window"`: buttons under the Potential Skills list, in the castle buttons' look (CG 11153, the label in the game's font), two to a row under the list's picture (x 531 and 745, y 660 and 692), up to four. They are the game's own buttons in the list's button group, made again with each build of the list; `enabled` greys one as the game does. A click runs `on_click` with the window open. The arrow keys reach them from a column's last skill, and `tip` shows the game's skill comment. Agents see them as `<mod id>.<id>` on the `skill-shop` screen. `groups()` lists the group with each entry's `placed`, `button`, `x` and `y`.
+- `rq.skilllist.install(opts)`: `buttons = false` leaves out the engine's Previous Page and Next Page. They stay for mods made before, now at y 660 (were 652), under the list's picture instead of over its last rows.
+- `rq.skilllist.page()`: the page shown. `rq.skilllist.refresh()`: builds the list again for the character shown, as the game does after a buy.
+
 ## 2.16.0
 
 Phase 5 of what the hub UI kit left (`notes/plans/plan-ui-kit-leftovers.md` in the workspace, section 10): buttons of mods in the game's own menus, made by the game itself. All of it is Lua over one new C call.

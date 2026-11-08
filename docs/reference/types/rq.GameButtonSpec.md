@@ -8,10 +8,10 @@ An entry for `rq.gamebutton.add`.
 | --- | --- | --- |
 | `id` | `string` | The mod's own name for the entry; one per mod. |
 | `label` | `string` | The text of its row in the list. |
-| `on_click` | `fun(entry:` [`rq.GameButtonHandle`](rq.GameButtonHandle.md) `)` | Runs when the player picks it, after the menus close. |
-| `group` *(optional)* | `"system-menu"` | The game's group. Default "system-menu", the only one for now. |
-| `enabled` *(optional)* | `boolean\|fun(): boolean` | false leaves it out of the list; a function is asked each time. Default true. |
-| `tip` *(optional)* | `string` | The game's comment beside the list while the row is under the mouse. |
+| `on_click` | `fun(entry:` [`rq.GameButtonHandle`](rq.GameButtonHandle.md) `)` | Runs when the player picks it: in "system-menu" after the menus close; in "skill-window" with the window still open, after the game's click sound. |
+| `group` *(optional)* | `"system-menu"\|"skill-window"` | The game's group. Default "system-menu". |
+| `enabled` *(optional)* | `boolean\|fun(): boolean` | "system-menu": false leaves it out of the list. "skill-window": false greys the button (a click plays the deny sound and runs nothing). A function is asked each time the list or the window's skill list is built. Default true. |
+| `tip` *(optional)* | `string` | The game's comment while the entry is under the mouse or the keys: beside the list ("system-menu"), or under the button with the label as its title ("skill-window"). |
 
 ## Used by
 

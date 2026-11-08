@@ -1,10 +1,11 @@
 # Buttons in the game's menus
 
 Since loader 2.16.0 a mod can put a way in to itself inside the game's own menus, drawn and moved
-by the game itself, instead of a HUD button over the screen. Two places so far:
+by the game itself, instead of a HUD button over the screen. Three places so far:
 
 - the **SYSTEM menu**: one MODS row for every mod, with each mod's entries in a list;
-- **Rance Castle**: a room of the mod's own.
+- **Rance Castle**: a room of the mod's own;
+- the **skill window** (2.17.0): buttons under the Potential Skills list.
 
 ## An entry in the SYSTEM menu
 
@@ -71,5 +72,39 @@ face and the NEW mark, and moves the keys to it.
 
 Make rooms in `init.lua`. There are 21 area numbers for every mod together, given in load order.
 
-See [`rq.gamebutton`](../reference/api/rq.gamebutton.md) and
+## Buttons in the skill window
+
+```lua
+rq.gamebutton.add({
+  group = "skill-window",
+  id = "plan",
+  label = "Plan Skills",
+  tip = "Opens My Mod's skill planner",
+  on_click = function()
+    rq.log("the skill window is still open")
+  end,
+})
+```
+
+The Potential Skills list (a character's status, then Skills) gets buttons under its picture, in
+the look of the castle's buttons: the game's grey plate with the label in its font, shrunk to fit.
+They are two to a row, at x 531 and 745, y 660 and 692, in load order; there is room for four, and a
+fifth is not placed (the log says so).
+
+- The window makes its buttons again each time it builds the list: on open, after a buy, on a
+  character change. `enabled` is asked each time; false greys the button in the game's own way, and
+  a click on it plays the deny sound.
+- **A click** runs `on_click` with the window still open, after the game's click sound. To show
+  something new in the list, change it and call `rq.skilllist.refresh()`, which builds the list
+  again as the game does after a buy.
+- **The keys.** Down from the last skill of a column goes to the button under it (a greyed one is
+  skipped); from a button, Up goes back to the list, and Left and Right to the other button of the
+  row. Enter presses it.
+- **`tip`** is the game's skill comment, with the label as its title, under the button.
+
+Potential Skill Pages makes its Previous Page and Next Page this way, with
+`rq.skilllist.install{ buttons = false }`, `rq.skilllist.page()` and `refresh()`. Agents see each
+button as the control `<mod id>.<id>` of the `skill-shop` screen.
+
+See [`rq.gamebutton`](../reference/api/rq.gamebutton.md), [`rq.skilllist`](../reference/api/rq.skilllist.md) and
 [`rq.castle`](../reference/api/rq.castle.md) for every field.
