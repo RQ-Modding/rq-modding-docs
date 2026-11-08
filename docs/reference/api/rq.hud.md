@@ -39,7 +39,7 @@ end
 | [`rq.hud.hit`](#rqhudhit) | Returns whether the mouse is inside a box on this update. |
 | [`rq.hud.clicked`](#rqhudclicked) | Returns whether the left button went down inside a box on this update. |
 | [`rq.hud.block_game_input`](#rqhudblock_game_input) | Hides the mouse buttons from the game, so a click on the HUD does not also click the game. |
-| [`rq.hud.block_keys`](#rqhudblock_keys) | Hides the keyboard from the game for this update. |
+| [`rq.hud.block_keys`](#rqhudblock_keys) | Hides the keyboard, or some keys, from the game for this update. |
 | [`rq.hud.capture_mouse`](#rqhudcapture_mouse) | Hides the whole mouse from the game for this update: where it is, its buttons and the wheel. |
 | [`rq.hud.text_begin`](#rqhudtext_begin) | Starts reading typed text. |
 | [`rq.hud.text_value`](#rqhudtext_value) | Returns the typed text and whether reading is on. |
@@ -416,15 +416,27 @@ mark the game's controls under them `covered` in `rq.ui.get`.
 ### rq.hud.block_keys
 
 ```lua
-rq.hud.block_keys()
+rq.hud.block_keys(keys)
 ```
 
-`since 0.3.0`
+`since 0.3.0` `changed 2.12.0`
 
-Hides the keyboard from the game for this update.
+Hides the keyboard, or some keys, from the game for this update.
 
-Call it on every update while a modal HUD is open. The mouse buttons are not affected (use
-`rq.hud.block_game_input`), and `rq.input.key` still reads the real keys.
+With no argument every key is hidden. With a list, only those keys are, by name (as
+`rq.input.code` takes them) or by code; calls on one update add up. Call it on every update while
+a modal HUD is open. The mouse buttons are not affected (use `rq.hud.block_game_input`; a mouse
+button in the list raises an error), and `rq.input.key` still reads the real keys.
+
+```lua
+rq.hud.block_keys({ "up", "down", "enter" }) -- the game still gets Esc and the rest
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `keys` *(optional)* | `(string\|integer)[]` | The keys to hide, by name or code. Default: every key. |
+
+> Changed in 2.12.0: `keys`: only some keys.
 
 ### rq.hud.capture_mouse
 

@@ -1,6 +1,6 @@
 # rq.uikit
 
-`since 1.7.0`
+`since 1.7.0` `changed 2.12.0`
 
 Widgets in the look of the game's Config screen and, since 2.6.0, of its hub.
 
@@ -16,7 +16,21 @@ It works in immediate mode: call the widgets from `rq.on_frame` on every update 
 values yourself, and pass them back in. Each widget returns the new value and whether it changed on
 this update. While the mouse is over a widget the game sees no mouse. Hover and click play the
 game's own sounds (1001 and 1002). The widgets are listed for `rqmod-ctl ui` in the section `"kit"`.
-Keyboard moves between widgets are not there yet.
+
+The keys (2.12.0): the arrow keys move one cursor between the widgets that take a click, and Enter
+clicks the one under it, as the game's own screens do. The mouse and the keys share it: moving the
+mouse over a widget puts the cursor there, and an arrow then goes on from it; the mouse is never
+moved. An arrow goes to the nearest widget that way, one whose center is past the edge of the
+cursor's widget (the gap along the arrow plus twice the offset across it); with none, it wraps to
+the widget the other way that lines up best, the farthest of those, as a row of tabs wraps. With no
+cursor, Down and Right go to the first widget drawn, Up and Left to the last. A widget's `nav`
+changes where its arrows go. In a list (`list`, `quest_list`, `options`, `item_list`) Up and Down
+go through its rows, also those scrolled out of sight, and the list scrolls to follow; at the end
+of a list that does not wrap they go on to the nearest widget outside it. A focused slider moves
+by Page Up and Page Down. A held key moves again after 250 ms, then every 50 ms, as the game's.
+The kit takes the keys only on an update where `rq.uikit.keys` is called: inside `page`, on
+Config's Mods tab, and where a mod calls it. Elsewhere its widgets over the game's screens are
+for the mouse, and the arrows stay the game's.
 
 ```lua
 local ui = rq.uikit
@@ -59,6 +73,9 @@ end)
 | [`rq.uikit.last`](#rquikitlast) | Returns where the last widget went, as for a tooltip beside it. |
 | [`rq.uikit.hovered`](#rquikithovered) | Returns whether the mouse was over a kit widget on this update so far. |
 | [`rq.uikit.top`](#rquikittop) | Runs a function now and draws what it draws on top of every widget, as `rq.hud.top` does. |
+| [`rq.uikit.keys`](#rquikitkeys) | Lets the kit take the arrow keys, Enter, Page Up and Page Down on this update. |
+| [`rq.uikit.focused`](#rquikitfocused) | Returns the widget under the keys' cursor. |
+| [`rq.uikit.focus`](#rquikitfocus) | Puts the keys' cursor on a widget, as an arrow would, or takes it away. |
 | [`rq.uikit.state`](#rquikitstate) | Returns what the kit keeps for a widget. |
 | [`rq.uikit.draw`](#rquikitdraw) | Draws a piece of the theme at any size. |
 | [`rq.uikit.copy_theme`](#rquikitcopy_theme) | Returns a deep copy of a theme, to change and pass to `rq.uikit.use`. |
@@ -195,12 +212,14 @@ Draws one of several checkboxes, as the 3D tab's quality.
 rq.uikit.slider(value, opts) -> number, boolean
 ```
 
-`since 1.7.0` `changed 1.8.0`
+`since 1.7.0` `changed 1.8.0` `changed 2.12.0`
 
 Draws the Sound tab's slider.
 
 Drag the knob or click the track; the drag goes on while the button is down, also off the track.
 The wheel over it moves it by `step`, or by a twentieth, and the game does not get that wheel step.
+Under the keys' cursor, Page Down raises it and Page Up lowers it by `step`, or a twentieth (5%),
+as Config's sliders: on the press, then on every update after 250 ms.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -213,6 +232,8 @@ The wheel over it moves it by `step`, or by a twentieth, and the game does not g
 | `changed` | `boolean` | true on the update it changed. |
 
 > Changed in 1.8.0: Added `opts.label`.
+
+> Changed in 2.12.0: Page Up and Page Down.
 
 ### rq.uikit.tabs
 
@@ -443,6 +464,79 @@ end
 |  | `any` | ... What `fn` returns. |
 
 See also: [`rq.hud.top`](rq.hud.md#rqhudtop)
+
+### rq.uikit.keys
+
+```lua
+rq.uikit.keys(opts)
+```
+
+`since 2.12.0`
+
+Lets the kit take the arrow keys, Enter, Page Up and Page Down on this update.
+
+They move the keys' cursor between widgets (see `rq.uikit`) and are hidden from the game
+(`rq.hud.block_keys`); other keys still reach it. Call it on every update the keys should be the
+kit's; `page` calls it, and so do Config's Mods tab, `options` and `item_list` with `keys`.
+
+With `edge`, an arrow that finds no widget that way calls `edge(dir)` and the cursor does not
+wrap: a mod hands the cursor to something else there, as Config's Mods tab gives it back to the
+game's tab row on Up.
+
+Raises an error when `opts` is not a table or `edge` not a function.
+
+```lua
+rq.on_frame(function()
+  if not open then return end
+  rq.uikit.keys()
+  if rq.uikit.button("One", { id = "one", x = 100, y = 200 }) then pick(1) end
+  if rq.uikit.button("Two", { id = "two", x = 300, y = 200 }) then pick(2) end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `opts` *(optional)* | `{edge?: fun(dir: "up"\|"down"\|"left"\|"right")}` | `edge`: called when an arrow finds nothing that way. |
+
+See also: [`rq.uikit.focus`](rq.uikit.md#rquikitfocus)
+
+### rq.uikit.focused
+
+```lua
+rq.uikit.focused() -> any|nil
+```
+
+`since 2.12.0`
+
+Returns the widget under the keys' cursor.
+
+It is the widget the arrows reached or the mouse last moved over. A list row is its list's `id`
+with the row's number, such as "pages.3" for row 3 of a list with `id = "pages"`.
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `id` | `any\|nil` | The widget's `id` (or the kit's own id for one without), or nil for no cursor. |
+
+### rq.uikit.focus
+
+```lua
+rq.uikit.focus(id)
+```
+
+`since 2.12.0`
+
+Puts the keys' cursor on a widget, as an arrow would, or takes it away.
+
+It also calls `rq.uikit.keys` for this update. A widget not drawn on the last update gets the
+cursor when it shows.
+
+```lua
+rq.uikit.focus("start")  -- the page opens with the cursor on its Start button
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `id` | `any\|nil` | The widget's `id`, or a list row's (see `focused`); nil takes the cursor away. |
 
 ### rq.uikit.state
 
@@ -750,7 +844,7 @@ its second one opens the sort menu each time.
 rq.uikit.page(opts, fn) -> boolean
 ```
 
-`since 2.6.0` `changed 2.7.0`
+`since 2.6.0` `changed 2.7.0` `changed 2.12.0`
 
 Draws a page of a mod's own over the hub and runs `fn` in a column inside it.
 
@@ -764,6 +858,8 @@ your own or a key.
 
 A choice menu from `rq.ui.choose` shows over the page. While it does, the page leaves the mouse and
 the keys to the menu, and the right click, Space or Esc that ends the menu does not close the page.
+
+The arrow keys and Enter move the keys' cursor between the page's widgets (`rq.uikit.keys`).
 
 ```lua
 local open = false
@@ -786,13 +882,15 @@ end)
 
 > Changed in 2.7.0: Stays open, under it, while the game's choice menu shows over it.
 
+> Changed in 2.12.0: The arrow keys and Enter move between its widgets.
+
 ### rq.uikit.options
 
 ```lua
 rq.uikit.options(items, opts) -> any|nil
 ```
 
-`since 2.7.0` `changed 2.9.0` `changed 2.10.0` `changed 2.11.0`
+`since 2.7.0` `changed 2.9.0` `changed 2.10.0` `changed 2.11.0` `changed 2.12.0`
 
 Draws the game's choice menu as a widget: its green base, grey rows, separators and a text panel
 at the top, laid out as the game lays out the menu. It is not modal and does not wait: it returns
@@ -803,10 +901,10 @@ The list is 380 wide. With fewer than 3 rows to pick it draws the tall buttons, 
 `message` goes in the text panel at the top, in up to 3 lines of 346 pixels. A long row text gets
 smaller until it fits.
 
-With `keys`, Up and Down move a cursor over the rows that can be picked, wrapping round as the
-game's menu does, and the cursor's row is framed in yellow; Enter picks it, and Esc picks Return.
-Moving the mouse over a row moves the cursor there. The keys are hidden from the game while the
-widget shows (`rq.hud.block_keys`).
+Its rows are on the kit's keys cursor (see `rq.uikit`): Up and Down go through the rows that can be
+picked, wrapping round as the game's menu does, and Enter picks the cursor's row, framed in yellow
+as under the mouse. With `keys` the widget takes the keys itself (`rq.uikit.keys`), and Esc picks
+Return; the arrows, Enter and Esc are hidden from the game while it shows.
 
 The list grows to `h` (default and at most 762 pixels, the game's base). Past it, the rows under
 the message scroll inside the base, with the game's scroll bar right of it (22 pixels more): the
@@ -836,6 +934,8 @@ if pick == 0 then open = false elseif pick then sort_by(pick) end
 > Changed in 2.10.0: `h`, and rows past it scroll.
 
 > Changed in 2.11.0: A row's `comment` box is drawn on the top layer, over widgets drawn later.
+
+> Changed in 2.12.0: The rows are on the kit's keys cursor; Left and Right leave the list.
 
 See also: [`rq.ui.choose`](rq.ui.md#rquichoose)
 
@@ -940,7 +1040,7 @@ if button == "lock" then rq.item.lock(ii) elseif button == "unlock" then rq.item
 rq.uikit.item_list(rows, index, opts) -> integer|nil, boolean, "lock"|"unlock"|"sell"|"donate"|nil, integer|nil, boolean
 ```
 
-`since 2.8.0` `changed 2.9.0` `changed 2.11.0`
+`since 2.8.0` `changed 2.9.0` `changed 2.11.0` `changed 2.12.0`
 
 Draws the vault's item list: rows 128 apart and the game's scroll bar beside them.
 
@@ -949,10 +1049,11 @@ arrows, its track and a drag of the bar scroll it too. A click on a row makes it
 and chooses it. Rows given as instances are read from the game and kept for a second
 (`item_refresh`). The scroll is kept by `opts.id` (`rq.uikit.state("itemlist:<id>").top`).
 
-With `keys`, Up and Down move the current row, Page Up and Page Down six rows, Home and End to the
-first and last, scrolling to keep it shown; a held key repeats after 400 ms, every 80 ms. Enter
-chooses the current row, and L, S and D press its buttons. The keys are hidden from the game while
-the list shows (`rq.hud.block_keys`).
+With `keys`, the list takes the keys (`rq.uikit.keys`) and its rows are the kit's keys cursor: Up
+and Down move the current row, also on to a widget outside at the list's ends; Page Up and Page
+Down move six rows, Home and End to the first and last, scrolling to keep it shown; a held key
+repeats after 250 ms, every 50 ms. Enter chooses the current row, and L, S and D press its
+buttons. Those keys are hidden from the game while the list shows (`rq.hud.block_keys`).
 
 With `drag`, a row pressed and moved more than 6 pixels is dragged: its icon follows the mouse on
 the top layer (`rq.hud.top`), over every widget and clip, and a list of the same group under it
@@ -986,6 +1087,8 @@ end)
 > Changed in 2.9.0: `keys`, `drag`, and the fifth return.
 
 > Changed in 2.11.0: The dragged icon is drawn once, on the top layer.
+
+> Changed in 2.12.0: `keys` uses the kit's keys cursor; it repeats after 250 ms, every 50 ms (was 400 and 80).
 
 ### rq.uikit.item_dropped
 

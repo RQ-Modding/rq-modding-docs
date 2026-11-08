@@ -23,7 +23,7 @@ Reads what is on the screen and saves screenshots.
 rq.ui.get() -> table|nil
 ```
 
-`since 0.20.0` `changed 0.21.0` `changed 2.11.0`
+`since 0.20.0` `changed 0.21.0` `changed 2.11.0` `changed 2.12.0`
 
 Returns what is on the screen.
 
@@ -35,6 +35,8 @@ only before the first named screen, and `title` only for the real title screen.
 A game control a player cannot click has `covered = true`: every point of it is under a kit widget
 of the last update (section `kit`), or a mod's page captures the mouse (`rq.hud.capture_mouse`).
 `rqmod-ctl press` refuses it. A page closed on this update still covers until the next one.
+
+A kit control (section `kit`) under the kit's keys cursor has `focused = true` (`rq.uikit.focused`).
 
 It builds the whole list, so do not call it on every `rq.on_frame`.
 
@@ -50,6 +52,8 @@ if s and s.screen == "camp" then rq.log(#s.controls, "controls") end
 > Changed in 0.21.0: A screen with no name says `other`.
 
 > Changed in 2.11.0: `covered`.
+
+> Changed in 2.12.0: `focused` on kit controls.
 
 See also: [`rq.ui.aim`](rq.ui.md#rquiaim)
 

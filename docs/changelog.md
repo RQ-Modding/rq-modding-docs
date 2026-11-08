@@ -5,6 +5,18 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.12.0
+
+Phase 3 of what the hub UI kit left (`notes/plans/plan-ui-kit-leftovers.md` in the workspace): the keyboard, as the game's own screens use it. All of it is Lua but one field.
+- The kit's keys cursor: the arrow keys move one cursor between the widgets that take a click, and Enter clicks the one under it. The mouse and the keys share it, as the game's selection: the mouse over a widget puts the cursor there, and the mouse is never moved. An arrow goes to the nearest widget that way, and wraps when there is none. In a list (`list`, `quest_list`, `options`, `item_list`) Up and Down go through its rows, also those out of sight, and the list scrolls to follow. A focused slider moves by Page Down (up) and Page Up (down), 5% or its `step`, as Config's sliders.
+- `rq.uikit.keys(opts)`: the kit takes the arrows, Enter, Page Up and Page Down on this update and hides them from the game. `edge(dir)` is called when an arrow finds nothing that way, and the cursor then does not wrap. `rq.uikit.page` calls it; elsewhere the kit's widgets stay for the mouse. `rq.uikit.focused()` and `rq.uikit.focus(id)` read and set the cursor.
+- `nav` on every widget: where its arrows go, by id (a table or a function of the arrow), or false to leave it out of the cursor.
+- Config's Mods tab: the tab row's Left and Right reach it; Down from a tab on the Mods page gives the cursor to the page's list, and Up from the page's top widget gives it back to the tab row.
+- `rq.hud.block_keys(keys)`: only the keys in the list, by name or code. Without a list, every key as before.
+- `rq.ui.get` and `rqmod-ctl ui`: `focused = true` on the kit control under the keys' cursor.
+- `rq.uikit.options`: the rows are on the kit's cursor (it wraps); `keys` makes it take the keys and Esc picks Return. A cursor the mouse put on a row goes when the mouse leaves every row, as the game's buttons do (before, it stayed on the last row hovered). `rq.uikit.item_list` with `keys`: Up and Down go on to a widget outside at the list's ends.
+- Fix: the kit's held keys repeated after 400 ms, every 80 ms; the game's do after 250 ms, every 50 ms, and so do the kit's now (`item_list`, `options`, `page`'s Esc).
+
 ## 2.11.0
 
 Phase 2 of what the hub UI kit left (`notes/plans/plan-ui-kit-leftovers.md` in the workspace): a layer over the HUD, the game's faint shadows, and agents that click as a player does.

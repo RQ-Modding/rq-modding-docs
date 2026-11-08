@@ -14,6 +14,7 @@ where it says and does not move the row on.
 | `w` *(optional)* | `integer\|"fill"` | Width in pixels, or "fill": the width left in the row, or the column's width less its pad. "fill" needs a row or column with a `w`. |
 | `h` *(optional)* | `integer` | Height in pixels. |
 | `id` *(optional)* | `any` | Keeps the widget's state across updates (a drag, a list's scroll). Without one a widget is known by the order of the calls, so give one to widgets that show or hide. |
+| `nav` *(optional)* | `false\|{up?: any, down?: any, left?: any, right?: any}\|fun(dir: "up"\|"down"\|"left"\|"right"): any` | Where the arrow keys go from this widget, by the other widget's `id`, in place of the nearest one that way; a function returns the id or nil. false: the keys' cursor skips it. Since 2.12.0. |
 
 ## Used by
 
