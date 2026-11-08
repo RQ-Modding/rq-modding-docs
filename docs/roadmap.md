@@ -31,6 +31,7 @@ In order of priority: first what the most mods, existing or new, would use.
 | Screens | A screen name and controls for the town's Rance Castle tab in `rq.ui`. The status page for mods: the character shown (`rq.ui.get().status.chara` is 0 today, a bug), a refresh of the card after a change, an event when it opens or changes character. The game's Yes/No and OK dialogs as calls (`rq.ui.confirm`, `rq.ui.notice`). |
 | Characters | The items the Morurun absorbed: read the five slots and change one with the game's rules (`rq.chara.absorbed`, `set_absorbed`). |
 | Items | An item's row data (name, icon, stats line) from its number, with no instance. An icon button in the kit (`rq.uikit.button` with a CG). An item number's instances by place (`rq.item.find`, `rq.item.count`). The game's dialog with any number of choices (`rq.ui.menu`). |
+| World and shop | An event before and after a world transfer, with the old and new world (`rq.world.on_transfer`), and the current world (`rq.world.current`). The donations count and Frostbuy's reward goal as calls (`rq.shop.donations`, `set_donations`, `goal`, `set_goal`). |
 | Animation | Sources with full color and soft edges (PNG sequences, animated WebP) beside GIF. |
 | Game code | `rq.ain.call` with reference and struct arguments, and methods. |
 | Lua state | Changes to the shared `rq` and standard library tables: a log line also for changes made in callbacks, and refusing such changes if mods turn out to make them. 2.0.0 logs the ones each `init.lua` makes ([What a mod can reach](guide/sandbox.md#globals)). |
