@@ -20,7 +20,7 @@ How `rq.hud.text` draws text.
 | `font` *(optional)* | `"hud"\|"game"` | "game" draws in the game's own font, as its buttons and lists do: no dark edge, and `edge` does not count. Default "hud". Since 2.5.0. |
 | `face` *(optional)* | `256\|257\|258` | With `font = "game"`: the game's font number. 258 is on most buttons, lists and the castle; 256 on item names; 257 on big marks. Default 258. Since 2.5.0. |
 | `outline` *(optional)* | `integer[]\|{r: integer, g: integer, b: integer, w?: integer}` | With `font = "game"`: an outline in this color, `w` pixels wide (1 to 4, default 1), as the castle's room names. Since 2.5.0. |
-| `shadow` *(optional)* | `integer[]\|{x?: integer, y?: integer, r: integer, g: integer, b: integer}` | With `font = "game"`: a copy of the text in this color, `x` and `y` pixels away (default 1 and 1), drawn under it. Since 2.5.0. |
+| `shadow` *(optional)* | `integer[]\|{x?: integer, y?: integer, r: integer, g: integer, b: integer, a?: integer}` | With `font = "game"`: a copy of the text in this color, `x` and `y` pixels away (default 1 and 1), drawn under it. `a` is its opacity, 0 to 255, times the text's (default 255); the game's sort labels use 64. Since 2.5.0; `a` since 2.11.0. |
 | `space` *(optional)* | `integer` | With `font = "game"`: the game's fixed spacing in pixels, for Japanese letters (`SetFixedWidthSpacing`). Default -4. Since 2.5.0. |
 | `spacing` *(optional)* | `number` | With `font = "game"`: the game's letter spacing for English letters, 0 to 4 (`SetSpacing`); the game's lists use 0.95. Default 1. Since 2.5.0. |
 

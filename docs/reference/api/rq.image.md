@@ -126,7 +126,7 @@ Use it to read a game CG's size before drawing art for it.
 rq.image.compose(target, layers, opts) -> integer
 ```
 
-`since 1.8.0` `changed 2.5.0`
+`since 1.8.0` `changed 2.5.0` `changed 2.11.0`
 
 Makes a CG from parts of other CGs, fills and text.
 
@@ -160,6 +160,8 @@ local TAB = rq.image.compose("mymod:tab", {
 | `cg` | `integer` | The CG number. |
 
 > Changed in 2.5.0: Text layers take `font = "game"`.
+
+> Changed in 2.11.0: A text layer's `shadow.a`.
 
 ### rq.image.add_gif
 

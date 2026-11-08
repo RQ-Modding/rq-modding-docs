@@ -5,6 +5,14 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.11.0
+
+Phase 2 of what the hub UI kit left (`notes/plans/plan-ui-kit-leftovers.md` in the workspace): a layer over the HUD, the game's faint shadows, and agents that click as a player does.
+- `rq.hud.top(fn)`: what `fn` draws goes on a top layer, drawn after every other HUD draw of the update, from every mod. Inside it the clip starts at the whole screen; the clip from outside comes back after it, also on an error. Drawing only: clicks are still decided in call order. `rq.uikit.top(fn)` is the same for widgets.
+- `rq.uikit.item_list`: the dragged icon is drawn once, by the list it came from, on the top layer, so a widget drawn after the lists or a clip no longer covers or cuts it. `rq.uikit.options`: a row's comment box is on the top layer too.
+- `shadow.a` in the game-font text style (`rq.hud.text`, `text_width`, `rq.image.compose` text layers): the shadow's opacity, 0 to 255, times the text's. The hub theme's sort labels have the game's white shadow at 64.
+- Agents: a click `rqmod-ctl` drives is held back by `rq.hud.block_game_input` as a player's is (before, it reached the game's control under a kit widget). `rq.ui.get` and `rqmod-ctl ui` mark a game control `covered` when every point of it is under a kit widget of the last update, or while a page captures the mouse; `rqmod-ctl press` refuses it ("covered by a mod's widget"), and `rq.ui.aim` aims a game control away from kit widgets over it.
+
 ## 2.10.0
 
 Phase 1 of what the hub UI kit left (`notes/plans/plan-ui-kit-leftovers.md` in the workspace): the lists and the shop, as the game does them. All of it is Lua over the game's own calls.

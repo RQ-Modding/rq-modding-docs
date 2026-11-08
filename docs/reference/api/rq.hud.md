@@ -35,6 +35,7 @@ end
 | [`rq.hud.clip`](#rqhudclip) | Shows what is drawn next only inside a box, as for a list that scrolls. |
 | [`rq.hud.clip_push`](#rqhudclip_push) | Narrows the clip to a box inside the clip before it. |
 | [`rq.hud.clip_pop`](#rqhudclip_pop) | Goes back to the clip before the last `rq.hud.clip_push`. |
+| [`rq.hud.top`](#rqhudtop) | Runs a function now and draws what it draws on top of the whole HUD. |
 | [`rq.hud.hit`](#rqhudhit) | Returns whether the mouse is inside a box on this update. |
 | [`rq.hud.clicked`](#rqhudclicked) | Returns whether the left button went down inside a box on this update. |
 | [`rq.hud.block_game_input`](#rqhudblock_game_input) | Hides the mouse buttons from the game, so a click on the HUD does not also click the game. |
@@ -86,7 +87,7 @@ Draws a filled box.
 rq.hud.text(x, y, str, style)
 ```
 
-`since 0.2.0` `changed 1.8.0` `changed 2.5.0`
+`since 0.2.0` `changed 1.8.0` `changed 2.5.0` `changed 2.11.0`
 
 Draws a line of UTF-8 text.
 
@@ -102,7 +103,8 @@ updates. Up to 512 different texts draw on one update; past that, the rest draw 
 log says so once. It needs the game running: before the title it draws nothing.
 
 Raises an error for an unknown `align`, `valign` or `font`, a `face` other than 256 to 258, a
-`size` outside 6 to 96 with the game's font, or a bad `outline`, `shadow` or `spacing`.
+`size` outside 6 to 96 with the game's font, or a bad `outline`, `shadow` (`shadow.a` outside 0 to
+255) or `spacing`.
 
 ```lua
 rq.hud.text(0, 40, "Centered", { size = 20, w = 1024, align = "center" })
@@ -122,6 +124,8 @@ rq.hud.text(100, 200, "My Room", { font = "game", size = 24, r = 25, g = 25, b =
 > Changed in 1.8.0: The font is VL PGothic with letters at their own width (before, VL Gothic with half-width Latin letters).
 
 > Changed in 2.5.0: Added `font = "game"` with `face`, `outline`, `shadow`, `space` and `spacing`.
+
+> Changed in 2.11.0: `shadow.a`.
 
 See also: [`rq.hud.text_width`](rq.hud.md#rqhudtext_width)
 
@@ -303,6 +307,52 @@ Goes back to the clip before the last `rq.hud.clip_push`.
 
 After the first push, it ends the clip. With nothing pushed it does nothing.
 
+### rq.hud.top
+
+```lua
+rq.hud.top(fn) -> any
+```
+
+`since 2.11.0`
+
+Runs a function now and draws what it draws on top of the whole HUD.
+
+The HUD draws in call order, so a later draw covers an earlier one, also another mod's. What `fn`
+draws goes to the top layer instead: it is drawn after every other HUD draw of the update, from
+every mod, in the order it was called. Use it for what floats over other widgets: a dragged icon, a
+comment box, a tooltip.
+
+Inside `fn` the clip starts at the whole screen, whatever clip was set outside; `rq.hud.clip`,
+`clip_push` and `clip_pop` work inside it. After `fn` the clip from outside is back, also when `fn`
+raises an error, which goes on to the caller. `top` inside `top` works the same way. The top layer
+shares the 480 draws an update has. While the game's choice menu shows, the top layer is drawn
+under the menu with the rest of the HUD.
+
+It only draws on top: the kit still decides clicks in call order, so a widget drawn after it under
+the same pixels still gets the mouse.
+
+Raises an error when `fn` is not a function, and the error `fn` raises.
+
+```lua
+rq.on_frame(function()
+  if dragging then
+    local m = rq.input.mouse()
+    rq.hud.top(function()
+      rq.hud.cg(m.x - 50, m.y - 50, icon, { w = 100, h = 100 })
+    end)
+  end
+  draw_my_page()   -- drawn later, still under the icon
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun()` | The draws for the top layer. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+|  | `any` | ... What `fn` returns. |
+
 ### rq.hud.hit
 
 ```lua
@@ -353,12 +403,15 @@ See also: [`rq.hud.block_game_input`](rq.hud.md#rqhudblock_game_input)
 rq.hud.block_game_input()
 ```
 
-`since 0.2.0`
+`since 0.2.0` `changed 2.11.0`
 
 Hides the mouse buttons from the game, so a click on the HUD does not also click the game.
 
 It lasts for this update and until the buttons come up. `rq.input.mouse` and the HUD calls still
-see the clicks.
+see the clicks. It also hides the clicks `rqmod-ctl` drives, as a player's, and the kit's widgets
+mark the game's controls under them `covered` in `rq.ui.get`.
+
+> Changed in 2.11.0: It hides the clicks `rqmod-ctl` drives too (before, they reached the game).
 
 ### rq.hud.block_keys
 

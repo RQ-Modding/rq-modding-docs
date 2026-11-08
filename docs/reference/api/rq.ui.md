@@ -23,7 +23,7 @@ Reads what is on the screen and saves screenshots.
 rq.ui.get() -> table|nil
 ```
 
-`since 0.20.0` `changed 0.21.0`
+`since 0.20.0` `changed 0.21.0` `changed 2.11.0`
 
 Returns what is on the screen.
 
@@ -31,6 +31,10 @@ The table holds `screen` (the screen's name), `hover`, `controls` (each with `id
 `h`, `enabled` and more) and the data of the current screen, such as `battle` or `quests`. A
 screen with no name, such as a black one during a change of scene, says `other`; `boot` is used
 only before the first named screen, and `title` only for the real title screen.
+
+A game control a player cannot click has `covered = true`: every point of it is under a kit widget
+of the last update (section `kit`), or a mod's page captures the mouse (`rq.hud.capture_mouse`).
+`rqmod-ctl press` refuses it. A page closed on this update still covers until the next one.
 
 It builds the whole list, so do not call it on every `rq.on_frame`.
 
@@ -45,6 +49,8 @@ if s and s.screen == "camp" then rq.log(#s.controls, "controls") end
 
 > Changed in 0.21.0: A screen with no name says `other`.
 
+> Changed in 2.11.0: `covered`.
+
 See also: [`rq.ui.aim`](rq.ui.md#rquiaim)
 
 ### rq.ui.aim
@@ -53,12 +59,12 @@ See also: [`rq.ui.aim`](rq.ui.md#rquiaim)
 rq.ui.aim(id) -> integer|nil, integer|nil
 ```
 
-`since 0.20.0` `changed 0.21.0`
+`since 0.20.0` `changed 0.21.0` `changed 2.11.0`
 
 Returns the point a click on a control should land on.
 
-The point is inside the control and not covered by another control. It builds the list when
-nothing did during this update.
+The point is inside the control and not covered by another control. For a game control it is also
+away from the kit's widgets over it. It builds the list when nothing did during this update.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -70,6 +76,8 @@ nothing did during this update.
 | `y` | `integer\|nil` | Click y in game pixels. |
 
 > Changed in 0.21.0: Builds the list itself; before, it read the last `rq.ui.get`.
+
+> Changed in 2.11.0: Away from kit widgets over a game control.
 
 ### rq.ui.shot
 

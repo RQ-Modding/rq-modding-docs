@@ -58,6 +58,7 @@ end)
 | [`rq.uikit.space`](#rquikitspace) | Leaves empty space in a row or column. |
 | [`rq.uikit.last`](#rquikitlast) | Returns where the last widget went, as for a tooltip beside it. |
 | [`rq.uikit.hovered`](#rquikithovered) | Returns whether the mouse was over a kit widget on this update so far. |
+| [`rq.uikit.top`](#rquikittop) | Runs a function now and draws what it draws on top of every widget, as `rq.hud.top` does. |
 | [`rq.uikit.state`](#rquikitstate) | Returns what the kit keeps for a widget. |
 | [`rq.uikit.draw`](#rquikitdraw) | Draws a piece of the theme at any size. |
 | [`rq.uikit.copy_theme`](#rquikitcopy_theme) | Returns a deep copy of a theme, to change and pass to `rq.uikit.use`. |
@@ -412,6 +413,37 @@ Returns whether the mouse was over a kit widget on this update so far.
 | --- | --- | --- |
 | `hovered` | `boolean` | true when a widget drawn so far is under the mouse. |
 
+### rq.uikit.top
+
+```lua
+rq.uikit.top(fn) -> any
+```
+
+`since 2.11.0`
+
+Runs a function now and draws what it draws on top of every widget, as `rq.hud.top` does.
+
+For a widget's floating part: its tooltip, its comment, an icon it drags. Widgets inside `fn` draw
+as usual, but clicks are still decided in call order.
+
+Raises an error when `fn` is not a function, and the error `fn` raises.
+
+```lua
+if rq.uikit.hovered() then
+  rq.uikit.top(function() rq.uikit.label("Sells for 120 G", { x = mx + 16, y = my }) end)
+end
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun()` | The widgets and draws for the top layer. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+|  | `any` | ... What `fn` returns. |
+
+See also: [`rq.hud.top`](rq.hud.md#rqhudtop)
+
 ### rq.uikit.state
 
 ```lua
@@ -760,7 +792,7 @@ end)
 rq.uikit.options(items, opts) -> any|nil
 ```
 
-`since 2.7.0` `changed 2.9.0` `changed 2.10.0`
+`since 2.7.0` `changed 2.9.0` `changed 2.10.0` `changed 2.11.0`
 
 Draws the game's choice menu as a widget: its green base, grey rows, separators and a text panel
 at the top, laid out as the game lays out the menu. It is not modal and does not wait: it returns
@@ -802,6 +834,8 @@ if pick == 0 then open = false elseif pick then sort_by(pick) end
 > Changed in 2.9.0: `keys`.
 
 > Changed in 2.10.0: `h`, and rows past it scroll.
+
+> Changed in 2.11.0: A row's `comment` box is drawn on the top layer, over widgets drawn later.
 
 See also: [`rq.ui.choose`](rq.ui.md#rquichoose)
 
@@ -906,7 +940,7 @@ if button == "lock" then rq.item.lock(ii) elseif button == "unlock" then rq.item
 rq.uikit.item_list(rows, index, opts) -> integer|nil, boolean, "lock"|"unlock"|"sell"|"donate"|nil, integer|nil, boolean
 ```
 
-`since 2.8.0` `changed 2.9.0`
+`since 2.8.0` `changed 2.9.0` `changed 2.11.0`
 
 Draws the vault's item list: rows 128 apart and the game's scroll bar beside them.
 
@@ -920,8 +954,9 @@ first and last, scrolling to keep it shown; a held key repeats after 400 ms, eve
 chooses the current row, and L, S and D press its buttons. The keys are hidden from the game while
 the list shows (`rq.hud.block_keys`).
 
-With `drag`, a row pressed and moved more than 6 pixels is dragged: its icon follows the mouse, and
-a list of the same group under it lights up. Let go over another list of the group and
+With `drag`, a row pressed and moved more than 6 pixels is dragged: its icon follows the mouse on
+the top layer (`rq.hud.top`), over every widget and clip, and a list of the same group under it
+lights up. Let go over another list of the group and
 `rq.uikit.item_dropped(group)` returns the row on that update; nothing moves by itself.
 `item_storage` is the game's storage screen built on this.
 
@@ -949,6 +984,8 @@ end)
 | `chosen` | `boolean` | true on the update a row is clicked or Enter is pressed (2.9.0). |
 
 > Changed in 2.9.0: `keys`, `drag`, and the fifth return.
+
+> Changed in 2.11.0: The dragged icon is drawn once, on the top layer.
 
 ### rq.uikit.item_dropped
 

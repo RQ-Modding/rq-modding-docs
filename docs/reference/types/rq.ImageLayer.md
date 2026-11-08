@@ -27,7 +27,7 @@ One layer of `rq.image.compose`: a part of a CG, a fill, or text.
 | `font` *(optional)* | `"hud"\|"game"` | "game": the text in the game's own font, as `rq.hud.text` draws it; `face`, `outline`, `shadow`, `space` and `spacing` work as there, `color` gives the color. Since 2.5.0. |
 | `face` *(optional)* | `256\|257\|258` | With `font = "game"`: the game's font number. Default 258. Since 2.5.0. |
 | `outline` *(optional)* | `integer[]\|{r: integer, g: integer, b: integer, w?: integer}` | With `font = "game"`: an outline. Since 2.5.0. |
-| `shadow` *(optional)* | `integer[]\|{x?: integer, y?: integer, r: integer, g: integer, b: integer}` | With `font = "game"`: a shadow under the text. Since 2.5.0. |
+| `shadow` *(optional)* | `integer[]\|{x?: integer, y?: integer, r: integer, g: integer, b: integer, a?: integer}` | With `font = "game"`: a shadow under the text, `a` its opacity (default 255). Since 2.5.0; `a` since 2.11.0. |
 | `space` *(optional)* | `integer` | With `font = "game"`: the game's fixed spacing. Default -4. Since 2.5.0. |
 | `spacing` *(optional)* | `number` | With `font = "game"`: the game's letter spacing. Default 1. Since 2.5.0. |
 
