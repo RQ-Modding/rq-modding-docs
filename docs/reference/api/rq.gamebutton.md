@@ -1,6 +1,6 @@
 # rq.gamebutton
 
-`since 2.16.0` `changed 2.17.0`
+`since 2.16.0` `changed 2.17.0` `changed 2.20.0`
 
 Buttons of mods in the game's own menus, made by the game itself.
 
@@ -21,11 +21,26 @@ skill goes to the button under it (a greyed one is skipped); from a button Up go
 last skill, Down to its first, Left and Right to the other button of the row. Agents see each one
 as the control `<mod id>.<id>` of the `skill-shop` screen.
 
+`"status"` (2.20.0): icon buttons in a character's status page's title row, the only free room on
+the page. The cells are right to left from the X: x 472 and 436, y 61, 32 × 29 each, in the order
+entries were added; the widest name in the game ends at x 435. Entries with `shown` false give their
+cell to the next; a third shown entry is not placed (`placed` false, and the log says so). The
+button is the icon on the page's own background, as the game's CG buttons: the yellow frame under
+the mouse, the icon moved 1 pixel right and down while pressed, the whole cell darkened while
+greyed. `shown`, `enabled` and a function `tip` are asked on every draw of the card (open, another
+character, a change, `rq.statuspage.refresh`). The arrow keys reach the buttons: Up from the Special
+slot (or its REMOVE) goes to the first button not greyed; from a button Left and Right go to the
+other, Down to the Special slot, Up to SKILL SCREEN. Agents see each one as the control
+`<mod id>.<id>` of the `status` screen. See `rq.statuspage` for the page itself.
+
 ```lua
 rq.gamebutton.add({ id = "settings", label = "My Mod settings", tip = "Opens My Mod's page",
   on_click = function() rq.log("open my page here") end })
 rq.gamebutton.add({ group = "skill-window", id = "plan", label = "Plan Skills",
   on_click = function() rq.log("the skill window is still open") end })
+rq.gamebutton.add({ group = "status", id = "notes", label = "Notes", icon = 11158,
+  tip = function(chara) return "Notes on " .. rq.chara.get(chara).name end,
+  on_click = function() rq.log("notes for", rq.statuspage.chara()) end })
 ```
 
 ## Functions
@@ -41,12 +56,13 @@ rq.gamebutton.add({ group = "skill-window", id = "plan", label = "Plan Skills",
 rq.gamebutton.add(spec) -> rq.GameButtonHandle
 ```
 
-`since 2.16.0`
+`since 2.16.0` `changed 2.20.0`
 
 Adds an entry to a game menu.
 
 Raises an error for a spec that is not a table, an unknown group, no id or label, no `on_click`,
-an `enabled` or `tip` of the wrong type, or an id the mod already has.
+an `enabled`, `tip` or `shown` of the wrong type, a `"status"` entry with no `icon`, or an id the
+mod already has.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -55,6 +71,8 @@ an `enabled` or `tip` of the wrong type, or an id the mod already has.
 | Returns | Type | Description |
 | --- | --- | --- |
 | `entry` | [`rq.GameButtonHandle`](../types/rq.GameButtonHandle.md) | The entry, to change or remove it. |
+
+> Changed in 2.20.0: The group `"status"`, with `icon` and `shown`.
 
 ### rq.gamebutton.groups
 

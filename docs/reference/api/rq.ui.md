@@ -26,7 +26,7 @@ Reads what is on the screen and saves screenshots.
 rq.ui.get() -> table|nil
 ```
 
-`since 0.20.0` `changed 0.21.0` `changed 2.11.0` `changed 2.12.0` `changed 2.19.0`
+`since 0.20.0` `changed 0.21.0` `changed 2.11.0` `changed 2.12.0` `changed 2.19.0` `changed 2.20.0`
 
 Returns what is on the screen.
 
@@ -62,6 +62,8 @@ if s and s.screen == "camp" then rq.log(#s.controls, "controls") end
 > Changed in 2.12.0: `focused` on kit controls.
 
 > Changed in 2.19.0: `select.message`.
+
+> Changed in 2.20.0: `status.chara` is the character shown (it was always 0).
 
 See also: [`rq.ui.aim`](rq.ui.md#rquiaim)
 

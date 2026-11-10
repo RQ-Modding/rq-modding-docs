@@ -1,6 +1,8 @@
 # rq.ItemInfo
 
-What `rq.item.get` returns.
+What `rq.item.info` returns: an item number's row data, as `rq.uikit.item_data` gives it for an
+instance, without the fields that belong to one instance (`ii`, `locked`, `place`). The kit's item
+lists take it as a row.
 
 ## Fields
 
@@ -23,7 +25,17 @@ What `rq.item.get` returns.
 | `locked` | `integer` | Non-zero when it cannot be taken off. |
 | `vanishes` | `integer` | Non-zero when it vanishes. |
 | `effects` | [`rq.ItemEffect`](rq.ItemEffect.md) `[]` | The effects. |
+| `no` | `integer` | The item number. |
+| `name` | `string` | Its name. |
+| `level` | `string` | The level line, or "". |
+| `info` | `string` | The stats line, with the game's marks. |
+| `icon` | `integer` | Its icon CG. |
+| `rank` | `integer` | Its rarity rank. |
+| `kind` | `integer` | Its kind: 21 special, 1 weapon, 11 armor, 17 item. |
+| `price` | `integer` | Its price. |
+| `discard` | `boolean` | It can be thrown away. |
+| `classes` | `integer[]` | The class numbers that may equip it. |
 
 ## Used by
 
-[`rq.item.get`](../api/rq.item.md#rqitemget)
+[`rq.item.get`](../api/rq.item.md#rqitemget), [`rq.item.info`](../api/rq.item.md#rqiteminfo)

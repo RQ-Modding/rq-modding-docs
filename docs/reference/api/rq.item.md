@@ -44,6 +44,7 @@ rq.item.transform(ii, "mymod:broken_lens")                       -- later, it br
 | [`rq.item.donate`](#rqitemdonate) | Donates an item from the vault, the storage or a character's gear, as the vault's DONATE does (`アイテム_寄付`): the game asks "Donate ...?" first, and on Yes the item goes, the shop restocks it, and the donations count goes up by one. |
 | [`rq.item.store`](#rqitemstore) | Moves an item between the vault and the storage, as dragging a row on the game's storage screen does (`アイテム_存在設定` 7 or 11). |
 | [`rq.item.buy`](#rqitembuy) | Buys an item from the shop's stock, as the shop's drag of a row onto the vault or a party member does (`T_EquitItem::setItem`): the game asks "Purchase ...?" first, and on Yes the item goes into the vault, its price comes off the money, and the shop's spent total goes up by it. |
+| [`rq.item.info`](#rqiteminfo) | Returns an item number's row data, with no instance of it in the game. |
 
 ### rq.item.define
 
@@ -427,6 +428,36 @@ if ii and rq.item.buy(ii) then rq.log("bought", ii) end
 | --- | --- | --- |
 | `bought` | `boolean` | false when it was not bought: not in the shop's stock, not enough money, a character who cannot wear it, an old item that cannot come off, No, or another question showing. |
 
+### rq.item.info
+
+```lua
+rq.item.info(no) -> rq.ItemInfo?
+```
+
+`since 2.20.0`
+
+Returns an item number's row data, with no instance of it in the game.
+
+Read as the game's own lookups by number read it (`Ｉ固有名前`): a temporary instance, read and
+deleted. The item's own definition runs (a mod item's `on_create` and `rq.item.edit` changes), but
+`rq.item.on_create` listeners do not see that instance. An item whose data the game makes from the
+moment (a few read Rance's level) gives the data of the moment. Kept for a second per number.
+
+Raises an error when `no` is not an integer.
+
+```lua
+local it = rq.item.info(274)
+if it then rq.log(it.name, it.info) end
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `no` | `integer` | The item number. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `info` | [`rq.ItemInfo`](../types/rq.ItemInfo.md) `?` | The data, or nil for 0 or a number the game does not have. |
+
 ## Events
 
 | Name | Summary |
@@ -439,9 +470,11 @@ if ii and rq.item.buy(ii) then rq.log("bought", ii) end
 rq.item.on_create(fn) -> fun()
 ```
 
-`since 0.8.0` `changed 0.23.0`
+`since 0.8.0` `changed 0.23.0` `changed 2.20.0`
 
 Calls `fn` after any item instance is created (`Ｉ生成`), game or mod.
+
+It is not called for the temporary instance of `rq.item.info`, which never enters the game.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -452,3 +485,5 @@ Calls `fn` after any item instance is created (`Ｉ生成`), game or mod.
 | `remove` | `fun()` | Removes this callback. |
 
 > Changed in 0.23.0: Returns a remover.
+
+> Changed in 2.20.0: Not called for `rq.item.info`'s lookup.

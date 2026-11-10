@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.19.0.
+Loader version 2.20.0.
 
 ## Namespaces
 
@@ -41,6 +41,7 @@ Loader version 2.19.0.
 | [`rq.speed`](api/rq.speed.md) | Runs the game clock faster or slower than real time. |
 | [`rq.sprite`](api/rq.sprite.md) | Sprites a mod makes once and changes later, drawn among the game's own in z order. |
 | [`rq.status`](api/rq.status.md) | Battle states made by mods, such as a burn, a bleed, a regeneration, a freeze or a weaken, that live beside the game's poison, stun and ▲▼, in one registry every mod shares. |
+| [`rq.statuspage`](api/rq.statuspage.md) | A character's status page, for mods. |
 | [`rq.store`](api/rq.store.md) | Small key and value storage for each mod and each save. |
 | [`rq.store.global`](api/rq.store.global.md) | The same calls as `rq.store`, in one file for every save profile. |
 | [`rq.ui`](api/rq.ui.md) | Reads what is on the screen and saves screenshots. |
@@ -109,7 +110,7 @@ Loader version 2.19.0.
 | [`rq.Item`](types/rq.Item.md) | An owned item instance, from `rq.items()`. |
 | [`rq.ItemDef`](types/rq.ItemDef.md) | An item template for `rq.item.define`. |
 | [`rq.ItemEffect`](types/rq.ItemEffect.md) | One of an item's effects: the game's own code and amount. |
-| [`rq.ItemInfo`](types/rq.ItemInfo.md) | What `rq.item.get` returns. |
+| [`rq.ItemInfo`](types/rq.ItemInfo.md) | What `rq.item.info` returns: an item number's row data, as `rq.uikit.item_data` gives it for an instance, without the fields that belong to one instance (`ii`, `locked`, `place`). The kit's item lists take it as a row. |
 | [`rq.LootAdd`](types/rq.LootAdd.md) | An item for `rq.loot.add`. |
 | [`rq.LootItem`](types/rq.LootItem.md) | An item the player will find, from `rq.loot.list`. |
 | [`rq.MagicCtx`](types/rq.MagicCtx.md) | What `rq.combat.on_magic` gets for one spell. |
@@ -174,3 +175,4 @@ Loader version 2.19.0.
 | Alias | Type |
 | --- | --- |
 | `rq.ImageFit` | `"stretch"\|"contain"\|"cover"\|"none"` |
+| `rq.StatusPageMode` | `"party"\|"party-edit"\|"party-store"\|"battle-result"` |

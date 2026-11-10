@@ -5,6 +5,14 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.20.0
+
+The status page for mods (`notes/plans/plan-ui-kit-leftovers.md` in the workspace, section 14). Lua over the game's own page (`src/lua/statuspage.lua`, `src/lua/gamebutton.lua`, `src/lua/item.lua`); the C changes are the fix below and a switch only the loader's own Lua gets.
+- `rq.gamebutton`'s group `"status"`: icon buttons in a character's status page's title row, the only free room on the page, right to left from the X (x 472 and 436, y 61, 32 × 29), up to two. `icon` is the CG drawn on the page's own background, with the game's hover frame, pressed and greyed looks. `shown`, `enabled` and `tip` may be functions of the character, asked on every draw of the card. A click runs `on_click` with the page open; the arrow keys reach them from the Special slot; `tip` shows the game's comment window with the label as its title. Agents see them as `<mod id>.<id>` on the `status` screen.
+- `rq.statuspage`: `chara()`, `mode()`, `refresh()` (the card drawn again, no sound, the item list beside it rebuilt), and `on_open`, `on_chara`, `on_update`, `on_close`.
+- `rq.item.info(no)`: an item number's row data with no instance in the game, read as the game's own lookups by number read it. `rq.item.on_create` listeners do not see its temporary instance.
+- Fixed: `rq.ui.get().status.chara` was always 0; it is the character shown.
+
 ## 2.19.0
 
 The game's dialogs as calls (`notes/plans/plan-ui-kit-leftovers.md` in the workspace, section 13), in `src/lua/dialog.lua`:
