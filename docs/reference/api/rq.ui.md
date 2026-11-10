@@ -16,6 +16,9 @@ Reads what is on the screen and saves screenshots.
 | [`rq.ui.shot_result`](#rquishot_result) | Returns how the last `rq.ui.shot` ended, once. |
 | [`rq.ui.choose`](#rquichoose) | Opens the game's own choice menu outside a scene, on the hub or any of the game's screens, and calls `fn` with the row the player picks. |
 | [`rq.ui.choosing`](#rquichoosing) | Says whether the game's choice menu shows: one of the game's own, `rq.scene.choice` or `rq.ui.choose`. |
+| [`rq.ui.confirm`](#rquiconfirm) | Asks the player Yes or No in the game's own dialog, and waits for the answer. |
+| [`rq.ui.notice`](#rquinotice) | Tells the player something in the game's own dialog, with one OK button, and waits until it is pressed. |
+| [`rq.ui.ask`](#rquiask) | Asks the player a question with any choices in the game's own dialog, and waits for the answer. |
 
 ### rq.ui.get
 
@@ -23,7 +26,7 @@ Reads what is on the screen and saves screenshots.
 rq.ui.get() -> table|nil
 ```
 
-`since 0.20.0` `changed 0.21.0` `changed 2.11.0` `changed 2.12.0`
+`since 0.20.0` `changed 0.21.0` `changed 2.11.0` `changed 2.12.0` `changed 2.19.0`
 
 Returns what is on the screen.
 
@@ -37,6 +40,9 @@ of the last update (section `kit`), or a mod's page captures the mouse (`rq.hud.
 `rqmod-ctl press` refuses it. A page closed on this update still covers until the next one.
 
 A kit control (section `kit`) under the kit's keys cursor has `focused = true` (`rq.uikit.focused`).
+
+On the screen `select` (the game's choice menu and dialogs), `select.message` holds the dialog's
+text rows, one a line.
 
 It builds the whole list, so do not call it on every `rq.on_frame`.
 
@@ -54,6 +60,8 @@ if s and s.screen == "camp" then rq.log(#s.controls, "controls") end
 > Changed in 2.11.0: `covered`.
 
 > Changed in 2.12.0: `focused` on kit controls.
+
+> Changed in 2.19.0: `select.message`.
 
 See also: [`rq.ui.aim`](rq.ui.md#rquiaim)
 
@@ -190,3 +198,126 @@ mouse buttons are up after it.
 | Returns | Type | Description |
 | --- | --- | --- |
 | `choosing` | `boolean` | true while the menu shows. |
+
+### rq.ui.confirm
+
+```lua
+rq.ui.confirm(text, opts) -> boolean|nil
+```
+
+`since 2.19.0`
+
+Asks the player Yes or No in the game's own dialog, and waits for the answer.
+
+It is the window of the game's `選択_確認`: the text, then Yes and No as the game's tall buttons.
+The call returns when the player picks, as the game's own questions do, so it can answer inside
+the game's flow: from an `rq.ain.hook` callback, a kit widget's click (`rq.on_frame`), an
+`rq.ui.choose` callback or a scene. While it shows, the HUD draws under it and `rq.uikit` widgets
+take no input (`rq.ui.choosing`); every `rq.on_frame` callback still runs, the caller's too.
+
+Only "\n" starts a line in the text; the window wraps it at its width, and gives every 3 lines a row
+of their own. `@` and `$`, where the game's own texts break, are drawn as `＠` and `＄` (the game's
+font draws them half wide, with a space after) unless `opts.game` is true, for a text that comes
+from the game.
+
+With `opts.remember`, the window adds the game's "don't ask again" row. A number 1 to 99 is the
+game's own switch (as `選択_確認_拡張`: 10 purchasing, 14 selling, 31 donating, and the others in
+Config's Confirmations tab), so the player's setting counts. A text is the mod's own question: once
+the player turns it off, the call returns true without asking, in every save. The loader then
+lists it on a Confirmations page in Config's Mods tab, where the player can turn it back on, and
+Resetting in Config's Confirmations tab turns it back on too.
+
+The game has one list of dialog rows, so the call shows nothing and returns nil while another
+dialog is being built or shows (`rq.ui.choosing`, or one of these calls), and logs it once.
+
+Raises an error while `init.lua` loads (the game is not running yet), for an empty text or one that
+is not a string, for more than 9 lines, for an option of the wrong type, and for a `remember` that
+is neither a text nor 1 to 99.
+
+```lua
+if rq.ui.confirm("Swap the absorbed item?\nThe old one goes back to the vault.",
+    { remember = "swap", remember_label = "Swapping an absorbed item" }) then
+  swap()
+end
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `text` | `string` | The question. |
+| `opts` *(optional)* | `{yes?: string, no?: string, cursor?: "yes"\|"no", sound_yes?: integer, sound_no?: integer, remember?: string\|integer, remember_label?: string, game?: boolean}` | `yes`, `no`: the buttons' labels (default "Yes", "No"). `cursor`: the button the cursor starts on (default "yes"). `sound_yes`, `sound_no`: sound numbers for the buttons (default the game's). `remember`: a key for the mod's own "don't ask again", or 1 to 99 for the game's own. `remember_label`: how the Confirmations page names the mod's question (default the key). `game`: the text is the game's, where `@` and `$` start a line. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `yes` | `boolean\|nil` | true for Yes (or a question turned off), false for No, nil when it was not shown. |
+
+See also: [`rq.ui.notice`](rq.ui.md#rquinotice), [`rq.ui.ask`](rq.ui.md#rquiask)
+
+### rq.ui.notice
+
+```lua
+rq.ui.notice(text, opts) -> boolean|nil
+```
+
+`since 2.19.0`
+
+Tells the player something in the game's own dialog, with one OK button, and waits until it is
+pressed.
+
+It is the window of the game's `選択_通知`. The text, where it may be called from, and the one
+dialog at a time are as for `rq.ui.confirm`.
+
+Raises an error while `init.lua` loads, for an empty text or one that is not a string, for more
+than 9 lines, and for an option of the wrong type.
+
+```lua
+rq.ui.notice("The vault cannot take " .. name .. ".")
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `text` | `string` | The message. |
+| `opts` *(optional)* | `{ok?: string, game?: boolean}` | `ok`: the button's label (default "OK"). `game`: the text is the game's, where `@` and `$` start a line. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `shown` | `boolean\|nil` | true once the player pressed OK, nil when it was not shown. |
+
+### rq.ui.ask
+
+```lua
+rq.ui.ask(text, rows, opts) -> any|nil
+```
+
+`since 2.19.0`
+
+Asks the player a question with any choices in the game's own dialog, and waits for the answer.
+
+It is the game's window as `選択_確認` builds it, with the rows given: the text, a separator, then
+the rows. With fewer than 3 choices they are the game's tall buttons. The text, where it may be
+called from, and the one dialog at a time are as for `rq.ui.confirm`. Unlike `rq.ui.choose`, it
+waits for the answer, has a text over the rows, and has no Return row and no cancel unless asked.
+
+The window does not scroll: the rows to pick and the lines of text together are at most 20 (two
+separators count as one), for example 9 lines and 11 rows, or 20 rows and no text.
+
+Raises an error while `init.lua` loads, for a text that is not a string, for more than 9 lines, for
+a row without text, with no row to pick, with more rows and lines than fit, and for an option of the
+wrong type.
+
+```lua
+local pick = rq.ui.ask("Take Quest@Gem Lady?", {
+  { id = "yes", text = "Yes", sound = 5012 }, { id = "trade", text = "Trade a Jewel" }, { id = "no", text = "No" },
+}, { game = true, cursor = "yes" })
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `text` | `string\|nil` | The question, or nil for rows only. |
+| `rows` | `(string\|` [`rq.UiAskRow`](../types/rq.UiAskRow.md) `)[]` | The rows: a text, `"-"` for a separator, or a table. |
+| `opts` *(optional)* | `{cursor?: any, cancel?: boolean, x?: integer, y?: integer, game?: boolean}` | `cursor`: the id of the row the cursor starts on. `cancel`: true lets a right click or Space close it, and the call returns 0 (default false, as the game's questions). `x`, `y`: the dialog's top left (default the center). `game`: the text is the game's, where `@` and `$` start a line. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `id` | `any\|nil` | The picked row's id, 0 when cancelled, nil when it was not shown. |
+
+See also: [`rq.ui.choose`](rq.ui.md#rquichoose)

@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.18.0.
+Loader version 2.19.0.
 
 ## Namespaces
 
@@ -149,6 +149,7 @@ Loader version 2.18.0.
 | [`rq.StatusDef`](types/rq.StatusDef.md) | What `rq.status.define` takes. |
 | [`rq.StatusInfo`](types/rq.StatusInfo.md) | What `rq.status.info` gives about a definition. |
 | [`rq.StatusInstance`](types/rq.StatusInstance.md) | A state on one character, from `rq.status.add`, `get` and `list`. |
+| [`rq.UiAskRow`](types/rq.UiAskRow.md) | One row of `rq.ui.ask`. |
 | [`rq.UiBarOpts`](types/rq.UiBarOpts.md) | What `rq.uikit.bar` takes. |
 | [`rq.UiBox`](types/rq.UiBox.md) | A row or column for `rq.uikit.row` and `col`. |
 | [`rq.UiButtonStyle`](types/rq.UiButtonStyle.md) | A button style of the hub theme: two states of a grey button and its text. |

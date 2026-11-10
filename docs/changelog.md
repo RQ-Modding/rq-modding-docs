@@ -5,6 +5,16 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.19.0
+
+The game's dialogs as calls (`notes/plans/plan-ui-kit-leftovers.md` in the workspace, section 13), in `src/lua/dialog.lua`:
+- `rq.ui.confirm(text, opts)`: the game's Yes / No, which waits for the answer. `remember` adds the game's "don't ask again" row: 1 to 99 is the game's own switch, a text the mod's own question, kept in `rqmod-global.json`, listed on a Confirmations page in Config's Mods tab and turned back on by Config's Resetting.
+- `rq.ui.notice(text, opts)`: the game's OK.
+- `rq.ui.ask(text, rows, opts)`: the game's dialog with any choices, which waits for the answer.
+- In a mod's text only `\n` starts a line (`@` and `$` are drawn as `＠` and `＄`; `game = true` for the game's texts), and a text longer than 3 lines gets a row for each 3. Nothing is shown (nil) while another dialog is being built or shows.
+- `rq.ui.get`: `select.message`, the dialog's text rows.
+- `rq.item`'s questions are refused while any dialog shows, not only their own.
+
 ## 2.18.0
 
 The rest of Potential Skill Pages in Lua (`notes/plans/plan-ui-kit-leftovers.md` in the workspace, section 12): `rq.skilllist` is Lua over the game's own code (`src/lua/skilllist.lua`), and the engine's 1170 lines of C for it (`modloader_skilllist.c`, its bytecode patches and replaced bodies) are gone.

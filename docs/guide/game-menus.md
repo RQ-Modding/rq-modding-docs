@@ -106,5 +106,38 @@ Potential Skill Pages makes its Previous Page and Next Page this way, with
 `rq.skilllist.install{ buttons = false }`, `rq.skilllist.page()` and `refresh()`. Agents see each
 button as the control `<mod id>.<id>` of the `skill-shop` screen.
 
-See [`rq.gamebutton`](../reference/api/rq.gamebutton.md), [`rq.skilllist`](../reference/api/rq.skilllist.md) and
-[`rq.castle`](../reference/api/rq.castle.md) for every field.
+## The game's dialogs
+
+Since loader 2.19.0 a mod asks the player with the game's own dialog window, the one of its Save?,
+Sell? and Take Quest? questions:
+
+```lua
+if rq.ui.confirm("Swap the absorbed item?\nThe old one goes back to the vault.") then
+  swap()
+end
+rq.ui.notice("The vault cannot take " .. name .. ".")
+local pick = rq.ui.ask("What now?", { { id = "trade", text = "Trade a Jewel" }, { id = "no", text = "No" } })
+```
+
+- **They wait for the answer**, as the game's own questions do: `confirm` gives true or false,
+  `notice` true once OK is pressed, `ask` the picked row's `id`. So they can answer inside the
+  game's flow, from an `rq.ain.hook` callback that must set `h.result`, or from a kit button's
+  click. `rq.ui.choose` stays the way to open a menu at the next update with a callback.
+- **One dialog at a time.** The game keeps one list of rows for all its dialogs, so a call made
+  while another dialog is being built or shows draws nothing and gives nil.
+- **The text.** Only `\n` starts a line. The window wraps the rest at its width, and every 3 lines
+  get a row of their own. `@` and `$`, where the game's own texts break, are drawn as `＠` and `＄`;
+  pass `game = true` for a text that comes from the game, such as `h.args[2]` of its question.
+  The dialog does not scroll: the rows and the lines of text together are at most 20.
+- **"Don't ask again"**: `confirm(text, { remember = "swap", remember_label = "Swapping" })` adds
+  the game's row. Once the player turns it off, `confirm` gives true without asking, in every save.
+  The question is then listed on a **Confirmations** page in Config's Mods tab, where the player
+  can turn it back on, and Resetting in Config's Confirmations tab turns it back on too.
+  `remember = 14` (1 to 99) uses the game's own switch instead, here "Selling items".
+- **Agents** see the screen `select`: `confirm`'s buttons are `yes` and `no`, `notice`'s is `yes`,
+  `ask`'s rows are `select-<label>`, and `select.message` holds the text.
+
+Morurun Items and Gem Lady Trade ask this way.
+
+See [`rq.gamebutton`](../reference/api/rq.gamebutton.md), [`rq.skilllist`](../reference/api/rq.skilllist.md),
+[`rq.castle`](../reference/api/rq.castle.md) and [`rq.ui`](../reference/api/rq.ui.md) for every field.
