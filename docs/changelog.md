@@ -5,6 +5,20 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.27.0
+
+Music, the rest (`notes/plans/plan-music-rest.md` in the workspace, priority #7 of the API work). Lua in `src/lua/music.lua`; `rq.ain.stack` and the volume in C.
+- `rq.music.on_play`'s `ctx.kind` tells more moments, read from who called the game's music: `"boss"` (a boss fight, `ボス戦闘処理`; it was `"fight"`), `"town"` (`システム曲_再生`), `"castle"`, `"opening"` (`ＯＰ曲_再生`), `"result"`, `"jingle"` (a girl monster joins) and `"scene"` (a game scene or a mod's `rq.scene.play`); these were `"other"`. `"other"` is left for the extras, the system bar, a save's load, the title and a mod's `rq.music.play`.
+- New ctx fields: `scene` (the game's scene function that asks for the track, such as `"ランス／城汎用"`), `boss` (the boss's monster number), `enemies` (the fight's monster numbers), `area` and `map_kind` (on a quest's map) and `world`. The last five are read when a callback reads them.
+- `rq.music.page(opts)`: a page in Config's Mods tab for a pack, with a switch for each track the mod replaced and each moment it names (`opts.moments`), a play button per track, and all on and all off. A track switched off plays the game's file, at once when it plays now. The switches are kept for every save profile. `rq.music.enabled(key)` reads a switch; `rq.uikit.music_list(opts)` draws the same rows on a mod's own page.
+- `rq.music.replace` on a track the player switched off checks and keeps the file, and its info has `off = true`.
+- `rq.music.restore` brings back the replacement of the mod below in load order (it was the game's track).
+- `volume` takes 0 to 200 (was 0 to 100): above 100 raises a quiet file.
+- `rq.music.play` and `stop` are `"other"` to `on_play`, whatever screen they are called from.
+- `rq.ain.stack(max)`: the names of the game's functions on its call stack, innermost first.
+- The reference no longer says `on_play` misses the looped ambient sounds: the game never starts one (`ループ効果音`); the rain and wind of its scenes are music tracks (201 to 213), which `on_play` sees.
+- `rq.music` now loads after `rq.uikit` and `rq.config`.
+
 ## 2.26.0
 
 Mod states, the rest (`notes/plans/plan-mod-states-rest.md` in the workspace, priority #5 of the API work). Lua in `src/lua/status.lua` and `src/lua/battle.lua`, over the game's own functions, except the forecast flag.

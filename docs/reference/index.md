@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.26.0.
+Loader version 2.27.0.
 
 ## Namespaces
 
@@ -124,8 +124,11 @@ Loader version 2.26.0.
 | [`rq.MapCtx`](types/rq.MapCtx.md) | What `rq.dungeon.on_map` gets. |
 | [`rq.MarkDef`](types/rq.MarkDef.md) | How `rq.battle.set_mark` shows one of the game's marks. |
 | [`rq.MusicInfo`](types/rq.MusicInfo.md) | What `rq.music.info` tells about a track. |
+| [`rq.MusicListOpts`](types/rq.MusicListOpts.md) | What `rq.uikit.music_list` takes. |
+| [`rq.MusicMoment`](types/rq.MusicMoment.md) | A moment a pack names on its Config page, with a switch the player turns on and off. |
 | [`rq.MusicNow`](types/rq.MusicNow.md) | What `rq.music.current` gives: the track that plays now. |
 | [`rq.MusicOpts`](types/rq.MusicOpts.md) | How `rq.music.replace` and `ctx:file` play a file. |
+| [`rq.MusicPageOpts`](types/rq.MusicPageOpts.md) | What `rq.music.page` takes. |
 | [`rq.MusicPlayCtx`](types/rq.MusicPlayCtx.md) | What `rq.music.on_play` gets: a track the game is about to play. |
 | [`rq.NewThisRun`](types/rq.NewThisRun.md) | What `rq.quests.new_this_run` returns. |
 | [`rq.Offer`](types/rq.Offer.md) | A row `rq.chara.on_offer` adds to the skill buy list. |

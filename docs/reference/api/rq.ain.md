@@ -18,6 +18,7 @@ check the count it gets back.
 | [`rq.ain.patch_int_after`](#rqainpatch_int_after) | Replaces the first integer constant `from` that follows a read of a global. |
 | [`rq.ain.set_code_int`](#rqainset_code_int) | Writes a new value into a constant of the game's code that `rq.ain.patch_int_after` changed. |
 | [`rq.ain.code_int`](#rqaincode_int) | Reads the value a place of `rq.ain.patch_int_after` holds in the game's code now. |
+| [`rq.ain.stack`](#rqainstack) | Returns the names of the game's functions on its call stack now, innermost first. |
 | [`rq.ain.call`](#rqaincall) | Calls any AIN function by its name. |
 | [`rq.ain.hook`](#rqainhook) | Runs Lua before and after any AIN function. |
 | [`rq.ain.method`](#rqainmethod) | Calls a method of the game on the object a global reaches. |
@@ -170,6 +171,35 @@ Raises an error for a place that `patch_int_after` did not give.
 | Returns | Type | Description |
 | --- | --- | --- |
 | `value` | `integer\|nil` | The value, or nil when the place is no longer found. |
+
+### rq.ain.stack
+
+```lua
+rq.ain.stack(max) -> string[]
+```
+
+`since 2.27.0`
+
+Returns the names of the game's functions on its call stack now, innermost first.
+
+A method is named `Class@method`, as `rq.ain.hook` takes it. Inside a hook, the stack says who
+called the hooked function: `rq.music` reads it to tell a scene, the castle or the town apart.
+From `rq.on_frame` it shows the game's frame update (`UpdateView`, `UPDATE`) and the screen's loop
+under it.
+
+```lua
+rq.ain.hook("音楽", { before = function()
+  rq.log("music asked by " .. tostring(rq.ain.stack(3)[2]))
+end })
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `max` *(optional)* | `integer` | At most this many names. Default 32. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `names` | `string[]` | The function names, innermost first; empty outside the game's code. |
 
 ### rq.ain.call
 

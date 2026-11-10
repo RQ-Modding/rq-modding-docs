@@ -13,7 +13,8 @@ What `rq.music.info` tells about a track.
 | `exists` | `boolean` | Whether the game has this track. |
 | `file` *(optional)* | `string` | The mod's file, as the mod gave it; nil when the game's plays. |
 | `mod` *(optional)* | `string` | The id of the mod whose file it is. |
-| `volume` *(optional)* | `integer` | The file's volume, 0 to 100. |
+| `volume` *(optional)* | `integer` | The file's volume, 0 to 200. |
+| `off` *(optional)* | `boolean` | `replace` only: true when the player switched this track off on the mod's page, so the file is kept but does not play. Since 2.27.0. |
 | `loop_start` *(optional)* | `number` | The file's loop start, in seconds. |
 | `loop_end` *(optional)* | `number` | The file's loop end, in seconds. |
 | `seconds` *(optional)* | `number` | The length, in seconds: the file's, else the game track's. |

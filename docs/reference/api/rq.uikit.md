@@ -118,6 +118,7 @@ end)
 | [`rq.uikit.item_sort`](#rquikititem_sort) | Sorts a list of items in place as the vault sorts it, with the game's own comparers (`compItem_*`). |
 | [`rq.uikit.item_sorts`](#rquikititem_sorts) | Lists the vault's sort modes 11 to 28 with the game's names (`アイテム倉庫_ソート名`), for a menu. |
 | [`rq.uikit.item_picker`](#rquikititem_picker) | Draws an item picker over the player's items, laid out as the vault: the list with its scroll bar, the filter column 407 pixels right and 154 down, the count of items listed in the column's box, and the store's SORT under the column (405 right and 682 down, as at 943, 682 in the game). |
+| [`rq.uikit.music_list`](#rquikitmusic_list) | Draws the switches of the calling mod's music, as `rq.music.page` does, on a page of its own. |
 
 ### rq.uikit.label
 
@@ -1764,3 +1765,30 @@ end)
 > Changed in 2.9.0: The shop and quest places, `chara`, `keys`; a click on the current row picks it again.
 
 > Changed in 2.10.0: The game's SORT at the bottom right, in place of the sort button under the column
+
+### rq.uikit.music_list
+
+```lua
+rq.uikit.music_list(opts)
+```
+
+`since 2.27.0`
+
+Draws the switches of the calling mod's music, as `rq.music.page` does, on a page of its own.
+
+Call it on every update the page shows, from the page's `draw`. It takes about 470 high: a row of
+all on and off, 8 rows, and the arrows when there are more.
+
+Raises an error for options that are not a table, or a moment with no `key`.
+
+```lua
+rq.config.page({ id = "my-pack", title = "My Pack", draw = function(ui, box)
+  rq.uikit.music_list({ w = box.w, moments = { { key = "boss", name = "Boss fights" } } })
+end })
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `opts` | [`rq.MusicListOpts`](../types/rq.MusicListOpts.md) | Place and moments. |
+
+See also: [`rq.music.page`](rq.music.md#rqmusicpage)

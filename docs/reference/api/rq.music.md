@@ -1,6 +1,6 @@
 # rq.music
 
-`since 2.4.0`
+`since 2.4.0` `changed 2.27.0`
 
 Music from a mod's own file, in place of one of the game's tracks.
 
@@ -17,10 +17,22 @@ the game plays the track once (`音楽１回再生`). It loops between its loop 
 samples, as many music packs carry them), else the whole file.
 
 **Two mods** that replace the same track: the later one in load order wins, and the log names
-both. Each mod restores only its own.
+both. Each mod restores only its own; the one below it in load order then plays again.
 
-The game's looped ambient sounds (rain, wind) are music tracks too: `replace` changes them, and
-`on_play` does not see them.
+**Moments.** `on_play`'s `ctx.kind` tells which moment asks for the track: an everyday fight, a
+boss fight, a dungeon, the town, Rance Castle, the opening, the results screen, the jingle, a scene
+(with the game's scene function in `ctx.scene`), or the rest. The rain, wind and other sounds of
+the scenes are music tracks too (201 to 213), played from scenes: `replace` and `on_play` take
+them. The game has a channel for looped ambient sounds (`ループ効果音`) but never starts one.
+
+**The player's switches.** `rq.music.page` gives a pack a page in Config's Mods tab: a switch for
+each track it replaced and each moment it names, a play button, all on and all off. A track switched
+off plays the game's file (or the next mod's below in load order). `rq.music.enabled` reads a
+moment's switch in `on_play`. A mod with its own page puts the same rows on it with
+`rq.uikit.music_list`.
+
+ctx's `scene`, `boss`, `enemies`, `area`, `map_kind` and `world`, volume up to 200, the player's
+switches (`page`, `enabled`, `rq.uikit.music_list`), and `restore` bringing back the mod below.
 
 ```lua
 -- A soundtrack pack: the everyday fight track and the indoor dungeon track.
@@ -38,6 +50,8 @@ rq.music.replace(rq.ids.music.INDOOR_CRAWL_R8, "music/indoor.ogg", { loop_start 
 | [`rq.music.current`](#rqmusiccurrent) | Returns the track that plays now. |
 | [`rq.music.play`](#rqmusicplay) | Plays a game track, as the game does: with its crossfade, and a mod's file when one replaces it. |
 | [`rq.music.stop`](#rqmusicstop) | Stops the music, with the game's fade. |
+| [`rq.music.page`](#rqmusicpage) | Gives the calling mod a page in Config's Mods tab to turn its music on and off. |
+| [`rq.music.enabled`](#rqmusicenabled) | Returns whether the player left one of the calling mod's switches on. |
 
 ### rq.music.replace
 
@@ -50,7 +64,9 @@ rq.music.replace(no, path, opts) -> rq.MusicInfo
 Plays a file wherever the game plays one of its tracks.
 
 It starts the next time the game starts the track, or when a mod plays it (`rq.music.play`). A
-replacement made while the track plays starts the next time the game asks for that track.
+replacement made while the track plays starts the next time the game asks for that track. When
+the player switched the track off on the mod's page (`rq.music.page`), the file is checked and
+kept, `info.off` is true, and the game's plays until it is switched on.
 
 Raises an error for a number the game has not, a path out of the mod folder, a missing file, a
 file that is not a sound with 1 or 2 channels, or an option of the wrong type or range. In
@@ -71,7 +87,7 @@ rq.music.replace(rq.ids.music.BATTLE_2_R8, "music/battle.ogg", { loop_start = 8.
 | --- | --- | --- |
 | `info` | [`rq.MusicInfo`](../types/rq.MusicInfo.md) | What was set, with the loop points the file gave. |
 
-See also: [`rq.music.restore`](rq.music.md#rqmusicrestore)
+See also: [`rq.music.restore`](rq.music.md#rqmusicrestore), [`rq.music.page`](rq.music.md#rqmusicpage)
 
 ### rq.music.restore
 
@@ -79,11 +95,12 @@ See also: [`rq.music.restore`](rq.music.md#rqmusicrestore)
 rq.music.restore(no) -> boolean
 ```
 
-`since 2.4.0`
+`since 2.4.0` `changed 2.27.0`
 
 Undoes the calling mod's `rq.music.replace` on a track.
 
-It ends the next time the game starts the track. Another mod's replacement stays.
+It ends the next time the game starts the track. Another mod's replacement stays, and one made
+earlier in load order plays again.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -92,6 +109,8 @@ It ends the next time the game starts the track. Another mod's replacement stays
 | Returns | Type | Description |
 | --- | --- | --- |
 | `restored` | `boolean` | false when the mod had not replaced it. |
+
+> Changed in 2.27.0: The replacement of the mod below in load order comes back (it was the game's).
 
 ### rq.music.info
 
@@ -156,6 +175,72 @@ rq.music.stop()
 
 Stops the music, with the game's fade.
 
+### rq.music.page
+
+```lua
+rq.music.page(opts) -> string
+```
+
+`since 2.27.0`
+
+Gives the calling mod a page in Config's Mods tab to turn its music on and off.
+
+The page lists each track the mod replaced (`rq.music.replace`), by number with the mod's name
+for it and the game's, then each moment in `opts.moments`. Each row has a switch; a track's row
+has a play button that plays the mod's file while the page shows (the music that played before
+comes back when the page goes away). "All on" and "All off" turn every switch. The page shows 8
+rows at a time, with arrows for more.
+
+A track switched off plays the game's file (or the replacement of the mod below in load order),
+at once when it plays now. A moment switched off changes nothing by itself: the mod's `on_play`
+asks `rq.music.enabled(key)`. The switches are kept for every save profile.
+
+Agents see the rows as `check-music-t<no>` and `check-music-m-<key>`, the buttons as
+`button-music-play-<no>`, `button-music-all-on` and `button-music-all-off`.
+
+Raises an error for an option of the wrong type, or a moment with no `key`.
+
+```lua
+rq.music.replace(rq.ids.music.BATTLE_2_R8, "music/battle.ogg", { name = "Battle (Remix)" })
+rq.music.page({ moments = { { key = "boss", name = "Boss fights" } } })
+rq.music.on_play(function(ctx)
+  if ctx.kind == "boss" and rq.music.enabled("boss") then ctx:file("music/boss.ogg") end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `opts` *(optional)* | [`rq.MusicPageOpts`](../types/rq.MusicPageOpts.md) | The title, the id and the moments. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `id` | `string` | The page's id. |
+
+See also: [`rq.uikit.music_list`](rq.uikit.md#rquikitmusic_list)
+
+### rq.music.enabled
+
+```lua
+rq.music.enabled(key) -> boolean
+```
+
+`since 2.27.0`
+
+Returns whether the player left one of the calling mod's switches on.
+
+Every switch is on until the player turns it off on the mod's page (`rq.music.page` or
+`rq.uikit.music_list`).
+
+Raises an error for a key that is not a string or a whole number.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `key` | `string\|integer` | A moment's key, or a track number. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `on` | `boolean` | true when on. |
+
 ## Events
 
 | Name | Summary |
@@ -180,7 +265,7 @@ game goes on with it. An error in a callback is logged and the next still runs.
 ```lua
 -- Every boss fight of one quest gets the mod's theme.
 rq.music.on_play(function(ctx)
-  if ctx.kind == "fight" and ctx.no == rq.ids.music.BOSS_BATTLE_R8 and ctx.quest == 42 then
+  if ctx.kind == "boss" and ctx.quest == 42 then
     ctx:file("music/boss42.ogg")
   end
 end)
