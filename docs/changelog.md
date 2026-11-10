@@ -5,6 +5,13 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.20.1
+
+`rq.ui.get` on every screen (`notes/plans/plan-ui-kit-leftovers.md` in the workspace, section 15), in `modloader_ui.c`:
+- The footer (`system`, `vault`, `trivia`, the party cards and the money line) is listed on every screen whose own loop takes its clicks, not only the town, Frostbuy and the Party screen: Quests, Rance Castle, the status page, the vault, a quest's map, a fight, and an unnamed screen that shows it.
+- Rance Castle is the screen `castle` (it was `other`, with bare sprites): its rooms are `room-<area>`, with the room's name as the label and its floor (with ` new` for the NEW mark) as the value, greyed as the game greys them; a mod's room (`rq.castle.room`) is listed the same way. Its town tabs are `frostbuy`, `party` and `quests`. `rq.sprite`'s `keep = "screen"` sees `castle` too.
+- Quests lists the town tabs (`rance-castle`, `frostbuy`, `party`).
+- Fixed: the SYSTEM menu opened over Quests or the status page was reported as the screen under it; it is `system-menu`.
 ## 2.20.0
 
 The status page for mods (`notes/plans/plan-ui-kit-leftovers.md` in the workspace, section 14). Lua over the game's own page (`src/lua/statuspage.lua`, `src/lua/gamebutton.lua`, `src/lua/item.lua`); the C changes are the fix below and a switch only the loader's own Lua gets.

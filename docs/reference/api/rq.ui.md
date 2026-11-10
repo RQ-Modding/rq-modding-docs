@@ -26,7 +26,7 @@ Reads what is on the screen and saves screenshots.
 rq.ui.get() -> table|nil
 ```
 
-`since 0.20.0` `changed 0.21.0` `changed 2.11.0` `changed 2.12.0` `changed 2.19.0` `changed 2.20.0`
+`since 0.20.0` `changed 0.21.0` `changed 2.11.0` `changed 2.12.0` `changed 2.19.0` `changed 2.20.0` `changed 2.20.1`
 
 Returns what is on the screen.
 
@@ -34,6 +34,12 @@ The table holds `screen` (the screen's name), `hover`, `controls` (each with `id
 `h`, `enabled` and more) and the data of the current screen, such as `battle` or `quests`. A
 screen with no name, such as a black one during a change of scene, says `other`; `boot` is used
 only before the first named screen, and `title` only for the real title screen.
+
+The footer's controls (`system`, `vault`, `trivia` in section `system-bar`; the party cards in
+section `party`; the money line) are listed on every screen whose own loop takes them: the town,
+its tabs, Rance Castle (`castle`), the status page, the vault, a quest's map and a fight, and an
+unnamed screen (`other`) that shows them. On `castle` each room is `room-<area>`, with the room's
+name as the label and its floor (`B2F`, with ` new` for the NEW mark) as the value.
 
 A game control a player cannot click has `covered = true`: every point of it is under a kit widget
 of the last update (section `kit`), or a mod's page captures the mouse (`rq.hud.capture_mouse`).
@@ -45,6 +51,10 @@ On the screen `select` (the game's choice menu and dialogs), `select.message` ho
 text rows, one a line.
 
 It builds the whole list, so do not call it on every `rq.on_frame`.
+
+every screen that shows it; Rance Castle is the screen `castle`, with its rooms as `room-<area>`
+and the town tabs; the town tabs on `quests`; the SYSTEM menu over Quests or the status page is
+`system-menu` (it was the screen under it).
 
 ```lua
 local s = rq.ui.get()
@@ -64,6 +74,8 @@ if s and s.screen == "camp" then rq.log(#s.controls, "controls") end
 > Changed in 2.19.0: `select.message`.
 
 > Changed in 2.20.0: `status.chara` is the character shown (it was always 0).
+
+> Changed in 2.20.1: The footer (`system`, `vault`, `trivia`, the party cards and the money line) on
 
 See also: [`rq.ui.aim`](rq.ui.md#rquiaim)
 

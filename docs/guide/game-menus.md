@@ -73,6 +73,10 @@ face and the NEW mark, and moves the keys to it.
 
 Make rooms in `init.lua`. There are 21 area numbers for every mod together, given in load order.
 
+Agents see the castle as the screen `castle` (since 2.20.1), each room as the control
+`room-<area>` with its name as the label and its floor as the value, so a mod's room is
+`room-<handle.area()>`.
+
 ## Buttons in the skill window
 
 ```lua
