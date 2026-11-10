@@ -6,9 +6,10 @@ moves to the [Changelog](changelog.md).
 ## Planned
 
 - **More names.** `rq.ids` (1.15.0) names characters, classes, items, quests, skills and states.
-  1.16.0 adds monsters, races, character types, elements, item kinds and skill targets, and 2.4.0
-  music tracks. Still to come: maps and dungeons (the game names them per quest and floor, not per
-  map), and, when the API takes their numbers, traps, chest contents, directions and battle results.
+  1.16.0 adds monsters, races, character types, elements, item kinds and skill targets, 2.4.0
+  music tracks, and 2.24.0 map kinds. Still to come: map layouts (many layouts carry several areas'
+  names, so a quest and an area are the stable key), and, when the API takes their numbers, traps,
+  chest contents, directions and battle results.
 - **A mod template.** A repository to start a mod from: `mod.json` with its schema, `init.lua`,
   editor settings for `rq.lua`, a README, a changelog, a license, and a workflow that zips a release.
 - **One page of docs in the release.** The API reference as one HTML file inside the release zip, for
@@ -20,7 +21,6 @@ In order of priority: first what the most mods, existing or new, would use.
 
 | Area | What |
 | --- | --- |
-| Dungeons | Which dungeon and floor `rq.dungeon.on_map` is on, so a mod can act per dungeon, and then names for them in `rq.ids`. |
 | Lua state | `rq.mod.id` seeing the mod through a tail call (`return rq.ui.confirm(...)`), so its entries are not filed under `_`. Later: changes to the shared `rq` and standard library tables, a log line also for changes made in callbacks, and refusing such changes if mods turn out to make them. 2.0.0 logs the ones each `init.lua` makes ([What a mod can reach](guide/sandbox.md#globals)). |
 | Faces and pictures | Enemy pictures, and faces in skill cut-ins, big pictures and the status pages. Animated faces, portraits and backgrounds. |
 | States | States made by mods came in 2.2.0 (`rq.status`), on the events of 2.1.0, and in 2.3.0 a state can down someone at the start of a turn when its definition says so. Later: the game's cures and buff dispels taking mod states, a damage number per state, the AI's cures and the battle forecast knowing them, a help text on hover, states that last past a fight. |

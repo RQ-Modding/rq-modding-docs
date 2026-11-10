@@ -14,6 +14,7 @@ On a map grid, `x` runs east and `z` north.
 | [`rq.dungeon.active`](#rqdungeonactive) | Returns whether the dungeon map screen exists. |
 | [`rq.dungeon.exploring`](#rqdungeonexploring) | Returns whether the player walks the map. |
 | [`rq.dungeon.info`](#rqdungeoninfo) | Returns a copy of the current room. |
+| [`rq.dungeon.areas`](#rqdungeonareas) | Returns the current quest's area map, as the game draws it at the top right of the map screen. |
 | [`rq.dungeon.grid`](#rqdungeongrid) | Returns the current map, as `rqmod-ctl grid` shows it. |
 | [`rq.dungeon.place_player`](#rqdungeonplace_player) | Puts the player on a floor cell of the current map at once, as the game does after a portal. |
 | [`rq.dungeon.place`](#rqdungeonplace) | Puts an object on a free floor cell of the current map. |
@@ -82,13 +83,45 @@ Config, the result and appraisal screens, and a scene or choice on the map.
 rq.dungeon.info() -> rq.DungeonInfo
 ```
 
-`since 0.2.0`
+`since 0.2.0` `changed 2.24.0`
 
 Returns a copy of the current room.
+
+Outside a quest, `quest`, `area`, `row`, `col` and `kind` are 0 and `stratum` is nil.
 
 | Returns | Type | Description |
 | --- | --- | --- |
 | `info` | [`rq.DungeonInfo`](../types/rq.DungeonInfo.md) | The room, the cell and the party. |
+
+> Changed in 2.24.0: Added `quest`, `area`, `row`, `col`, `kind` and `stratum`.
+
+### rq.dungeon.areas
+
+```lua
+rq.dungeon.areas() -> rq.DungeonArea[]|nil, boolean?
+```
+
+`since 2.24.0`
+
+Returns the current quest's area map, as the game draws it at the top right of the map screen.
+
+Areas and routes stay found across runs of the quest. Some quests hide the area map (the Malgrid
+Dungeon Xth Stratum without its map item); the second value says so, and a mod that draws a map of
+its own can respect it.
+
+```lua
+local list, shown = rq.dungeon.areas()
+if list and shown then
+  for _, a in ipairs(list) do
+    if a.found then rq.log(a.row, a.col, a.here and "here" or "") end
+  end
+end
+```
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `areas` | [`rq.DungeonArea`](../types/rq.DungeonArea.md) `[]\|nil` | The 16 areas in order, or nil outside a quest. |
+| `shown` | `boolean?` | false when the game hides its area map on this quest. |
 
 ### rq.dungeon.grid
 
@@ -179,6 +212,7 @@ if g then rq.dungeon.place("chest", g.player.x + 1, g.player.z, { content = 120 
 | Name | Summary |
 | --- | --- |
 | [`rq.dungeon.on_map`](#rqdungeonon_map) | Calls `fn` when the dungeon map screen is built. |
+| [`rq.dungeon.on_area`](#rqdungeonon_area) | Calls `fn` each time the party enters an area of a quest. |
 
 ### rq.dungeon.on_map
 
@@ -186,13 +220,17 @@ if g then rq.dungeon.place("chest", g.player.x + 1, g.player.z, { content = 120 
 rq.dungeon.on_map(fn) -> fun()
 ```
 
-`since 0.9.0` `changed 0.23.0`
+`since 0.9.0` `changed 0.23.0` `changed 2.24.0`
 
 Calls `fn` when the dungeon map screen is built.
 
 On a first visit the game locks the camera at distance 35 until the quest is cleared. Return true
 from any callback and the engine reports the quest as cleared for that one check, so the zoom stays
 free. The range is whatever is patched at that moment (the game's, or `rq.dungeon.camera`).
+
+The game builds the map screen each time the party enters an area, again when it rebuilds the map
+after a save, and for the result screen's background. For "the party entered an area", once, use
+`rq.dungeon.on_area`.
 
 ```lua
 rq.dungeon.on_map(function(ctx)
@@ -209,3 +247,48 @@ end)
 | `remove` | `fun()` | Removes this callback. |
 
 > Changed in 0.23.0: Returns a remover.
+
+> Changed in 2.24.0: `ctx` has `area`, `row`, `col`, `name`, `kind`, `first` and `stratum`.
+
+See also: [`rq.dungeon.on_area`](rq.dungeon.md#rqdungeonon_area)
+
+### rq.dungeon.on_area
+
+```lua
+rq.dungeon.on_area(fn) -> fun()
+```
+
+`since 2.24.0`
+
+Calls `fn` each time the party enters an area of a quest.
+
+It runs once per area entered: at the quest's start, through a portal, and when the quest's own
+script moves the party. It runs after the game's `ＱＭ登録`: the area's kind, name and map are set and
+the map is loaded, but not shown yet. It does not run when the game builds the map screen again
+(after a save, the result screen), as `rq.dungeon.on_map` does.
+
+The game has no floor number. A quest's areas are cells of its 4 by 4 area map; names such as
+"Epiphany Cave 2F" are the areas' names, and each stratum of the Malgrid Dungeon is its own quest.
+
+What `fn` returns is ignored. Handlers run in the order they were added; an error in one is written
+to the log with the mod's id, and the others still run.
+
+Raises an error when `fn` is not a function.
+
+```lua
+rq.dungeon.on_area(function(ctx)
+  if ctx.first and ctx.kind == rq.ids.map_kind.CAVE then
+    rq.log("a new cave area: " .. ctx.name)
+  end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(ctx:` [`rq.AreaCtx`](../types/rq.AreaCtx.md) `)` | Gets the area entered. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |
+
+See also: [`rq.dungeon.on_map`](rq.dungeon.md#rqdungeonon_map)

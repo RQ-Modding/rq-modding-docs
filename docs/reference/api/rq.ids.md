@@ -1,6 +1,6 @@
 # rq.ids
 
-`since 1.15.0` `changed 1.16.0` `changed 2.4.0`
+`since 1.15.0` `changed 1.16.0` `changed 2.4.0` `changed 2.24.0`
 
 The game's numbers by name: characters, items, monsters, quests, skills, and the small lists the
 game names (classes, states, races, character types, elements, item kinds, skill targets).
@@ -27,6 +27,7 @@ changed. It works at the top level of `init.lua`.
 | `element` | elements (`属性`): `NOTHING`, `LIGHT`, `DARKNESS`, `ELECTRIC`, `ICE`, `FIRE` |
 | `item` | item numbers, not instances |
 | `item_kind` | item kinds (`種類詳細`), as in an item's `subtype`: `SWORD`, `SHORTSWORD`, `SPEAR`, `CLOTHING`, ... |
+| `map_kind` | map kinds (`◆ＭＡＰ基礎型`), as in `rq.dungeon.on_area`'s `ctx.kind`: `CAVE`, `FOREST`, `CASTLE`, `MALGRID`, ... The game names none; the names are the docs' |
 | `monster` | monster numbers, as `rq.battle.start` takes them and `rq.battle.snap` gives them: `COCKROACH` is 358 |
 | `music` | music track numbers, as `rq.music` takes them: `INDOOR_CRAWL_R8` is 1, `BATTLE_2_R8` 52 |
 | `quest` | quest numbers |
@@ -53,6 +54,7 @@ local no = rq.ids.find("skill", "Spear Knowledge")  -- from a config file or a p
 | `element` | `rq.IdsElement` | Elements by name; each key is in the docs' Elements table (Game data). Since 1.16.0. |
 | `item` | `rq.IdsItem` | Items by name; each key is in the docs' Items table (Game data). |
 | `item_kind` | `rq.IdsItemKind` | Item kinds by name; each key is in the docs' Item kinds table (Game data). Since 1.16.0. |
+| `map_kind` | `rq.IdsMapKind` | Map kinds by name; each key is in the docs' Map kinds table (Game data). Since 2.24.0. |
 | `monster` | `rq.IdsMonster` | Monsters by name; each key is in the docs' Monsters table (Game data). Since 1.16.0. |
 | `music` | `rq.IdsMusic` | Music tracks by name; each key is in the docs' Music table (Game data). Since 2.4.0. |
 | `quest` | `rq.IdsQuest` | Quests by name; each key is in the docs' Quests table (Game data). |
@@ -75,7 +77,7 @@ local no = rq.ids.find("skill", "Spear Knowledge")  -- from a config file or a p
 rq.ids.find(kind, name) -> integer|nil, string?
 ```
 
-`since 1.15.0` `changed 1.16.0` `changed 2.4.0`
+`since 1.15.0` `changed 1.16.0` `changed 2.4.0` `changed 2.24.0`
 
 Returns the number of the thing with this name.
 
@@ -94,7 +96,7 @@ if not no then rq.log(err) end  -- such as: more than one skill is named "Attack
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `kind` | `"chara"\|"chara_type"\|"class"\|"element"\|"item"\|"item_kind"\|"monster"\|"music"\|"quest"\|"race"\|"skill"\|"state"\|"target"` | The kind. |
+| `kind` | `"chara"\|"chara_type"\|"class"\|"element"\|"item"\|"item_kind"\|"map_kind"\|"monster"\|"music"\|"quest"\|"race"\|"skill"\|"state"\|"target"` | The kind. |
 | `name` | `string` | The in-game English name, or a key. |
 
 | Returns | Type | Description |
@@ -106,6 +108,8 @@ if not no then rq.log(err) end  -- such as: more than one skill is named "Attack
 
 > Changed in 2.4.0: Takes the kind `music`.
 
+> Changed in 2.24.0: Takes the kind `map_kind`.
+
 See also: [`rq.ids.find_all`](rq.ids.md#rqidsfind_all)
 
 ### rq.ids.find_all
@@ -114,7 +118,7 @@ See also: [`rq.ids.find_all`](rq.ids.md#rqidsfind_all)
 rq.ids.find_all(kind, text) -> integer[]
 ```
 
-`since 1.15.0` `changed 1.16.0` `changed 2.4.0`
+`since 1.15.0` `changed 1.16.0` `changed 2.4.0` `changed 2.24.0`
 
 Returns the numbers of every entry whose name contains a text.
 
@@ -129,7 +133,7 @@ rq.ids.find_all("skill", "fortune")  -- {158, 159, 160, 293, 448, 585}: Fortune,
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `kind` | `"chara"\|"chara_type"\|"class"\|"element"\|"item"\|"item_kind"\|"monster"\|"music"\|"quest"\|"race"\|"skill"\|"state"\|"target"` | The kind. |
+| `kind` | `"chara"\|"chara_type"\|"class"\|"element"\|"item"\|"item_kind"\|"map_kind"\|"monster"\|"music"\|"quest"\|"race"\|"skill"\|"state"\|"target"` | The kind. |
 | `text` | `string` | What the name must contain. |
 
 | Returns | Type | Description |
@@ -140,6 +144,8 @@ rq.ids.find_all("skill", "fortune")  -- {158, 159, 160, 293, 448, 585}: Fortune,
 
 > Changed in 2.4.0: Takes the kind `music`.
 
+> Changed in 2.24.0: Takes the kind `map_kind`.
+
 See also: [`rq.ids.find`](rq.ids.md#rqidsfind)
 
 ### rq.ids.name
@@ -148,7 +154,7 @@ See also: [`rq.ids.find`](rq.ids.md#rqidsfind)
 rq.ids.name(kind, no) -> string|nil
 ```
 
-`since 1.15.0` `changed 1.16.0` `changed 2.4.0`
+`since 1.15.0` `changed 1.16.0` `changed 2.4.0` `changed 2.24.0`
 
 Returns the in-game name of a number.
 
@@ -163,7 +169,7 @@ rq.log("used " .. (rq.ids.name("skill", ctx.skill) or "a mod skill"))
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `kind` | `"chara"\|"chara_type"\|"class"\|"element"\|"item"\|"item_kind"\|"monster"\|"music"\|"quest"\|"race"\|"skill"\|"state"\|"target"` | The kind. |
+| `kind` | `"chara"\|"chara_type"\|"class"\|"element"\|"item"\|"item_kind"\|"map_kind"\|"monster"\|"music"\|"quest"\|"race"\|"skill"\|"state"\|"target"` | The kind. |
 | `no` | `integer` | The number. |
 
 | Returns | Type | Description |
@@ -173,3 +179,5 @@ rq.log("used " .. (rq.ids.name("skill", ctx.skill) or "a mod skill"))
 > Changed in 1.16.0: Takes the kinds `chara_type`, `element`, `item_kind`, `monster`, `race` and `target`.
 
 > Changed in 2.4.0: Takes the kind `music`.
+
+> Changed in 2.24.0: Takes the kind `map_kind`.

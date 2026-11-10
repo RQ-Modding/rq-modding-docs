@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.23.0.
+Loader version 2.24.0.
 
 ## Namespaces
 
@@ -57,6 +57,7 @@ Loader version 2.23.0.
 | [`rq.AgentOpts`](types/rq.AgentOpts.md) | How `rq.agent.control` finds a control: a game button, or a rectangle a mod draws. |
 | [`rq.AgentWidget`](types/rq.AgentWidget.md) | A control a mod drew on this update, for `rqmod-ctl ui`. |
 | [`rq.AinHookCtx`](types/rq.AinHookCtx.md) | What an `rq.ain.hook` callback gets. |
+| [`rq.AreaCtx`](types/rq.AreaCtx.md) | What `rq.dungeon.on_area` gets. |
 | [`rq.BattleActor`](types/rq.BattleActor.md) | The ally whose turn it is, from `rq.battle.actor`. |
 | [`rq.BattleDownCtx`](types/rq.BattleDownCtx.md) | What `rq.battle.on_down` gets. |
 | [`rq.BattleEndCtx`](types/rq.BattleEndCtx.md) | What `rq.battle.on_end` gets. |
@@ -92,6 +93,7 @@ Loader version 2.23.0.
 | [`rq.CreateCtx`](types/rq.CreateCtx.md) | What `rq.chara.on_create` gets. |
 | [`rq.CritCtx`](types/rq.CritCtx.md) | What `rq.combat.on_crit` gets where the game rolls a critical. |
 | [`rq.DebugAction`](types/rq.DebugAction.md) | A row on the F3 debug menu. |
+| [`rq.DungeonArea`](types/rq.DungeonArea.md) | One area of `rq.dungeon.areas()`. |
 | [`rq.DungeonCamera`](types/rq.DungeonCamera.md) | The camera range `rq.dungeon.camera` patches. |
 | [`rq.DungeonInfo`](types/rq.DungeonInfo.md) | Where the party is in a dungeon, from `rq.dungeon.info()`. |
 | [`rq.FlashSound`](types/rq.FlashSound.md) | A sound inside a Flash file, from `rq.sound.flash_info`. |

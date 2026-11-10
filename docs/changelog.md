@@ -5,6 +5,15 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.24.0
+
+Which dungeon and which area (`notes/plans/plan-dungeon-areas.md` in the workspace, priority #2 of the API work). The calls are Lua, in `src/lua/dungeon.lua`, over the game's own globals and functions.
+- `rq.dungeon.on_area(fn)`: runs once each time the party enters an area of a quest (at the start, through a portal, by the quest's script), after the game's `ＱＭ登録`. Not when the game builds the map screen again, as `on_map` does after a save and for the result screen.
+- The area's data: `area` (1 to 16, a cell of the quest's 4 by 4 area map), `row`, `col`, `name`, `kind` (the map kind, `◆ＭＡＰ基礎型`), `first` (not visited yet in this run) and `stratum` (the Malgrid Dungeon's stratum: 1 to 10 on its quests, the Xth Stratum's own count on quest 147). On `on_area`'s and `on_map`'s `ctx`; `quest`, `area`, `row`, `col`, `kind` and `stratum` in `rq.dungeon.info()`.
+- `rq.dungeon.areas()`: the quest's area map as the game draws it, with the areas found, the routes, the party's area and the goal, and whether the game hides the map on this quest.
+- `rq.ids.map_kind`: the 22 map kinds. The game names none; the names come from the places that use each kind, and the docs list them.
+- The reference says when `on_map` runs, and that its `map` is the map layout number.
+
 ## 2.23.0
 
 Game data that Gem Lady Trade, Morurun Items and Keep Donations read and wrote through `rq.ain` (`notes/plans/plan-game-data.md` in the workspace, priority #1 of the API work). The calls in Lua are in `src/lua/gamedata.lua`, over the game's own functions.

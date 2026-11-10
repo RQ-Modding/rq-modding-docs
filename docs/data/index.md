@@ -12,6 +12,7 @@ The game's numbers, with the [`rq.ids`](../reference/api/rq.ids.md) key and the 
 | [Elements](elements.md) | 6 | element numbers (`属性`), as in a skill's `element` and `rq.chara.get(iic).weak_element` |
 | [Items](items.md) | 304 | item numbers, not instances: `rq.item.give(rq.ids.item.SKILL_AGAIN)` makes one |
 | [Item kinds](item-kinds.md) | 17 | item kinds (`種類詳細`): the weapon or armor kind, as in an item's `subtype` |
+| [Map kinds](map-kinds.md) | 22 | map kinds (`◆ＭＡＰ基礎型`): the look of a quest's area, as in `rq.dungeon.on_area`'s `ctx.kind`. The game names none; these names are ours, after the picture the game gives each kind |
 | [Monsters](monsters.md) | 372 | monster numbers, as `rq.battle.start` takes them and `rq.battle.snap()` gives them (`enemies[i].no`) |
 | [Music](music.md) | 59 | music track numbers, as `rq.music.replace` and `rq.music.play` take them and `rq.music.current()` gives them |
 | [Quests](quests.md) | 199 | quest numbers, as in `rq.quests()` and `rq.quests.start` |

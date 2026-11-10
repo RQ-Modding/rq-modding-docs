@@ -61,9 +61,9 @@ def generate(engine, out):
 
 
 DATA_PAGES = {"chara": "characters", "chara_type": "chara-types", "class": "classes",
-              "element": "elements", "item": "items", "item_kind": "item-kinds", "monster": "monsters", "music": "music", "quest": "quests",
+              "element": "elements", "item": "items", "item_kind": "item-kinds", "map_kind": "map-kinds", "monster": "monsters", "music": "music", "quest": "quests",
               "race": "races", "skill": "skills", "state": "states", "target": "targets"}
-DETAIL = {"chara": "Class", "item": "Slot", "monster": "Level, race", "skill": "Kind", "target": "In the game"}
+DETAIL = {"chara": "Class", "item": "Slot", "map_kind": "Places", "monster": "Level, race", "skill": "Kind", "target": "In the game"}
 
 
 def cell(s):

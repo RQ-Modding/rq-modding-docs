@@ -81,6 +81,7 @@ The kinds:
 | `element` | an element (`属性`): `NOTHING`, `LIGHT`, `DARKNESS`, `ELECTRIC`, `ICE`, `FIRE` (1.16.0) |
 | `item` | an item number, not an instance |
 | `item_kind` | a weapon or armor kind (`種類詳細`): `SWORD`, `SHORTSWORD`, `SPEAR`, `CLOTHING`, ... (1.16.0) |
+| `map_kind` | the look of a quest's area (`◆ＭＡＰ基礎型`), as `rq.dungeon.on_area` gives it: `CAVE`, `FOREST`, `CASTLE`, `MALGRID`, ... The game names none; the names are the docs' (2.24.0) |
 | `monster` | a monster, as `rq.battle.start` takes it: `COCKROACH`, ... (1.16.0) |
 | `quest` | a quest |
 | `race` | a race (`種族`): `HUMAN`, `HANNY`, `FIEND`, ... (1.16.0) |
