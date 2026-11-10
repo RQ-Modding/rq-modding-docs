@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.22.1.
+Loader version 2.23.0.
 
 ## Namespaces
 
@@ -47,6 +47,7 @@ Loader version 2.22.1.
 | [`rq.ui`](api/rq.ui.md) | Reads what is on the screen and saves screenshots. |
 | [`rq.uikit`](api/rq.uikit.md) | Widgets in the look of the game's Config screen and, since 2.6.0, of its hub. |
 | [`rq.units`](api/rq.units.md) | Lists the recruited characters. |
+| [`rq.world`](api/rq.world.md) | The world and the game's world transfer. |
 
 ## Types
 
@@ -110,6 +111,7 @@ Loader version 2.22.1.
 | [`rq.Item`](types/rq.Item.md) | An owned item instance, from `rq.items()`. |
 | [`rq.ItemDef`](types/rq.ItemDef.md) | An item template for `rq.item.define`. |
 | [`rq.ItemEffect`](types/rq.ItemEffect.md) | One of an item's effects: the game's own code and amount. |
+| [`rq.ItemFindOpts`](types/rq.ItemFindOpts.md) | What `rq.item.find` and `rq.item.count` take. |
 | [`rq.ItemInfo`](types/rq.ItemInfo.md) | What `rq.item.info` returns: an item number's row data, as `rq.uikit.item_data` gives it for an instance, without the fields that belong to one instance (`ii`, `locked`, `place`). The kit's item lists take it as a row. |
 | [`rq.LootAdd`](types/rq.LootAdd.md) | An item for `rq.loot.add`. |
 | [`rq.LootItem`](types/rq.LootItem.md) | An item the player will find, from `rq.loot.list`. |
@@ -150,6 +152,8 @@ Loader version 2.22.1.
 | [`rq.StatusDef`](types/rq.StatusDef.md) | What `rq.status.define` takes. |
 | [`rq.StatusInfo`](types/rq.StatusInfo.md) | What `rq.status.info` gives about a definition. |
 | [`rq.StatusInstance`](types/rq.StatusInstance.md) | A state on one character, from `rq.status.add`, `get` and `list`. |
+| [`rq.TakeContext`](types/rq.TakeContext.md) | What an `rq.quests.on_take` callback gets. |
+| [`rq.TransferContext`](types/rq.TransferContext.md) | What `rq.world.on_transfer` and `on_transfer_after` callbacks get. |
 | [`rq.UiAskRow`](types/rq.UiAskRow.md) | One row of `rq.ui.ask`. |
 | [`rq.UiBarOpts`](types/rq.UiBarOpts.md) | What `rq.uikit.bar` takes. |
 | [`rq.UiBox`](types/rq.UiBox.md) | A row or column for `rq.uikit.row` and `col`. |

@@ -5,6 +5,18 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.23.0
+
+Game data that Gem Lady Trade, Morurun Items and Keep Donations read and wrote through `rq.ain` (`notes/plans/plan-game-data.md` in the workspace, priority #1 of the API work). The calls in Lua are in `src/lua/gamedata.lua`, over the game's own functions.
+- `rq.items()` rows have `no` (the item number), `place` (the game's `存在`: 7 the vault, 11 the storage, 8 quest storage, 20 and up worn) and `lock` (locked in the vault). Fix: the list runs to the game's last used item slot; it stopped at 1024 rows, so a large vault lost rows with no sign. In `src/modloader_query.c`.
+- `rq.item.find(no, opts)` and `rq.item.count(no, opts)`: an item number's instances by place (`"vault"`, `"storage"`, `"quest"`, `"worn"` or a number, one or a list, in that order) and by the vault lock. With no `opts`, `count` is the game's own count (worn, the vault and the storage). In `src/modloader_item.c`.
+- `rq.world.current()`, `rq.world.on_transfer(fn)` and `on_transfer_after(fn)`: the world, and the game's world transfer before and after its reset (`ワールド切り替え処理`), with the world and the one before. The reference lists what the reset changes.
+- `rq.shop.donations()` and `rq.shop.set_donations(count, goal)`: the donations count and Frostbuy's reward goal, with her rules in the reference.
+- `rq.quests.on_take(fn)`: the quest list's Take, before the game's question and its autosave; the callback may wait on a dialog and returns nil (the game's way), true (taken, no question) or false (not taken). `rq.quests.can_take(no)`: the game's `クエスト_有効`, which lights Take. `rq.quests.refresh()`: the list drawn again with the chosen quest's buttons, as after the favorite button.
+- `rq.quests.set_state(no, 1)` on a quest already available or cleared writes the state: the game's `Ｑ状態` takes 1 only from 0, so the call did nothing there (`notes/lua-api-gaps.md`).
+- `rq.chara.absorbed(iic)` and `rq.chara.set_absorbed(iic, slot, no)`: the five items a Morurun absorbed (`ＣＦＡ` 17 to 21), changed with the game's rules on what can be absorbed, then the character recalculated.
+- The reference: `rq.item.get`'s `place` lists 11, the storage.
+
 ## 2.22.1
 
 - `rq.uikit.item_icon`: no REMOVE, and D does nothing, on an item that cannot be taken off (`rq.item.get(ii).locked`, the game's `外せません`), as the status page leaves it out. It was shown, and pressed, on every item. Found by the Lab's `uikit-items` (`notes/plans/plan-lab-coverage.md` in the workspace, T6). In `src/lua/uikit_vault.lua`.

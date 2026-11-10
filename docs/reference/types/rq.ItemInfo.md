@@ -21,7 +21,7 @@ lists take it as a row.
 | `price` | `integer` | The price. |
 | `level` | `integer` | The level needed to equip it. |
 | `rarity` | `integer` | The rarity. |
-| `place` | `integer` | 6 shop stock, 7 vault, 8 quest storage, or the owner's roster slot while equipped. |
+| `place` | `integer` | 6 shop stock, 7 vault, 8 quest storage, 11 storage, or the owner's roster slot (20 and up) while equipped. |
 | `locked` | `integer` | Non-zero when it cannot be taken off. |
 | `vanishes` | `integer` | Non-zero when it vanishes. |
 | `effects` | [`rq.ItemEffect`](rq.ItemEffect.md) `[]` | The effects. |

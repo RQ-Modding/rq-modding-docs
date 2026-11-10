@@ -67,6 +67,7 @@ end)
 | [`rq.ui`](rq.ui.md) | Reads what is on the screen and saves screenshots. |
 | [`rq.uikit`](rq.uikit.md) | Widgets in the look of the game's Config screen and, since 2.6.0, of its hub. |
 | [`rq.units`](rq.units.md) | Lists the recruited characters. |
+| [`rq.world`](rq.world.md) | The world and the game's world transfer. |
 
 ## Properties
 

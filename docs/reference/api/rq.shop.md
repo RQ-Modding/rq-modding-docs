@@ -22,6 +22,8 @@ end)
 | [`rq.shop.install`](#rqshopinstall) | Wraps the end of `Ｔアイテム屋` so `on_stock` callbacks run and `stock` works. |
 | [`rq.shop.in_stock`](#rqshopin_stock) | Returns whether an item is already on sale in the shop. |
 | [`rq.shop.stock`](#rqshopstock) | Puts one item on sale, through the game's `Ｔアイテム屋／入荷品`. |
+| [`rq.shop.donations`](#rqshopdonations) | Returns the donations count and Frostbuy's reward goal (`◆寄付`, `◆寄付ボーナス`). |
+| [`rq.shop.set_donations`](#rqshopset_donations) | Writes the donations count, and the reward goal when given. |
 
 ### rq.shop.install
 
@@ -85,6 +87,62 @@ or a text id.
 > Changed in 0.9.0: Accepts a text id.
 
 > Changed in 0.26.0: An unknown item raises an error instead of closing the game.
+
+### rq.shop.donations
+
+```lua
+rq.shop.donations() -> integer, integer
+```
+
+`since 2.23.0`
+
+Returns the donations count and Frostbuy's reward goal (`◆寄付`, `◆寄付ボーナス`).
+
+DONATE in the vault adds to the count. On a visit, when Frostbuy's talk about donations has been
+seen and the count is at the goal or above, she gives one reward and the goal goes up by 25. A world
+transfer sets the count to 0 and the goal to 25.
+
+```lua
+local count, goal = rq.shop.donations()
+rq.log(("donated %d, next reward at %d"):format(count, goal))
+```
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `count` | `integer` | The donations count. |
+| `goal` | `integer` | The count at which Frostbuy gives her next reward. |
+
+See also: [`rq.shop.set_donations`](rq.shop.md#rqshopset_donations)
+
+### rq.shop.set_donations
+
+```lua
+rq.shop.set_donations(count, goal)
+```
+
+`since 2.23.0`
+
+Writes the donations count, and the reward goal when given.
+
+Frostbuy reads both on a visit (see `rq.shop.donations`). Two things to know:
+- A count at the goal or above gives a reward on the next visit. To set a count without one, set
+  the goal above it, as `(count // 25 + 1) * 25` does.
+- While her talk about donations has not been seen, a count other than 0 plays the talk on a visit
+  and sets the goal to 25. Mark it seen with `rq.scene.seen` to skip it.
+
+Raises an error for a count or goal that is not a whole number, 0 or more.
+
+```lua
+local count = 60
+rq.shop.set_donations(count, (count // 25 + 1) * 25) -- 60, next reward at 75
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `count` | `integer` | The donations count. |
+| `goal` *(optional)* | `integer` | The reward goal. Default: kept as it is. |
+
+See also: [`rq.shop.donations`](rq.shop.md#rqshopdonations)
 
 ## Events
 

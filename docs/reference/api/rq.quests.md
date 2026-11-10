@@ -35,6 +35,8 @@ end)
 | [`rq.quests.current`](#rqquestscurrent) | Returns the quest being played. |
 | [`rq.quests.start`](#rqquestsstart) | Starts a quest through the game's own flow, with no click on the quest list. |
 | [`rq.quests.new_this_run`](#rqquestsnew_this_run) | Returns what the victory screen will show as new. |
+| [`rq.quests.can_take`](#rqquestscan_take) | Returns whether a quest can be taken now: the game's `クエスト_有効`, which lights the quest list's Take button. |
+| [`rq.quests.refresh`](#rqquestsrefresh) | Draws the quest list again, with the chosen quest's buttons as the game draws them. |
 
 ### rq.quests.state
 
@@ -60,16 +62,21 @@ Returns a quest's state.
 rq.quests.set_state(no, state)
 ```
 
-`since 0.7.0`
+`since 0.7.0` `changed 2.23.0`
 
 Sets a quest's state, through the game's `Ｑ状態`.
 
-State 2 also records a first clear. Raises an error for a state other than 0, 1 or 2.
+State 2 also records a first clear. State 1 on a locked quest adds it to the "new quests" list of
+the victory screen; on a quest already available or cleared, the game's `Ｑ状態` changes nothing, so
+the call writes the state itself (a cleared quest can be taken again). Raises an error for a state
+other than 0, 1 or 2.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `no` | `integer` | The quest number. |
 | `state` | `integer` | 0 locked, 1 available, 2 cleared. |
+
+> Changed in 2.23.0: State 1 on a cleared quest is written; before, the call did nothing there.
 
 See also: [`rq.quests.unlock`](rq.quests.md#rqquestsunlock)
 
@@ -153,6 +160,57 @@ ends.
 | --- | --- | --- |
 | `new` | [`rq.NewThisRun`](../types/rq.NewThisRun.md) | The new characters and quests. |
 
+### rq.quests.can_take
+
+```lua
+rq.quests.can_take(no) -> boolean
+```
+
+`since 2.23.0`
+
+Returns whether a quest can be taken now: the game's `クエスト_有効`, which lights the quest list's
+Take button.
+
+It is true when the party has at least one member, the quest exists and its conditions to take
+part are met (an item it needs, a character, and the like).
+
+Raises an error when `no` is not a quest number.
+
+```lua
+if not rq.quests.can_take(80) then rq.log("Gem Lady needs a Jewel") end
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `no` | `integer` | The quest number. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `ok` | `boolean` | true when Take would be lit for it. |
+
+### rq.quests.refresh
+
+```lua
+rq.quests.refresh() -> boolean
+```
+
+`since 2.23.0`
+
+Draws the quest list again, with the chosen quest's buttons as the game draws them.
+
+After a change that the list shows (an item a quest needs, a state), the rows are made again and
+the chosen quest's Take is lit or greyed by `rq.quests.can_take`, as the game does after the
+favorite button (`T_Quest::remakeList`, then `T_Quest::lock`). With no quest chosen, only the rows.
+
+```lua
+rq.item.remove(jewel)
+rq.quests.refresh() -- Take greys if that was the last one
+```
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `done` | `boolean` | false when the quest list is not open. |
+
 ## Events
 
 | Name | Summary |
@@ -161,6 +219,7 @@ ends.
 | [`rq.quests.on_end`](#rqquestson_end) | Registers a function that runs when a quest ends, however it ends. |
 | [`rq.quests.on_event`](#rqquestson_event) | Registers a function that runs before the game handles a quest moment. |
 | [`rq.quests.on_event_after`](#rqquestson_event_after) | Registers a function that runs after the game handled a quest moment. |
+| [`rq.quests.on_take`](#rqquestson_take) | Registers a function that runs when the player presses Take on the quest list. |
 
 ### rq.quests.on_clear
 
@@ -276,3 +335,38 @@ Registers a function that runs after the game handled a quest moment.
 > Changed in 0.23.0: Returns a remover.
 
 See also: [`rq.quests.on_event`](rq.quests.md#rqquestson_event)
+
+### rq.quests.on_take
+
+```lua
+rq.quests.on_take(fn) -> fun()
+```
+
+`since 2.23.0`
+
+Registers a function that runs when the player presses Take on the quest list.
+
+It runs before the game's "Take Quest?" question and before the autosave that comes with a Yes.
+The callback may wait, for example on `rq.ui.ask` or `rq.ui.confirm`. What it returns decides:
+- nil: the game goes on as usual, with its question unless the player turned it off.
+- true: the quest is taken, with no question.
+- false: the quest is not taken, and the list stays.
+
+Callbacks run in the order they were added (mods in load order); the first one that returns
+something other than nil decides, and the rest do not run. An error is logged and counts as nil.
+Only the quest list's Take: not `rq.quests.start`, nor a quest the game starts by itself.
+
+```lua
+rq.quests.on_take(function(ctx)
+  if ctx.quest ~= 80 then return nil end
+  return rq.ui.confirm("Pay 100 gold to take it?") == true
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(ctx:` [`rq.TakeContext`](../types/rq.TakeContext.md) `): boolean\|nil` | nil for the game's way, true to take the quest, false not to. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |

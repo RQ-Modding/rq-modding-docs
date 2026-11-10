@@ -54,6 +54,8 @@ rq.chara.edit(62, { init = { eva = 50, spd = 25 }, learn = { { id = 246, n = 2 }
 | [`rq.chara.find`](#rqcharafind) | Returns the roster slot of a character (`Ｃ番号取得`). |
 | [`rq.chara.is_recruited`](#rqcharais_recruited) | Returns whether a character is in the roster. |
 | [`rq.chara.recalc`](#rqchararecalc) | Recalculates a character now (`Ｃ再計算`). |
+| [`rq.chara.absorbed`](#rqcharaabsorbed) | Returns the five items a Morurun absorbed: item numbers, 0 for an empty slot. |
+| [`rq.chara.set_absorbed`](#rqcharaset_absorbed) | Changes one of the five absorbed items, then recalculates the character. |
 | [`rq.chara.dismiss`](#rqcharadismiss) | Removes a character from the roster (`Ｃ削除`). |
 | [`rq.chara.number`](#rqcharanumber) | Returns the character number in a roster slot. |
 | [`rq.chara.id_of`](#rqcharaid_of) | Returns the text id of a defined character number. |
@@ -447,6 +449,69 @@ Raises an error for a slot with no character.
 | --- | --- | --- |
 | `iic` | `integer` | The character's roster slot. |
 | `heal` *(optional)* | `boolean` | true also refills HP and uses (`Ｃ補給`). Default false. |
+
+### rq.chara.absorbed
+
+```lua
+rq.chara.absorbed(iic) -> integer[]
+```
+
+`since 2.23.0`
+
+Returns the five items a Morurun absorbed: item numbers, 0 for an empty slot.
+
+The game fills these slots when a Morurun takes in a special item (`Ｃ体内特殊アイテムの取得処理`):
+kind 21 only, never 304 to 307, 309 or 310; the first empty slot; with all five full, a higher rank
+replaces the first slot that holds a rank-1 item, and a rank-1 item is not taken. Every character
+has the slots; in play only Morurun fill them.
+
+Raises an error for a slot with no character.
+
+```lua
+for slot, no in ipairs(rq.chara.absorbed(iic)) do
+  if no ~= 0 then rq.log(slot, rq.ids.name("item", no)) end
+end
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `iic` | `integer` | The character's roster slot. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `items` | `integer[]` | Five item numbers, in slot order; 0 is empty. |
+
+See also: [`rq.chara.set_absorbed`](rq.chara.md#rqcharaset_absorbed)
+
+### rq.chara.set_absorbed
+
+```lua
+rq.chara.set_absorbed(iic, slot, no)
+```
+
+`since 2.23.0`
+
+Changes one of the five absorbed items, then recalculates the character.
+
+Only the slot changes: taking an instance from the vault, giving the old item back, drawing the
+status page again (`rq.statuspage.refresh`) and a sound are the mod's. The recalculation also
+refills HP and uses outside a quest. It does not check that the character is a Morurun.
+
+Raises an error for a slot with no character, a slot outside 1 to 5, an item that is not a special
+item (kind 21) or one the game never absorbs (304 to 307, 309, 310).
+
+```lua
+rq.chara.set_absorbed(iic, 1, 0)   -- empty slot 1
+rq.chara.set_absorbed(iic, 2, 274) -- put item 274 in slot 2
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `iic` | `integer` | The character's roster slot. |
+| `slot` | `integer` | 1 to 5. |
+| `no` | `integer` | The item number, or 0 to empty the slot. |
+
+See also: [`rq.chara.absorbed`](rq.chara.md#rqcharaabsorbed)
 
 ### rq.chara.dismiss
 

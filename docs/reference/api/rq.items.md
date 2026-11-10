@@ -1,11 +1,14 @@
 # rq.items
 
-`since 0.2.0`
+`since 0.2.0` `changed 2.23.0`
 
 Lists the item instances the player owns.
 
 `rq.items()` and `rq.items.list()` are the same call. Instances whose existence value is 0, 6 or 9
-are left out. The list is a copy.
+are left out. The list is a copy. To find the instances of one item number, `rq.item.find` is
+quicker: it builds no rows.
+
+it stopped at 1024 rows.
 
 ## Functions
 

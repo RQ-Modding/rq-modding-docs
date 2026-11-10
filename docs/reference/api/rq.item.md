@@ -45,6 +45,8 @@ rq.item.transform(ii, "mymod:broken_lens")                       -- later, it br
 | [`rq.item.store`](#rqitemstore) | Moves an item between the vault and the storage, as dragging a row on the game's storage screen does (`アイテム_存在設定` 7 or 11). |
 | [`rq.item.buy`](#rqitembuy) | Buys an item from the shop's stock, as the shop's drag of a row onto the vault or a party member does (`T_EquitItem::setItem`): the game asks "Purchase ...?" first, and on Yes the item goes into the vault, its price comes off the money, and the shop's spent total goes up by it. |
 | [`rq.item.info`](#rqiteminfo) | Returns an item number's row data, with no instance of it in the game. |
+| [`rq.item.find`](#rqitemfind) | Lists the instances of an item number, by place. |
+| [`rq.item.count`](#rqitemcount) | Counts the instances of an item number, by place. |
 
 ### rq.item.define
 
@@ -457,6 +459,71 @@ if it then rq.log(it.name, it.info) end
 | Returns | Type | Description |
 | --- | --- | --- |
 | `info` | [`rq.ItemInfo`](../types/rq.ItemInfo.md) `?` | The data, or nil for 0 or a number the game does not have. |
+
+### rq.item.find
+
+```lua
+rq.item.find(no, opts) -> integer[]
+```
+
+`since 2.23.0`
+
+Lists the instances of an item number, by place.
+
+The list comes in the order of `opts.place`, then by instance, so `{ "vault", "storage" }` gives
+the vault's first. One pass over the game's item slots per place; it builds no rows, so it is
+quicker than going through `rq.items()`. Shop stock (6) and instances being made (9) are only
+found when asked for by number.
+
+Raises an error for an unknown place name, a place that is not a whole number above 0, or more
+than 8 places.
+
+```lua
+local JEWEL = 258
+local ii = rq.item.find(JEWEL, { place = { "vault", "storage" }, lock = false })[1]
+if ii then rq.item.remove(ii) end
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `no` | `integer` | The item number. |
+| `opts` *(optional)* | [`rq.ItemFindOpts`](../types/rq.ItemFindOpts.md) | Which places, and the vault lock. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `instances` | `integer[]` | The instances (ii); empty when there are none. |
+
+See also: [`rq.item.count`](rq.item.md#rqitemcount)
+
+### rq.item.count
+
+```lua
+rq.item.count(no, opts) -> integer
+```
+
+`since 2.23.0`
+
+Counts the instances of an item number, by place.
+
+It counts what `rq.item.find` would list. With no `opts` it gives the game's own count
+(`Ｉ総数取得／固有番号(no, 0)`): worn, in the vault and in the storage.
+
+Raises an error as `rq.item.find` does.
+
+```lua
+if rq.item.count(rq.ids.item.SKILL_AGAIN) >= 3 then rq.log("a set of three") end
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `no` | `integer` | The item number. |
+| `opts` *(optional)* | [`rq.ItemFindOpts`](../types/rq.ItemFindOpts.md) | Which places, and the vault lock. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `n` | `integer` | How many. |
+
+See also: [`rq.item.find`](rq.item.md#rqitemfind)
 
 ## Events
 
