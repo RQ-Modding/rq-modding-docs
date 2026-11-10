@@ -108,6 +108,21 @@ if ui then ui.title("Hello") end
 
 `rq.mod.id()` gives your mod's id, and `rq.mod.list()` the ids of the mods that finished loading.
 
+## Which mod is calling
+
+The loader names the calling mod by the nearest code on the call stack that runs from a file in a
+mod's folder. That is the mod behind `rq.mod.id`, the paths of `io`, `require` and `rq.music`, the
+`rq.log` tag, and everything a mod adds under its id: game buttons, castle rooms, states, remembered
+questions. It is the `id` in `mod.json`, also when the folder has another name. Code of a library mod
+that your mod calls counts as the library's.
+
+A tail call (`return f(...)`) into a function of another file is a plain call in RQ MOD, so your mod
+stays on the stack: `return rq.ui.confirm(...)` asks your mod's question, and an error it raises
+names your line. A tail call within one file stays a tail call, so a loop or recursion written that
+way does not grow the stack. A chain of tail calls across files does grow it, as plain recursion
+does: Lua stops it with "stack overflow" at about 499,000 levels. Since loader 2.24.1; before, such a
+tail call counted as outside any mod.
+
 ## When code runs
 
 `init.lua` runs once at startup, before the game runs. Register callbacks and definitions there:

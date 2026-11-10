@@ -5,6 +5,13 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.24.1
+
+The mod behind a tail call (`notes/plans/plan-mod-tail-calls.md` in the workspace, priority #3 of the API work).
+- A tail call into another file's Lua function (`return rq.ui.confirm(...)`) is a plain call: the caller's frame stays on the stack. So `rq.mod.id`, and everything that names entries by the calling mod, finds the mod through it: `rq.ui.confirm`'s `remember` (it was filed under `_`), `rq.gamebutton`, `rq.castle.room`, `rq.music`'s paths, `rq.status`, and the mod id in the error lines of `rq.dungeon` and the game-data calls. `error(msg, 2)` in an `rq.*` function now names the mod's line, and `rq.traceback` shows the mod's frame where it said `(...tail calls...)`. A tail call within one file stays a tail call, so a loop or recursion written that way runs as before; a chain of tail calls across files grows the stack as plain recursion does. It is a change in Lua's VM (`OP_TAILCALL` in `third_party/lua/lvm.c`, listed in `third_party/lua/RQ-PATCHES.md`); Lua 5.4.7's own test suite passes on it.
+- One lookup for the calling mod: the `rq.log` tag, debug keys, image keys, `rq.item.edit`, `rq.roster`, `rq.sprite` owners and the read flags of mod text use the mod's `id` from `mod.json`, as `rq.mod.id` does. They used the name of its folder, which differs only when a player renames the folder: then debug keys were not removed when the mod reloaded, and the log named the folder. A renamed mod's text shows as unread once. The lookup keeps its answers by file, so it costs no more than before. In `src/modloader.c` and `src/modloader_sandbox.c`.
+- The reference: `rq.mod.id`, `rq.ui.confirm` and `rq.log`.
+
 ## 2.24.0
 
 Which dungeon and which area (`notes/plans/plan-dungeon-areas.md` in the workspace, priority #2 of the API work). The calls are Lua, in `src/lua/dungeon.lua`, over the game's own globals and functions.

@@ -244,7 +244,7 @@ Config's Confirmations tab), so the player's setting counts. A text is the mod's
 the player turns it off, the call returns true without asking, in every save. The loader then
 lists it on a Confirmations page in Config's Mods tab, where the player can turn it back on, and
 Resetting in Config's Confirmations tab turns it back on too. The key is the mod's own, found as
-`rq.mod.id` finds it: after `return rq.ui.confirm(...)` it is filed under `_` instead.
+`rq.mod.id` finds it (through `return rq.ui.confirm(...)` too, since 2.24.1).
 
 The game has one list of dialog rows, so the call shows nothing and returns nil while another
 dialog is being built or shows (`rq.ui.choosing`, or one of these calls), and logs it once.

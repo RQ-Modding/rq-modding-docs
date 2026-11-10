@@ -91,20 +91,25 @@ end)
 rq.log(...)
 ```
 
-`since 0.2.0` `changed 1.1.0`
+`since 0.2.0` `changed 1.1.0` `changed 2.24.1`
 
 Writes a line to the console and to the log.
 
 The line goes to `logs\rqmod.log` (the `logs` folder beside `mods`) and, when `config.json` has
-`"terminal": true`, to the console window. It starts with the name of the mod and file that
-called it, such as `[loot-preview] Detected 2 items`. Arguments are turned into text as `tostring`
-does and joined with tabs, as `print` does.
+`"terminal": true`, to the console window. It starts with the id of the mod that called it (the
+`id` in its `mod.json`, as `rq.mod.id` gives it), such as `[loot-preview] Detected 2 items`, or
+`[lua]` outside a mod. Arguments are turned into text as `tostring` does and joined with tabs, as
+`print` does.
+
+when a player renames the folder.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `...` | `any` | The values to write. |
 
 > Changed in 1.1.0: The log moved from `mods` to the `logs` folder.
+
+> Changed in 2.24.1: The tag is the mod's id; it was the name of the mod's folder, which differs only
 
 ### rq.time_ms
 

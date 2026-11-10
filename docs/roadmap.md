@@ -21,7 +21,6 @@ In order of priority: first what the most mods, existing or new, would use.
 
 | Area | What |
 | --- | --- |
-| Lua state | `rq.mod.id` seeing the mod through a tail call (`return rq.ui.confirm(...)`), so its entries are not filed under `_`. Later: changes to the shared `rq` and standard library tables, a log line also for changes made in callbacks, and refusing such changes if mods turn out to make them. 2.0.0 logs the ones each `init.lua` makes ([What a mod can reach](guide/sandbox.md#globals)). |
 | Faces and pictures | Enemy pictures, and faces in skill cut-ins, big pictures and the status pages. Animated faces, portraits and backgrounds. |
 | States | States made by mods came in 2.2.0 (`rq.status`), on the events of 2.1.0, and in 2.3.0 a state can down someone at the start of a turn when its definition says so. Later: the game's cures and buff dispels taking mod states, a damage number per state, the AI's cures and the battle forecast knowing them, a help text on hover, states that last past a fight. |
 | Buff icons | Several buffs on one card shown side by side, shrunk to fit, instead of taking turns. |
@@ -34,6 +33,7 @@ In order of priority: first what the most mods, existing or new, would use.
 | Animation | Sources with full color and soft edges (PNG sequences, animated WebP) beside GIF. |
 | Game code | `rq.ain.call` and `rq.ain.method` with reference and struct arguments (methods with plain arguments came in 2.16.0, `rq.ain.method`). |
 | Sound | Compressed sounds inside Flash files. |
+| Lua state | A tail call (`return rq.ui.confirm(...)`) keeps the mod on the stack since 2.24.1 ([Which mod is calling](guide/sandbox.md#which-mod-is-calling)). Later: changes to the shared `rq` and standard library tables, a log line also for changes made in callbacks, and refusing such changes if mods turn out to make them. 2.0.0 logs the ones each `init.lua` makes ([What a mod can reach](guide/sandbox.md#globals)). |
 
 ## Tools
 

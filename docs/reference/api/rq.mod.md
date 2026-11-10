@@ -69,20 +69,24 @@ See also: [`rq.mod.list`](rq.mod.md#rqmodlist)
 rq.mod.id() -> string|nil
 ```
 
-`since 2.0.0`
+`since 2.0.0` `changed 2.24.1`
 
 Returns the id of the mod whose code calls it.
 
 It is the `id` in that mod's `mod.json`. When a mod calls a function of another mod, the code
 running is the other mod's, so that mod's id is returned.
 
-The mod is found on the call stack. A tail call (`return f()`) takes the caller's place on it, so
-a call reached only that way, as `return rq.ui.confirm(...)` in a callback or at the top of a
-coroutine, counts as outside any mod. Keep the result in a local and return that.
+The mod is found on the call stack: the nearest code that runs from a file in a mod's folder. A
+tail call into another file's function, such as `return rq.ui.confirm(...)` in a callback, is a
+plain call in RQ MOD, so your mod stays on the stack. A tail call within one file stays a tail call.
+
+the top of a coroutine counted as outside any mod.
 
 | Returns | Type | Description |
 | --- | --- | --- |
 | `id` | `string\|nil` | The calling mod's id; `nil` outside any mod's code. |
+
+> Changed in 2.24.1: Found through a tail call. Before, `return rq.ui.confirm(...)` in a callback or at
 
 ### rq.mod.list
 

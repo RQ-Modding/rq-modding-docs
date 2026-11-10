@@ -93,10 +93,9 @@ should come after another. A mod's `rq.music.restore(no)` takes back only its ow
 
 ## Things to know
 
-- **Tail calls change whose folder a path is in.** A path is looked up in the folder of the mod
-  whose code calls `rq.music`. A helper in a library that ends in `return rq.music.replace(...)` is
-  a tail call: the library's frame is gone by then, so the path is looked up in the caller's
-  folder. Keep the result in a local first, then return it.
+- **A path is looked up in the folder of the mod whose code calls `rq.music`.** A helper in a
+  library mod uses the library's folder, also when it ends in `return rq.music.replace(...)`. Before
+  loader 2.24.1 that tail call used the caller's folder ([Which mod is calling](sandbox.md#which-mod-is-calling)).
 - The game's looped ambient sounds (rain, wind) are music tracks too. `replace` changes them;
   `on_play` does not see them.
 - A wrong track number in `init.lua` is only found once the game has opened its music, at the
