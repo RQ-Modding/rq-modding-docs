@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.24.1.
+Loader version 2.25.0.
 
 ## Namespaces
 
@@ -96,6 +96,8 @@ Loader version 2.24.1.
 | [`rq.DungeonArea`](types/rq.DungeonArea.md) | One area of `rq.dungeon.areas()`. |
 | [`rq.DungeonCamera`](types/rq.DungeonCamera.md) | The camera range `rq.dungeon.camera` patches. |
 | [`rq.DungeonInfo`](types/rq.DungeonInfo.md) | Where the party is in a dungeon, from `rq.dungeon.info()`. |
+| [`rq.FlashBitmap`](types/rq.FlashBitmap.md) | One bitmap of a game Flash file, as `rq.image.flash_bitmaps` lists it. |
+| [`rq.FlashBitmapOpts`](types/rq.FlashBitmapOpts.md) | Options for `rq.image.flash_bitmap`. |
 | [`rq.FlashSound`](types/rq.FlashSound.md) | A sound inside a Flash file, from `rq.sound.flash_info`. |
 | [`rq.ForgetCtx`](types/rq.ForgetCtx.md) | What `rq.chara.on_forget` gets. |
 | [`rq.GameButtonGroup`](types/rq.GameButtonGroup.md) | A group, from `rq.gamebutton.groups`. |

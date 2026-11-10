@@ -5,6 +5,16 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.25.0
+
+Pictures past the fight cards (`notes/plans/plan-more-pictures.md` in the workspace, priority #4 of the API work).
+- Moving pictures: a GIF or an animated WebP given to `rq.image.add` or `replace`, or as a character's `face` or `portrait`, is a moving picture. Its first frame is the CG; the game shows the frames wherever it shows the CG whole: a scene's background, standing picture, face and event CG, and the faces on character cards (the town's party bar, the Party screen, the status page, fights, where `rq.battle.set_face` wins). Where the game copies part of the CG or draws on it, and in `compose`, `rq.hud` and `rq.sprite`'s `cg`, it is the still. Every frame is fitted as the still is. `opts.fps` and `opts.clock` set the speed, as in `rq.sprite`. The file is read when it is set, so a bad one raises the error there. Up to 64 moving pictures, 1024 frames each and 64 million pixels in all. A sprite draws the frame in place of its CG while it shows that CG whole: the engine clears the mark when the game draws on the sprite, and `T_Sprite::stretchCg` (the card faces) is wrapped to set it. Parts draw the frame in place of their CG at the same size. The game is drawn again only while a moving picture was on screen in the last quarter second. In `src/modloader_image.c`, `src/modloader_sprite.c`, `src/sprite.c` and `src/parts/render.c`.
+- `rq.image.info` gives a moving picture's `frames`, `ms` (one loop) and `drawn` (the game drew it in the last quarter second).
+- `rq.image.flash_bitmap(file, id, path[, opts])`: a still picture from the mod's folder on one bitmap of a game Flash file (a cut-in, a battle effect, a mark), fitted to the bitmap's size so the file's placement and motion stay. nil for `path` gives the game's bitmap back. New loads of the file show it. `rq.image.flash_bitmaps(file)` lists a file's bitmaps with their sizes and whether a mod's picture is on them. In `src/modloader_image.c` and `src/parts/flash.c`.
+- `rqmod-ctl flashdump NAME DIR`: every bitmap of a game Flash file saved as `<id>_<w>x<h>.png`, as `cgdump` does for CGs. `rqmod-ctl` sends its arguments as UTF-8, so Japanese file names reach the engine; `cgdump` is in its help.
+- Fix: `rq.image.add` or `replace` that raised an error for its options or its file (a file not in the mod's folder, an unknown `fit`) did so after making the image's slot, so a half-made image stayed: `info` said `mod`, the number could show no picture, and it counted toward the 256. The call now checks everything first and leaves things as they were.
+- Animated WebP is read with libwebpdemux, linked into the engine.
+
 ## 2.24.1
 
 The mod behind a tail call (`notes/plans/plan-mod-tail-calls.md` in the workspace, priority #3 of the API work).

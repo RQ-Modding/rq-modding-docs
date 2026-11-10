@@ -8,9 +8,9 @@ The fields `rq.chara.define` and `rq.chara.edit` share.
 | --- | --- | --- |
 | `name` *(optional)* | `string` | The full name. |
 | `short` *(optional)* | `string` | The short name. |
-| `face` *(optional)* | `integer\|string` | A game face CG number, or an image path inside the mod's folder (shown at 196×232, proportions kept). Default 2916. |
+| `face` *(optional)* | `integer\|string` | A game face CG number, or an image path inside the mod's folder (shown at 196×232, proportions kept). Default 2916. A GIF or an animated WebP moves wherever the game shows the face (2.25.0). |
 | `face_name` *(optional)* | `string` | The face CG text (`顔ＣＧ文字列`). |
-| `portrait` *(optional)* | `integer\|string` | A standing-picture CG number, or an image path inside the mod's folder (on a 1024×768 canvas, proportions kept). |
+| `portrait` *(optional)* | `integer\|string` | A standing-picture CG number, or an image path inside the mod's folder (on a 1024×768 canvas, proportions kept). A GIF or an animated WebP moves in scenes (2.25.0). |
 | `class` *(optional)* | `integer` | 1 Fighter, 2 Guard, 3 Gunner, 4 Sorcerer, 5 Healer, 6 Ranger, 7 Brawler, 8 Civilian. |
 | `sex` *(optional)* | `integer` | The sex, as the game numbers it. |
 | `level` *(optional)* | `integer` | The level. `define` only. |
