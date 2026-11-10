@@ -9,6 +9,10 @@ can replace the attack before defense, scale the final damage, add to the hit ch
 place as the game's own -5 and -10 for some skills, and force or deny a critical. The callbacks
 need `rq.combat.install` (or `rq.chara.install`), and hold up to 16 each.
 
+They also run when the game works out the battle forecast, so the forecast shows what they
+change; `ctx.forecast` is then true (since 2.26.0), and a callback that counts hits or rolls dice
+should do nothing.
+
 ```lua
 rq.combat.install()
 rq.combat.on_physical(function(ctx)
@@ -141,15 +145,16 @@ end)
 rq.combat.on_magic(fn) -> fun()
 ```
 
-`since 2.1.0`
+`since 2.1.0` `changed 2.26.0`
 
 Calls `fn` for each magic hit, to change its final damage by a percent.
 
 `fn` returns a percent of the final damage (100 is unchanged, 50 half, 0 none) or nil to keep it.
 The percents of every callback multiply, and the damage is rounded down. It runs after the game's
 last damage step (`最終ダメージ計算`), so the barrier, immunities and the game's magic resistance
-are already in `damage`; a spell that does 0 is not reported. The battle forecast is not changed.
-It is the magic twin of the final percent of `rq.combat.on_physical`.
+are already in `damage`; a spell that does 0 is not reported. It also runs for the battle
+forecast, with `ctx.forecast` true, so the forecast's damage word shows the percent. It is the
+magic twin of the final percent of `rq.combat.on_physical`.
 
 Raises an error, logged, for a return that is not a whole number of 0 or more.
 
@@ -166,5 +171,7 @@ end)
 | Returns | Type | Description |
 | --- | --- | --- |
 | `remove` | `fun()` | Removes this callback. |
+
+> Changed in 2.26.0: Runs for the battle forecast too, with `ctx.forecast`.
 
 See also: [`rq.combat.on_physical`](rq.combat.md#rqcombaton_physical)

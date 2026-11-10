@@ -583,7 +583,8 @@ Returns a copy of what the fight screen shows.
 | [`rq.battle.on_switch`](#rqbattleon_switch) | Calls `fn` for each ally rank that holds someone else after a switch in a fight. |
 | [`rq.battle.on_use`](#rqbattleon_use) | Calls `fn` each time a skill is carried out, before its effects. |
 | [`rq.battle.on_turn`](#rqbattleon_turn) | Calls `fn` at the start of every turn in a fight, for allies, enemies and familiars. |
-| [`rq.battle.on_hit`](#rqbattleon_hit) | Calls `fn` after each physical or magic attack on a target, with its result. |
+| [`rq.battle.on_hit`](#rqbattleon_hit) | Calls `fn` after each attack or special skill on a target, with its result. |
+| [`rq.battle.on_forecast`](#rqbattleon_forecast) | Calls `fn` each time the game builds a battle forecast line, to add text to it. |
 | [`rq.battle.on_hp`](#rqbattleon_hp) | Calls `fn` in a fight each time a character's HP changes. |
 
 ### rq.battle.on_select_key
@@ -823,15 +824,17 @@ See also: [`rq.battle.on_hit`](rq.battle.md#rqbattleon_hit)
 rq.battle.on_hit(fn) -> fun()
 ```
 
-`since 2.1.0`
+`since 2.1.0` `changed 2.26.0`
 
-Calls `fn` after each physical or magic attack on a target, with its result.
+Calls `fn` after each attack or special skill on a target, with its result.
 
 It runs once per target and per hit: each hit of a multi-hit skill, each target of a skill on
 many, and a counter, for allies, enemies and familiars. A miss is reported too, with `missed`
 true. The damage is already taken from the HP, and the hit is not shown yet. The turn a skill
-only starts to charge is not a hit and is not reported. Special and support skills are not
-attacks; use `rq.battle.on_support` or `rq.battle.on_use` for them.
+only starts to charge is not a hit and is not reported. Special skills (action kind 3: the
+taunt, stuns, poisons and captures, and a mod's skill patched to `action = 3`) come with `kind`
+"special", so a debuff skill that does no damage can put a state on. Support skills do not; use
+`rq.battle.on_support` or `rq.battle.on_use` for them.
 
 This is where a hit gives a mod state.
 
@@ -852,7 +855,43 @@ end)
 | --- | --- | --- |
 | `remove` | `fun()` | Removes this callback. |
 
+> Changed in 2.26.0: Special skills, with `kind` "special".
+
 See also: [`rq.battle.on_turn`](rq.battle.md#rqbattleon_turn), [`rq.battle.on_use`](rq.battle.md#rqbattleon_use)
+
+### rq.battle.on_forecast
+
+```lua
+rq.battle.on_forecast(fn) -> fun()
+```
+
+`since 2.26.0`
+
+Calls `fn` each time the game builds a battle forecast line, to add text to it.
+
+With Battle Forecast (488) in the party, the game shows the line when the player points a skill
+at a target: the hit chance, the stun chance and a damage word for an attack, the capture rate
+for a capture. The line is built again on every hover, so `fn` must be quick and roll no dice.
+The strings of every callback are added in load order. The damage word already counts mod states
+and the `rq.combat` callbacks, which run with `ctx.forecast` true.
+
+Raises an error, logged, for a return that is not a string or nil.
+
+```lua
+rq.battle.on_forecast(function(ctx)
+  if ctx.skill == FIRE_SLASH then return "  Burn 40%" end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(ctx:` [`rq.BattleForecastCtx`](../types/rq.BattleForecastCtx.md) `): string\|nil` | Returns text to add, starting with spaces as the game's parts do, or nil. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |
+
+See also: [`rq.combat.on_physical`](rq.combat.md#rqcombaton_physical)
 
 ### rq.battle.on_hp
 

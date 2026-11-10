@@ -22,7 +22,7 @@ In order of priority: first what the most mods, existing or new, would use.
 | Area | What |
 | --- | --- |
 | Faces and pictures | Moving faces, standing pictures and backgrounds, and pictures inside the game's Flash files (cut-ins, effects, marks), came in 2.25.0 ([Pictures](guide/pictures.md)). Later: enemies and fight backgrounds (3D models, their textures), moving pictures inside Flash files, a different face per place (as `rq.battle.set_face` does for fights), moving faces where the game paints them into another picture (the turn order). |
-| States | States made by mods came in 2.2.0 (`rq.status`), on the events of 2.1.0, and in 2.3.0 a state can down someone at the start of a turn when its definition says so. Later: the game's cures and buff dispels taking mod states, a damage number per state, the AI's cures and the battle forecast knowing them, a help text on hover, states that last past a fight. |
+| States | States made by mods came in 2.2.0 (`rq.status`), on the events of 2.1.0; in 2.3.0 a state can down someone at the start of a turn; in 2.26.0 the game's cures and dispels take them, each shows its own number, Persevere, the AUTO button and the battle forecast know them, special skills reach `on_hit`, `immune`, states that last the quest and a `desc` (see [Battle states](guide/states.md)). Next: the `desc` on hover with the card's marks side by side. When a mod asks: states kept in the save, the enemies' AI choosing by mod states, states shown between fights, AUTO for a mod's own cure skill. |
 | Buff icons | Several buffs on one card shown side by side, shrunk to fit, instead of taking turns. |
 | Music | Music from a mod file came in 2.4.0 (`rq.music`). Later: more kinds of moment than fight and dungeon (boss, town, scene), `on_play` for the looped ambient sounds, a page to turn a pack's tracks on and off, tracks with new numbers. |
 | Quests | Taking a quest from the list came in 2.23.0 (`rq.quests.on_take`, `can_take`, `refresh`), with the game data of three shipped mods (items by place, the world transfer, donations, the Morurun's absorbed items). Later: `rq.quests.start` from the shop, party and castle tabs, not only the hub and the quest list. |
@@ -40,3 +40,7 @@ In order of priority: first what the most mods, existing or new, would use.
 - **Animations from your own art.** A tool that builds the game's animation files (`.aff`) from a PNG
   sequence and checks a Flash file against what the engine can play. Unpacking the game's own came in
   2.25.0: `rqmod-ctl flashdump` saves a file's pictures.
+- **A browser for the game's files.** Once the API is ready for release: a program in the release that
+  opens the game's pictures, sounds, Flash files and 3D textures by number or by name, with the names
+  of `rq.ids`, so you can see what CG 10023 is before you replace it. It reads your own game folder;
+  nothing of the game ships with it.

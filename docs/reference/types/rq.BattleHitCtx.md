@@ -11,10 +11,10 @@ What `rq.battle.on_hit` gets for one hit.
 | `attacker` | `integer` | The attacker's roster slot. |
 | `defender` | `integer` | The defender's roster slot. |
 | `skill` | `integer` | The skill number. |
-| `kind` | `"physical"\|"magic"` | The kind of attack. |
-| `damage` | `integer` | The HP the hit took; 0 for a miss, a barrier or an immune target. |
+| `kind` | `"physical"\|"magic"\|"special"` | The kind of action: an attack, or a special skill (since 2.26.0). |
+| `damage` | `integer` | The HP the hit took; 0 for a miss, a barrier or an immune target. For a special skill, the HP the target lost, 0 for most. |
 | `missed` | `boolean` | The hit missed (`◆攻撃外れた`). |
-| `crit` | `boolean` | The hit was a critical. |
+| `crit` | `boolean` | The hit was a critical; false for a special skill. |
 | `downed` | `boolean` | The defender is down after the hit. |
 | `counter` | `boolean` | The hit is a counter. |
 

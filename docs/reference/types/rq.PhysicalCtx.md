@@ -13,6 +13,7 @@ What `rq.combat.on_physical` gets for one physical hit.
 | `magic` | `integer` | The attacker's magic. |
 | `race` | `integer` | The defender's race (`rq.ids.race`); 8 is a hanny. |
 | `defender_type` | `integer` | The defender's type (`Ｃタイプ`); 22 is humanoid. |
+| `forecast` | `boolean` | true when the game only works out the battle forecast (`rq.battle.on_forecast`), not a real hit: count nothing and roll no dice then. Since 2.26.0. |
 
 ## Used by
 

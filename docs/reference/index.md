@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.25.0.
+Loader version 2.26.0.
 
 ## Namespaces
 
@@ -61,6 +61,7 @@ Loader version 2.25.0.
 | [`rq.BattleActor`](types/rq.BattleActor.md) | The ally whose turn it is, from `rq.battle.actor`. |
 | [`rq.BattleDownCtx`](types/rq.BattleDownCtx.md) | What `rq.battle.on_down` gets. |
 | [`rq.BattleEndCtx`](types/rq.BattleEndCtx.md) | What `rq.battle.on_end` gets. |
+| [`rq.BattleForecastCtx`](types/rq.BattleForecastCtx.md) | What `rq.battle.on_forecast` gets for one forecast line. |
 | [`rq.BattleHitCtx`](types/rq.BattleHitCtx.md) | What `rq.battle.on_hit` gets for one hit. |
 | [`rq.BattleSelectKeyCtx`](types/rq.BattleSelectKeyCtx.md) | What `rq.battle.on_select_key` gets. |
 | [`rq.BattleSnap`](types/rq.BattleSnap.md) | What `rq.battle.snapshot` returns: a copy of the fight screen. |
@@ -154,6 +155,7 @@ Loader version 2.25.0.
 | [`rq.SpriteMotion`](types/rq.SpriteMotion.md) | The values `Sprite:to` moves to, and how. |
 | [`rq.SpriteOpts`](types/rq.SpriteOpts.md) | Options for `rq.sprite.new` and `Sprite:set`. |
 | [`rq.StatusDef`](types/rq.StatusDef.md) | What `rq.status.define` takes. |
+| [`rq.StatusImmune`](types/rq.StatusImmune.md) | Who cannot take a state, for `rq.StatusDef.immune`. Any one field that matches is enough. |
 | [`rq.StatusInfo`](types/rq.StatusInfo.md) | What `rq.status.info` gives about a definition. |
 | [`rq.StatusInstance`](types/rq.StatusInstance.md) | A state on one character, from `rq.status.add`, `get` and `list`. |
 | [`rq.TakeContext`](types/rq.TakeContext.md) | What an `rq.quests.on_take` callback gets. |

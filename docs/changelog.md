@@ -5,6 +5,23 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.26.0
+
+Mod states, the rest (`notes/plans/plan-mod-states-rest.md` in the workspace, priority #5 of the API work). Lua in `src/lua/status.lua` and `src/lua/battle.lua`, over the game's own functions, except the forecast flag.
+- The game's dispels take mod states: `cured_by` has a new class, `"dispel"`. A hit that does damage with a skill of function 89 (quietly), Pop Pulse (491), Divine Erosion Wave (519), Guna Beam (515, half the time; where the target had a ▲, the state goes when the ▲ goes) or a Gunner's basic attack with Erasure Arrows (257), and Electroshock (183) on a target with no protection, take the states with `"dispel"`; the hit's log line gets `" (<name> canceled)"`, as for the game's ▲.
+- `"all"` reaches two more of the game's cures: skill 475 at the start of the bearer's turn, when the game's own roll cured nothing (the first such state that rolls 50%, in the order they came), and Am Powder (498) when it heals no HP and cures no ▼ (the oldest such state, with `" X recovered from <name>."` in the log).
+- `cured_by` defaults to `{ "dispel" }` for a good state; it was `{}`. `{}` still keeps a state from the game, so a good state that must not be dispelled says `cured_by = {}`.
+- The AUTO button's Status Restore aims at an ally with a mod state it cures, as at a poisoned one.
+- A number per state: each state's `ctx:damage` and `ctx:heal` show as a number of their own at the turn start, after the game's poison and regeneration, with the HP bar moving step by step; a lethal one shows the death on its own number. `ctx:damage(n, { apart = true })` and `ctx:heal(n, { apart = true })` do it in a plain `rq.battle.on_turn`.
+- Persevere: a state's lethal damage meets skills 481 and 247 as a hit does (247 half the time, once a fight, with the game's own flag), and the log gets " (Persevere activated)". `persevere = false` in a definition makes a doom nothing stops. In a plain `on_turn`, `ctx:damage(n, { lethal = true, persevere = true })`; there it stays off by default.
+- `rq.battle.on_hit` also runs after a special skill (action kind 3: the taunt, stuns, poisons, captures, and a mod's skill patched to `action = 3`), with `kind = "special"` and `damage` the HP the target lost.
+- The battle forecast: `rq.combat.on_magic` runs for it too, so a state's `magic` shows in the damage word, as `physical` and `accuracy` already did. `forecast` on `PhysicalCtx`, `AccuracyCtx`, `CritCtx` and `MagicCtx` is true when the game only forecasts; the C patches read the 条件 argument of `物理ダメージ計算`, `命中計算` and `クリティカル計算` (`src/modloader_chara.c`). `rq.battle.on_forecast(fn)` adds text to the forecast line.
+- Immunity: `immune` in a definition (`boss`, `barrier`, `races`, `types`, `charas`); `rq.status.set_immune(no, what, on)` makes a character number immune to a state or a tag, whichever mod defined it; `rq.status.immune(iic, id)` answers.
+- `lasts = "quest"`: the state stays on an ally from fight to fight until the quest ends, however it ends, or a new quest is taken (reason `"quest_end"`). It can be added outside a fight during a quest, shows on the card when the next fight starts, and counts its turns only in fights. `rq.status.list` gives it outside a fight.
+- `desc` in a definition: a few lines for players. The fight screen shows it with priority #6.
+- `rq.status.info` gives `persevere`, `lasts`, `immune` and `desc`. `rq.status.add` returns nil and a reason when it puts nothing on: `"no_fight"`, `"no_quest"`, `"down"` or `"immune"`.
+- Kaoru Quincy QoL 1.3.0 keeps Determination towards Victory as an `rq.status` state, with no change in the game.
+
 ## 2.25.0
 
 Pictures past the fight cards (`notes/plans/plan-more-pictures.md` in the workspace, priority #4 of the API work).
