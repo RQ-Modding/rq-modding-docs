@@ -109,6 +109,17 @@ if rq.ain.patch_int("衝撃計算", rq.ids.skill.FORTUNE, -1) ~= 1 then
 end
 ```
 
+To change the number again while the game runs, as a setting on a Config page, keep the places
+`patch_int_after` gives back (since 2.22.0) and write them with `rq.ain.set_code_int`. The search
+runs once, at load, so a later value can never match the wrong constant. Custom TADA Mode does this.
+
+```lua
+local n, places = rq.ain.patch_int_after("Ｔ戦闘後の取得経験値算出", "◆２倍モード", 2, 2)
+local function set_mult(m)
+  for _, place in ipairs(places) do rq.ain.set_code_int(place, m) end
+end
+```
+
 `rq.ain.skip_msgbox` takes the game's message boxes that hold a text out of its code.
 
 ## Take care

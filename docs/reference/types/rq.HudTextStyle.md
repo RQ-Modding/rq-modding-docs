@@ -17,6 +17,7 @@ How `rq.hud.text` draws text.
 | `valign` *(optional)* | `"top"\|"center"\|"bottom"` | Where the text sits in the box `h` high. Default "top". Since 1.6.0. |
 | `edge` *(optional)* | `boolean` | false leaves out the dark edge, as on Config's tabs. Default true. Since 1.7.0. |
 | `bold` *(optional)* | `boolean` | The heavier weight the game's own Config labels look like. Default false. Since 1.8.0. With `font = "game"`: the game's bold. |
+| `weight` *(optional)* | `integer` | With `font = "game"`: the weight number the game's own texts give its font, 0 to 1000 (its bold is 40; the vault's stats numbers are 70). It wins over `bold`. Since 2.21.0. |
 | `font` *(optional)* | `"hud"\|"game"` | "game" draws in the game's own font, as its buttons and lists do: no dark edge, and `edge` does not count. Default "hud". Since 2.5.0. |
 | `face` *(optional)* | `256\|257\|258` | With `font = "game"`: the game's font number. 258 is on most buttons, lists and the castle; 256 on item names; 257 on big marks. Default 258. Since 2.5.0. |
 | `outline` *(optional)* | `integer[]\|{r: integer, g: integer, b: integer, w?: integer}` | With `font = "game"`: an outline in this color, `w` pixels wide (1 to 4, default 1), as the castle's room names. Since 2.5.0. |

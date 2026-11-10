@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.20.1.
+Loader version 2.22.0.
 
 ## Namespaces
 
@@ -157,6 +157,7 @@ Loader version 2.20.1.
 | [`rq.UiChoice`](types/rq.UiChoice.md) | One row of `rq.ui.choose`. |
 | [`rq.UiCommentOpts`](types/rq.UiCommentOpts.md) | What `rq.uikit.comment` takes besides the text. |
 | [`rq.UiFilterState`](types/rq.UiFilterState.md) | A filter state for `rq.uikit.filters` and `rq.uikit.item_filter`: what the vault's filter column has picked. 0 or nil is "all". |
+| [`rq.UiItemIconOpts`](types/rq.UiItemIconOpts.md) | What `rq.uikit.item_icon` takes. |
 | [`rq.UiItemRow`](types/rq.UiItemRow.md) | An item row's data, as `rq.uikit.item_data` reads it from the game. A table of your own with the same fields draws a made-up row. |
 | [`rq.UiMenuItem`](types/rq.UiMenuItem.md) | One entry of `rq.uikit.menu`. |
 | [`rq.UiOptionRow`](types/rq.UiOptionRow.md) | One row of `rq.uikit.options`. |
@@ -164,6 +165,7 @@ Loader version 2.20.1.
 | [`rq.UiPlace`](types/rq.UiPlace.md) | Where a widget goes. |
 | [`rq.UiScrollPieces`](types/rq.UiScrollPieces.md) | The pieces of the game's scroll bar. |
 | [`rq.UiSkillOpts`](types/rq.UiSkillOpts.md) | What `rq.uikit.skill_button` takes. |
+| [`rq.UiStepperOpts`](types/rq.UiStepperOpts.md) | What `rq.uikit.stepper` takes. |
 | [`rq.UiTabsStyle`](types/rq.UiTabsStyle.md) | A tabs style of the hub theme. |
 | [`rq.UiTheme`](types/rq.UiTheme.md) | A look for the kit: pieces, text styles, colors and sounds. |
 | [`rq.UiTip`](types/rq.UiTip.md) | A widget's tip: what `rq.uikit.comment` shows, and where. |

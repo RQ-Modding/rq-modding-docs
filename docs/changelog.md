@@ -5,6 +5,30 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.22.0
+
+A number field, and constants of the game's code a mod can change while the game runs (`notes/plans/plan-ui-kit-leftovers.md` in the workspace, section 17), for the Config pages of Custom TADA Mode 1.1.0, Kaoru Quincy QoL 1.2.0 and Keep Donations 1.1.0:
+- `rq.uikit.stepper(value, opts)`: a whole number in a framed box between - and +. Shift for `big` steps, held buttons repeat (400 ms, then 80 ms), the wheel, Page Up and Page Down under the keys' cursor. A click on the number, or Enter, types into it from the digit keys (so `rqmod-ctl type` can), Enter keeps, Esc puts back. Listed as `stepper-<id>`, `selected` while it types. In `src/lua/uikit.lua`.
+- `rq.uikit.typing()`: the field typing now, or nil.
+- `rq.uikit.page`: Esc that ends a field's typing does not close the page (`src/lua/uikit_hub.lua`).
+- `rq.ain.patch_int_after` also returns the places it changed; `rq.ain.set_code_int(place, value)` writes one again and `rq.ain.code_int(place)` reads it (`src/modloader.c`). A place is found again after a later install wraps the function (at its code address) or moves and grows its body (by the opcodes around it).
+
+Found in the Lab: the game's Yes/No dialog (`rq.ui.confirm`) opens under Config, out of sight, so a Config page asks on the page itself (in `notes/lua-api-gaps.md`).
+
+## 2.21.0
+
+The game's item tile and item card in the kit (`notes/plans/plan-ui-kit-leftovers.md` in the workspace, section 16), in `src/lua/uikit_vault.lua`:
+- `rq.uikit.item_icon(item, opts)`: an item's tile as the status page's equip slots draw it (`T_ItemIcon`): the icon, 100 by 100 or `size`, with its rank badge, and the game's yellow frame under the mouse, the keys' cursor and while `current`. Its tip is the item card, left of the tile, after 500 ms from the mouse and at once from the keys. `remove` adds the status page's REMOVE button (or D from the keys). nil is an empty slot. `judged = false` gives the UNIDENTIFIED card.
+- `rq.uikit.item_card(item, opts)` and `item_card_size()`: the game's item card (`T_ItemComment`, CG 10402 with the item's row; CG 10403 over it for an item not identified), on the top layer, kept on the screen as the game keeps it.
+- `item_row` draws its parts with the card's code.
+- `rq.ui.get` lists the card with the type "card", which takes no click (`modloader_ui.c`).
+- `weight` in a text style with `font = "game"`: the game's font weight, 0 to 1000 (`modloader_hud.c`).
+
+Fixes to the item row (`item_row`, the vault, the storage and the shop), found by matching the card to the game's pixel for pixel:
+- The stats' numbers are drawn at the game's weight 70, as `T_StoreComment` draws them; they were at 0, so thinner.
+- The name is centered as `T_DrawText` centers it, `(202 - w) / 2` rounded down; it sat 1 px to the right.
+- The level bar's text is at the bar's top, as `T_StoreList` draws it; it was centered down the bar, 2 px low.
+
 ## 2.20.1
 
 `rq.ui.get` on every screen (`notes/plans/plan-ui-kit-leftovers.md` in the workspace, section 15), in `modloader_ui.c`:

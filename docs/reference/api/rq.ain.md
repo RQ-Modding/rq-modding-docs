@@ -16,6 +16,8 @@ check the count it gets back.
 | [`rq.ain.patch_float`](#rqainpatch_float) | Replaces float constants in one AIN function. |
 | [`rq.ain.patch_int`](#rqainpatch_int) | Replaces integer constants in one AIN function, such as a hard-coded skill number. |
 | [`rq.ain.patch_int_after`](#rqainpatch_int_after) | Replaces the first integer constant `from` that follows a read of a global. |
+| [`rq.ain.set_code_int`](#rqainset_code_int) | Writes a new value into a constant of the game's code that `rq.ain.patch_int_after` changed. |
+| [`rq.ain.code_int`](#rqaincode_int) | Reads the value a place of `rq.ain.patch_int_after` holds in the game's code now. |
 | [`rq.ain.call`](#rqaincall) | Calls any AIN function by its name. |
 | [`rq.ain.hook`](#rqainhook) | Runs Lua before and after any AIN function. |
 | [`rq.ain.method`](#rqainmethod) | Calls a method of the game on the object a global reaches. |
@@ -81,17 +83,26 @@ See also: [`rq.ain.patch_int_after`](rq.ain.md#rqainpatch_int_after)
 ### rq.ain.patch_int_after
 
 ```lua
-rq.ain.patch_int_after(name, global, from, to, nth_ref, window) -> integer
+rq.ain.patch_int_after(name, global, from, to, nth_ref, window) -> integer, integer[]
 ```
 
-`since 1.3.0`
+`since 1.3.0` `changed 2.22.0`
 
 Replaces the first integer constant `from` that follows a read of a global.
 
 It looks at the `window` instructions after the read, as for the 2 in
 `if (◆２倍モード == 1) { x = x * 2; }`. A variable's index is never taken for the constant.
 
+It also returns the places it changed, for `rq.ain.set_code_int`: a mod finds a constant once, by
+what it follows, and writes it again later without searching. Searching again would be wrong once
+the constant holds a value that also comes before it, as the `1` of `== 1` above.
+
 Raises an error for an unknown function or global.
+
+```lua
+local _, at = rq.ain.patch_int_after("Ｔ戦闘前初期化", "◆２倍モード", 2, 3, 0)
+rq.ain.set_code_int(at[1], 5) -- later, with no search
+```
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -105,6 +116,60 @@ Raises an error for an unknown function or global.
 | Returns | Type | Description |
 | --- | --- | --- |
 | `count` | `integer` | How many constants were replaced. |
+| `places` | `integer[]` | One place for each constant replaced, in code order, for `rq.ain.set_code_int` and `rq.ain.code_int`. |
+
+> Changed in 2.22.0: Returns the places too.
+
+See also: [`rq.ain.set_code_int`](rq.ain.md#rqainset_code_int)
+
+### rq.ain.set_code_int
+
+```lua
+rq.ain.set_code_int(place, value) -> boolean
+```
+
+`since 2.22.0`
+
+Writes a new value into a constant of the game's code that `rq.ain.patch_int_after` changed.
+
+The place is the constant `patch_int_after` found, written now as it wrote it. The game reads it
+the next time it runs that code, so a value changed between fights counts from the next fight. When
+another install wraps the function later, the place is still found: the wrapped code stays where
+it was, and a body moved and grown is searched for the same constant with the same instructions
+around it.
+
+Raises an error for a place that `patch_int_after` did not give.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `place` | `integer` | A place from `rq.ain.patch_int_after`. |
+| `value` | `integer` | The new value. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `ok` | `boolean` | false when the place is no longer in the game's code as it was written (it is logged); nothing is written then. |
+
+See also: [`rq.ain.patch_int_after`](rq.ain.md#rqainpatch_int_after)
+
+### rq.ain.code_int
+
+```lua
+rq.ain.code_int(place) -> integer|nil
+```
+
+`since 2.22.0`
+
+Reads the value a place of `rq.ain.patch_int_after` holds in the game's code now.
+
+Raises an error for a place that `patch_int_after` did not give.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `place` | `integer` | A place from `rq.ain.patch_int_after`. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `value` | `integer\|nil` | The value, or nil when the place is no longer found. |
 
 ### rq.ain.call
 

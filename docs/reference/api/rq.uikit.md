@@ -70,6 +70,8 @@ end)
 | [`rq.uikit.checkbox`](#rquikitcheckbox) | Draws a checkbox with its text. |
 | [`rq.uikit.choice`](#rquikitchoice) | Draws one of several checkboxes, as the 3D tab's quality. |
 | [`rq.uikit.slider`](#rquikitslider) | Draws the Sound tab's slider. |
+| [`rq.uikit.stepper`](#rquikitstepper) | Draws a number field: the number in a framed box between - and +, and returns the new number. |
+| [`rq.uikit.typing`](#rquikittyping) | Returns the number field typing on this update, by its `opts.id`, or nil. |
 | [`rq.uikit.tabs`](#rquikittabs) | Draws Config's tabs side by side: normal, hovered and current. |
 | [`rq.uikit.panel`](#rquikitpanel) | Draws a Config page or the 3D tab's dark block, and runs `fn` in a column inside it. |
 | [`rq.uikit.list`](#rquikitlist) | Draws rows on a dark block that scroll by the wheel. |
@@ -104,6 +106,9 @@ end)
 | [`rq.uikit.item_data`](#rquikititem_data) | Reads an item instance's row data from the game: its name, level line, stats line, icon, rank, kind, lock, price, place, the classes that may equip it, and whether the game lets it go. |
 | [`rq.uikit.item_refresh`](#rquikititem_refresh) | Makes item rows and lists read an instance again on their next update. |
 | [`rq.uikit.item_row`](#rquikititem_row) | Draws a vault item row, 381 by 128, as the game draws it: the name, the icon with its rank badge, the red level bar, the stats line in the game's yellow and white, the icons of the classes that may equip it, LOCKED, and the row's buttons. |
+| [`rq.uikit.item_icon`](#rquikititem_icon) | Draws an item's tile, as the status page's equip slots draw it, and returns whether it was clicked. |
+| [`rq.uikit.item_card`](#rquikititem_card) | Draws the game's item card now, on the top layer, and returns its box. |
+| [`rq.uikit.item_card_size`](#rquikititem_card_size) | Returns the item card's size, to place it beside a widget as the game's screens do. |
 | [`rq.uikit.item_list`](#rquikititem_list) | Draws the vault's item list: rows 128 apart and the game's scroll bar beside them. |
 | [`rq.uikit.item_dropped`](#rquikititem_dropped) | Returns the row dropped on this update on another list of a drag group (`item_list`'s `drag`). |
 | [`rq.uikit.item_storage`](#rquikititem_storage) | Draws the game's storage screen: the storage's red list on the left and the vault's list right of it (437 pixels apart, as the game places them), each with its scroll bar, the vault's count and the storage's in their boxes, and the vault's filter column and SORT. Drag a row from one list to the other to move the item (`rq.item.store`). |
@@ -245,6 +250,76 @@ as Config's sliders: on the press, then on every update after 250 ms.
 > Changed in 1.8.0: Added `opts.label`.
 
 > Changed in 2.12.0: Page Up and Page Down.
+
+### rq.uikit.stepper
+
+```lua
+rq.uikit.stepper(value, opts) -> integer, boolean
+```
+
+`since 2.22.0`
+
+Draws a number field: the number in a framed box between - and +, and returns the new number.
+
+- **- and +** change it by `step`, by `big` with Shift held. Held, they repeat: 400 ms after the
+  press, then every 80 ms.
+- **The wheel** over the field changes it by `step`, and the game does not get that wheel step.
+- **Under the keys' cursor**, Page Up raises it and Page Down lowers it by `step`.
+- **Typing.** A click on the number, or Enter under the keys' cursor, types into it. The digits are
+  read from the keys, 0 to 9 and the keypad's (with the keypad's minus while `min` is below 0), not
+  from the system's text input, so `rqmod-ctl type` and `key` can type it. Backspace takes the last
+  digit. Enter keeps the number, put inside `min` and `max`; so does a click elsewhere or the keys'
+  cursor moving on. Esc puts the old number back. While it types, these keys are hidden from the
+  game, and Enter, Esc and Backspace stay hidden until let go: Esc there does not close Config or
+  `rq.uikit.page`.
+
+A typed number counts as one change, when it is kept. The field is listed for `rqmod-ctl ui` as
+`stepper-<id>` with the number as `value` and `selected` true while it types; its buttons are
+`button-<id>-dec` and `button-<id>-inc`.
+
+Raises an error for a `value`, `min`, `max`, `step` or `big` that is not a whole number, a `max` below
+`min`, a `step` or `big` below 1, or a `w` that is not a whole number.
+
+```lua
+rq.config.page{
+  id = "my-mod",
+  title = "My Mod",
+  draw = function(ui)
+    local n, changed = ui.stepper(count, { id = "count", label = "Count", min = 1, max = 99 })
+    if changed then
+      count = n
+      rq.store.global.set("count", n)
+    end
+  end,
+}
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `value` | `integer` | The number shown; it is put inside `min` and `max`. |
+| `opts` *(optional)* | [`rq.UiStepperOpts`](../types/rq.UiStepperOpts.md) | `min`, `max`, `step`, `big`, `label`, `disabled`; place (`w`: the box's width, default to fit `max`), `id`, `tip`, `nav`. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `value` | `integer` | The new number. |
+| `changed` | `boolean` | true on the update it changed. |
+
+### rq.uikit.typing
+
+```lua
+rq.uikit.typing() -> string|nil
+```
+
+`since 2.22.0`
+
+Returns the number field typing on this update, by its `opts.id`, or nil.
+
+While one types, the keys it reads are its own; a page of a mod's own that reads Esc or digits
+itself can leave them alone while this is not nil.
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `id` | `string\|nil` | The field's `opts.id` (else the kit's id), or nil. |
 
 ### rq.uikit.tabs
 
@@ -1012,7 +1087,7 @@ its second one opens the sort menu each time.
 rq.uikit.page(opts, fn) -> boolean
 ```
 
-`since 2.6.0` `changed 2.7.0` `changed 2.12.0`
+`since 2.6.0` `changed 2.7.0` `changed 2.12.0` `changed 2.22.0`
 
 Draws a page of a mod's own over the hub and runs `fn` in a column inside it.
 
@@ -1028,6 +1103,8 @@ A choice menu from `rq.ui.choose` shows over the page. While it does, the page l
 the keys to the menu, and the right click, Space or Esc that ends the menu does not close the page.
 
 The arrow keys and Enter move the keys' cursor between the page's widgets (`rq.uikit.keys`).
+Esc while a number field types (`rq.uikit.stepper`) puts the field's number back and does not
+close the page.
 
 ```lua
 local open = false
@@ -1051,6 +1128,8 @@ end)
 > Changed in 2.7.0: Stays open, under it, while the game's choice menu shows over it.
 
 > Changed in 2.12.0: The arrow keys and Enter move between its widgets.
+
+> Changed in 2.22.0: Esc that ends a number field's typing does not close it.
 
 ### rq.uikit.options
 
@@ -1203,6 +1282,119 @@ if button == "lock" then rq.item.lock(ii) elseif button == "unlock" then rq.item
 | `button` | `"lock"\|"unlock"\|"sell"\|"donate"\|nil` | The button clicked on this update. |
 
 > Changed in 2.9.0: The shop and equip styles, two-line names, `keys`, no SELL or DONATE on a locked row.
+
+### rq.uikit.item_icon
+
+```lua
+rq.uikit.item_icon(item, opts) -> boolean, "remove"|nil
+```
+
+`since 2.21.0`
+
+Draws an item's tile, as the status page's equip slots draw it, and returns whether it was clicked.
+
+The tile is the item's icon, 100 by 100, with its rank badge (CG 11420 + rank) at its bottom left
+(`T_ItemIcon`). Under the mouse or the keys' cursor, and while `current`, it gets the game's frame
+(216, 255, 0) at 102. With `item` nil it draws nothing, as the game leaves an empty slot to its
+page's picture, but it still takes the frame, the click and a tip.
+
+Its `tip` is the game's item card (`rq.uikit.item_card`), left of the tile at its y (right of it
+when there is no room), after 500 ms from the mouse and at once from the keys, as the status page
+shows it. Give a `tip` of your own (the comment window), or false for none.
+
+With `remove`, REMOVE shows beside the tile; a click on it, or D on the tile from the keys, returns
+`"remove"`. The tile only says so: take the item off yourself.
+
+For an item the player must not see yet, pass a row table with the icon you want shown (as
+`rq.loot.list`'s `cg`, the game's "?") and `judged = false`: the tile and the card draw the row's
+`icon`, never the instance's.
+
+It is listed for `rqmod-ctl ui` with the type "item", the name as label and the ii as `value`
+(`item-<id>`), REMOVE as `button-<id>-remove`, and its card as the type "card", which takes no
+click.
+
+Raises an error for an `ii` with no instance, an item that is not an ii, a table or nil, or a `size`
+that is not a whole number above 0.
+
+```lua
+local SLOTS = { 1, 11, 17 } -- weapon, armor, held item
+rq.on_frame(function()
+  if not open then return end
+  open = rq.uikit.page({ id = "gear", title = "Gear" }, function(x, y)
+    for i, kind in ipairs(SLOTS) do
+      local ii = rq.ain.call("キャラ_装備取得", chara, kind)
+      local _, act = rq.uikit.item_icon(ii > 0 and ii or nil, { x = x + 20, y = y + (i - 1) * 116, id = "slot" .. i, remove = true })
+      if act == "remove" then take_off(chara, kind) end
+    end
+  end)
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `item` | `integer\|` [`rq.UiItemRow`](../types/rq.UiItemRow.md) `\|nil` | An instance, row data, or nil for an empty slot. |
+| `opts` *(optional)* | [`rq.UiItemIconOpts`](../types/rq.UiItemIconOpts.md) | `size`, `current`, `disabled`, `remove`, `judged`; place, `id`, `tip`, `nav`. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `clicked` | `boolean` | true on the update the tile is clicked. |
+| `action` | `"remove"\|nil` | `"remove"` on the update REMOVE is pressed. |
+
+### rq.uikit.item_card
+
+```lua
+rq.uikit.item_card(item, opts) -> integer, integer, integer, integer
+```
+
+`since 2.21.0`
+
+Draws the game's item card now, on the top layer, and returns its box.
+
+The card is the game's `T_ItemComment`: CG 10402, 393 by 139, with the item's row on it (the name,
+the icon with its rank, the kind, the stats line, the level bar, LOCKED, the classes), as the
+status page shows it beside an equip slot. With `judged = false` it is the game's card for an
+item not identified: CG 10403 (UNIDENTIFIED) over it and the icon alone.
+
+It goes at the mouse + 11, + 20 unless `x` and `y` are given. Past the screen's right edge it goes
+to the left of the mouse, and past y 736 it goes up to end at 736, as the game keeps its card on
+the screen. Call it on every update it should show; `rq.uikit.item_icon` shows it as its tip.
+
+It is listed for `rqmod-ctl ui` with the type "card", which takes no click.
+
+Raises an error for an `ii` with no instance, or an item that is not an ii or a table.
+
+```lua
+rq.on_frame(function()
+  if hovered_ii then rq.uikit.item_card(hovered_ii) end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `item` | `integer\|` [`rq.UiItemRow`](../types/rq.UiItemRow.md) | An instance, or row data. |
+| `opts` *(optional)* | `{x?: integer, y?: integer, judged?: boolean, id?: string\|integer}` | `x` and `y` (default at the mouse); `judged` (default true); `id` for `rqmod-ctl ui`. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `x` | `integer` |  |
+| `y` | `integer` |  |
+| `w` | `integer` | 393. |
+| `h` | `integer` | 139. |
+
+### rq.uikit.item_card_size
+
+```lua
+rq.uikit.item_card_size() -> integer, integer
+```
+
+`since 2.21.0`
+
+Returns the item card's size, to place it beside a widget as the game's screens do.
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `w` | `integer` | 393. |
+| `h` | `integer` | 139. |
 
 ### rq.uikit.item_list
 

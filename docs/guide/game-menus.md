@@ -193,6 +193,9 @@ local pick = rq.ui.ask("What now?", { { id = "trade", text = "Trade a Jewel" }, 
   click. `rq.ui.choose` stays the way to open a menu at the next update with a callback.
 - **One dialog at a time.** The game keeps one list of rows for all its dialogs, so a call made
   while another dialog is being built or shows draws nothing and gives nil.
+- **Not from Config.** Over Config the dialog opens under Config's screen, out of sight, and the
+  dump does not list it. A page in Config's Mods tab asks on the page itself, with kit buttons, as
+  Keep Donations' Set does.
 - **The text.** Only `\n` starts a line. The window wraps the rest at its width, and every 3 lines
   get a row of their own. `@` and `$`, where the game's own texts break, are drawn as `＠` and `＄`;
   pass `game = true` for a text that comes from the game, such as `h.args[2]` of its question.
