@@ -34,7 +34,7 @@ Returns the castle's state, as `rq.castle()` does.
 rq.castle.room(spec) -> rq.CastleRoomHandle
 ```
 
-`since 2.16.0`
+`since 2.16.0` `changed 2.22.1`
 
 Adds a room of the mod's own to Rance Castle.
 
@@ -52,6 +52,8 @@ kept in the save's castle arrays, which the game reads only for 1 to 29.
 Raises an error for a spec that is not a table, no name, no `on_enter`, a bad floor, a `shown`
 that is not a function, a `new` or `face` of the wrong type, or no area left.
 
+slot, so another character's face showed.
+
 ```lua
 rq.castle.room({ id = "workshop", name = "Workshop", floor = "B2F", new = true,
   on_enter = function(room)
@@ -66,6 +68,8 @@ rq.castle.room({ id = "workshop", name = "Workshop", floor = "B2F", new = true,
 | Returns | Type | Description |
 | --- | --- | --- |
 | `room` | [`rq.CastleRoomHandle`](../types/rq.CastleRoomHandle.md) | The room, to change or remove it. |
+
+> Changed in 2.22.1: `chara` is a character number, as the reference said: it was read as a roster
 
 ### rq.castle.rooms
 

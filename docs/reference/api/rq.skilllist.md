@@ -1,6 +1,6 @@
 # rq.skilllist
 
-`since 0.2.0` `changed 2.18.0`
+`since 0.2.0` `changed 2.18.0` `changed 2.22.1`
 
 Pages the Potential Skills grid, 36 skills a page.
 
@@ -8,8 +8,8 @@ The game keeps the skills a character can buy in rows 1 to 60 of three arrays (`
 `取得可能スキルポイント`, `取得不可能スキル説明`) and shows the first 36. With `install`, the arrays
 hold rows 1 to 144 and the list shows them 36 at a time. A page is 36 rows of the game's own
 filtered list (no panel color 104, none the character holds) in the order they were added, then
-sorted with `compSkill` as the game sorts. Opening the window goes back to page 1. Known Skills is
-not paged.
+sorted with `compSkill` as the game sorts. Opening the window goes back to page 1, and so does
+another character in it (the window's scroll bar or the wheel over it). Known Skills is not paged.
 
 It is Lua over the game's own code (`src/lua/skilllist.lua`): the arrays are made longer with
 `rq.ain.set_global_len` whenever the game fills them, `スキルポン` stops at row 145 instead of 54,

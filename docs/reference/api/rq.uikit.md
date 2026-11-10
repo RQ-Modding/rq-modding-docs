@@ -1289,7 +1289,7 @@ if button == "lock" then rq.item.lock(ii) elseif button == "unlock" then rq.item
 rq.uikit.item_icon(item, opts) -> boolean, "remove"|nil
 ```
 
-`since 2.21.0`
+`since 2.21.0` `changed 2.22.1`
 
 Draws an item's tile, as the status page's equip slots draw it, and returns whether it was clicked.
 
@@ -1303,7 +1303,8 @@ when there is no room), after 500 ms from the mouse and at once from the keys, a
 shows it. Give a `tip` of your own (the comment window), or false for none.
 
 With `remove`, REMOVE shows beside the tile; a click on it, or D on the tile from the keys, returns
-`"remove"`. The tile only says so: take the item off yourself.
+`"remove"`. The tile only says so: take the item off yourself. An item that cannot be taken off
+(`rq.item.get(ii).locked`, the game's `外せません`) gets no REMOVE and no D, as on the status page.
 
 For an item the player must not see yet, pass a row table with the icon you want shown (as
 `rq.loot.list`'s `cg`, the game's "?") and `judged = false`: the tile and the card draw the row's
@@ -1339,6 +1340,8 @@ end)
 | --- | --- | --- |
 | `clicked` | `boolean` | true on the update the tile is clicked. |
 | `action` | `"remove"\|nil` | `"remove"` on the update REMOVE is pressed. |
+
+> Changed in 2.22.1: No REMOVE on an item that cannot be taken off.
 
 ### rq.uikit.item_card
 

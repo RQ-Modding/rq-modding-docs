@@ -471,7 +471,7 @@ from the back.
 rq.battle.start(opts) -> "won"|"lost"|"other"
 ```
 
-`since 0.22.0`
+`since 0.22.0` `changed 2.22.1`
 
 Opens a fight with the current party, using the game's scripted fight.
 
@@ -479,7 +479,13 @@ It blocks until the fight and its result screens end, as `rq.scene` commands do,
 `rq.on_frame` keeps running; call it from a coroutine if the same mod plays the fight. It counts as
 a fight of the current quest.
 
+It may start from any screen with a footer: a quest's map, the town, Rance Castle, the Party
+screen, Quests. While it runs, `rq.ui.get` says `battle`; after it, the screen it started from is
+drawn again with its footer.
+
 Raises an error for no enemies, an unknown monster, an empty party, or during a fight.
+
+its footer, and `rq.ui.get` named that screen during the fight, not `battle`.
 
 ```lua
 coroutine.wrap(function()
@@ -495,6 +501,8 @@ end)()
 | Returns | Type | Description |
 | --- | --- | --- |
 | `result` | `"won"\|"lost"\|"other"` | How the fight ended. |
+
+> Changed in 2.22.1: Away from a quest's map, the screen under the fight came back black and without
 
 ### rq.battle.force_hit
 

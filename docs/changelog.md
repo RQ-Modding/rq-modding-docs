@@ -5,6 +5,15 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.22.1
+
+- `rq.uikit.item_icon`: no REMOVE, and D does nothing, on an item that cannot be taken off (`rq.item.get(ii).locked`, the game's `外せません`), as the status page leaves it out. It was shown, and pressed, on every item. Found by the Lab's `uikit-items` (`notes/plans/plan-lab-coverage.md` in the workspace, T6). In `src/lua/uikit_vault.lua`.
+- `rq.ui.get`: Trivia, CG mode, Music mode and the castle's Gal monsters' and Poster rooms are the screen `other`, with the footer only, as 2.20.1 meant. They run inside the town's or the castle's loop, so they were reported as `hub` or `castle`, with that screen's tabs under them. In a fight only `system` of the footer is listed, as the game shows it. Found by the Lab's `ui-screens` (T8). In `src/modloader_ui.c`.
+- `rq.battle.start` away from a quest's map (the town, Rance Castle, the Party screen, Quests): the screen it started from is drawn again after the fight, with its footer. The fight's black layer stayed over it and the footer was gone, so the town was black until a tab was opened. During such a fight `rq.ui.get` says `battle`; it named the screen under it, so the Lab could not play a fight started on the Party screen. The fight's own Party screen (Switch) is still `party-edit`, over the fight: it is told from the town's by its z. Found by the Lab's `statuspage` (its level-up fight from the town). In `src/modloader_state.c` and `src/modloader_ui.c`.
+- `rq.skilllist`: another character in the open skill window (its scroll bar, or the wheel over it) starts on page 1, as opening the window does. It kept the page shown, so page 2 of one character became page 2 of the next. Found by the Lab's `skill-window` (T17). In `src/lua/skilllist.lua`.
+- `rq.castle.room`'s `chara` is a character number (`rq.ids.chara`), as the reference says: the loader gave the number to `Ｃ顔ＣＧ`, which takes a roster slot, so Lia's 54 showed Shitomone Chappie's face. The face is now the character's, and none while they are not in the roster. Found by the Lab's `castle-room` (T10). In `src/lua/castle.lua`.
+- The reference says that `rq.mod.id` cannot see a mod through a tail call: after `return rq.ui.confirm(...)` a remembered question is filed under `_` (`notes/lua-api-gaps.md`, found by `ui-dialogs`, T14).
+
 ## 2.22.0
 
 A number field, and constants of the game's code a mod can change while the game runs (`notes/plans/plan-ui-kit-leftovers.md` in the workspace, section 17), for the Config pages of Custom TADA Mode 1.1.0, Kaoru Quincy QoL 1.2.0 and Keep Donations 1.1.0:

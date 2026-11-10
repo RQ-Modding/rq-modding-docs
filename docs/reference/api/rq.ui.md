@@ -26,7 +26,7 @@ Reads what is on the screen and saves screenshots.
 rq.ui.get() -> table|nil
 ```
 
-`since 0.20.0` `changed 0.21.0` `changed 2.11.0` `changed 2.12.0` `changed 2.19.0` `changed 2.20.0` `changed 2.20.1`
+`since 0.20.0` `changed 0.21.0` `changed 2.11.0` `changed 2.12.0` `changed 2.19.0` `changed 2.20.0` `changed 2.20.1` `changed 2.22.1`
 
 Returns what is on the screen.
 
@@ -37,8 +37,9 @@ only before the first named screen, and `title` only for the real title screen.
 
 The footer's controls (`system`, `vault`, `trivia` in section `system-bar`; the party cards in
 section `party`; the money line) are listed on every screen whose own loop takes them: the town,
-its tabs, Rance Castle (`castle`), the status page, the vault, a quest's map and a fight, and an
-unnamed screen (`other`) that shows them. On `castle` each room is `room-<area>`, with the room's
+its tabs, Rance Castle (`castle`), the status page, the vault and a quest's map; in a fight only
+`system`. Trivia, CG mode, Music mode and the castle's Gal monsters' and Poster rooms are `other`,
+with the footer only: the screen under them is not listed. On `castle` each room is `room-<area>`, with the room's
 name as the label and its floor (`B2F`, with ` new` for the NEW mark) as the value.
 
 A game control a player cannot click has `covered = true`: every point of it is under a kit widget
@@ -55,6 +56,7 @@ It builds the whole list, so do not call it on every `rq.on_frame`.
 every screen that shows it; Rance Castle is the screen `castle`, with its rooms as `room-<area>`
 and the town tabs; the town tabs on `quests`; the SYSTEM menu over Quests or the status page is
 `system-menu` (it was the screen under it).
+`other` with the footer only (they were the town or the castle under them, with its tabs).
 
 ```lua
 local s = rq.ui.get()
@@ -76,6 +78,8 @@ if s and s.screen == "camp" then rq.log(#s.controls, "controls") end
 > Changed in 2.20.0: `status.chara` is the character shown (it was always 0).
 
 > Changed in 2.20.1: The footer (`system`, `vault`, `trivia`, the party cards and the money line) on
+
+> Changed in 2.22.1: Trivia, CG mode, Music mode and the castle's Gal monsters' and Poster rooms are
 
 See also: [`rq.ui.aim`](rq.ui.md#rquiaim)
 
@@ -239,7 +243,8 @@ game's own switch (as `選択_確認_拡張`: 10 purchasing, 14 selling, 31 dona
 Config's Confirmations tab), so the player's setting counts. A text is the mod's own question: once
 the player turns it off, the call returns true without asking, in every save. The loader then
 lists it on a Confirmations page in Config's Mods tab, where the player can turn it back on, and
-Resetting in Config's Confirmations tab turns it back on too.
+Resetting in Config's Confirmations tab turns it back on too. The key is the mod's own, found as
+`rq.mod.id` finds it: after `return rq.ui.confirm(...)` it is filed under `_` instead.
 
 The game has one list of dialog rows, so the call shows nothing and returns nil while another
 dialog is being built or shows (`rq.ui.choosing`, or one of these calls), and logs it once.

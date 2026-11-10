@@ -13,7 +13,7 @@ A mod's room in Rance Castle, for `rq.castle.room`.
 | `shown` *(optional)* | `fun(): boolean` | Asked each time the castle opens; false leaves the room out this time. Default: always shown. |
 | `new` *(optional)* | `boolean\|fun(): boolean` | The game's NEW mark on the room. Default false. |
 | `face` *(optional)* | `integer\|fun(): integer` | A CG shown beside the name, as a character's face in the game's rooms. Default none. |
-| `chara` *(optional)* | `integer` | A character id: their face beside the name, as the game shows it (`Ｃ顔ＣＧ`). Use this or `face`. |
+| `chara` *(optional)* | `integer` | A character number (`rq.ids.chara`): their face beside the name, as the game shows it (`Ｃ顔ＣＧ` of their roster slot); no face while they are not in the roster. Use this or `face`. Since 2.22.1 a character number; before, the number was read as a roster slot. |
 
 ## Used by
 

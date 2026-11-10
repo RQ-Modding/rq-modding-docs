@@ -76,6 +76,10 @@ Returns the id of the mod whose code calls it.
 It is the `id` in that mod's `mod.json`. When a mod calls a function of another mod, the code
 running is the other mod's, so that mod's id is returned.
 
+The mod is found on the call stack. A tail call (`return f()`) takes the caller's place on it, so
+a call reached only that way, as `return rq.ui.confirm(...)` in a callback or at the top of a
+coroutine, counts as outside any mod. Keep the result in a local and return that.
+
 | Returns | Type | Description |
 | --- | --- | --- |
 | `id` | `string\|nil` | The calling mod's id; `nil` outside any mod's code. |

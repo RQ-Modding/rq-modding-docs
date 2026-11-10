@@ -67,7 +67,8 @@ face and the NEW mark, and moves the keys to it.
 - **A click** runs `on_enter` instead of the game's room code. The castle stays open (a character's
   room closes it for cleaning; a mod's room does not), and the game goes back to the town's tabs.
 - **`shown`** is asked each time the castle opens; false leaves the room out that time.
-- **`face`** (a CG number) or **`chara`** (a character's face) beside the name.
+- **`face`** (a CG number) or **`chara`** (a character number from `rq.ids.chara`: their face, while
+  they are in the roster) beside the name.
 - The handle's `where()` says where the room is while the castle shows it, `set{...}` changes it from
   the next time the castle opens, and `remove()` takes it out.
 
