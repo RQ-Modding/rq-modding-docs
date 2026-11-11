@@ -69,6 +69,9 @@ Rolls each chest's item when the chest is placed, so it is known in advance.
 It skips the game's roll at opening and sets the map's chest flags. Red chests keep the game's
 chance and still explode on a fail, which loses the item. It opens no screen.
 
+It changes when the game rolls, so it stays a mod's own choice: `rq.loot.list`, which needs it,
+does not make it.
+
 | Returns | Type | Description |
 | --- | --- | --- |
 | `ok` | `boolean` | true when the patch is in place. |
@@ -83,7 +86,7 @@ rq.loot.list() -> rq.LootItem[]
 
 Lists the items waiting for the player: the Magnum's (when it holds one), then the locked chests'.
 
-Needs `rq.loot.install`.
+Needs `rq.loot.install`; before it the list is empty.
 
 | Returns | Type | Description |
 | --- | --- | --- |

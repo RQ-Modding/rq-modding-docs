@@ -54,7 +54,8 @@ rq.skilllist.install(opts) -> boolean
 Turns the paged list on, and with `buttons` adds Previous Page and Next Page.
 
 Calling it again does nothing more, except that a call with `buttons` adds the two buttons when an
-earlier call left them out.
+earlier call left them out. It changes the list the player sees, so it stays a mod's own choice:
+the calls that need it raise an error before it.
 
 Raises an error for `opts` that is not a table, or when `スキルポン`'s stop at 54 is not found.
 

@@ -1,15 +1,14 @@
 # rq.shop
 
-`since 0.2.0`
+`since 0.2.0` `changed 2.35.0`
 
 Adds stock to Frostbuy, the item shop, and reports purchases.
 
-The game refills the shop's stock in `Ｔアイテム屋` every time the shop opens. `rq.shop.install` wraps
-the end of that function so `on_stock` callbacks run right after the game's own refill. Without a
-hook the shop keeps only the game's stock. The calls take an item number or a text id.
+The game refills the shop's stock in `Ｔアイテム屋` every time the shop opens. The first `on_stock`,
+`in_stock` or `stock` wraps the end of that function so `on_stock` callbacks run right after the
+game's own refill. The calls take an item number or a text id.
 
 ```lua
-rq.shop.install()
 rq.shop.on_stock(function()
   if not rq.shop.in_stock(306) then rq.shop.stock(306) end -- Skill Again
 end)
@@ -31,15 +30,18 @@ end)
 rq.shop.install() -> boolean
 ```
 
-`since 0.2.0`
+`since 0.2.0` `changed 2.35.0`
 
 Wraps the end of `Ｔアイテム屋` so `on_stock` callbacks run and `stock` works.
 
-Calling it again is harmless.
+Not needed since 2.35.0: each call that needs it places it the first time, and raises this
+call's error there when it cannot. Calling it still does no harm.
 
 | Returns | Type | Description |
 | --- | --- | --- |
-| `ok` | `boolean` | true when the hook is in place; false when a game function is missing (see the log). |
+| `ok` | `boolean` | true when the hook is in place; a failure raises an error. |
+
+> Changed in 2.35.0: Not needed: `on_stock`, `in_stock` and `stock` make it.
 
 ### rq.shop.in_stock
 
@@ -47,7 +49,7 @@ Calling it again is harmless.
 rq.shop.in_stock(no) -> boolean
 ```
 
-`since 0.2.0` `changed 0.9.0`
+`since 0.2.0` `changed 0.9.0` `changed 2.35.0`
 
 Returns whether an item is already on sale in the shop.
 
@@ -63,18 +65,19 @@ It asks the game whether an instance of that item has the shop's existence value
 
 > Changed in 0.9.0: Accepts a text id.
 
+> Changed in 2.35.0: Answers without `rq.shop.install`; before it, it always said false.
+
 ### rq.shop.stock
 
 ```lua
 rq.shop.stock(no) -> integer
 ```
 
-`since 0.2.0` `changed 0.9.0` `changed 0.26.0`
+`since 0.2.0` `changed 0.9.0` `changed 0.26.0` `changed 2.35.0`
 
 Puts one item on sale, through the game's `Ｔアイテム屋／入荷品`.
 
-Raises an error before `rq.shop.install`, for an unknown item, or for a value that is not a number
-or a text id.
+Raises an error for an unknown item, or for a value that is not a number or a text id.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -87,6 +90,8 @@ or a text id.
 > Changed in 0.9.0: Accepts a text id.
 
 > Changed in 0.26.0: An unknown item raises an error instead of closing the game.
+
+> Changed in 2.35.0: No `rq.shop.install` needed; it raised an error before it.
 
 ### rq.shop.donations
 
@@ -157,12 +162,12 @@ See also: [`rq.shop.donations`](rq.shop.md#rqshopdonations)
 rq.shop.on_stock(fn) -> fun()
 ```
 
-`since 0.2.0` `changed 0.9.0` `changed 0.23.0`
+`since 0.2.0` `changed 0.9.0` `changed 0.23.0` `changed 2.35.0`
 
 Registers a function that runs after the game refills the shop's stock.
 
-It runs on every shop open, once `rq.shop.install` was called; before that it never runs. Up to 16
-callbacks. An error in a callback is written to the log and the others still run.
+It runs on every shop open. Up to 16 callbacks. An error in a callback is written to the log and the
+others still run.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -175,6 +180,8 @@ callbacks. An error in a callback is written to the log and the others still run
 > Changed in 0.9.0: Keeps every mod's callback (before, the last one replaced the others).
 
 > Changed in 0.23.0: Returns a remover.
+
+> Changed in 2.35.0: Wraps the shop itself; before `rq.shop.install` it never ran.
 
 See also: [`rq.shop.stock`](rq.shop.md#rqshopstock)
 

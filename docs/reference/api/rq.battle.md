@@ -5,9 +5,8 @@
 Hooks into fights: events, ally skill select, marks and buffs on the cards, faces, states, drops,
 and scripted fights.
 
-Each event (`on_*`) installs its hook on first use; most hold up to 16 callbacks. The ally skill
-select calls need `rq.battle.install`, `set_flame` and `set_mark` need `rq.battle.install_flame`,
-and `set_state` needs `rq.battle.install_states`.
+Each call places the hooks it needs the first time; most events hold up to 16 callbacks. Only
+`set_state` needs a call first, `rq.battle.install_states`, since it changes the game's rules.
 
 A card goes by battle number: 1 to 5 are the ally ranks, 11 to 15 the enemy ranks. Characters are
 roster slots (`iic`); enemy slots are below 20.
@@ -55,7 +54,7 @@ end)
 rq.battle.install() -> boolean
 ```
 
-`since 0.2.0`
+`since 0.2.0` `changed 2.35.0`
 
 Installs the ally skill select hooks.
 
@@ -63,11 +62,16 @@ It wraps `T_BattleSelect@select`, `@checkKey` and `@exec`, so a key that `on_sel
 completes the select like a click on that skill: the key is swallowed (Space does not also
 Cancel), and the skill runs on the actor itself.
 
+Not needed since 2.35.0: each call that needs it places it the first time, and raises this
+call's error there when it cannot. Calling it still does no harm.
+
 Raises an error when the AIN is not loaded or a hook cannot be placed.
 
 | Returns | Type | Description |
 | --- | --- | --- |
 | `ok` | `boolean` | Always true; a failure raises an error. |
+
+> Changed in 2.35.0: Not needed: `on_select_key`, `in_ally_select`, `actor` and `skill_usable` make it.
 
 ### rq.battle.install_flame
 
@@ -75,18 +79,23 @@ Raises an error when the AIN is not loaded or a hook cannot be placed.
 rq.battle.install_flame() -> boolean
 ```
 
-`since 0.12.0`
+`since 0.12.0` `changed 2.35.0`
 
 Installs the hooks the flame, the buffs and the marks need.
 
 It hooks the ally status refresh so `set_flame` sticks, and installs the fight start and end
-events, which clear the flames and buffs. Call it once at the top of `init.lua`.
+events, which clear the flames and buffs. The engine also makes it once the mods have loaded.
+
+Not needed since 2.35.0: each call that needs it places it the first time, and raises this
+call's error there when it cannot. Calling it still does no harm.
 
 Raises an error when a hook cannot be placed.
 
 | Returns | Type | Description |
 | --- | --- | --- |
 | `ok` | `boolean` | Always true; a failure raises an error. |
+
+> Changed in 2.35.0: Not needed: `set_flame` and `set_mark` make it.
 
 ### rq.battle.set_flame
 
@@ -103,7 +112,8 @@ leave the party. It is forgotten at the start and end of a fight. The ally's car
 at a time, so the flame takes turns with Protect, Berserk, Stealth and Barrier. Attack and defense
 arrows are separate: `rq.chara.set(iic, { atk_buff = 1 })`.
 
-Raises an error before `rq.battle.install_flame`.
+The first call places the hooks (`rq.battle.install_flame`); before 2.35.0 a call before them
+raised an error.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -195,7 +205,7 @@ and `who = { no = n }` for one card, whoever stands there. A character's def win
 which wins over the one for every card, and replaces it whole: an empty table `{}` for one
 character shows the game's own mark there while the other cards show a mod's icon. A hidden or
 moved mark keeps its place in the game's stack. Up to 64 defs for characters and cards together.
-Needs `rq.battle.install_flame`.
+The first call places the hooks (`rq.battle.install_flame`, needed before 2.35.0).
 
 Raises an error for a bad `who`, a card number that is not 1 to 5 or 11 to 15, a number that is
 no CG, an unknown anim, or a 65th def.
@@ -226,6 +236,9 @@ rq.battle.install_states() -> boolean
 `since 0.31.0`
 
 Lets poison and stun be on one character at once, and ▲ and ▼ of one stat, until the game closes.
+
+It changes the game's rules, so it stays a mod's own choice: `set_state`, which needs it, raises an
+error before it.
 
 Without it the game's own rule stays, where a new state replaces the old. With it: poison does its
 damage on the turn a character only recovers from stun; ▲ and ▼ both apply and cancel out;
@@ -478,7 +491,8 @@ rq.battle.in_ally_select() -> boolean
 
 Returns whether an ally is choosing a skill.
 
-It is true while `T_BattleSelect@select` is waiting. Needs `rq.battle.install`.
+It is true while `T_BattleSelect@select` is waiting. The first call places the hooks
+(`rq.battle.install`): a select that was already open then is not seen.
 
 | Returns | Type | Description |
 | --- | --- | --- |
@@ -494,7 +508,8 @@ rq.battle.actor() -> rq.BattleActor|nil
 
 Returns the ally choosing a skill.
 
-Needs `rq.battle.install`.
+The first call places the hooks (`rq.battle.install`): a select that was already open then is not
+seen.
 
 | Returns | Type | Description |
 | --- | --- | --- |
@@ -654,15 +669,14 @@ Returns a copy of what the fight screen shows.
 rq.battle.on_select_key(fn) -> fun()
 ```
 
-`since 0.2.0` `changed 0.14.0` `changed 0.23.0`
+`since 0.2.0` `changed 0.14.0` `changed 0.23.0` `changed 2.35.0`
 
 Calls `fn` for each key pressed while an ally chooses a skill.
 
 Return a skill number (or `{ skill = n }`) to choose that skill, or nil to let the game handle the
-key. Callbacks run in load order until one names a skill. Needs `rq.battle.install`.
+key. Callbacks run in load order until one names a skill.
 
 ```lua
-rq.battle.install()
 rq.battle.on_select_key(function(ctx)
   if ctx.key ~= 32 then return nil end
   local a = rq.battle.actor()
@@ -681,6 +695,8 @@ end)
 > Changed in 0.14.0: Every mod's callback runs until one names a skill (before, the last one won).
 
 > Changed in 0.23.0: Returns a remover.
+
+> Changed in 2.35.0: Places its hooks itself; before, it needed `rq.battle.install`.
 
 ### rq.battle.on_start
 

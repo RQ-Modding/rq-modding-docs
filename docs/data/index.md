@@ -15,6 +15,7 @@ The game's numbers, with the [`rq.ids`](../reference/api/rq.ids.md) key and the 
 | [Map kinds](map-kinds.md) | 22 | map kinds (`◆ＭＡＰ基礎型`): the look of a quest's area, as in `rq.dungeon.on_area`'s `ctx.kind`. The game names none; these names are ours, after the picture the game gives each kind |
 | [Monsters](monsters.md) | 372 | monster numbers, as `rq.battle.start` takes them and `rq.battle.snap()` gives them (`enemies[i].no`) |
 | [Music](music.md) | 59 | music track numbers, as `rq.music.replace` and `rq.music.play` take them and `rq.music.current()` gives them |
+| [Party states](party-states.md) | 5 | where a character is (`登録状態`), as `rq.party.state` and `rq.chara.get(iic).state` give it and `rq.party.roster` takes it. The game names none; these names are ours, after its functions `キャラ_スタメン` to `キャラ_２軍` |
 | [Quests](quests.md) | 199 | quest numbers, as in `rq.quests()` and `rq.quests.start` |
 | [Races](races.md) | 16 | races (`種族`), as in `rq.chara.get(iic).race` and the damage hooks' `ctx.race` |
 | [Skills](skills.md) | 486 | skill numbers, as in `rq.skill.get` |

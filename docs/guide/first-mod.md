@@ -1,7 +1,8 @@
 # Your first mod
 
 This page builds a small mod step by step: text on the screen, a key on the debug menu, a change to
-a skill's hover text, a line in the log for every skill an ally uses, and a value kept with the save. You need RQ MOD installed
+a skill's hover text, a line in the log for every skill an ally uses, a value kept with the save,
+and a setting the player changes in Config. You need RQ MOD installed
 ([Install](install.md)) and a text editor; [Editor setup](editor-setup.md) adds completion for every
 `rq.*` call.
 
@@ -24,13 +25,13 @@ mods/
   "name": "Hello Mod",
   "author": "You",
   "version": "1.0.0",
-  "loader": "0.25.0"
+  "loader": "2.35.0"
 }
 ```
 
 `loader` is the lowest RQ MOD version that has every call the mod uses. Each entry in the
-[API reference](../reference/index.md) says when it was added (`since`). This mod uses
-`rq.battle.on_use`, added in 0.25.0. All fields are on the [mod.json](manifest.md) page.
+[API reference](../reference/index.md) says when it was added (`since`). The newest call this mod
+uses is `rq.config.settings`, added in 2.35.0. All fields are on the [mod.json](manifest.md) page.
 
 ## 2. Text on the screen
 
@@ -86,7 +87,6 @@ Hold F3 and press 7. Keys 6, F3, `+`, `-` and M belong to the engine.
 status and fight screens:
 
 ```lua
-rq.skill.install()
 rq.skill.on_describe(function(no, text)
   local s = rq.skill.get(no)
   return text .. " (skill " .. no .. ", x" .. s.bairitsu .. ")"
@@ -94,6 +94,9 @@ end)
 ```
 
 Each callback gets the text the one before it left, so several mods can add to the same text.
+
+The first `on_describe` places the hook it needs in the game. Before loader 2.35.0 a mod called
+`rq.skill.install()` first; old mods still do, and it does no harm.
 
 ## 5. Watch a fight
 
@@ -115,8 +118,7 @@ Start a quest and fight. Each ally action adds a line to the log. `ev.user` is a
 
 A mod's variables start over every time the game starts. To keep a value with the save, use
 [`rq.savedata`](../reference/api/rq.savedata.md). It is written when the game saves and comes back
-when the game loads, so loading an older save brings back the older value too. It came in 2.34.0:
-set `loader` in `mod.json` to `2.34.0` to use it.
+when the game loads, so loading an older save brings back the older value too. It came in 2.34.0.
 
 ```lua
 rq.battle.on_end(function()
@@ -126,6 +128,31 @@ end)
 
 For settings, which should not go back with a load, there is `rq.store`. [Data that follows the
 save](save-data.md) tells them apart.
+
+## 7. A setting in Config
+
+`rq.config.settings` adds a page to the **Mods** tab of the game's Config screen, built from a
+list of rows, and keeps what the player picks:
+
+```lua
+local settings = rq.config.settings({
+  title = "Hello Mod",
+  rows = {
+    { kind = "checkbox", key = "greet", label = "Say hello on screen", default = true },
+    { kind = "stepper", key = "size", label = "Text size", min = 12, max = 40, default = 20 },
+  },
+})
+
+rq.on_frame(function()
+  if settings.get("greet") then
+    rq.hud.text(10, 10, "Hello from my mod", { size = settings.get("size") })
+  end
+end)
+```
+
+Open Config, then the Mods tab: the page has a checkbox, a number field and a **Reset** button. The
+values are kept for every save; `keep = "save"` keeps them with the save instead. [A page in
+Config](game-menus.md#a-page-in-config) has every kind of row.
 
 ::: tip Waiting
 To do something later, `rq.after(3000, fn)` calls `fn` three seconds from now. For steps with

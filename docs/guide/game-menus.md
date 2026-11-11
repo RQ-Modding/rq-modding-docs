@@ -7,7 +7,9 @@ by the game itself, instead of a HUD button over the screen. The places so far:
 - **Rance Castle**: a room of the mod's own;
 - the **skill window** (2.17.0): buttons under the Potential Skills list;
 - a character's **status page** (2.20.0): icon buttons in its title row;
-- a quest's **map** (2.32.0): tabs against the map panel, under the area map.
+- a quest's **map** (2.32.0): tabs against the map panel, under the area map;
+- Config's **Mods tab** (1.8.0): a page of the mod's own, and since 2.35.0 a page of settings built
+  from a list.
 
 ## An entry in the SYSTEM menu
 
@@ -221,6 +223,56 @@ game keeps the panel drawn under its Quest Storage screen, so the tabs show ther
 not see them and a click does nothing.
 Loot Preview's Item Previews tab is made this way.
 
+## A page in Config
+
+Once a mod adds a page, the game's Config screen gets a **Mods** tab after Other 2, with the pages
+in a list on the left. For settings, `rq.config.settings` (2.35.0) builds the page from a list of
+rows and keeps the values; the mod draws nothing:
+
+```lua
+local settings
+settings = rq.config.settings({
+  title = "My Mod",
+  rows = {
+    { kind = "checkbox", key = "on", label = "Turn it on", default = true },
+    { kind = "stepper", key = "count", label = "Count", min = 1, max = 99, default = 10,
+      note = "How many each time." },
+    { kind = "slider", key = "volume", label = "Volume", min = 0, max = 1, step = 0.05, default = 0.5 },
+    { kind = "choice", key = "speed", label = "Speed", options = { "Slow", "Fast" }, values = { 0.5, 2 },
+      disabled = function() return not settings.get("on") end },
+    { kind = "input", key = "name", label = "Name", max = 20, placeholder = "A name" },
+  },
+})
+
+settings.on_change(function(key, value, old)
+  rq.log(key, "went from", old, "to", value)
+end)
+```
+
+- **The rows.** `checkbox`, `stepper` (a whole number), `slider`, `choice` (one of `options`,
+  stored as its number or as its entry in `values`) and `input` (a text) keep a value under `key`;
+  `label` (a line of text) and `space` (a gap) keep none. A row may have a `default`, a `note` (dim
+  lines under it), a `tip`, and `disabled`, true or a function asked on every update. The labels
+  line up in one column (`label_w` sets its width).
+- **Reset.** A button under the rows puts every value back to its default; `reset = false` leaves
+  it out. A `draw(ui, box)` adds more after it, as on a page of the mod's own.
+- **Where the values are kept.** In [`rq.store.global`](../reference/api/rq.store.md) by default, the
+  same for every profile; `keep = "profile"` keeps them in `rq.store`, the profile's, and
+  `keep = "save"` in [`rq.savedata`](save-data.md), the save's, with the rows greyed until a save is
+  loaded. The key is the row's `key`, so a mod that drew its own page keeps its players' settings
+  when it switches, as Morurun Items, Kaoru Quincy QoL, Custom TADA Mode and Game Speed did.
+- **The object.** `settings.get(key)` gives the value; a stored value the row cannot take (a number
+  past `max` after the mod lowered it) reads as the default. `set(key, value)` changes it as the page
+  would, `on_change(fn)` runs on every change (the page, `set`, Reset) and returns a remover, and
+  `reset()` is the button.
+- **Mistakes raise an error at the call**: an unknown `kind`, a value row with no key or a key used
+  twice, a default the row cannot take.
+- **Agents** see the widgets by their row's `id`, default the key: `check-on`, `stepper-count`,
+  `slider-volume`, `check-speed-2`, `input-name` and `button-reset`.
+
+A page that is more than settings is `rq.config.page`, with a `draw(ui, box)` that draws it with
+[`rq.uikit`](../reference/api/rq.uikit.md) on every update.
+
 ## The game's dialogs
 
 Since loader 2.19.0 a mod asks the player with the game's own dialog window, the one of its Save?,
@@ -269,4 +321,5 @@ Morurun Items and Gem Lady Trade ask this way.
 
 See [`rq.gamebutton`](../reference/api/rq.gamebutton.md), [`rq.skilllist`](../reference/api/rq.skilllist.md),
 [`rq.statuspage`](../reference/api/rq.statuspage.md), [`rq.castle`](../reference/api/rq.castle.md),
+[`rq.config`](../reference/api/rq.config.md),
 [`rq.ui`](../reference/api/rq.ui.md) and [`rq.uikit`](../reference/api/rq.uikit.md) for every field.

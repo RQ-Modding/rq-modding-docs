@@ -6,9 +6,10 @@ money and charisma ([`rq.game`](../reference/api/rq.game.md)), random fights on 
 ([`rq.chara.add_exp`](../reference/api/rq.chara.md#rqcharaadd_exp), `level_up` and `on_level_up`),
 and timers and jobs that wait ([`rq.after`](../reference/api/rq.md#rqafter), `rq.every`,
 `rq.spawn`, `rq.wait`). A fight's gold and EXP came in 2.34.0
-([`rq.battle.on_reward`](../reference/api/rq.battle.md#rqbattleon_reward)). Each example on this
-page is a whole `init.lua`; set `loader` to `2.33.0` in its `mod.json`, or `2.34.0` for the fight
-rewards.
+([`rq.battle.on_reward`](../reference/api/rq.battle.md#rqbattleon_reward)), and where each
+character is and the game's heals in 2.35.0 ([`rq.party`](../reference/api/rq.party.md)). Each
+example on this page is a whole `init.lua`; set `loader` to `2.33.0` in its `mod.json`, `2.34.0`
+for the fight rewards, or `2.35.0` for the party.
 
 All of these read or change the game, so call them from a callback or `rq.on_frame`, not at the
 top level of `init.lua` ([When code runs](sandbox.md#when-code-runs)). `rq.encounters.hold` and the
@@ -235,6 +236,40 @@ rq.debug.action({
 The times are real milliseconds: `rq.speed` does not change them. Timers and jobs go on after a
 load or the title; cancel them in [`rq.on_reset`](../reference/api/rq.md#rqon_reset) when they
 belong to one save. `rq.wait` and `rq.wait_until` work only inside a job from `rq.spawn`.
+
+## The party
+
+`rq.party.get()` gives the five ranks. `rq.party.roster()` gives every recruited character with
+where it is (`state`), its HP and its status, and `rq.party.roster(state)` only those in one place.
+The places are named in `rq.ids.party_state`: `PARTY` (one of the five ranks), `RESERVE` (the first
+army), `USED` (the first army, switched out in this quest: not placed again until the quest ends,
+when the game puts it back) and `SECOND` (the second army). `rq.party.state(iic)` gives one
+character's, and `rq.party.set_state(iic, state)` moves a character between `RESERVE`, `USED` and
+`SECOND`; into the party is `rq.party.set`.
+
+`rq.party.heal()` heals the five ranks as the game's springs do, with `skills = true` the skill
+uses too, `half = true` up to half the HP, and `all = true` everyone recruited. Like the game, it
+leaves a downed character (`status` 3, `rq.ids.state.DOWNED`) as it is; set its status to 0 first
+to raise it. `rq.chara.heal(iic)` heals one character.
+
+A key on the debug menu that raises the downed to 1 HP and heals everyone:
+
+```lua
+rq.debug.action({
+  id = "heal-all",
+  label = "Heal everyone",
+  key = "8",
+  onPress = function()
+    for _, m in ipairs(rq.party.roster()) do
+      if m.status == rq.ids.state.DOWNED then rq.chara.set(m.iic, { status = 0, hp = 1 }) end
+    end
+    rq.log("healed", rq.party.heal({ all = true, skills = true }))
+  end,
+})
+```
+
+HP and the status are `rq.chara.get(iic).hp`, `hp_max` and `status`, and `rq.chara.set` writes
+them. The older `rq.orb` calls do the same and stay.
 
 ## Not yet
 

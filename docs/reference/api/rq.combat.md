@@ -7,14 +7,13 @@ Changes physical damage, accuracy and criticals.
 Physical attacks keep the game's own path: defense, variance, cap, then the usual multipliers. Lua
 can replace the attack before defense, scale the final damage, add to the hit chance at the same
 place as the game's own -5 and -10 for some skills, and force or deny a critical. The callbacks
-need `rq.combat.install` (or `rq.chara.install`), and hold up to 16 each.
+hold up to 16 each, and the first one places the hooks (`rq.combat.install`, needed before 2.35.0).
 
 They also run when the game works out the battle forecast, so the forecast shows what they
 change; `ctx.forecast` is then true (since 2.26.0), and a callback that counts hits or rolls dice
 should do nothing.
 
 ```lua
-rq.combat.install()
 rq.combat.on_physical(function(ctx)
   if ctx.race == 8 then return nil, 50 end  -- half damage to a hanny
 end)
@@ -32,17 +31,22 @@ end)
 rq.combat.install() -> boolean
 ```
 
-`since 0.2.0`
+`since 0.2.0` `changed 2.35.0`
 
 Installs the hooks the combat callbacks need.
 
 It is the same call as `rq.chara.install`; calling either again does nothing more.
+
+Not needed since 2.35.0: each call that needs it places it the first time, and raises this
+call's error there when it cannot. Calling it still does no harm.
 
 Raises an error when the AIN is not loaded or a hook cannot be placed.
 
 | Returns | Type | Description |
 | --- | --- | --- |
 | `ok` | `boolean` | Always true; a failure raises an error. |
+
+> Changed in 2.35.0: Not needed: the callbacks make it.
 
 ## Events
 

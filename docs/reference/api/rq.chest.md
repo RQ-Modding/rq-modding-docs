@@ -9,7 +9,6 @@ thief or Chest Opening can raise), and a fail explodes (12% damage) and loses th
 patches only that roll, so Lua can change the chance, for instance to add pity.
 
 ```lua
-rq.chest.install()
 rq.chest.on_attempt(function(info)
   return math.min(100, info.base_pct + (rq.chest.get("pity") or 0))
 end)
@@ -33,15 +32,18 @@ end)
 rq.chest.install() -> boolean
 ```
 
-`since 0.2.0`
+`since 0.2.0` `changed 2.35.0`
 
 Patches the red chest's roll.
 
-Calling it again, or after `rq.loot.install`, does nothing more.
+Not needed since 2.35.0: each call that needs it places it the first time, and raises this
+call's error there when it cannot. Calling it still does no harm.
 
 | Returns | Type | Description |
 | --- | --- | --- |
 | `ok` | `boolean` | true when the patch is in place. |
+
+> Changed in 2.35.0: Not needed: `on_attempt` and `on_result` make it.
 
 ### rq.chest.get
 
@@ -91,13 +93,13 @@ Keeps a number for this session.
 rq.chest.on_attempt(fn) -> fun()
 ```
 
-`since 0.2.0` `changed 0.14.0` `changed 0.23.0`
+`since 0.2.0` `changed 0.14.0` `changed 0.23.0` `changed 2.35.0`
 
 Calls `fn` just before a red chest rolls, to set the chance.
 
 Each callback sees the percent the one before left in `info.pct`; nil keeps it. With no callback the
 chance is `info.base_pct`, not 100. The chance is written to `成功確率` and to the "(N% chance to
-disarm)" line before that choice shows. Up to 16 callbacks.
+disarm)" line before that choice shows. Up to 16 callbacks. The first call patches the roll.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -111,17 +113,19 @@ disarm)" line before that choice shows. Up to 16 callbacks.
 
 > Changed in 0.23.0: Returns a remover.
 
+> Changed in 2.35.0: Patches the roll itself; before, it needed `rq.chest.install`.
+
 ### rq.chest.on_result
 
 ```lua
 rq.chest.on_result(fn) -> fun()
 ```
 
-`since 0.2.0` `changed 0.14.0` `changed 0.23.0`
+`since 0.2.0` `changed 0.14.0` `changed 0.23.0` `changed 2.35.0`
 
 Calls `fn` after a red chest rolled.
 
-Up to 16 callbacks.
+Up to 16 callbacks. The first call patches the roll.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -134,3 +138,5 @@ Up to 16 callbacks.
 > Changed in 0.14.0: Every mod's callback runs.
 
 > Changed in 0.23.0: Returns a remover.
+
+> Changed in 2.35.0: Patches the roll itself; before, it needed `rq.chest.install`.

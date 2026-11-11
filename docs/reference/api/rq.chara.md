@@ -1,6 +1,6 @@
 # rq.chara
 
-`since 0.2.0` `changed 0.4.0`
+`since 0.2.0` `changed 0.4.0` `changed 2.35.0`
 
 Reads and changes characters: their skills, stats, the skill buy list, and the roster.
 
@@ -10,13 +10,17 @@ The calls work on a roster slot, the `iic` (the `id` of an entry in `rq.units()`
 
 **Skills and the buy list.** `grant`, `rank`, `slots`, `set_slot`, `set_flavor`, `weapon_detail`,
 `apply_mod`, `on_recalc`, `on_offer`, `offers`, `set_offer`, `set_uses`, `set_bar`, `clear_slot` and
-`max_uses` need `rq.chara.install` first.
+`max_uses` place the hooks they need the first time (`rq.chara.install`). Before 2.35.0 they needed
+it first, and without it read 0 and wrote nothing.
 
 **Roster.** `define` registers a template; the character exists, and joins the player's roster,
 only when `recruit` runs, so a mod can give it from a quest or an event. `recruit` also works for
 base-game characters. A text id such as `"mymod:alice"` becomes a number from 1000 up, the same
 number every time, so saves stay valid. The roster has 181 slots (20 to 200). The roster calls
 install what they need on first use.
+
+**HP and heals.** `get` and `set` read and write `hp`, `hp_max` and `status`; `heal` is the
+game's own heal. Where a character is (the party, the reserve) is `rq.party`'s.
 
 ```lua
 -- Create now, provide later
@@ -64,6 +68,7 @@ rq.chara.edit(62, { init = { eva = 50, spd = 25 }, learn = { { id = 246, n = 2 }
 | [`rq.chara.set`](#rqcharaset) | Writes character fields by the names `rq.chara.get` uses. |
 | [`rq.chara.skill_points`](#rqcharaskill_points) | Returns a character's free skill points. |
 | [`rq.chara.add_skill_points`](#rqcharaadd_skill_points) | Adds to a character's free skill points. |
+| [`rq.chara.heal`](#rqcharaheal) | Heals one character as the game does: HP to the most, and with `skills` the skill uses too. |
 | [`rq.chara.forget`](#rqcharaforget) | Removes a skill from a character (`ＣＳ削除`). |
 | [`rq.chara.add_exp`](#rqcharaadd_exp) | Gives a character EXP, as a fight's result does, and the levels it fills. |
 | [`rq.chara.level_up`](#rqcharalevel_up) | Raises a character's level for free, as the game's story and training do. |
@@ -74,23 +79,24 @@ rq.chara.edit(62, { init = { eva = 50, spd = 25 }, learn = { { id = 246, n = 2 }
 rq.chara.install() -> boolean
 ```
 
-`since 0.2.0`
+`since 0.2.0` `changed 2.35.0`
 
 Installs the hooks the skill and buy-list calls need.
 
 It hooks the end of `Ｃ再計算` (the recalculation, after the game's own spear rewrite) and of
 `Ｔ購入スキル登録` (the buy list), and the combat sites `rq.combat` uses. Calling it again, or after
-`rq.combat.install`, does nothing more. Call it at the top of `init.lua`.
+`rq.combat.install`, does nothing more.
+
+Not needed since 2.35.0: each call that needs it places it the first time, and raises this
+call's error there when it cannot. Calling it still does no harm.
 
 Raises an error when the AIN is not loaded or a hook cannot be placed (the reason is in the log).
-
-```lua
-rq.chara.install()
-```
 
 | Returns | Type | Description |
 | --- | --- | --- |
 | `ok` | `boolean` | Always true; a failure raises an error. |
+
+> Changed in 2.35.0: Not needed: the calls that need it make it.
 
 ### rq.chara.grant
 
@@ -681,6 +687,36 @@ Raises an error for a slot with no character.
 | --- | --- | --- |
 | `total` | `integer` | The new total, never below 0. |
 
+### rq.chara.heal
+
+```lua
+rq.chara.heal(iic, opts) -> boolean
+```
+
+`since 2.35.0`
+
+Heals one character as the game does: HP to the most, and with `skills` the skill uses too.
+
+A downed character is left as it is, as in the game's party heals; set its `status` to 0 with
+`rq.chara.set` first to raise it.
+
+Raises an error for a slot with no character, or for `all` (that is `rq.party.heal`'s).
+
+```lua
+if rq.chara.heal(iic, { skills = true }) then rq.log("healed") end
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `iic` | `integer` | The roster slot. |
+| `opts` *(optional)* | `{skills?: boolean, half?: boolean}` | `skills` fills the skill uses; `half` heals up to half the most HP. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `healed` | `boolean` | false for a downed character. |
+
+See also: [`rq.party.heal`](rq.party.md#rqpartyheal)
+
 ### rq.chara.forget
 
 ```lua
@@ -793,11 +829,11 @@ See also: [`rq.chara.add_exp`](rq.chara.md#rqcharaadd_exp)
 rq.chara.on_recalc(fn) -> fun()
 ```
 
-`since 0.2.0` `changed 0.14.0` `changed 0.23.0`
+`since 0.2.0` `changed 0.14.0` `changed 0.23.0` `changed 2.35.0`
 
 Calls `fn` after the game recalculates a character (`Ｃ再計算`).
 
-Needs `rq.chara.install`. Up to 16 callbacks in all.
+Up to 16 callbacks in all.
 
 ```lua
 rq.chara.on_recalc(function(iic)
@@ -817,6 +853,8 @@ end)
 
 > Changed in 0.23.0: Returns a remover.
 
+> Changed in 2.35.0: Places its hook itself; before, it needed `rq.chara.install`.
+
 ### rq.chara.on_offer
 
 ```lua
@@ -828,7 +866,7 @@ rq.chara.on_offer(fn) -> fun()
 Calls `fn` after the game filled a character's skill buy list, to add rows.
 
 `fn` returns nil, one `rq.Offer`, or a list of them. Each row goes through the game's own level
-check (`スキルレベル制限表示`). Needs `rq.chara.install`. Up to 16 callbacks in all.
+check (`スキルレベル制限表示`). Up to 16 callbacks in all. Since 2.35.0 it places its hook itself.
 
 ```lua
 rq.chara.on_offer(function(ctx)

@@ -12,4 +12,4 @@ A widget's tip: what `rq.uikit.comment` shows, and where.
 
 ## Used by
 
-[`rq.UiPlace`](rq.UiPlace.md), [`rq.uikit.choice`](../api/rq.uikit.md#rquikitchoice), [`rq.uikit.list`](../api/rq.uikit.md#rquikitlist), [`rq.uikit.quest_list`](../api/rq.uikit.md#rquikitquest_list), [`rq.uikit.sort`](../api/rq.uikit.md#rquikitsort), [`rq.uikit.tabs`](../api/rq.uikit.md#rquikittabs)
+[`rq.SettingsRow`](rq.SettingsRow.md), [`rq.UiPlace`](rq.UiPlace.md), [`rq.uikit.choice`](../api/rq.uikit.md#rquikitchoice), [`rq.uikit.list`](../api/rq.uikit.md#rquikitlist), [`rq.uikit.quest_list`](../api/rq.uikit.md#rquikitquest_list), [`rq.uikit.sort`](../api/rq.uikit.md#rquikitsort), [`rq.uikit.tabs`](../api/rq.uikit.md#rquikittabs)

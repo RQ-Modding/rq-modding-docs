@@ -5,11 +5,10 @@
 Lets the Counter skill (259) work after Ally Guard.
 
 The game sets the Counter rate to 0 inside `ダメージ後計算` when Ally Guard redirected the hit
-(`FA[77]`). `rq.counter.install` patches only that place; the other effects of `FA[77]` and the
-other Counter checks stay as the game has them. Lua decides with `on_guard_counter`.
+(`FA[77]`). The first `on_guard_counter` patches only that place; the other effects of `FA[77]` and
+the other Counter checks stay as the game has them. Lua decides with `on_guard_counter`.
 
 ```lua
-rq.counter.install()
 rq.counter.on_guard_counter(function(ctx)
   return ctx.guarded == true
 end)
@@ -27,15 +26,20 @@ end)
 rq.counter.install() -> boolean
 ```
 
-`since 0.2.0`
+`since 0.2.0` `changed 2.35.0`
 
 Installs the patch `on_guard_counter` needs.
+
+Not needed since 2.35.0: each call that needs it places it the first time, and raises this
+call's error there when it cannot. Calling it still does no harm.
 
 Raises an error when the AIN is not loaded or the patch cannot be placed.
 
 | Returns | Type | Description |
 | --- | --- | --- |
 | `ok` | `boolean` | Always true; a failure raises an error. |
+
+> Changed in 2.35.0: Not needed: `on_guard_counter` makes it.
 
 ## Events
 
@@ -49,12 +53,12 @@ Raises an error when the AIN is not loaded or the patch cannot be placed.
 rq.counter.on_guard_counter(fn) -> fun()
 ```
 
-`since 0.2.0` `changed 0.14.0` `changed 0.23.0`
+`since 0.2.0` `changed 0.14.0` `changed 0.23.0` `changed 2.35.0`
 
 Calls `fn` when the game would clear the Counter rate after Ally Guard.
 
 One callback returning true keeps the rate. With no callback, the game's rule stays. Up to 16
-callbacks in all.
+callbacks in all. The first call places the patch.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -67,3 +71,5 @@ callbacks in all.
 > Changed in 0.14.0: Every mod's callback runs, and one true keeps the rate (before, the last one won).
 
 > Changed in 0.23.0: Returns a remover.
+
+> Changed in 2.35.0: Places the patch itself; before, it needed `rq.counter.install`.

@@ -15,7 +15,7 @@ for the game's own characters it writes them again first, so use `rq.chara.edit`
 | `short` | `string` | The short name. |
 | `face_name` | `string` | The face CG text. |
 | `no` | `integer` | The character number. |
-| `state` | `integer` | Where the character is (`登録状態`): 1 party, 2 reserve, 4 second string. |
+| `state` | `integer` | Where the character is (`登録状態`, `rq.ids.party_state`): 0 not recruited, 1 in the party, 2 the first army, 3 the first army used in this quest (switched out: not placed again until it ends), 4 the second army. `rq.party.set_state` moves a character between 2, 3 and 4. |
 | `guest` | `integer` | Non-zero for a guest. |
 | `locked` | `integer` | Non-zero when the character cannot be removed. |
 | `face` | `integer` | The face CG number. |
@@ -56,7 +56,7 @@ for the game's own characters it writes them again first, so use `rq.chara.edit`
 | `model` | `integer` | The 3D model. |
 | `boss` | `integer` | Non-zero for a boss. |
 | `weakness_known` | `boolean` | The player knows the weakness. |
-| `status` | `integer` | Battle state: the status change, 1 poison, 0 none. Since 0.5.0. |
+| `status` | `integer` | The status change (`状態変化`, `rq.ids.state`): 0 none, 1 poison, 2 stun, 3 downed. It lasts past a fight: the game's heals leave a downed character as it is. Since 0.5.0. |
 | `guard` | `integer` | Battle state: guard rate. Since 0.5.0. |
 | `stealth` | `integer` | Battle state: stealth rate. Since 0.5.0. |
 | `berserk` | `integer` | Battle state: berserk. Since 0.5.0. |

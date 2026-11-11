@@ -57,10 +57,11 @@ local no = rq.ids.find("skill", "Spear Knowledge")  -- from a config file or a p
 | `map_kind` | `rq.IdsMapKind` | Map kinds by name; each key is in the docs' Map kinds table (Game data). Since 2.24.0. |
 | `monster` | `rq.IdsMonster` | Monsters by name; each key is in the docs' Monsters table (Game data). Since 1.16.0. |
 | `music` | `rq.IdsMusic` | Music tracks by name; each key is in the docs' Music table (Game data). Since 2.4.0. |
+| `party_state` | `rq.IdsPartyState` | Where a character is (`登録状態`) by name: NONE, PARTY, RESERVE, USED, SECOND; each key is in the docs' Party states table (Game data). Since 2.35.0. |
 | `quest` | `rq.IdsQuest` | Quests by name; each key is in the docs' Quests table (Game data). |
 | `race` | `rq.IdsRace` | Races by name; each key is in the docs' Races table (Game data). Since 1.16.0. |
 | `skill` | `rq.IdsSkill` | Skills by name; each key is in the docs' Skills table (Game data). |
-| `state` | `rq.IdsState` | States by name; each key is in the docs' States table (Game data). |
+| `state` | `rq.IdsState` | Status changes (`状態変化`) by name: NONE, POISON, STUN, DOWNED; each key is in the docs' States table (Game data). |
 | `target` | `rq.IdsTarget` | Skill targets by name; each key is in the docs' Skill targets table (Game data). Since 1.16.0. |
 
 ## Functions

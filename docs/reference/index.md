@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.34.0.
+Loader version 2.35.0.
 
 ## Namespaces
 
@@ -141,7 +141,8 @@ Loader version 2.34.0.
 | [`rq.Offer`](types/rq.Offer.md) | A row `rq.chara.on_offer` adds to the skill buy list. |
 | [`rq.OfferCtx`](types/rq.OfferCtx.md) | What `rq.chara.on_offer` gets for the character whose buy list the game just filled. |
 | [`rq.OfferRow`](types/rq.OfferRow.md) | A row of the skill buy list, from `rq.chara.offers`. |
-| [`rq.OrbMember`](types/rq.OrbMember.md) | A roster member, from `rq.orb.roster`. |
+| [`rq.OrbMember`](types/rq.OrbMember.md) | A roster member, from `rq.orb.roster`. `rq.party.roster` gives the same with `hp_max` and `status`. |
+| [`rq.PartyMember`](types/rq.PartyMember.md) | A recruited character, from `rq.party.roster`. |
 | [`rq.PhysicalCtx`](types/rq.PhysicalCtx.md) | What `rq.combat.on_physical` gets for one physical hit. |
 | [`rq.Quest`](types/rq.Quest.md) | A quest, from `rq.quests()`. |
 | [`rq.QuestClearCtx`](types/rq.QuestClearCtx.md) | What an `rq.quests.on_clear` callback gets. |
@@ -157,6 +158,9 @@ Loader version 2.34.0.
 | [`rq.SceneChoice`](types/rq.SceneChoice.md) | One row of `rq.scene.choice`. |
 | [`rq.SceneRow`](types/rq.SceneRow.md) | One row of `rq.sprite.scene`. |
 | [`rq.SceneTextOpts`](types/rq.SceneTextOpts.md) | How `rq.scene.say`, `think` and `narrate` show a line. |
+| [`rq.Settings`](types/rq.Settings.md) | A settings page's values, from `rq.config.settings`. |
+| [`rq.SettingsOpts`](types/rq.SettingsOpts.md) | What `rq.config.settings` takes. |
+| [`rq.SettingsRow`](types/rq.SettingsRow.md) | One row of a settings page, for `rq.config.settings`. |
 | [`rq.SkillBrief`](types/rq.SkillBrief.md) | A skill as `rq.units()` lists it. |
 | [`rq.SkillInfo`](types/rq.SkillInfo.md) | What `rq.skill.get` returns. |
 | [`rq.SkillListCtx`](types/rq.SkillListCtx.md) | What `rq.skilllist.on_page` gets. |

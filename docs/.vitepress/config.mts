@@ -78,6 +78,7 @@ const data: DefaultTheme.SidebarItem[] = [
       { text: 'Map kinds', link: '/data/map-kinds' },
       { text: 'Monsters', link: '/data/monsters' },
       { text: 'Music', link: '/data/music' },
+      { text: 'Party states', link: '/data/party-states' },
       { text: 'Quests', link: '/data/quests' },
       { text: 'Races', link: '/data/races' },
       { text: 'Skills', link: '/data/skills' },

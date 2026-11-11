@@ -1,6 +1,6 @@
 # rq.skill
 
-`since 0.2.0`
+`since 0.2.0` `changed 2.35.0`
 
 Reads, defines and patches skills, and rewrites their hover text.
 
@@ -8,11 +8,14 @@ Skill numbers run 1 to 1000; the game's end near 600. A text id such as `"mymod:
 stable number from 700 to 999. Strings are UTF-8 in Lua. The calls that write raise an error for a
 number outside 1 to 1000. Up to 128 `define` and `patch` calls in all.
 
+Since 2.35.0 each call places the hooks it needs the first time (`rq.skill.install`): before, a
+`define` or `patch` without it was never applied, and `get` gave empty names.
+
 ## Functions
 
 | Name | Summary |
 | --- | --- |
-| [`rq.skill.install`](#rqskillinstall) | Wraps `スキル_説明文１`, the hover text on the status and fight screens, so `on_describe` can rewrite it. |
+| [`rq.skill.install`](#rqskillinstall) | Wraps `スキル_説明文１`, the hover text on the status and fight screens, so `on_describe` can rewrite it, and the game's skill list at boot, so `define` and `patch` are applied. |
 | [`rq.skill.get`](#rqskillget) | Returns a skill's fields. |
 | [`rq.skill.define`](#rqskilldefine) | Defines a new skill. |
 | [`rq.skill.patch`](#rqskillpatch) | Changes an existing skill, field by field. |
@@ -24,14 +27,19 @@ number outside 1 to 1000. Up to 128 `define` and `patch` calls in all.
 rq.skill.install() -> boolean
 ```
 
-`since 0.2.0`
+`since 0.2.0` `changed 2.35.0`
 
 Wraps `スキル_説明文１`, the hover text on the status and fight screens, so `on_describe` can rewrite
-it.
+it, and the game's skill list at boot, so `define` and `patch` are applied.
+
+Not needed since 2.35.0: each call that needs it places it the first time, and raises this
+call's error there when it cannot. Calling it still does no harm.
 
 | Returns | Type | Description |
 | --- | --- | --- |
 | `ok` | `boolean` | true when the patch is in place. |
+
+> Changed in 2.35.0: Not needed: every `rq.skill` call makes it.
 
 ### rq.skill.get
 
@@ -140,14 +148,13 @@ It wraps `compSkill`.
 rq.skill.on_describe(fn) -> fun()
 ```
 
-`since 0.2.0` `changed 0.14.0` `changed 0.23.0`
+`since 0.2.0` `changed 0.14.0` `changed 0.23.0` `changed 2.35.0`
 
 Calls `fn` for a skill's hover text, to rewrite it.
 
-Each callback gets the text the one before left. Needs `rq.skill.install`. Up to 16 callbacks.
+Each callback gets the text the one before left. Up to 16 callbacks.
 
 ```lua
-rq.skill.install()
 rq.skill.on_describe(function(no, text)
   local s = rq.skill.get(no)
   return text .. " (x" .. s.bairitsu .. ")"
@@ -165,3 +172,5 @@ end)
 > Changed in 0.14.0: Every mod's callback runs.
 
 > Changed in 0.23.0: Returns a remover.
+
+> Changed in 2.35.0: Wraps the hover text itself; before, it needed `rq.skill.install`.
