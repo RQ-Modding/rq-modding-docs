@@ -44,6 +44,7 @@ const guide: DefaultTheme.SidebarItem[] = [
       { text: 'mod.json', link: '/guide/manifest' },
       { text: 'What a mod can reach', link: '/guide/sandbox' },
       { text: 'Numbers and ids', link: '/guide/ids' },
+      { text: 'Gold, encounters and levels', link: '/guide/game-state' },
       { text: "The game's own code", link: '/guide/game-code' },
       { text: 'Pictures', link: '/guide/pictures' },
       { text: 'Replacing music', link: '/guide/music' },

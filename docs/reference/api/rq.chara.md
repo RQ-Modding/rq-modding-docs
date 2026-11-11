@@ -65,6 +65,8 @@ rq.chara.edit(62, { init = { eva = 50, spd = 25 }, learn = { { id = 246, n = 2 }
 | [`rq.chara.skill_points`](#rqcharaskill_points) | Returns a character's free skill points. |
 | [`rq.chara.add_skill_points`](#rqcharaadd_skill_points) | Adds to a character's free skill points. |
 | [`rq.chara.forget`](#rqcharaforget) | Removes a skill from a character (`ＣＳ削除`). |
+| [`rq.chara.add_exp`](#rqcharaadd_exp) | Gives a character EXP, as a fight's result does, and the levels it fills. |
+| [`rq.chara.level_up`](#rqcharalevel_up) | Raises a character's level for free, as the game's story and training do. |
 
 ### rq.chara.install
 
@@ -703,6 +705,78 @@ Raises an error for a slot with no character.
 | `removed` | `boolean` | false when the character did not have the skill. |
 | `cost` | `integer?` | The skill points the character had paid for it. |
 
+### rq.chara.add_exp
+
+```lua
+rq.chara.add_exp(iic, n) -> integer
+```
+
+`since 2.33.0`
+
+Gives a character EXP, as a fight's result does, and the levels it fills.
+
+The EXP is added, then the character goes up one level each time the bar is full, with the game's
+own level-up (`キャラ_レベルアップ`): the stats grow, skill points come, the bar's EXP is used,
+and what is left carries over to the next level. EXP over the last level's bar is cut to that bar.
+A character at the highest level (`level_max` in `rq.chara.get`; none for a character with
+`uncapped`) gets nothing, as in the game, and so does Athena 2.0 (character 27), whom the game
+keeps at level 1. A character at 0 HP gets the EXP but no level, since the game's level-up wants
+HP: the bar stays full (EXP over it is cut) and the level comes with the next EXP once the
+character has HP. `rq.chara.on_level_up` runs for each level, with `free` false.
+
+Raises an error for a slot with no character, for an amount that is not a whole number of 0 or
+more, and at the top level of a mod.
+
+```lua
+local iic = rq.party.get()[1]
+local gained = rq.chara.add_exp(iic, 500)
+rq.log("levels gained: " .. gained)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `iic` | `integer` | The character's roster slot. |
+| `n` | `integer` | The EXP to add, 0 or more. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `gained` | `integer` | The levels gained; 0 at the cap. |
+
+See also: [`rq.chara.level_up`](rq.chara.md#rqcharalevel_up)
+
+### rq.chara.level_up
+
+```lua
+rq.chara.level_up(iic, n) -> integer
+```
+
+`since 2.33.0`
+
+Raises a character's level for free, as the game's story and training do.
+
+Uses the game's free level-up (`レベルアップ処理`): the stats grow and the EXP goes back to 0 for
+the new level. It stops at `level_max`, also for a character with `uncapped`, as the game's own
+does, and Athena 2.0 (character 27) stays at level 1. `rq.chara.on_level_up` runs for each level,
+with `free` true.
+
+Raises an error for a slot with no character, for a count that is not a whole number of 1 or
+more, and at the top level of a mod.
+
+```lua
+rq.chara.level_up(iic, 5)  -- five levels, or fewer at the cap
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `iic` | `integer` | The character's roster slot. |
+| `n` *(optional)* | `integer` | The levels to add, 1 or more. Default 1. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `gained` | `integer` | The levels gained; fewer than `n` at the cap. |
+
+See also: [`rq.chara.add_exp`](rq.chara.md#rqcharaadd_exp)
+
 ## Events
 
 | Name | Summary |
@@ -711,6 +785,7 @@ Raises an error for a slot with no character.
 | [`rq.chara.on_offer`](#rqcharaon_offer) | Calls `fn` after the game filled a character's skill buy list, to add rows. |
 | [`rq.chara.on_create`](#rqcharaon_create) | Calls `fn` after any character is created (`Ｃ生成`), base game or mod. |
 | [`rq.chara.on_forget`](#rqcharaon_forget) | Calls `fn` before a skill row is emptied, to give skill points back. |
+| [`rq.chara.on_level_up`](#rqcharaon_level_up) | Calls `fn` after a character goes up a level, whatever gave it. |
 
 ### rq.chara.on_recalc
 
@@ -824,3 +899,31 @@ end)
 | `remove` | `fun()` | Removes this callback. |
 
 > Changed in 0.23.0: Returns a remover.
+
+### rq.chara.on_level_up
+
+```lua
+rq.chara.on_level_up(fn) -> fun()
+```
+
+`since 2.33.0`
+
+Calls `fn` after a character goes up a level, whatever gave it.
+
+It runs for the game's level-ups (a fight's result, the story, training, the reserve's share) and
+for `rq.chara.add_exp` and `level_up`, once per level. The game shows its own level-up on the
+result screen; this only tells a mod. An error is logged once for each new error text.
+
+```lua
+rq.chara.on_level_up(function(ctx)
+  if ctx.level % 10 == 0 then rq.chara.add_skill_points(ctx.iic, 1) end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(ctx:` [`rq.LevelUpCtx`](../types/rq.LevelUpCtx.md) `)` | Runs after each level. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |

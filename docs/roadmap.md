@@ -5,6 +5,9 @@ moves to the [Changelog](changelog.md).
 
 ## Planned
 
+- **The first public release.** The engine's release zip on GitHub, with a short install note, each
+  mod in its own repository with its own release zip, the mod template as a template repository,
+  and this site online.
 - **More names.** `rq.ids` (1.15.0) names characters, classes, items, quests, skills and states.
   1.16.0 adds monsters, races, character types, elements, item kinds and skill targets, 2.4.0
   music tracks, and 2.24.0 map kinds. Still to come: map layouts (many layouts carry several areas'
@@ -19,10 +22,13 @@ moves to the [Changelog](changelog.md).
 
 ### Next
 
-In order of priority: what the mods that exist today would use.
+In order of priority: what the mods that exist today would use, and what a new mod would reach for
+first, so that a simple change never needs the game's code (`rq.ain`).
 
 | Area | What |
 | --- | --- |
+| Battle rewards | The EXP, gold and gold bags of a won fight, after the game's own bonuses, changeable, with the result screen showing the new numbers. |
+| Save data | Data that follows the game's save: loading an older save brings back the mod's older data too. Events when the game saves and loads. |
 | Screens | Since 2.20.1 `rq.ui` lists the footer on every screen that shows it, Rance Castle as the screen `castle` with its rooms, and the town tabs on Quests; since 2.31.0 the Party screen's 2nd Army box (its characters, their STATUS buttons and the places a dragged character is dropped on). When a mod asks: names for Trivia, CG mode, Music mode and the castle's bonus rooms, and the castle's rooms as data in `rq.ui.get`. |
 
 ### Later
@@ -31,7 +37,12 @@ When a mod asks for it, or at low priority.
 
 | Area | What |
 | --- | --- |
-| Battle events | Calls for the places mods hook through `rq.ain` today: the speeds the turn order is built from, with a familiar's own speed and its owner (the most likely to be used: familiar balance, speed states); the stun roll, as `rq.combat.on_crit` is for criticals; each line of the battle log, to skip or change it; and whether TADA mode is on. A character's short name is already `rq.chara.get(iic).short`. |
+| Money, fights and levels | The money and charisma (`rq.game`), random fights (`rq.encounters`), EXP and levels (`rq.chara.add_exp`, `level_up`, `on_level_up`) and timers and jobs that wait (`rq.after`, `rq.every`, `rq.spawn`, `rq.wait`) came in 2.33.0 ([Gold, encounters and levels](guide/game-state.md)). Later: which group or enemies a random fight brings (with the monsters), the 1 in 10 chance once the bar is full, an event on every change of the money, timers on the game's clock (following `rq.speed`), and the charisma bar's flash and sound when a mod adds charisma. |
+| Settings and setup | A mod's Config page built from a list of settings; the `install()` calls done on their own; the party's HP calls under `rq.party` as well as `rq.orb`. |
+| Monsters | Reading a monster's stats and skills, changing them for every fight, and an event when the game builds an enemy (to scale it, say). The game's mode (normal, easy, TADA). `rq.battle.start` with a boss, a background, music and more. |
+| Battle events | Calls for the places mods hook through `rq.ain` today: the speeds the turn order is built from, with a familiar's own speed and its owner (the most likely to be used: familiar balance, speed states); the stun roll, as `rq.combat.on_crit` is for criticals; each line of the battle log, to skip or change it; and whether TADA mode is on. With them: heals, escapes, ambushes, and every counter, not only the one after Ally Guard. A character's short name is already `rq.chara.get(iic).short`. |
+| Enemy choices | What an enemy or a familiar does on its turn: the skill and the target, before the game uses them. |
+| Quests and maps | Every field of a quest, changeable, and the counters of the quest being played; a mod's own objects on a map; traps. Later still: new quests on the game's maps, new monsters, and new maps. |
 | Faces and pictures | Moving faces, standing pictures and backgrounds, and pictures inside the game's Flash files (cut-ins, effects, marks), came in 2.25.0 ([Pictures](guide/pictures.md)). Later: enemies and fight backgrounds (3D models, their textures), moving pictures inside Flash files, a different face per place (as `rq.battle.set_face` does for fights), moving faces where the game paints them into another picture (the turn order). |
 | States | States made by mods came in 2.2.0 (`rq.status`), on the events of 2.1.0; in 2.3.0 a state can down someone at the start of a turn; in 2.26.0 the game's cures and dispels take them, each shows its own number, Persevere, the AUTO button and the battle forecast know them, special skills reach `on_hit`, `immune`, states that last the quest and a `desc` (see [Battle states](guide/states.md)). Later, at low priority: the `desc` on hover with the card's marks side by side. When a mod asks: states kept in the save, the enemies' AI choosing by mod states, states shown between fights, AUTO for a mod's own cure skill. |
 | Dialogs | The game's dialogs over Config came in 2.28.0, with "don't ask again" on `rq.ui.ask`. Later: `rq.ui.choose` over Config (it waits for Config to close), when a mod wants a menu from its page. |

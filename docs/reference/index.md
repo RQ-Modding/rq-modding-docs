@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.32.0.
+Loader version 2.33.0.
 
 ## Namespaces
 
@@ -18,6 +18,8 @@ Loader version 2.32.0.
 | [`rq.counter`](api/rq.counter.md) | Lets the Counter skill (259) work after Ally Guard. |
 | [`rq.debug`](api/rq.debug.md) | Adds rows to the engine's F3 debug menu. |
 | [`rq.dungeon`](api/rq.dungeon.md) | Reads and changes the dungeon: the map, the player's place, objects on it, and the camera. |
+| [`rq.encounters`](api/rq.encounters.md) | Random fights on a quest's map. |
+| [`rq.game`](api/rq.game.md) | The player's money and charisma, as the system bar shows them. |
 | [`rq.gamebutton`](api/rq.gamebutton.md) | Buttons of mods in the game's own menus, made by the game itself. |
 | [`rq.hud`](api/rq.hud.md) | Draws text, boxes and CGs over the game, and reads clicks on them. |
 | [`rq.ids`](api/rq.ids.md) | The game's numbers by name: characters, items, monsters, quests, skills, and the small lists the game names (classes, states, races, character types, elements, item kinds, skill targets). |
@@ -97,6 +99,8 @@ Loader version 2.32.0.
 | [`rq.DungeonArea`](types/rq.DungeonArea.md) | One area of `rq.dungeon.areas()`. |
 | [`rq.DungeonCamera`](types/rq.DungeonCamera.md) | The camera range `rq.dungeon.camera` patches. |
 | [`rq.DungeonInfo`](types/rq.DungeonInfo.md) | Where the party is in a dungeon, from `rq.dungeon.info()`. |
+| [`rq.EncounterCtx`](types/rq.EncounterCtx.md) | What `rq.encounters.on_encounter` callbacks get. |
+| [`rq.EncounterInfo`](types/rq.EncounterInfo.md) | What `rq.encounters.info` returns. |
 | [`rq.FlashBitmap`](types/rq.FlashBitmap.md) | One bitmap of a game Flash file, as `rq.image.flash_bitmaps` lists it. |
 | [`rq.FlashBitmapOpts`](types/rq.FlashBitmapOpts.md) | Options for `rq.image.flash_bitmap`. |
 | [`rq.FlashSound`](types/rq.FlashSound.md) | A sound inside a Flash file, from `rq.sound.flash_info`. |
@@ -118,6 +122,7 @@ Loader version 2.32.0.
 | [`rq.ItemEffect`](types/rq.ItemEffect.md) | One of an item's effects: the game's own code and amount. |
 | [`rq.ItemFindOpts`](types/rq.ItemFindOpts.md) | What `rq.item.find` and `rq.item.count` take. |
 | [`rq.ItemInfo`](types/rq.ItemInfo.md) | What `rq.item.info` returns: an item number's row data, as `rq.uikit.item_data` gives it for an instance, without the fields that belong to one instance (`ii`, `locked`, `place`). The kit's item lists take it as a row. |
+| [`rq.LevelUpCtx`](types/rq.LevelUpCtx.md) | What `rq.chara.on_level_up` callbacks get. |
 | [`rq.LootAdd`](types/rq.LootAdd.md) | An item for `rq.loot.add`. |
 | [`rq.LootItem`](types/rq.LootItem.md) | An item the player will find, from `rq.loot.list`. |
 | [`rq.MagicCtx`](types/rq.MagicCtx.md) | What `rq.combat.on_magic` gets for one spell. |
@@ -153,6 +158,7 @@ Loader version 2.32.0.
 | [`rq.SkillPatch`](types/rq.SkillPatch.md) | Fields for `rq.skill.patch`, named after the game's. |
 | [`rq.SkillSpec`](types/rq.SkillSpec.md) | A new skill for `rq.skill.define`. |
 | [`rq.SoundOpts`](types/rq.SoundOpts.md) | How `rq.sound.play` and `play_flash` play a sound. |
+| [`rq.SpawnHandle`](types/rq.SpawnHandle.md) | What `rq.spawn` returns, to follow or stop the job. |
 | [`rq.Sprite`](types/rq.Sprite.md) | A mod sprite among the game's own, made by `rq.sprite.new`. |
 | [`rq.SpriteAttach`](types/rq.SpriteAttach.md) | What an attached sprite follows. Give one of these. |
 | [`rq.SpriteMotion`](types/rq.SpriteMotion.md) | The values `Sprite:to` moves to, and how. |
@@ -161,6 +167,7 @@ Loader version 2.32.0.
 | [`rq.StatusImmune`](types/rq.StatusImmune.md) | Who cannot take a state, for `rq.StatusDef.immune`. Any one field that matches is enough. |
 | [`rq.StatusInfo`](types/rq.StatusInfo.md) | What `rq.status.info` gives about a definition. |
 | [`rq.StatusInstance`](types/rq.StatusInstance.md) | A state on one character, from `rq.status.add`, `get` and `list`. |
+| [`rq.StepsCtx`](types/rq.StepsCtx.md) | What `rq.encounters.on_steps` callbacks get. |
 | [`rq.TakeContext`](types/rq.TakeContext.md) | What an `rq.quests.on_take` callback gets. |
 | [`rq.TransferContext`](types/rq.TransferContext.md) | What `rq.world.on_transfer` and `on_transfer_after` callbacks get. |
 | [`rq.UiAskRow`](types/rq.UiAskRow.md) | One row of `rq.ui.ask`. |

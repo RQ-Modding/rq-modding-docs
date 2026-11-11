@@ -39,6 +39,8 @@ end)
 | [`rq.counter`](rq.counter.md) | Lets the Counter skill (259) work after Ally Guard. |
 | [`rq.debug`](rq.debug.md) | Adds rows to the engine's F3 debug menu. |
 | [`rq.dungeon`](rq.dungeon.md) | Reads and changes the dungeon: the map, the player's place, objects on it, and the camera. |
+| [`rq.encounters`](rq.encounters.md) | Random fights on a quest's map. |
+| [`rq.game`](rq.game.md) | The player's money and charisma, as the system bar shows them. |
 | [`rq.gamebutton`](rq.gamebutton.md) | Buttons of mods in the game's own menus, made by the game itself. |
 | [`rq.hud`](rq.hud.md) | Draws text, boxes and CGs over the game, and reads clicks on them. |
 | [`rq.ids`](rq.ids.md) | The game's numbers by name: characters, items, monsters, quests, skills, and the small lists the game names (classes, states, races, character types, elements, item kinds, skill targets). |
@@ -84,6 +86,11 @@ end)
 | [`rq.log`](#rqlog) | Writes a line to the console and to the log. |
 | [`rq.time_ms`](#rqtime_ms) | Returns the time since the game started, in real milliseconds. |
 | [`rq.traceback`](#rqtraceback) | Returns a stack trace, of the current code or of a coroutine. |
+| [`rq.after`](#rqafter) | Calls `fn` once, `ms` milliseconds of real time from now. |
+| [`rq.every`](#rqevery) | Calls `fn` every `ms` milliseconds of real time, until it returns false or is removed. |
+| [`rq.spawn`](#rqspawn) | Runs `fn` as a job that can wait, with `rq.wait` and `rq.wait_until`. |
+| [`rq.wait`](#rqwait) | Waits `ms` milliseconds of real time, inside a job from `rq.spawn`. |
+| [`rq.wait_until`](#rqwait_until) | Waits until `cond` returns a true value, inside a job from `rq.spawn`. |
 
 ### rq.log
 
@@ -121,11 +128,14 @@ rq.time_ms() -> integer
 
 Returns the time since the game started, in real milliseconds.
 
-It keeps counting at real speed whatever `rq.speed` is set to.
+It keeps counting at real speed whatever `rq.speed` is set to. For something that runs later or
+every so often, `rq.after` and `rq.every` count on it.
 
 | Returns | Type | Description |
 | --- | --- | --- |
 | `ms` | `integer` | Milliseconds since the game started. |
+
+See also: [`rq.after`](rq.md#rqafter)
 
 ### rq.traceback
 
@@ -147,6 +157,158 @@ The sandbox has no `debug` library; this gives what `debug.traceback` would.
 | Returns | Type | Description |
 | --- | --- | --- |
 | `trace` | `string` | The stack trace. |
+
+### rq.after
+
+```lua
+rq.after(ms, fn) -> fun()
+```
+
+`since 2.33.0`
+
+Calls `fn` once, `ms` milliseconds of real time from now.
+
+It runs from the loader's own `rq.on_frame`, at the first update after the time has passed, so it
+may run a little late but never early. The time is real: `rq.speed` does not change it, and it goes
+on after a load or the title (`rq.on_reset` can remove it). An error in `fn` is logged once for each
+new error text.
+
+```lua
+rq.after(3000, function() rq.log("three seconds later") end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `ms` | `number` | Milliseconds, 0 or more; 0 runs it at the next update. |
+| `fn` | `fun()` | Runs once. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Cancels it, if it has not run yet. |
+
+See also: [`rq.every`](rq.md#rqevery)
+
+### rq.every
+
+```lua
+rq.every(ms, fn) -> fun()
+```
+
+`since 2.33.0`
+
+Calls `fn` every `ms` milliseconds of real time, until it returns false or is removed.
+
+The first call comes `ms` from now. When updates are slower than `ms`, it runs once per update and
+does not catch up on the calls it missed. The time is real, as in `rq.after`. An error in `fn` is
+logged once for each new error text, and the timer goes on.
+
+```lua
+local n = 0
+rq.every(1000, function()
+  n = n + 1
+  rq.log("tick " .. n)
+  if n == 5 then return false end  -- stops after five
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `ms` | `number` | Milliseconds, above 0. |
+| `fn` | `fun(): boolean\|nil` | Returns false to stop. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Stops it. |
+
+See also: [`rq.after`](rq.md#rqafter)
+
+### rq.spawn
+
+```lua
+rq.spawn(fn, ...) -> rq.SpawnHandle
+```
+
+`since 2.33.0`
+
+Runs `fn` as a job that can wait, with `rq.wait` and `rq.wait_until`.
+
+The job starts at once and runs until its first wait; the loader then goes on with it on later
+updates, from its own `rq.on_frame`. A job may also call the game's waiting calls, such as
+`rq.ui.confirm` or `rq.battle.start`. An error ends the job and is logged with its stack trace.
+
+```lua
+rq.spawn(function()
+  rq.log("get ready")
+  rq.wait(2000)
+  local found = rq.wait_until(function() return rq.encounters.info() ~= nil end, 60000)
+  if found then rq.log("on a map") end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(...): ...` | The job. |
+| `...` | `any` | Arguments for `fn`. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `job` | [`rq.SpawnHandle`](../types/rq.SpawnHandle.md) | The job, to follow or cancel. |
+
+### rq.wait
+
+```lua
+rq.wait(ms)
+```
+
+`since 2.33.0`
+
+Waits `ms` milliseconds of real time, inside a job from `rq.spawn`.
+
+It waits at least one update, also for 0. The game goes on meanwhile, and so does the mod's
+other code.
+
+Raises an error outside a job from `rq.spawn`: at the top level of a mod, in `rq.on_frame`, in a
+callback, or in a coroutine the mod made itself.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `ms` | `number` | Milliseconds, 0 or more. |
+
+See also: [`rq.spawn`](rq.md#rqspawn)
+
+### rq.wait_until
+
+```lua
+rq.wait_until(cond, limit) -> any
+```
+
+`since 2.33.0`
+
+Waits until `cond` returns a true value, inside a job from `rq.spawn`.
+
+`cond` is called at once, then once per update. With `limit`, it gives up after that many
+milliseconds of real time.
+
+Raises an error outside a job from `rq.spawn`: at the top level of a mod, in `rq.on_frame`, in a
+callback, or in a coroutine the mod made itself.
+
+```lua
+local s = rq.wait_until(function()
+  local s = rq.ui.get()
+  return s and s.screen == "hub" and s
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `cond` | `fun(): any` | Checked once per update. |
+| `limit` *(optional)* | `number` | Milliseconds to wait at most. Default: no limit. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `value` | `any` | What `cond` returned, or nil when the limit came first. |
+
+See also: [`rq.spawn`](rq.md#rqspawn)
 
 ## Events
 

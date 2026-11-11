@@ -23,9 +23,10 @@ for the game's own characters it writes them again first, so use `rq.chara.edit`
 | `class` | `integer` | The class (see `rq.CharaFields.class`). |
 | `sex` | `integer` | The sex. |
 | `level` | `integer` | The level. |
-| `level_max` | `integer` | The highest level. |
+| `level_max` | `integer` | The highest level, the talent limit (`ＣＬＶ最大`). It is kept in the save, and items and events raise it; `rq.chara.set(iic, { level_max = n })` changes it for good. The game ignores it for a character with `uncapped`. |
+| `uncapped` | `boolean` | The game sets no level cap for this character (Rance, Reset Kalar and Dark Rance). Since 2.33.0. |
 | `exp` | `integer` | Experience. |
-| `exp_max` | `integer` | Experience for the next level. |
+| `exp_max` | `integer` | Experience for the next level. The game's recalculation sets it from the level; below the highest level the character has reached, it is at most 4980, so lost levels come back quickly. |
 | `rebirths` | `integer` | Times reborn. |
 | `hp` | `integer` | HP. |
 | `hp_max` | `integer` | Most HP. |

@@ -5,6 +5,15 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.33.0
+
+The basics a new creator tries first (`notes/plans/plan-creator-basics.md` in the workspace, phase H of the priority order). Built in Lua over `rq.ain` (`src/lua/basics.lua`, `timers.lua`), so a mod no longer calls the game's functions for these.
+- `rq.game`: the money (`gold`, `set_gold`, `add_gold`, kept from 0 to 999,999,999) and charisma (`charisma` gives the rank, the points and the points the rank needs; `add_charisma` goes up one rank at most, as the result screen does; `set_charisma`). Each change redraws the system bar.
+- `rq.encounters`: random fights on a quest's map. `info` (the area's groups, the steps that fill the bar, the steps walked, whether fights can happen and which mods hold them off), `hold(true|false)` (one hold per mod; while any holds, no random fight starts, the bar is hidden and the steps do not fill it; an enemy standing on the map still fights), `set_steps` (1 to 999, until the game picks them again), `on_steps` (change the steps each time the game picks them, after a fight and an area change) and `on_encounter` (see a fight from the map, random or placed, and cancel it by returning false: the game's own "no fight" path).
+- `rq.chara.add_exp(iic, n)`: EXP as a fight gives it, with the game's level-up for each full bar (stats, skill points, the EXP left carried over); nothing at the level cap or for Athena 2.0, and no level at 0 HP (the game's level-up wants HP), the bar kept full for later. `rq.chara.level_up(iic, n)`: free levels, as the story and training give them. `rq.chara.on_level_up(fn)`: after every level, the game's or a mod's, with `from`, `level`, `battle` (in a fight's result) and `free` (the game's other level-up, which sets the EXP back to 0: the story, training, the reserve's share of a fight).
+- `rq.chara.get`'s new field `uncapped`: the game sets no level cap for the character (Rance, Reset Kalar and Dark Rance). The reference of `level_max` says what the cap is and that it lasts.
+- `rq.after(ms, fn)` and `rq.every(ms, fn)`: timers on real time, each returning a remover; `every` stops when `fn` returns false. `rq.spawn(fn, ...)` runs a job that can wait with `rq.wait(ms)` and `rq.wait_until(cond, limit)`, and returns a handle (`done`, `ok`, `value`, `values`, `error`, `cancel`). One `rq.on_frame` of the loader's drives them.
+
 ## 2.32.0
 
 The map panel and the game's windows (`notes/plans/plan-map-panel-windows.md` in the workspace, phase F of the priority order).

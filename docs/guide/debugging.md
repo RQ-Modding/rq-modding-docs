@@ -62,5 +62,5 @@ if not ok then rq.log(err) end
 | `run error ...\init.lua: ...` | An error at the top level of `init.lua`. |
 | `rq.<call>: the game is not running yet` at startup | A call that reads the game ran at the top level. Move it into `rq.on_frame` or a callback ([When code runs](sandbox.md#when-code-runs)). |
 | A HUD element flickers or shows once | HUD calls draw for one frame. Draw it on every `rq.on_frame`. |
-| A timer runs out too soon | `rq.on_frame` runs per game update, which can be thousands of times a second on a still screen. Measure time with `rq.time_ms`. |
+| A timer runs out too soon | `rq.on_frame` runs per game update, which can be thousands of times a second on a still screen. Measure time with `rq.time_ms`, or let `rq.after`, `rq.every` and `rq.wait` (2.33.0) count it ([Waiting and timers](game-state.md#waiting-and-timers)). |
 | Two mods fight over one thing | Load order decides who goes last: see `loadAfter` in [mod.json](manifest.md). |

@@ -122,6 +122,13 @@ rq.battle.on_end(function()
 end)
 ```
 
+::: tip Waiting
+To do something later, `rq.after(3000, fn)` calls `fn` three seconds from now. For steps with
+waits between them, run them in `rq.spawn` and wait inside with `rq.wait(ms)` or
+`rq.wait_until(cond)`: the game goes on meanwhile. [Gold, encounters and
+levels](game-state.md#waiting-and-timers) has examples, with the money, random fights and levels.
+:::
+
 ## Changing the mod
 
 Mods load once, when the game starts. After you change `init.lua`, restart the game. When something

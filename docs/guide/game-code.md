@@ -32,7 +32,9 @@ rq.ain.find("Encount")
 ```
 
 The Japanese names need the Japanese text: `rq.ain.find("エンカウント")` finds
-`ランダムエンカウント_あり`, which "Encount" does not.
+`ランダムエンカウント_あり`, which "Encount" does not. (Random fights have their own calls since
+2.33.0, [`rq.encounters`](../reference/api/rq.encounters.md); these names only show what `find`
+gives.)
 
 The match is on the game's spelling, so case and full-width letters count. It lists at most 40
 names: a longer text narrows the list. The call works at the top level of `init.lua`; to try names
@@ -83,7 +85,7 @@ it once it is no longer needed.
 ```lua
 local fa = rq.ain.global("FA", 87)              -- FA[87]
 local name = rq.ain.global("Ｑ", 126, "名前")   -- Ｑ[126].名前
-rq.ain.set_global("◆ランダムエンカウント歩数", 1)
+rq.ain.set_global("◆クエスト戦闘回数", 0)      -- the fights of this quest so far
 ```
 
 Indexes and field names follow the global's name, mixed as the game nests them.
@@ -129,6 +131,7 @@ end
   log when it does not fit.
 - A bad index passed to a game function is a fatal error in the game, and `rq.ain.call` cannot
   check it.
-- Something many mods would do through `rq.ain` is a call `rq.*` is missing. The
-  [roadmap](../roadmap.md) lists the ones planned, such as `rq.ain.call` with reference and struct
-  arguments.
+- Something many mods would do through `rq.ain` is a call `rq.*` is missing. The money, charisma,
+  random fights, EXP and levels became calls that way in 2.33.0
+  ([Gold, encounters and levels](game-state.md)). The [roadmap](../roadmap.md) lists the ones
+  planned, such as `rq.ain.call` with reference and struct arguments.
