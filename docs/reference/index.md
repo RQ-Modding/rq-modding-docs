@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.35.0.
+Loader version 2.36.0.
 
 ## Namespaces
 
@@ -29,6 +29,7 @@ Loader version 2.35.0.
 | [`rq.items`](api/rq.items.md) | Lists the item instances the player owns. |
 | [`rq.loot`](api/rq.loot.md) | Chest loot: what the pools roll, and the items the player will find, known in advance. |
 | [`rq.mod`](api/rq.mod.md) | Finds out about other mods, and reaches what they share. |
+| [`rq.monster`](api/rq.monster.md) | The game's list of monsters: read a monster's data, change it each time the game builds it, and change each enemy a fight builds. |
 | [`rq.music`](api/rq.music.md) | Music from a mod's own file, in place of one of the game's tracks. |
 | [`rq.orb`](api/rq.orb.md) | The blue Recovery Spring on the map (`回復の泉`, object 203). |
 | [`rq.party`](api/rq.party.md) | Reads and changes who is in the party. |
@@ -103,6 +104,9 @@ Loader version 2.35.0.
 | [`rq.DungeonInfo`](types/rq.DungeonInfo.md) | Where the party is in a dungeon, from `rq.dungeon.info()`. |
 | [`rq.EncounterCtx`](types/rq.EncounterCtx.md) | What `rq.encounters.on_encounter` callbacks get. |
 | [`rq.EncounterInfo`](types/rq.EncounterInfo.md) | What `rq.encounters.info` returns. |
+| [`rq.FightBackground`](types/rq.FightBackground.md) | One of the game's fight backgrounds. |
+| [`rq.FightOpts`](types/rq.FightOpts.md) | What `rq.battle.start` takes. Only `enemies` is needed. |
+| [`rq.FightResult`](types/rq.FightResult.md) | How a fight from `rq.battle.start` ended, its second value. |
 | [`rq.FlashBitmap`](types/rq.FlashBitmap.md) | One bitmap of a game Flash file, as `rq.image.flash_bitmaps` lists it. |
 | [`rq.FlashBitmapOpts`](types/rq.FlashBitmapOpts.md) | Options for `rq.image.flash_bitmap`. |
 | [`rq.FlashSound`](types/rq.FlashSound.md) | A sound inside a Flash file, from `rq.sound.flash_info`. |
@@ -130,6 +134,11 @@ Loader version 2.35.0.
 | [`rq.MagicCtx`](types/rq.MagicCtx.md) | What `rq.combat.on_magic` gets for one spell. |
 | [`rq.MapCtx`](types/rq.MapCtx.md) | What `rq.dungeon.on_map` gets. |
 | [`rq.MarkDef`](types/rq.MarkDef.md) | How `rq.battle.set_mark` shows one of the game's marks. |
+| [`rq.Monster`](types/rq.Monster.md) | A monster's data, as `rq.monster.get` returns it. The names are `rq.chara.get`'s. |
+| [`rq.MonsterCreateCtx`](types/rq.MonsterCreateCtx.md) | What `rq.monster.on_create` callbacks get. Fields marked writable change the enemy in its slot. |
+| [`rq.MonsterEdit`](types/rq.MonsterEdit.md) | What `rq.monster.edit` changes. Every field is optional; the numbers are whole and 0 or more. |
+| [`rq.MonsterSkill`](types/rq.MonsterSkill.md) | A skill in a monster's list (`rq.Monster.skills`). |
+| [`rq.MonsterSkillEdit`](types/rq.MonsterSkillEdit.md) | A skill's fields in `rq.MonsterEdit.skills`: the ones given replace the list's. |
 | [`rq.MusicInfo`](types/rq.MusicInfo.md) | What `rq.music.info` tells about a track. |
 | [`rq.MusicListOpts`](types/rq.MusicListOpts.md) | What `rq.uikit.music_list` takes. |
 | [`rq.MusicMoment`](types/rq.MusicMoment.md) | A moment a pack names on its Config page, with a switch the player turns on and off. |

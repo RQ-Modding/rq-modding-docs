@@ -42,7 +42,8 @@ end)
 | [`rq.battle.in_ally_select`](#rqbattlein_ally_select) | Returns whether an ally is choosing a skill. |
 | [`rq.battle.actor`](#rqbattleactor) | Returns the ally choosing a skill. |
 | [`rq.battle.skill_usable`](#rqbattleskill_usable) | Returns whether a character can use a skill now. |
-| [`rq.battle.start`](#rqbattlestart) | Opens a fight with the current party, using the game's scripted fight. |
+| [`rq.battle.start`](#rqbattlestart) | Opens a fight with the current party, using the game's scripted fight or its boss fight. |
+| [`rq.battle.backgrounds`](#rqbattlebackgrounds) | Lists the game's fight backgrounds, in the game's order. |
 | [`rq.battle.force_hit`](#rqbattleforce_hit) | Decides every accuracy check, of allies and enemies, until `force_hit(nil)`. |
 | [`rq.battle.time`](#rqbattletime) | Returns the actions left in this fight, the number on the TIME REMAINING panel. |
 | [`rq.battle.set_time`](#rqbattleset_time) | Sets the actions left in this fight. |
@@ -543,41 +544,78 @@ from the back.
 ### rq.battle.start
 
 ```lua
-rq.battle.start(opts) -> "won"|"lost"|"other"
+rq.battle.start(opts) -> "won"|"lost"|"other", rq.FightResult
 ```
 
-`since 0.22.0` `changed 2.22.1`
+`since 0.22.0` `changed 2.22.1` `changed 2.36.0`
 
-Opens a fight with the current party, using the game's scripted fight.
+Opens a fight with the current party, using the game's scripted fight or its boss fight.
 
 It blocks until the fight and its result screens end, as `rq.scene` commands do, while
-`rq.on_frame` keeps running; call it from a coroutine if the same mod plays the fight. It counts as
-a fight of the current quest.
+`rq.on_frame` keeps running; call it from a job (`rq.spawn`) or a coroutine if the same mod plays
+the fight. It counts as a fight of the current quest.
 
 It may start from any screen with a footer: a quest's map, the town, Rance Castle, the Party
 screen, Quests. While it runs, `rq.ui.get` says `battle`; after it, the screen it started from is
 drawn again with its footer.
 
-Raises an error for no enemies, an unknown monster, an empty party, or during a fight.
+A won fight and one whose actions ran out pay (`rq.battle.on_reward`); a lost or fled one pays
+nothing. The enemies are built as in any fight: `rq.monster.edit` and `rq.monster.on_create`
+apply.
+
+Raises an error for an unknown option or a value of the wrong kind, no enemies, an unknown
+monster, `strong` or `double_hp` without `boss`, an unknown background or track, a music file
+that is missing or outside the mod's folder, an empty party, or during a fight.
 
 its footer, and `rq.ui.get` named that screen during the fight, not `battle`.
+`escape` and `gold`, and the second value. An unknown option raises an error (it was ignored).
 
 ```lua
-coroutine.wrap(function()
-  local result = rq.battle.start({ enemies = { 0, boss_no, 0 } })
-  rq.log("fight:", result)
-end)()
+rq.spawn(function()
+  local r, info = rq.battle.start({
+    enemies = { 0, rq.ids.monster.COCKROACH, 0 }, exp = 500,
+    boss = true, strong = true, names = { [2] = "The Shadow" },
+    background = "bgA_00_douk", music = "music/shadow.ogg", gold = 1000,
+  })
+  rq.log(r, info.how, info.exp, info.gold, #info.fallen)
+end)
 ```
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `opts` | `{enemies: integer[], exp?: integer}` | `enemies`: up to five monster numbers (`rq.ids.monster`) in rank order, 0 for an empty rank. `exp`: experience for the win. Default 0. |
+| `opts` | [`rq.FightOpts`](../types/rq.FightOpts.md) | The fight. |
 
 | Returns | Type | Description |
 | --- | --- | --- |
-| `result` | `"won"\|"lost"\|"other"` | How the fight ended. |
+| `result` | `"won"\|"lost"\|"other"` | How the fight ended: "other" for a draw, the actions run out or a flight. |
+| `info` | [`rq.FightResult`](../types/rq.FightResult.md) | The end in detail and what the fight paid. Since 2.36.0. |
 
 > Changed in 2.22.1: Away from a quest's map, the screen under the fight came back black and without
+
+> Changed in 2.36.0: The options `boss`, `strong`, `double_hp`, `names`, `background`, `music`,
+
+### rq.battle.backgrounds
+
+```lua
+rq.battle.backgrounds() -> rq.FightBackground[]
+```
+
+`since 2.36.0`
+
+Lists the game's fight backgrounds, in the game's order.
+
+Each map sets the background of its fights when it loads, by the map's kind;
+`rq.battle.start`'s `background` chooses one for its own fight.
+
+Raises an error before the game runs.
+
+```lua
+for _, b in ipairs(rq.battle.backgrounds()) do rq.log(b.no, b.name) end
+```
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `list` | [`rq.FightBackground`](../types/rq.FightBackground.md) `[]` | The backgrounds. |
 
 ### rq.battle.force_hit
 
@@ -709,7 +747,9 @@ rq.battle.on_start(fn) -> fun()
 Calls `fn` once per fight, at the end of `Ｔ戦闘前初期化`.
 
 Every start-of-fight effect of the game has already run (skills such as Cough, an ambush, poison
-tea), so `rq.chara.get` and `set` on the lists see the real state.
+tea), so `rq.chara.get` and `set` on the lists see the real state. The enemies were built before
+it: change how they are built with `rq.monster.on_create`. In a fight of `rq.battle.start`, its
+`escape` is written before the first callback.
 
 ```lua
 rq.battle.on_start(function(ctx)
@@ -761,6 +801,7 @@ rq.battle.on_reward(fn) -> fun()
 Calls `fn` once per fight that pays, after the game has summed the gold and EXP and before the result screen shows them.
 
 What the callbacks leave is what the result screen shows, what the party gets and the gold paid.
+In a fight of `rq.battle.start` with `gold`, `ctx.gold` holds that gold when the first callback runs.
 Callbacks run in load order, each one reading what the ones before wrote. A fight the enemies ran
 from pays as a won one does (`ctx.result` 4); a fight lost pays nothing and calls nothing.
 

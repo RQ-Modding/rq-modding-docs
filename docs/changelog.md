@@ -5,6 +5,17 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.36.0
+
+Monsters, modes and fights from a mod (`notes/plans/plan-monsters-modes.md` in the workspace, phase K of the priority order).
+- `rq.monster.get(no)`: a monster's data from the game's list (`rq.Monster`: the name, model, boss flag, race, type, level, HP, the stats, the weak element and the five resistances with `rq.chara.get`'s names, up to five `skills` with `id`, `text`, `motion` and `chance`, and the `lines` the fight shows), with every mod's edits, before the world's rules. It builds the monster in slot 9, which the game never uses, skips the game's build function so no random number is drawn, and empties the slot. nil for a number the list does not have.
+- `rq.monster.edit(no, patch)`: changes a monster each time the game builds it (fights, the familiar, the game's name lookups, `get`). The patch replaces the list's numbers before the world's tiers, race 60 and a boss fight's `strong` scale them; `skills` goes by position (`false` empties one), `lines` by kind. One patch per mod and monster, `nil` removes it, patches in load order.
+- `rq.monster.on_create(fn)`: each enemy a fight builds (ranks 1 to 5) and the party's familiar (`familiar` true), after the game's build and before the fight opens. The ctx has the slot, number, rank, world, the fight's kind, group and strength rate and `base` (the data as `get` gives it); `name`, `level`, `hp` and the stats are writable and written to the slot once after the last callback. Returns a remover.
+- `rq.game.mode()` and `set_mode(mode)`: "classic" or "tada" (`◆２倍モード`), nil before a save is loaded. The game has no easy mode to report: its flags are a leftover of the first Rance Quest that Magnum never sets.
+- `rq.battle.start` is in Lua over `rq.ain` and takes more options: `boss` (the game's boss fight: rank 2, no escape, 999 actions, the boss music and the `boss` moment of `rq.music.on_play`), `strong` and `double_hp` (with `boss`), `names` per rank, `background` (a number or a name, put back after), `music` (a game track or a file in the mod's folder, over the game's choice and `rq.music.on_play`), `escape` (0 to 100, written before every `rq.battle.on_start` callback) and `gold` (`rq.battle.on_reward`'s `ctx.gold` before the mods' callbacks). It returns a second value, `rq.FightResult`: `code` and `how` (won, lost, draw, time, fled), the `exp` and `gold` the fight paid, `kills` and the `fallen` allies. The first value is as before. An unknown option now raises an error; before, it was ignored.
+- `rq.battle.backgrounds()`: the game's fight backgrounds, `{ no, name }`.
+- onoha-qol 1.0.2 reads the familiar's speed with `rq.monster.on_create`, and custom-tada-mode 1.1.2 reads the mode with `rq.game.mode()`; both need loader 2.36.0.
+
 ## 2.35.0
 
 Comfort for creators (`notes/plans/plan-creator-comfort.md` in the workspace, phase J of the priority order): a settings page from a list, no install calls, and the party's places and heals.

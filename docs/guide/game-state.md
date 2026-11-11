@@ -7,9 +7,11 @@ money and charisma ([`rq.game`](../reference/api/rq.game.md)), random fights on 
 and timers and jobs that wait ([`rq.after`](../reference/api/rq.md#rqafter), `rq.every`,
 `rq.spawn`, `rq.wait`). A fight's gold and EXP came in 2.34.0
 ([`rq.battle.on_reward`](../reference/api/rq.battle.md#rqbattleon_reward)), and where each
-character is and the game's heals in 2.35.0 ([`rq.party`](../reference/api/rq.party.md)). Each
-example on this page is a whole `init.lua`; set `loader` to `2.33.0` in its `mod.json`, `2.34.0`
-for the fight rewards, or `2.35.0` for the party.
+character is and the game's heals in 2.35.0 ([`rq.party`](../reference/api/rq.party.md)). The
+monsters ([`rq.monster`](../reference/api/rq.monster.md)), the mode and the fights a mod opens
+([`rq.battle.start`](../reference/api/rq.battle.md#rqbattlestart)) came in 2.36.0. Each example on
+this page is a whole `init.lua`; set `loader` to `2.33.0` in its `mod.json`, `2.34.0` for the fight
+rewards, `2.35.0` for the party, or `2.36.0` for the monsters, the mode and a fight from a mod.
 
 All of these read or change the game, so call them from a callback or `rq.on_frame`, not at the
 top level of `init.lua` ([When code runs](sandbox.md#when-code-runs)). `rq.encounters.hold` and the
@@ -39,6 +41,11 @@ for the next one. Taking points away never lowers the rank. `set_charisma(rank, 
 local rank, points, max = rq.game.charisma()
 rq.log(("charisma rank %d, %d / %d"):format(rank, points, max))
 ```
+
+`rq.game.mode()` says whether the save plays in `"classic"` or `"tada"` mode, the choice at the
+support menu, and `rq.game.set_mode` changes it. TADA mode doubles a fight's EXP and gold and a
+familiar's growth. The game has no easy mode to report: its flags are left over from the first
+Rance Quest, and Magnum never sets them.
 
 ## Fight rewards
 
@@ -271,9 +278,73 @@ rq.debug.action({
 HP and the status are `rq.chara.get(iic).hp`, `hp_max` and `status`, and `rq.chara.set` writes
 them. The older `rq.orb` calls do the same and stay.
 
+## Monsters
+
+The game builds every enemy from its list each time a fight opens, then applies the world's rules:
+in worlds 2 and 3 more HP, attack, defense and magic, a tier from ×2 to ×7 and a marked name; race
+60 stronger; a boss fight's `strong` ×1.3.
+
+- `rq.monster.get(no)` gives a monster's data from the list: the name, the stats with
+  `rq.chara.get`'s names, its five `skills` and the `lines` the fight shows. These are the list's
+  numbers, before the world's rules.
+- `rq.monster.edit(no, patch)` changes a monster each time the game builds it. The world's rules
+  still scale the new numbers, as they scale the game's. `skills` goes by position (`false` empties
+  one) and `lines` by kind. Each mod keeps one patch per monster; `nil` removes it.
+- `rq.monster.on_create(fn)` sees each enemy a fight builds, and the party's familiar, after the
+  world's rules and before the fight opens. Its name, level, HP and stats can be changed there.
+
+Cockroaches renamed and tougher everywhere, and every boss a fifth stronger:
+
+```lua
+local COCKROACH = rq.ids.monster.COCKROACH
+rq.monster.edit(COCKROACH, { name = "Armored Cockroach", def = 50, lines = { attack = "Skitter!" } })
+
+rq.monster.on_create(function(ctx)
+  if ctx.familiar or ctx.fight_rank ~= 2 then return end -- 2: a boss fight
+  ctx.hp = ctx.hp * 1.2
+  ctx.atk = ctx.atk * 1.2
+end)
+```
+
+`edit` sits at the top level; `get` reads the game, so call it from a callback.
+
+## A fight from a mod
+
+`rq.battle.start` opens a fight with the current party and waits until it and its result screens
+end, so call it from a job (`rq.spawn`). It starts from a quest's map, the town, Rance Castle, the
+Party screen or Quests, and the screen comes back after. Its options:
+
+- `enemies` (up to five monster numbers by rank, 0 for an empty rank) and `exp` for the win.
+- `boss = true` for the game's boss fight: no escape, 999 actions, the boss music. With it,
+  `strong` (the "+" boss) and `double_hp`.
+- `names` per rank, a `background` (a number or a name from `rq.battle.backgrounds()`), `music` (a
+  game track or a file in the mod's folder), the `escape` chance and the `gold` it pays.
+
+It returns `"won"`, `"lost"` or `"other"`, and a second value with how it ended (`how`: won, lost,
+draw, time, fled), the `exp` and `gold` it paid, the `kills` and the `fallen` allies.
+
+A key on the debug menu that opens a boss fight against a named Cockroach:
+
+```lua
+rq.debug.action({
+  id = "shadow-fight",
+  label = "Fight the Shadow",
+  key = "9",
+  onPress = function()
+    rq.spawn(function()
+      local r, info = rq.battle.start({
+        enemies = { 0, rq.ids.monster.COCKROACH }, exp = 500, gold = 1000,
+        boss = true, strong = true, names = { [2] = "The Shadow" },
+      })
+      rq.log(r, info.how, "EXP " .. info.exp, "gold " .. info.gold)
+    end)
+  end,
+})
+```
+
 ## Not yet
 
 Some of this still needs [the game's own code](game-code.md): which group a random fight brings,
 the 1 in 10 roll, an event when the money changes, timers on the game's clock, the gold and EXP
-before the game's own rules apply, the labels beside each ally's EXP on the result screen, and a
-quest's own reward. The [roadmap](../roadmap.md) lists what is planned.
+before the game's own rules apply, the labels beside each ally's EXP on the result screen, a
+quest's own reward, new monsters past the game's list, and what an enemy chooses to do. The [roadmap](../roadmap.md) lists what is planned.

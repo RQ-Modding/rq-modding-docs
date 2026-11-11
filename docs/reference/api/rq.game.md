@@ -25,6 +25,8 @@ end)
 | [`rq.game.charisma`](#rqgamecharisma) | Returns the charisma rank and its points, as the system bar shows them. |
 | [`rq.game.add_charisma`](#rqgameadd_charisma) | Adds charisma points, or takes them away. |
 | [`rq.game.set_charisma`](#rqgameset_charisma) | Sets the charisma rank, and its points when given. |
+| [`rq.game.mode`](#rqgamemode) | Returns the game's mode: Classic or TADA. |
+| [`rq.game.set_mode`](#rqgameset_mode) | Sets the game's mode, as the choice at the support menu does. It stays in the save. |
 
 ### rq.game.gold
 
@@ -154,3 +156,47 @@ The points the rank needs (`max`) follow from the rank, as the game sets them at
 | `rank` | `integer` | The rank now. |
 | `points` | `integer` | The points now. |
 | `max` | `integer` | The points the rank now needs. |
+
+### rq.game.mode
+
+```lua
+rq.game.mode() -> "classic"|"tada"|nil
+```
+
+`since 2.36.0`
+
+Returns the game's mode: Classic or TADA.
+
+TADA mode is the choice at the support menu (`◆２倍モード`). It doubles a fight's EXP and gold
+and a familiar's growth; Custom TADA Mode changes those numbers.
+
+There is no easy mode to report. Its flags (`◆ｅａｓｙモード`) are a leftover of the first Rance
+Quest: Magnum never sets them, and the quest menu clears them each time it opens.
+
+```lua
+if rq.game.mode() == "tada" then rq.log("TADA mode") end
+```
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `mode` | `"classic"\|"tada"\|nil` | nil before a save is loaded. |
+
+### rq.game.set_mode
+
+```lua
+rq.game.set_mode(mode)
+```
+
+`since 2.36.0`
+
+Sets the game's mode, as the choice at the support menu does. It stays in the save.
+
+Raises an error for another text, or before a save is loaded.
+
+```lua
+rq.game.set_mode("classic")
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `mode` | `"classic"\|"tada"` | The mode. |
