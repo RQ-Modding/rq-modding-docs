@@ -24,7 +24,6 @@ In order of priority: what the mods that exist today would use.
 | Area | What |
 | --- | --- |
 | Screens | Since 2.20.1 `rq.ui` lists the footer on every screen that shows it, Rance Castle as the screen `castle` with its rooms, and the town tabs on Quests; since 2.31.0 the Party screen's 2nd Army box (its characters, their STATUS buttons and the places a dragged character is dropped on). When a mod asks: names for Trivia, CG mode, Music mode and the castle's bonus rooms, and the castle's rooms as data in `rq.ui.get`. |
-| Battle events | Calls for the places mods hook through `rq.ain` today: each line of the battle log, the speeds the turn order is built from, the stun roll, and whether TADA mode is on. |
 
 ### Later
 
@@ -32,6 +31,7 @@ When a mod asks for it, or at low priority.
 
 | Area | What |
 | --- | --- |
+| Battle events | Calls for the places mods hook through `rq.ain` today: the speeds the turn order is built from, with a familiar's own speed and its owner (the most likely to be used: familiar balance, speed states); the stun roll, as `rq.combat.on_crit` is for criticals; each line of the battle log, to skip or change it; and whether TADA mode is on. A character's short name is already `rq.chara.get(iic).short`. |
 | Faces and pictures | Moving faces, standing pictures and backgrounds, and pictures inside the game's Flash files (cut-ins, effects, marks), came in 2.25.0 ([Pictures](guide/pictures.md)). Later: enemies and fight backgrounds (3D models, their textures), moving pictures inside Flash files, a different face per place (as `rq.battle.set_face` does for fights), moving faces where the game paints them into another picture (the turn order). |
 | States | States made by mods came in 2.2.0 (`rq.status`), on the events of 2.1.0; in 2.3.0 a state can down someone at the start of a turn; in 2.26.0 the game's cures and dispels take them, each shows its own number, Persevere, the AUTO button and the battle forecast know them, special skills reach `on_hit`, `immune`, states that last the quest and a `desc` (see [Battle states](guide/states.md)). Later, at low priority: the `desc` on hover with the card's marks side by side. When a mod asks: states kept in the save, the enemies' AI choosing by mod states, states shown between fights, AUTO for a mod's own cure skill. |
 | Dialogs | The game's dialogs over Config came in 2.28.0, with "don't ask again" on `rq.ui.ask`. Later: `rq.ui.choose` over Config (it waits for Config to close), when a mod wants a menu from its page. |
