@@ -5,6 +5,12 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.31.0
+
+The Lab and its scripts (`notes/plans/plan-lab-scripts.md` in the workspace, phase D of the priority order).
+- `rq.ui.get` and `rqmod-ctl ui` list the Party screen's 2nd Army box while it is open: its cards as `store-N` (N from 0 after the box's scroll), the STATUS of the card under the mouse as `store-status-N`, its close as `store-close`, all in section `party-store`, and the places a dragged character is dropped on, `store-drop` (the box) and `grid-drop` (the grid). `storeUnits` lists the whole 2nd Army as `units` lists the roster, and `storeState` has `topIndex`, `listCount` and `shown`. Agents found the box only by coordinates.
+- The stall watch: when `rq.on_frame` has not started for 10 s while the game still pumps its events (its update does not run, or a callback has not returned), the log gets one line with how long, the callback that runs and the mod that registered it, and the AIN call stack; and one line when it runs again. A pause (`rqmod-ctl pause`) does not count. `rqmod-ctl where` writes the same numbers at the top of its file.
+
 ## 2.30.0
 
 Phase C of the priority order (`notes/plans/plan-morurun-camera.md` in the workspace).

@@ -26,7 +26,7 @@ Reads what is on the screen and saves screenshots.
 rq.ui.get() -> table|nil
 ```
 
-`since 0.20.0` `changed 0.21.0` `changed 2.11.0` `changed 2.12.0` `changed 2.19.0` `changed 2.20.0` `changed 2.20.1` `changed 2.22.1` `changed 2.28.0`
+`since 0.20.0` `changed 0.21.0` `changed 2.11.0` `changed 2.12.0` `changed 2.19.0` `changed 2.20.0` `changed 2.20.1` `changed 2.22.1` `changed 2.28.0` `changed 2.31.0`
 
 Returns what is on the screen.
 
@@ -55,6 +55,14 @@ On `quests`, while a quest is chosen (`questState.selected` above 0), the rows (
 not `enabled`: the game reads none of them, with or without a dialog, until Cancel (a right click)
 lets the quest go. It stays chosen after its "Take Quest" question is answered No.
 
+On `party-edit`, while the 2nd Army box is open, its cards are `store-N` (N from 0 after the box's
+scroll, as `unit-N` on the grid; the character's name as the label, the job and level as the value),
+the card under the mouse has its `store-status-N`, and `store-close` closes the box, all in section
+`party-store`. `store-drop` (the box) and `grid-drop` (the grid) are where a dragged character is
+dropped: `unit-N` dragged onto `store-drop` goes to the 2nd Army, `store-N` dragged onto `grid-drop`
+comes back. `storeUnits` lists the whole 2nd Army as `units` lists the roster (`visible` for the
+cards shown), and `storeState` has `topIndex` (the box's scroll), `listCount` and `shown` (cards).
+
 It builds the whole list, so do not call it on every `rq.on_frame`.
 
 every screen that shows it; Rance Castle is the screen `castle`, with its rooms as `room-<area>`
@@ -62,6 +70,7 @@ and the town tabs; the town tabs on `quests`; the SYSTEM menu over Quests or the
 `system-menu` (it was the screen under it).
 `other` with the footer only (they were the town or the castle under them, with its tabs).
 chosen (they were, and gave no hover).
+`store-drop`, `grid-drop`, `storeUnits` and `storeState` (it was not listed).
 
 ```lua
 local s = rq.ui.get()
@@ -87,6 +96,8 @@ if s and s.screen == "camp" then rq.log(#s.controls, "controls") end
 > Changed in 2.22.1: Trivia, CG mode, Music mode and the castle's Gal monsters' and Poster rooms are
 
 > Changed in 2.28.0: A dialog over Config is `select`; the quest rows are not `enabled` while a quest is
+
+> Changed in 2.31.0: The Party screen's 2nd Army box: `store-N`, `store-status-N`, `store-close`,
 
 See also: [`rq.ui.aim`](rq.ui.md#rquiaim)
 

@@ -23,7 +23,7 @@ In order of priority: what the mods that exist today would use.
 
 | Area | What |
 | --- | --- |
-| Screens | Since 2.20.1 `rq.ui` lists the footer on every screen that shows it, Rance Castle as the screen `castle` with its rooms, and the town tabs on Quests. Next: the Party screen's 2nd Army box (its characters and their STATUS buttons). When a mod asks: names for Trivia, CG mode, Music mode and the castle's bonus rooms, and the castle's rooms as data in `rq.ui.get`. |
+| Screens | Since 2.20.1 `rq.ui` lists the footer on every screen that shows it, Rance Castle as the screen `castle` with its rooms, and the town tabs on Quests; since 2.31.0 the Party screen's 2nd Army box (its characters, their STATUS buttons and the places a dragged character is dropped on). When a mod asks: names for Trivia, CG mode, Music mode and the castle's bonus rooms, and the castle's rooms as data in `rq.ui.get`. |
 | Battle events | Calls for the places mods hook through `rq.ain` today: each line of the battle log, the speeds the turn order is built from, the stun roll, and whether TADA mode is on. |
 
 ### Later
