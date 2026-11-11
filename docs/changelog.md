@@ -5,6 +5,14 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.30.0
+
+Phase C of the priority order (`notes/plans/plan-morurun-camera.md` in the workspace).
+- `rq.dungeon.camera` can be called again, as from `rq.dungeon.on_map` for a range per map. It found its places by the game's numbers (35, 60, 80), which its first call replaced, so a second call changed nothing in the clamp, the fog or the slider, and put the wheel's step in a second time (the wheel then zoomed by the step times itself). The first call now records where it wrote, and a later call writes the new numbers there. A field left out takes its default again.
+- `rq.dungeon.camera`'s new field `far`: where the 3D view is cut (the game's 200, in `CMapMode@Clear`, which each map's `Create` runs). Past a `max` of about 120 the cut at 200 shows black at the top of an outdoor map, and past about 170 it loses the far rows of ground; at 400 the ground stays whole at 180. More than 5 (the near cut), or an error.
+- The reference says that the game keeps one zoom distance for every map and clamps it to the range when a map opens, what the cut does, and that the sky backdrop under outdoor maps is a plane of fixed size whose edge can show.
+- Camera Zoom 1.1.0: outdoors (eight kinds of area), a zoom out to 150 with the view cut at 400, set in `on_map` by the area's kind. Morurun Items 1.3.0 (no loader change): an empty slot a Morurun opened can absorb a special item.
+
 ## 2.29.0
 
 The text field (`notes/plans/plan-text-field.md` in the workspace, phase B of the priority order).

@@ -10,7 +10,7 @@ On a map grid, `x` runs east and `z` north.
 
 | Name | Summary |
 | --- | --- |
-| [`rq.dungeon.camera`](#rqdungeoncamera) | Patches the dungeon camera's zoom range, fog and slider in memory. |
+| [`rq.dungeon.camera`](#rqdungeoncamera) | Patches the dungeon camera's zoom range, fog, view cut and slider in memory. |
 | [`rq.dungeon.active`](#rqdungeonactive) | Returns whether the dungeon map screen exists. |
 | [`rq.dungeon.exploring`](#rqdungeonexploring) | Returns whether the player walks the map. |
 | [`rq.dungeon.info`](#rqdungeoninfo) | Returns a copy of the current room. |
@@ -25,14 +25,30 @@ On a map grid, `x` runs east and `z` north.
 rq.dungeon.camera(opts) -> boolean
 ```
 
-`since 0.2.0`
+`since 0.2.0` `changed 2.30.0`
 
-Patches the dungeon camera's zoom range, fog and slider in memory.
+Patches the dungeon camera's zoom range, fog, view cut and slider in memory.
 
-Raises an error when `opts` is not a table or the AIN is not loaded.
+It can be called again, from `rq.dungeon.on_map` too: each call sets the range in place of the last
+one, and a field left out takes its default again. A call in `on_map` holds for the map being built;
+a call elsewhere holds from the next map the game builds.
+
+The game keeps one zoom distance for every map (in its shared save) and clamps it to the range each
+time a map opens, so after a map with a smaller `max` the camera starts nearer.
+
+The 3D view is cut at `far` (the game's 200): with it, a `max` past about 120 shows black at the top
+of an outdoor map, and past about 170 loses the far rows of ground. With `far` 400 the ground stays
+whole at 180. What is left is the edge of the sky backdrop under outdoor maps, a plane of fixed size,
+which shows as black corners in some areas. Caves have a black background.
+
+Raises an error when `opts` is not a table, `far` is 5 or less, or the AIN is not loaded.
 
 ```lua
-rq.dungeon.camera({ max = 160, fog_far = 220 })
+rq.dungeon.camera({ max = 120, fog_far = 160 })
+rq.dungeon.on_map(function(ctx)
+  local open = ctx.kind == rq.ids.map_kind.FIELD
+  rq.dungeon.camera({ max = open and 150 or 120, far = open and 400 or 200 })
+end)
 ```
 
 | Parameter | Type | Description |
@@ -42,6 +58,8 @@ rq.dungeon.camera({ max = 160, fog_far = 220 })
 | Returns | Type | Description |
 | --- | --- | --- |
 | `ok` | `boolean` | false when the game lacks one of the camera functions (the log says which). |
+
+> Changed in 2.30.0: Can be called again. It worked only once: a second call changed nothing but the wheel, whose step it multiplied a second time. New field `far`.
 
 ### rq.dungeon.active
 
