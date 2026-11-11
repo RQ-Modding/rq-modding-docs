@@ -5,6 +5,17 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.32.0
+
+The map panel and the game's windows (`notes/plans/plan-map-panel-windows.md` in the workspace, phase F of the priority order).
+- `rq.gamebutton`'s group `"map"`: tabs on a quest's map, on the 3D view's right edge against the map panel, under the area map and above the Magnum gauge. Up to four, 40 × 44 at x 768 from y 129, 47 apart; a fifth shown entry is not placed and the log says so. Each tab is a button of the panel itself (`T_MapParts`, ids 700101 to 700104), the game's plain grey bar (CG 11009) with the entry's `icon`, so it hides with the panel in a dialog, a fight or an event, and the panel makes it again for each area. `shown` and `enabled` are asked every 200 ms while the map shows, `tip` (a text or a function) is the game's comment window left of the tab, and in the map's key mode (Space) the arrow keys reach the tabs (Left from AREA DISPLAY, Up and Down between them, Right back, Enter). Agents see each tab as `<mod id>.<id>` with its `button` while the map takes input, and `rq.gamebutton.groups` lists the group as `map`.
+- `rq.uikit.item_window(items, opts)`: the game's Quest Storage window (CG 11335) holding item tiles (`rq.uikit.item_icon`, the item card as tip), at the game's place (473, 165). Rows of five, 1 to 5 (`rows`; default 3, or 4 with more than 15 items), cut from the game's CG; with more items than fit, page arrows and the page's number in the band. A `title` in the band, an `empty` text, a `cell` callback to draw marks on a tile, and entries with `judged`, `tip` and `disabled`. Modal as a page; it closes by its close button, a right click or Esc. Returns open and the index clicked. In `src/lua/uikit_windows.lua`.
+- `rq.uikit.section(text, opts)`: a heading in the quest panel's look (CG 11014: the ★, the band, the gold stripes), the text in the game's font in the heading's gold, sized down to fit, with an optional box under it (`box`, a height). Returns the box's place.
+- `rq.uikit.balloon(text, opts)`: text in Frostbuy's speech balloon (CG 11110), wrapped and grown to the text, with the tail where `tail_x` puts it or none (`tail = false`). The tail is not mirrored.
+- `rq.uikit.page` takes `style = "parchment"`: Trivia's paper (CG 20001, 700 × 536 at 162, 56 by default, the vines kept and the middle cut), the title and the labels inside in the paper's brown.
+- The hub theme has `item_window`, `section`, `balloon` and `parchment`.
+- Loot Preview 1.2.0: the Item Previews button over the encounter bar is gone; a `"map"` tab with the game's pouch opens the items in `rq.uikit.item_window`, with a fourth row past 15 items and pages past 20. Game Speed 1.2.1 (no loader change): on a quest's map the F8 note shows under the encounter bar, centered on the 3D view.
+
 ## 2.31.0
 
 The Lab and its scripts (`notes/plans/plan-lab-scripts.md` in the workspace, phase D of the priority order).

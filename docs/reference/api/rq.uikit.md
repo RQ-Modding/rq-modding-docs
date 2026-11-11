@@ -103,6 +103,9 @@ end)
 | [`rq.uikit.rack`](#rquikitrack) | Draws a Frostbuy rack tile: a dark see-through square in the shop's black and yellow lines, with yellow text. |
 | [`rq.uikit.sort`](#rquikitsort) | Draws the sort column: "SORT" over up to 16 buttons, 30 apart, the current one framed in yellow. |
 | [`rq.uikit.page`](#rquikitpage) | Draws a page of a mod's own over the hub and runs `fn` in a column inside it. |
+| [`rq.uikit.item_window`](#rquikititem_window) | Draws the game's Quest Storage window holding item tiles, and returns whether it is still open. |
+| [`rq.uikit.section`](#rquikitsection) | Draws a heading in the quest panel's look, with an optional box under it. |
+| [`rq.uikit.balloon`](#rquikitballoon) | Draws text in Frostbuy's speech balloon. |
 | [`rq.uikit.options`](#rquikitoptions) | Draws the game's choice menu as a widget: its green base, grey rows, separators and a text panel at the top, laid out as the game lays out the menu. It is not modal and does not wait: it returns the picked row's id on the update it is clicked. Use it inside a page; `rq.ui.choose` opens the game's own menu instead. |
 | [`rq.uikit.item_data`](#rquikititem_data) | Reads an item instance's row data from the game: its name, level line, stats line, icon, rank, kind, lock, price, place, the classes that may equip it, and whether the game lets it go. |
 | [`rq.uikit.item_refresh`](#rquikititem_refresh) | Makes item rows and lists read an instance again on their next update. |
@@ -1152,7 +1155,7 @@ its second one opens the sort menu each time.
 rq.uikit.page(opts, fn) -> boolean
 ```
 
-`since 2.6.0` `changed 2.7.0` `changed 2.12.0` `changed 2.22.0` `changed 2.29.0`
+`since 2.6.0` `changed 2.7.0` `changed 2.12.0` `changed 2.22.0` `changed 2.29.0` `changed 2.32.0`
 
 Draws a page of a mod's own over the hub and runs `fn` in a column inside it.
 
@@ -1174,6 +1177,12 @@ Esc while a number field or a text field types (`rq.uikit.stepper`, `rq.uikit.in
 field's number or text back and does not close the page; while a text field types, the arrows move
 its caret.
 
+With `style = "parchment"` the page is Trivia's paper (CG 20001) instead: 700 by 536 at 162, 56
+by default, the vine strip down each side kept and the middle cut for a lower page, the title in
+the paper's brown text at the top left and the close button inside the vines at the top right.
+The game under it is not dimmed. Labels inside are the paper's brown (`label` and `dim` of the theme
+changed while `fn` runs); the other widgets keep their look.
+
 8 pixels higher than before, so the tab touches what it titles.
 
 ```lua
@@ -1184,11 +1193,16 @@ rq.on_frame(function()
     rq.uikit.button("Do it", { style = "large" })
   end)
 end)
+
+-- Trivia's paper, drawn the same way:
+open = rq.uikit.page({ id = "lore", title = "Lore", style = "parchment" }, function()
+  rq.uikit.label("Long ago, a castle stood here.")
+end)
 ```
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `opts` *(optional)* | [`rq.UiPlace`](../types/rq.UiPlace.md) `\|{title?: string, pad?: integer, gap?: integer}` | `x`, `y`, `w`, `h` (the hub's area by default), `id` (keeps its state), `title`, `pad` (default 16), `gap` between widgets. |
+| `opts` *(optional)* | [`rq.UiPlace`](../types/rq.UiPlace.md) `\|{title?: string, pad?: integer, gap?: integer, style?: "hub"\|"parchment"}` | `x`, `y`, `w`, `h` (the hub's area by default, or the paper's), `id` (keeps its state), `title`, `pad` (default 16; not used by the parchment), `gap` between widgets, `style` ("hub" by default; "parchment" since 2.32.0). |
 | `fn` *(optional)* | `fun(x: integer, y: integer, w: integer, h: integer)` | The widgets inside, in a column at the box under the title, clipped to it. |
 
 | Returns | Type | Description |
@@ -1202,6 +1216,125 @@ end)
 > Changed in 2.22.0: Esc that ends a number field's typing does not close it.
 
 > Changed in 2.29.0: The same for a text field's. With a title, the box starts at the tab's bottom edge,
+
+> Changed in 2.32.0: `style = "parchment"`.
+
+### rq.uikit.item_window
+
+```lua
+rq.uikit.item_window(items, opts) -> boolean, integer|nil
+```
+
+`since 2.32.0`
+
+Draws the game's Quest Storage window holding item tiles, and returns whether it is still open.
+
+The window is the Quest Storage's own (CG 11335, `T_StoreQuest`): 542 wide, a grey band 34 high
+with the close button at its right, and the tiles in the yellow frame under it, five to a row, 106
+apart, from the window's x + 9, y + 39. A window of n rows is 42 + 106 × n high (146 for one row);
+the rows are cut from the game's CG, not stretched. Each tile is `rq.uikit.item_icon`, with the
+game's item card as its tip. With more items than fit, the band gets the page arrows (`<` and `>`)
+and the page's number, and the window shows a page at a time.
+
+It is modal, as `rq.uikit.page`: the game gets no mouse and no keys while it shows. It closes by its
+close button, a right click, or Esc, when let go. Keep its state yourself: draw it while it is open,
+and stop when it returns false. Agents see the window as `page-<id>`, its close button as
+`button-close-<id>`, each tile as `item-<id>-<n>` and the arrows as `button-<id>-prev` and
+`button-<id>-next`.
+
+```lua
+local open = false
+rq.gamebutton.add({ group = "map", id = "bag", label = "My Bag", icon = 11329,
+  on_click = function() open = true end })
+rq.on_frame(function()
+  if not open then return end
+  local list = {}
+  for i, row in ipairs(rq.items()) do
+    if i > 30 then break end
+    list[#list + 1] = row.id
+  end
+  local clicked
+  open, clicked = rq.uikit.item_window(list, { id = "bag", title = "My Bag" })
+  if clicked then rq.log("picked", list[clicked]) end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `items` | `(integer\|` [`rq.UiItemRow`](../types/rq.UiItemRow.md) `\|` [`rq.UiItemWindowEntry`](../types/rq.UiItemWindowEntry.md) `)[]` | The tiles, in order. |
+| `opts` *(optional)* | [`rq.UiItemWindowOpts`](../types/rq.UiItemWindowOpts.md) | `id`, `title`, `rows`, `x`, `y`, `empty`, `cell`. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `open` | `boolean` | false on the update it closes. |
+| `clicked` | `integer\|nil` | The place in `items` of the tile clicked on this update. |
+
+### rq.uikit.section
+
+```lua
+rq.uikit.section(text, opts) -> integer, integer, integer, integer
+```
+
+`since 2.32.0`
+
+Draws a heading in the quest panel's look, with an optional box under it.
+
+The heading is the band of the quest panel's headings (CG 11014, `T_QuestComment`): a ★ at the left,
+the band fading from black to dark green, the gold stripes of its slanted right end, 26 high and
+575 wide by default (any width from 100). The text is the game's font in the heading's gold, made
+smaller and tighter to fit. With `box`, the panel's see-through dark red box (4 pixel round
+corners) follows, 29 under the heading's top and 32 in, `box` high; draw what goes in it at the
+box's place it returns. The theme's `section.body` is the panel's own text style for it.
+
+```lua
+local x, y, w, h = rq.uikit.section("Rewards", { x = 420, y = 100, w = 560, box = 90 })
+rq.hud.text(x + 12, y + 8, "300 gold", rq.uikit.themes.hub.section.body)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `text` | `string` | The heading. |
+| `opts` *(optional)* | [`rq.UiPlace`](../types/rq.UiPlace.md) `\|{box?: integer}` | Place (default 575 wide), `id`, `box` (the box's height in pixels, 8 or more). |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `x` | `integer` | The box's left edge, or the text's without a box. |
+| `y` | `integer` | The box's top edge, or the heading's. |
+| `w` | `integer` | The box's width, or the room for text in the heading. |
+| `h` | `integer` | The box's height, or the heading's (26). |
+
+### rq.uikit.balloon
+
+```lua
+rq.uikit.balloon(text, opts) -> integer, integer, integer, integer
+```
+
+`since 2.32.0`
+
+Draws text in Frostbuy's speech balloon.
+
+The balloon is the shop's (CG 11110, `T_ShopMessage`): see-through cream with 12 pixel round
+corners, 384 wide by default, and a tail under it pointing down. The text is the shop's (the
+game's font, size 28, dark brown), wrapped to the width, lines 25 apart; the balloon grows to hold
+them (94 high at least, the shop's). `tail_x` moves the tail along the bottom; `tail = false`
+leaves it out. The tail is not mirrored, so it always leans as the shop's does.
+
+```lua
+rq.uikit.balloon("Welcome! Take a look around.", { x = 20, y = 87 })
+rq.uikit.balloon("Over here!", { x = 600, y = 200, w = 260, tail_x = 200 })
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `text` | `string` | The text; `\n`, `@` and `$` start a line, as in the game's own texts. |
+| `opts` *(optional)* | [`rq.UiPlace`](../types/rq.UiPlace.md) `\|{tail?: boolean, tail_x?: integer}` | Place (default 384 wide; `h` sets the body's height), `id`, `tail` (default true), `tail_x` (the tail's left edge from the balloon's, in pixels; default 140). |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `x` | `integer` | The body's left edge. |
+| `y` | `integer` | The body's top edge. |
+| `w` | `integer` | The body's width. |
+| `h` | `integer` | The body's height, without the tail. |
 
 ### rq.uikit.options
 

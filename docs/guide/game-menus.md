@@ -1,12 +1,13 @@
 # Buttons in the game's menus
 
 Since loader 2.16.0 a mod can put a way in to itself inside the game's own menus, drawn and moved
-by the game itself, instead of a HUD button over the screen. Three places so far:
+by the game itself, instead of a HUD button over the screen. The places so far:
 
 - the **SYSTEM menu**: one MODS row for every mod, with each mod's entries in a list;
 - **Rance Castle**: a room of the mod's own;
 - the **skill window** (2.17.0): buttons under the Potential Skills list;
-- a character's **status page** (2.20.0): icon buttons in its title row.
+- a character's **status page** (2.20.0): icon buttons in its title row;
+- a quest's **map** (2.32.0): tabs against the map panel, under the area map.
 
 ## An entry in the SYSTEM menu
 
@@ -175,6 +176,51 @@ end
 For a list of items by number, such as the ones the Morurun absorbed, `rq.item.info(no)` gives an
 item number's name, icon and stats line with no item in the game, as the kit's rows want them.
 
+## Tabs on a quest's map
+
+```lua
+local open = false
+rq.gamebutton.add({
+  group = "map",
+  id = "previews",
+  label = "Item Previews",
+  icon = rq.image.compose("my-mod:pouch", { { cg = 11329, src = { 18, 0, 64, 54 } } }, { w = 64, h = 54 }),
+  tip = "What the chests of this room hold.",
+  on_click = function() open = true end,
+})
+rq.on_frame(function()
+  if not open then return end
+  open = rq.uikit.item_window(my_items(), { id = "loot", title = "Item Previews" })
+end)
+```
+
+The map panel at the right of a quest's map has no free room, and the 3D view's top holds the
+encounter bar. The free place is the 3D view's right edge, against the panel, between the area map
+(AREA DISPLAY) and the Magnum gauge. The tabs go there: 40 × 44 at x 768, from y 129, 47 apart, in
+load order. There is room for four; a fifth is not placed (the log says so).
+
+- **The panel's own buttons.** Each tab is a button of the panel, the game's plain grey bar with the
+  `icon` on it (a CG number, fitted in 32 × 34). So it hides with the panel when a dialog, a fight,
+  a menu or an event takes the screen, and comes back with it; the panel makes it again for each
+  area. Under the mouse it gets the game's yellow frame, the icon moves down a pixel while pressed,
+  and a greyed tab is darkened and plays the deny sound.
+- **Asked every 200 ms** while the map shows: `shown()` and `enabled()`, with no argument. A tab
+  with `shown` false gives its cell to the next; the handle's `set{...}` asks again at once.
+- **A click** runs `on_click` with the map still there, after the game's click sound. To show
+  something, draw it from `rq.on_frame`: `rq.uikit.item_window` is the game's Quest Storage window,
+  which Loot Preview opens with the room's items.
+- **The tip** is the game's comment window, with the label as its title, left of the tab. `tip`
+  may be a function, asked when the tip opens. `
+` starts a line.
+- **The keys.** In the map's key mode (Space turns it on and off, as for the panel's own buttons),
+  Left from AREA DISPLAY goes to the first tab not greyed; Up and Down move between the tabs, Right
+  goes back to AREA DISPLAY. Enter presses one.
+
+Agents see each tab as the control `<mod id>.<id>`, with its `button`, while the map takes input. The
+game keeps the panel drawn under its Quest Storage screen, so the tabs show there too, but agents do
+not see them and a click does nothing.
+Loot Preview's Item Previews tab is made this way.
+
 ## The game's dialogs
 
 Since loader 2.19.0 a mod asks the player with the game's own dialog window, the one of its Save?,
@@ -222,5 +268,5 @@ local pick = rq.ui.ask("What now?", { { id = "trade", text = "Trade a Jewel" }, 
 Morurun Items and Gem Lady Trade ask this way.
 
 See [`rq.gamebutton`](../reference/api/rq.gamebutton.md), [`rq.skilllist`](../reference/api/rq.skilllist.md),
-[`rq.statuspage`](../reference/api/rq.statuspage.md), [`rq.castle`](../reference/api/rq.castle.md) and
-[`rq.ui`](../reference/api/rq.ui.md) for every field.
+[`rq.statuspage`](../reference/api/rq.statuspage.md), [`rq.castle`](../reference/api/rq.castle.md),
+[`rq.ui`](../reference/api/rq.ui.md) and [`rq.uikit`](../reference/api/rq.uikit.md) for every field.

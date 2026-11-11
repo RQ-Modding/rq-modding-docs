@@ -1,6 +1,6 @@
 # rq.gamebutton
 
-`since 2.16.0` `changed 2.17.0` `changed 2.20.0`
+`since 2.16.0` `changed 2.17.0` `changed 2.20.0` `changed 2.32.0`
 
 Buttons of mods in the game's own menus, made by the game itself.
 
@@ -33,6 +33,24 @@ slot (or its REMOVE) goes to the first button not greyed; from a button Left and
 other, Down to the Special slot, Up to SKILL SCREEN. Agents see each one as the control
 `<mod id>.<id>` of the `status` screen. See `rq.statuspage` for the page itself.
 
+`"map"` (2.32.0): tabs on a quest's map, on the 3D view's right edge against the map panel, under
+the area map (AREA DISPLAY) and above the Magnum gauge, the only free room there. The tabs are
+40 × 44 at x 768, from y 129, 47 apart, in the order entries were added; entries with `shown`
+false give their cell to the next, and a fifth shown entry is not placed (`placed` false, and the
+log says so). Each tab is a button of the panel itself (`T_MapParts`, ids 700101 to 700104): the
+game's plain grey bar (CG 11009) with the icon on it, the yellow frame under the mouse, the icon
+moved 1 pixel right and down while pressed, the whole tab darkened while greyed. So it hides
+with the panel (a dialog, a fight, a menu, an event) and comes back with it, and the panel makes
+it again for each area. `shown` and `enabled` are asked every 200 ms while the map shows, and at
+once after `set`; a change in the shown tabs makes them again. The tip is the game's comment
+window with the label as its title, left of the tab. In the map's key mode (Space turns it on and
+off, as for the panel's own buttons) the arrow keys reach the tabs: Left from AREA DISPLAY goes to
+the first tab not greyed; from a tab Up and Down go to the next one, Right back to AREA DISPLAY,
+and Enter presses it. `on_click` runs with the map still there; to show a window of your own, draw
+it from `rq.on_frame` (`rq.uikit.item_window` is the game's Quest Storage window). Agents see each
+tab as the control `<mod id>.<id>` with its `button`, while the map takes input (not while the
+Quest Storage screen shows over the panel, which stays drawn under it).
+
 ```lua
 rq.gamebutton.add({ id = "settings", label = "My Mod settings", tip = "Opens My Mod's page",
   on_click = function() rq.log("open my page here") end })
@@ -41,6 +59,10 @@ rq.gamebutton.add({ group = "skill-window", id = "plan", label = "Plan Skills",
 rq.gamebutton.add({ group = "status", id = "notes", label = "Notes", icon = 11158,
   tip = function(chara) return "Notes on " .. rq.chara.get(chara).name end,
   on_click = function() rq.log("notes for", rq.statuspage.chara()) end })
+local open = false
+rq.gamebutton.add({ group = "map", id = "bag", label = "My Bag", icon = 11329,
+  tip = "What is in my bag.", enabled = function() return rq.dungeon.exploring() end,
+  on_click = function() open = true end })
 ```
 
 ## Functions
@@ -56,13 +78,13 @@ rq.gamebutton.add({ group = "status", id = "notes", label = "Notes", icon = 1115
 rq.gamebutton.add(spec) -> rq.GameButtonHandle
 ```
 
-`since 2.16.0` `changed 2.20.0`
+`since 2.16.0` `changed 2.20.0` `changed 2.32.0`
 
 Adds an entry to a game menu.
 
 Raises an error for a spec that is not a table, an unknown group, no id or label, no `on_click`,
-an `enabled`, `tip` or `shown` of the wrong type, a `"status"` entry with no `icon`, or an id the
-mod already has.
+an `enabled`, `tip` or `shown` of the wrong type, a `"status"` or `"map"` entry with no `icon`, or
+an id the mod already has.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -73,6 +95,8 @@ mod already has.
 | `entry` | [`rq.GameButtonHandle`](../types/rq.GameButtonHandle.md) | The entry, to change or remove it. |
 
 > Changed in 2.20.0: The group `"status"`, with `icon` and `shown`.
+
+> Changed in 2.32.0: The group `"map"`, with `icon` and `shown`.
 
 ### rq.gamebutton.groups
 

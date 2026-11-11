@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.31.0.
+Loader version 2.32.0.
 
 ## Namespaces
 
@@ -173,6 +173,8 @@ Loader version 2.31.0.
 | [`rq.UiInputOpts`](types/rq.UiInputOpts.md) | What `rq.uikit.input` takes. |
 | [`rq.UiItemIconOpts`](types/rq.UiItemIconOpts.md) | What `rq.uikit.item_icon` takes. |
 | [`rq.UiItemRow`](types/rq.UiItemRow.md) | An item row's data, as `rq.uikit.item_data` reads it from the game. A table of your own with the same fields draws a made-up row. |
+| [`rq.UiItemWindowEntry`](types/rq.UiItemWindowEntry.md) | An entry of `rq.uikit.item_window`'s list, when a tile needs more than the item. |
+| [`rq.UiItemWindowOpts`](types/rq.UiItemWindowOpts.md) | Options for `rq.uikit.item_window`. |
 | [`rq.UiMenuItem`](types/rq.UiMenuItem.md) | One entry of `rq.uikit.menu`. |
 | [`rq.UiOptionRow`](types/rq.UiOptionRow.md) | One row of `rq.uikit.options`. |
 | [`rq.UiPiece`](types/rq.UiPiece.md) | A part of a CG drawn at any size: the edges stay as they are, the middle stretches. |
