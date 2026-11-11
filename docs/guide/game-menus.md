@@ -191,12 +191,12 @@ local pick = rq.ui.ask("What now?", { { id = "trade", text = "Trade a Jewel" }, 
 - **They wait for the answer**, as the game's own questions do: `confirm` gives true or false,
   `notice` true once OK is pressed, `ask` the picked row's `id`. So they can answer inside the
   game's flow, from an `rq.ain.hook` callback that must set `h.result`, or from a kit button's
-  click. `rq.ui.choose` stays the way to open a menu at the next update with a callback.
+  click, on a mod's Config page too. `rq.ui.choose` stays the way to open a menu at the next update
+  with a callback.
 - **One dialog at a time.** The game keeps one list of rows for all its dialogs, so a call made
   while another dialog is being built or shows draws nothing and gives nil.
-- **Not from Config.** Over Config the dialog opens under Config's screen, out of sight, and the
-  dump does not list it. A page in Config's Mods tab asks on the page itself, with kit buttons, as
-  Keep Donations' Set does.
+- **Over Config** (since 2.28.0) the dialog draws over Config, on any tab, with a mod's page
+  between them, as Keep Donations' Set asks. Before, it opened under Config, out of sight.
 - **The text.** Only `\n` starts a line. The window wraps the rest at its width, and every 3 lines
   get a row of their own. `@` and `$`, where the game's own texts break, are drawn as `＠` and `＄`;
   pass `game = true` for a text that comes from the game, such as `h.args[2]` of its question.
@@ -206,6 +206,16 @@ local pick = rq.ui.ask("What now?", { { id = "trade", text = "Trade a Jewel" }, 
   The question is then listed on a **Confirmations** page in Config's Mods tab, where the player
   can turn it back on, and Resetting in Config's Confirmations tab turns it back on too.
   `remember = 14` (1 to 99) uses the game's own switch instead, here "Selling items".
+- **`ask` has the row too** (since 2.28.0), with the same keys. It stands for one answer,
+  `remember_answer` (default the first row), which `ask` gives without asking once the player
+  turned the question off. Gem Lady Trade's question uses the game's switch 11, "Take Quest", so
+  the player's setting counts for it as for the game's own question:
+
+  ```lua
+  local pick = rq.ui.ask(text, {
+    { id = YES, text = "Yes" }, { id = TRADE, text = "Trade a Jewel" }, { id = NO, text = "No" },
+  }, { game = true, remember = 11 }) -- while "Take Quest" is off: YES at once
+  ```
 - **Agents** see the screen `select`: `confirm`'s buttons are `yes` and `no`, `notice`'s is `yes`,
   `ask`'s rows are `select-<label>`, and `select.message` holds the text.
 

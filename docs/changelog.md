@@ -5,6 +5,15 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.28.0
+
+Dialogs and Config (`notes/plans/plan-dialogs-config.md` in the workspace, phase A of the priority order).
+- `rq.ui.confirm`, `notice` and `ask` show over Config, on any of its tabs, with a mod's page between Config and the dialog, so a button on a mod's Config page can ask with the game's own dialog. They opened under Config, out of sight. While Config runs (`T_Config::run`), the game's menu (`T_Select::create`, z 9991) and its comment window (`T_Comment::create`, 9801) are raised to z 16000 and 16100, above Config (15000 to 15010) and under the game's debug overlays (18000 up), and the HUD splits at the menu's z there. In `src/lua/dialog.lua`; the constants are a local's start value, which `rq.ain.patch_int` does not reach, so the kit has a helper of its own in `src/modloader.c` (not part of `rq`). The game never opens its own dialog in Config.
+- `rq.ui.get` lists a dialog over Config as the screen `select`, with Config under it.
+- `rq.ui.ask` takes `remember`, `remember_label` and `remember_answer`: the game's "don't ask again" row under the rows, as `rq.ui.confirm` has it, with the same keys (1 to 99 the game's switch, a text the mod's own question). `remember_answer` is the id of the row the call returns while the question is off; default the first row. The row and its note count 2 rows and a separator in the window's 20.
+- `rq.ui.get` on `quests`: while a quest is chosen, the list's rows (`quest-N`) are not `enabled`. The game reads none of them then (`T_Quest::checkInput` skips them while the list is locked) until Cancel lets the quest go, and it stays chosen after its question is answered No. Agents took it for a hover lost after a dialog (`notes/lua-api-gaps.md`).
+- Keep Donations 1.2.0: Set asks with `rq.ui.confirm` over Config, in place of its own Yes and No buttons. Gem Lady Trade 1.3.0: its question has the "don't ask again" row of the game's switch 11, "Take Quest".
+
 ## 2.27.0
 
 Music, the rest (`notes/plans/plan-music-rest.md` in the workspace, priority #7 of the API work). Lua in `src/lua/music.lua`; `rq.ain.stack` and the volume in C.

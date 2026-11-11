@@ -26,7 +26,7 @@ Reads what is on the screen and saves screenshots.
 rq.ui.get() -> table|nil
 ```
 
-`since 0.20.0` `changed 0.21.0` `changed 2.11.0` `changed 2.12.0` `changed 2.19.0` `changed 2.20.0` `changed 2.20.1` `changed 2.22.1`
+`since 0.20.0` `changed 0.21.0` `changed 2.11.0` `changed 2.12.0` `changed 2.19.0` `changed 2.20.0` `changed 2.20.1` `changed 2.22.1` `changed 2.28.0`
 
 Returns what is on the screen.
 
@@ -49,7 +49,11 @@ of the last update (section `kit`), or a mod's page captures the mouse (`rq.hud.
 A kit control (section `kit`) under the kit's keys cursor has `focused = true` (`rq.uikit.focused`).
 
 On the screen `select` (the game's choice menu and dialogs), `select.message` holds the dialog's
-text rows, one a line.
+text rows, one a line. A dialog over Config is `select` too, with Config under it.
+
+On `quests`, while a quest is chosen (`questState.selected` above 0), the rows (`quest-N`) are
+not `enabled`: the game reads none of them, with or without a dialog, until Cancel (a right click)
+lets the quest go. It stays chosen after its "Take Quest" question is answered No.
 
 It builds the whole list, so do not call it on every `rq.on_frame`.
 
@@ -57,6 +61,7 @@ every screen that shows it; Rance Castle is the screen `castle`, with its rooms 
 and the town tabs; the town tabs on `quests`; the SYSTEM menu over Quests or the status page is
 `system-menu` (it was the screen under it).
 `other` with the footer only (they were the town or the castle under them, with its tabs).
+chosen (they were, and gave no hover).
 
 ```lua
 local s = rq.ui.get()
@@ -80,6 +85,8 @@ if s and s.screen == "camp" then rq.log(#s.controls, "controls") end
 > Changed in 2.20.1: The footer (`system`, `vault`, `trivia`, the party cards and the money line) on
 
 > Changed in 2.22.1: Trivia, CG mode, Music mode and the castle's Gal monsters' and Poster rooms are
+
+> Changed in 2.28.0: A dialog over Config is `select`; the quest rows are not `enabled` while a quest is
 
 See also: [`rq.ui.aim`](rq.ui.md#rquiaim)
 
@@ -223,15 +230,20 @@ mouse buttons are up after it.
 rq.ui.confirm(text, opts) -> boolean|nil
 ```
 
-`since 2.19.0`
+`since 2.19.0` `changed 2.28.0`
 
 Asks the player Yes or No in the game's own dialog, and waits for the answer.
 
 It is the window of the game's `選択_確認`: the text, then Yes and No as the game's tall buttons.
 The call returns when the player picks, as the game's own questions do, so it can answer inside
-the game's flow: from an `rq.ain.hook` callback, a kit widget's click (`rq.on_frame`), an
-`rq.ui.choose` callback or a scene. While it shows, the HUD draws under it and `rq.uikit` widgets
-take no input (`rq.ui.choosing`); every `rq.on_frame` callback still runs, the caller's too.
+the game's flow: from an `rq.ain.hook` callback, a kit widget's click (`rq.on_frame`), a button on
+a mod's Config page, an `rq.ui.choose` callback or a scene. While it shows, the HUD draws under it
+and `rq.uikit` widgets take no input (`rq.ui.choosing`); every `rq.on_frame` callback still runs,
+the caller's too.
+
+Over Config, on any of its tabs, the dialog draws over it, with a mod's page between them, and
+its rows' comments too. The game opens no dialog there itself; before 2.28.0 a mod's opened under
+Config, out of sight.
 
 Only "\n" starts a line in the text; the window wraps it at its width, and gives every 3 lines a row
 of their own. `@` and `$`, where the game's own texts break, are drawn as `＠` and `＄` (the game's
@@ -269,6 +281,8 @@ end
 | --- | --- | --- |
 | `yes` | `boolean\|nil` | true for Yes (or a question turned off), false for No, nil when it was not shown. |
 
+> Changed in 2.28.0: Shown over Config.
+
 See also: [`rq.ui.notice`](rq.ui.md#rquinotice), [`rq.ui.ask`](rq.ui.md#rquiask)
 
 ### rq.ui.notice
@@ -277,7 +291,7 @@ See also: [`rq.ui.notice`](rq.ui.md#rquinotice), [`rq.ui.ask`](rq.ui.md#rquiask)
 rq.ui.notice(text, opts) -> boolean|nil
 ```
 
-`since 2.19.0`
+`since 2.19.0` `changed 2.28.0`
 
 Tells the player something in the game's own dialog, with one OK button, and waits until it is
 pressed.
@@ -301,13 +315,15 @@ rq.ui.notice("The vault cannot take " .. name .. ".")
 | --- | --- | --- |
 | `shown` | `boolean\|nil` | true once the player pressed OK, nil when it was not shown. |
 
+> Changed in 2.28.0: Shown over Config.
+
 ### rq.ui.ask
 
 ```lua
 rq.ui.ask(text, rows, opts) -> any|nil
 ```
 
-`since 2.19.0`
+`since 2.19.0` `changed 2.28.0`
 
 Asks the player a question with any choices in the game's own dialog, and waits for the answer.
 
@@ -316,27 +332,38 @@ the rows. With fewer than 3 choices they are the game's tall buttons. The text, 
 called from, and the one dialog at a time are as for `rq.ui.confirm`. Unlike `rq.ui.choose`, it
 waits for the answer, has a text over the rows, and has no Return row and no cancel unless asked.
 
+With `opts.remember`, the window adds the game's "don't ask again" row under the rows, as
+`rq.ui.confirm` does, with the same keys: a number 1 to 99 is the game's own switch, a text the
+mod's own question. The row stands for one answer, `opts.remember_answer` (default the first row):
+once the player turns the question off, the call returns that row's id without asking. Pressing
+the row keeps the window open, as in the game's own dialogs; the player then picks a row.
+
 The window does not scroll: the rows to pick and the lines of text together are at most 20 (two
-separators count as one), for example 9 lines and 11 rows, or 20 rows and no text.
+separators count as one), for example 9 lines and 11 rows, or 20 rows and no text. With
+`opts.remember`, the "don't ask again" row and its note count as 2 more, and the separator over
+them as one more separator.
 
 Raises an error while `init.lua` loads, for a text that is not a string, for more than 9 lines, for
-a row without text, with no row to pick, with more rows and lines than fit, and for an option of the
-wrong type.
+a row without text, with no row to pick, with more rows and lines than fit, for an option of the
+wrong type, for a `remember` that is neither a text nor 1 to 99, for a `remember_answer` that is no
+row's id, and for a `remember_answer` without `remember`.
 
 ```lua
 local pick = rq.ui.ask("Take Quest@Gem Lady?", {
   { id = "yes", text = "Yes", sound = 5012 }, { id = "trade", text = "Trade a Jewel" }, { id = "no", text = "No" },
-}, { game = true, cursor = "yes" })
+}, { game = true, cursor = "yes", remember = 11 }) -- the game's "Take Quest" switch
 ```
 
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `text` | `string\|nil` | The question, or nil for rows only. |
 | `rows` | `(string\|` [`rq.UiAskRow`](../types/rq.UiAskRow.md) `)[]` | The rows: a text, `"-"` for a separator, or a table. |
-| `opts` *(optional)* | `{cursor?: any, cancel?: boolean, x?: integer, y?: integer, game?: boolean}` | `cursor`: the id of the row the cursor starts on. `cancel`: true lets a right click or Space close it, and the call returns 0 (default false, as the game's questions). `x`, `y`: the dialog's top left (default the center). `game`: the text is the game's, where `@` and `$` start a line. |
+| `opts` *(optional)* | `{cursor?: any, cancel?: boolean, x?: integer, y?: integer, game?: boolean, remember?: string\|integer, remember_label?: string, remember_answer?: any}` | `cursor`: the id of the row the cursor starts on. `cancel`: true lets a right click or Space close it, and the call returns 0 (default false, as the game's questions). `x`, `y`: the dialog's top left (default the center). `game`: the text is the game's, where `@` and `$` start a line. `remember`: a key for the mod's own "don't ask again", or 1 to 99 for the game's own. `remember_label`: how the Confirmations page names the mod's question (default the key). `remember_answer`: the id of the row returned while the question is turned off (default the first row). |
 
 | Returns | Type | Description |
 | --- | --- | --- |
-| `id` | `any\|nil` | The picked row's id, 0 when cancelled, nil when it was not shown. |
+| `id` | `any\|nil` | The picked row's id, 0 when cancelled, `remember_answer` while the question is turned off, nil when it was not shown. |
+
+> Changed in 2.28.0: Shown over Config; `remember`, `remember_label` and `remember_answer`.
 
 See also: [`rq.ui.choose`](rq.ui.md#rquichoose)
