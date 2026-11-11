@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.28.0.
+Loader version 2.29.0.
 
 ## Namespaces
 
@@ -170,6 +170,7 @@ Loader version 2.28.0.
 | [`rq.UiChoice`](types/rq.UiChoice.md) | One row of `rq.ui.choose`. |
 | [`rq.UiCommentOpts`](types/rq.UiCommentOpts.md) | What `rq.uikit.comment` takes besides the text. |
 | [`rq.UiFilterState`](types/rq.UiFilterState.md) | A filter state for `rq.uikit.filters` and `rq.uikit.item_filter`: what the vault's filter column has picked. 0 or nil is "all". |
+| [`rq.UiInputOpts`](types/rq.UiInputOpts.md) | What `rq.uikit.input` takes. |
 | [`rq.UiItemIconOpts`](types/rq.UiItemIconOpts.md) | What `rq.uikit.item_icon` takes. |
 | [`rq.UiItemRow`](types/rq.UiItemRow.md) | An item row's data, as `rq.uikit.item_data` reads it from the game. A table of your own with the same fields draws a made-up row. |
 | [`rq.UiMenuItem`](types/rq.UiMenuItem.md) | One entry of `rq.uikit.menu`. |

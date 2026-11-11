@@ -19,6 +19,7 @@ with `rq.hud.text_begin`.
 | [`rq.input.set_key`](#rqinputset_key) | Presses or lets go of a key for the game. |
 | [`rq.input.set_mouse`](#rqinputset_mouse) | Moves the game's mouse. |
 | [`rq.input.wheel`](#rqinputwheel) | Sends one wheel step to the game. |
+| [`rq.input.type`](#rqinputtype) | Types text into the text input that is on, as a keyboard types it. |
 | [`rq.input.release`](#rqinputrelease) | Gives the mouse back to the player. |
 | [`rq.input.scroll`](#rqinputscroll) | Returns the wheel steps since the last update. |
 
@@ -162,6 +163,41 @@ Sends one wheel step to the game.
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `dir` | `integer` | Positive scrolls up, negative scrolls down. |
+
+### rq.input.type
+
+```lua
+rq.input.type(text) -> integer|false
+```
+
+`since 2.29.0`
+
+Types text into the text input that is on, as a keyboard types it.
+
+The characters go in at the caret of `rq.hud.text_begin`'s text, so into the `rq.uikit.input` field
+that types. Only characters the game's font can draw go in, and control characters (a line break
+too) are dropped; the text stops at the first character that would pass the field's longest
+length. Key presses from `rq.input.set_key` make no typed text, so this is how a mod or an agent
+types a name: `rqmod-ctl type` does the same while a text input is on. The editing keys (Backspace,
+Delete, the arrows, Home, End, Ctrl+V) work from `set_key`.
+
+Raises an error for a text that is neither a string nor a number.
+
+```lua
+if rq.uikit.typing() == "name" then
+  rq.input.type("Rance")
+end
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `text` | `string` | The text, in UTF-8. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `count` | `integer\|false` | How many characters went in; false while no text input is on. |
+
+See also: [`rq.hud.text_begin`](rq.hud.md#rqhudtext_begin)
 
 ### rq.input.release
 

@@ -5,6 +5,17 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.29.0
+
+The text field (`notes/plans/plan-text-field.md` in the workspace, phase B of the priority order).
+- `rq.uikit.input(text, opts)`: a text field in the kit's number-field look (`opts`: `w`, `max` 1 to 255 bytes, `label`, `placeholder`, `focus`, `disabled`, place, `id`, `tip`, `nav`). A click or Enter under the keys' cursor types into it; `focus = true` types from the update it first shows. Enter keeps the text, a click outside keeps it, Esc puts back the old one; it returns the text, `changed` and how a typing ended (`"enter"`, `"esc"`, `"away"`). One field types at a time, number fields included. While it types, every key is hidden from the game, the arrows are the caret's, and Esc does not close Config or `rq.uikit.page`. Listed as `input-<id>` with the text as `value` and `selected` while it types. In `src/lua/uikit.lua`.
+- `rq.hud.text_begin` has a caret: typed text goes in at it, Backspace and Delete erase on each side, Left, Right, Home and End move it, and Ctrl+V pastes the system clipboard (without its line breaks and the characters the game's font cannot draw). Held, Backspace, Delete and the arrows repeat (250 ms, then every 50 ms). The keys are read from the keys' state each update, so `rq.input.set_key`, `rqmod-ctl key` and `hold` work them; Backspace was a key handler that agents never reached. Control characters are dropped. `rq.hud.text_value` returns the caret as a third value (bytes before it).
+- `rq.input.type(text)`: types text into the text input that is on, at its caret; returns how many characters went in, or false while none is on. `rqmod-ctl type` does the same while a text input is on (any UTF-8 text; before, only letters, digits and space, as key pulses, which make no typed text).
+- `rq.uikit.typing` names a text field that types too.
+- `rq.uikit.page` with a title: the box `fn` gets starts at the title tab's bottom edge, 8 pixels higher than before, so the tab touches what it titles, as the hub's current tab touches its screen (Moru, 2026-11-11: the Save Manager's list and Morurun Items' slots stood apart from their tabs).
+- `rqmod-ctl ui`: a widget's `value` past 159 bytes is cut between characters, so the JSON stays UTF-8.
+- Save Profiles 1.1.0: the title screen's button and the Save Manager drawn with the kit in the hub's theme (`rq.uikit.page`, `list`, `button`), the keys' cursor, Play and Delete asked with `rq.ui.confirm` (Delete on No), and the name prompt a small page on the top layer with `rq.uikit.input`. Agents type a name with `rqmod-ctl type`.
+
 ## 2.28.0
 
 Dialogs and Config (`notes/plans/plan-dialogs-config.md` in the workspace, phase A of the priority order).

@@ -71,7 +71,8 @@ end)
 | [`rq.uikit.choice`](#rquikitchoice) | Draws one of several checkboxes, as the 3D tab's quality. |
 | [`rq.uikit.slider`](#rquikitslider) | Draws the Sound tab's slider. |
 | [`rq.uikit.stepper`](#rquikitstepper) | Draws a number field: the number in a framed box between - and +, and returns the new number. |
-| [`rq.uikit.typing`](#rquikittyping) | Returns the number field typing on this update, by its `opts.id`, or nil. |
+| [`rq.uikit.typing`](#rquikittyping) | Returns the number field or text field typing on this update, by its `opts.id`, or nil. |
+| [`rq.uikit.input`](#rquikitinput) | Draws a text field: the text in a framed box, and returns the text. |
 | [`rq.uikit.tabs`](#rquikittabs) | Draws Config's tabs side by side: normal, hovered and current. |
 | [`rq.uikit.panel`](#rquikitpanel) | Draws a Config page or the 3D tab's dark block, and runs `fn` in a column inside it. |
 | [`rq.uikit.list`](#rquikitlist) | Draws rows on a dark block that scroll by the wheel. |
@@ -311,16 +312,79 @@ rq.config.page{
 rq.uikit.typing() -> string|nil
 ```
 
-`since 2.22.0`
+`since 2.22.0` `changed 2.29.0`
 
-Returns the number field typing on this update, by its `opts.id`, or nil.
+Returns the number field or text field typing on this update, by its `opts.id`, or nil.
 
-While one types, the keys it reads are its own; a page of a mod's own that reads Esc or digits
-itself can leave them alone while this is not nil.
+While one types, the keys it reads are its own; a page of a mod's own that reads Esc, digits or
+letters itself can leave them alone while this is not nil.
 
 | Returns | Type | Description |
 | --- | --- | --- |
 | `id` | `string\|nil` | The field's `opts.id` (else the kit's id), or nil. |
+
+> Changed in 2.29.0: Text fields (`rq.uikit.input`) too.
+
+### rq.uikit.input
+
+```lua
+rq.uikit.input(value, opts) -> string, boolean, "enter"|"esc"|"away"|nil
+```
+
+`since 2.29.0`
+
+Draws a text field: the text in a framed box, and returns the text.
+
+- **Typing.** A click on the box, or Enter under the keys' cursor, types into it; with `focus` it
+  types as soon as it shows. It types through the HUD's text input (`rq.hud.text_begin`): the
+  system's keyboard and input methods, a blinking caret, Backspace, Delete, Left, Right, Home, End,
+  Ctrl+V to paste, and only characters the game's font can draw. The text slides in the box to keep
+  the caret in sight.
+- **Ending.** Enter keeps the text; so does a click outside the box. Esc puts back the text it
+  started with. A field that is not drawn for an update stops, with what it typed kept as it was.
+  One field types at a time, a number field (`rq.uikit.stepper`) included: a press on another
+  stops the first.
+- **Keys.** While it types, every key is hidden from the game, Ctrl (its message skip) included, and
+  the arrows move the caret, not the keys' cursor. Enter, Esc and Backspace stay hidden until let go:
+  Esc there does not close Config or `rq.uikit.page`.
+
+The return values: while it types, the text so far; `changed` is true on the update a typing ends
+with a new text kept; `ended` says how a typing ended on this update. Keep the text yourself and
+pass it back each update.
+
+The field is listed for `rqmod-ctl ui` as `input-<id>` with the text as `value` (none while it is
+empty, as for every control; its first 159 bytes, cut between characters) and `selected` true while
+it types. Agents type into it with `rqmod-ctl type "<text>"` (or `rq.input.type`) and edit with
+`rqmod-ctl key` and `hold`.
+
+Raises an error for a text that is not a string, opts that are not a table, a `max` outside 1 to
+255, a `w` that is not a whole number, or a `label` or `placeholder` that is not a string.
+
+```lua
+local name = "Rance"
+local open = true
+rq.on_frame(function()
+  if not open then return end
+  open = rq.uikit.page({ id = "rename", title = "Rename" }, function()
+    local text, changed = rq.uikit.input(name, { id = "name", label = "Name", max = 20, placeholder = "A name" })
+    name = text
+    if changed then rq.log("new name:", name) end
+  end)
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `value` | `string` | The text shown, in UTF-8. |
+| `opts` *(optional)* | [`rq.UiInputOpts`](../types/rq.UiInputOpts.md) | `w` (the box), `max`, `label`, `placeholder`, `focus`, `disabled`; place, `id`, `tip`, `nav`. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `value` | `string` | The text: as typed so far while it types, the one kept or put back when it ends. |
+| `changed` | `boolean` | true on the update a typing ended with a text other than the one it started with. |
+| `ended` | `"enter"\|"esc"\|"away"\|nil` | How a typing ended on this update: Enter, Esc, or a click elsewhere (also a stop by a disabled field, another field, or `rq.hud.text_end`); nil otherwise. |
+
+See also: [`rq.uikit.stepper`](rq.uikit.md#rquikitstepper), [`rq.hud.text_begin`](rq.hud.md#rqhudtext_begin)
 
 ### rq.uikit.tabs
 
@@ -1088,13 +1152,15 @@ its second one opens the sort menu each time.
 rq.uikit.page(opts, fn) -> boolean
 ```
 
-`since 2.6.0` `changed 2.7.0` `changed 2.12.0` `changed 2.22.0`
+`since 2.6.0` `changed 2.7.0` `changed 2.12.0` `changed 2.22.0` `changed 2.29.0`
 
 Draws a page of a mod's own over the hub and runs `fn` in a column inside it.
 
 The page covers the hub under the town tabs and above the footer (0, 56, 1024 by 536). The game
 shows dimmed under it and gets no mouse and no keys (`rq.hud.capture_mouse`, `rq.hud.block_keys`),
-so it is modal. With `title` the title sits on the current town tab's piece at the top left. The
+so it is modal. With `title` the title sits on the current town tab's piece at the top left, and
+the box `fn` gets starts at the tab's bottom edge (the tab is 45 high at 8 under the page's top), so the tab
+touches the first thing under it, as the hub's current tab touches its screen. The
 page closes by its close button at the top right, a right click, or Esc; the right click and Esc
 close when let go, so the game does not get them. Keep the page's state yourself: draw it while
 it is open, and stop when it returns false. It does not open by itself; open it from a button of
@@ -1104,8 +1170,11 @@ A choice menu from `rq.ui.choose` shows over the page. While it does, the page l
 the keys to the menu, and the right click, Space or Esc that ends the menu does not close the page.
 
 The arrow keys and Enter move the keys' cursor between the page's widgets (`rq.uikit.keys`).
-Esc while a number field types (`rq.uikit.stepper`) puts the field's number back and does not
-close the page.
+Esc while a number field or a text field types (`rq.uikit.stepper`, `rq.uikit.input`) puts the
+field's number or text back and does not close the page; while a text field types, the arrows move
+its caret.
+
+8 pixels higher than before, so the tab touches what it titles.
 
 ```lua
 local open = false
@@ -1131,6 +1200,8 @@ end)
 > Changed in 2.12.0: The arrow keys and Enter move between its widgets.
 
 > Changed in 2.22.0: Esc that ends a number field's typing does not close it.
+
+> Changed in 2.29.0: The same for a text field's. With a title, the box starts at the tab's bottom edge,
 
 ### rq.uikit.options
 

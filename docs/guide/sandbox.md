@@ -131,7 +131,7 @@ the running game raise an error at that point. Among them:
 
 - `rq.skill.get`, `rq.chara.get`, `rq.item.give`, `rq.party.*`
 - `rq.hud.text_width`, `wrap`, `cg` and `text_begin`
-- `rq.input.set_key`, `set_mouse`, `wheel` and `release`
+- `rq.input.set_key`, `set_mouse`, `wheel`, `release` and `type`
 - `rq.ui.get`, `aim`, `shot` and `shot_result`
 - `rq.battle.start`, `rq.random.seed`
 

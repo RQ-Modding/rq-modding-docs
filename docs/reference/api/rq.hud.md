@@ -42,7 +42,7 @@ end
 | [`rq.hud.block_keys`](#rqhudblock_keys) | Hides the keyboard, or some keys, from the game for this update. |
 | [`rq.hud.capture_mouse`](#rqhudcapture_mouse) | Hides the whole mouse from the game for this update: where it is, its buttons and the wheel. |
 | [`rq.hud.text_begin`](#rqhudtext_begin) | Starts reading typed text. |
-| [`rq.hud.text_value`](#rqhudtext_value) | Returns the typed text and whether reading is on. |
+| [`rq.hud.text_value`](#rqhudtext_value) | Returns the typed text, whether reading is on, and where the caret is. |
 | [`rq.hud.text_end`](#rqhudtext_end) | Stops reading typed text. |
 
 ### rq.hud.screen
@@ -487,13 +487,30 @@ end)
 rq.hud.text_begin(initial, max_bytes)
 ```
 
-`since 0.3.0`
+`since 0.3.0` `changed 2.29.0`
 
 Starts reading typed text.
 
 It uses the system's text input, so input methods and keyboard layouts work. Only characters the
-game's font can draw are kept, and Backspace removes the last character. Read the text with
-`rq.hud.text_value` and end with `rq.hud.text_end`. Calling it again restarts with the new text.
+game's font can draw are kept, and control characters are dropped. The text has a caret, at the end
+of `initial` to start with, and typed characters go in at it:
+
+- **Backspace** removes the character before the caret, **Delete** the one after it.
+- **Left** and **Right** move the caret by a character, **Home** and **End** to the start and the end.
+- **Ctrl+V** pastes the system clipboard at the caret, without its line breaks and the characters
+  the font cannot draw.
+
+Held, Backspace, Delete, Left and Right repeat: 250 ms after the press, then every 50 ms. The keys are
+read from the keys' state, so `rq.input.set_key` and `rqmod-ctl key` / `hold` work them too; typed
+text from a mod or an agent comes through `rq.input.type` and `rqmod-ctl type`. A key already down
+when the reading starts counts once let go and pressed again. Text past `max_bytes` stops at the first
+character that does not fit.
+
+It does not hide these keys from the game: call `rq.hud.block_keys` while you read, as
+`rq.uikit.input` does. Read the text with `rq.hud.text_value` and end with `rq.hud.text_end`. Calling
+it again restarts with the new text.
+
+text from `rq.input.type`.
 
 ```lua
 rq.hud.text_begin("Rance", 20)
@@ -509,22 +526,36 @@ end)
 | `initial` *(optional)* | `string` | The starting text, in UTF-8. Default "". |
 | `max_bytes` *(optional)* | `integer` | The longest the text may be, in bytes, 1 to 255. Default 40. |
 
+> Changed in 2.29.0: A caret, Delete, the arrows, Home, End and Ctrl+V; keys from `rq.input.set_key`, and
+
 See also: [`rq.hud.text_value`](rq.hud.md#rqhudtext_value)
 
 ### rq.hud.text_value
 
 ```lua
-rq.hud.text_value() -> string, boolean
+rq.hud.text_value() -> string, boolean, integer
 ```
 
-`since 0.3.0`
+`since 0.3.0` `changed 2.29.0`
 
-Returns the typed text and whether reading is on.
+Returns the typed text, whether reading is on, and where the caret is.
+
+```lua
+local text, on, caret = rq.hud.text_value()
+if on then
+  local x = 20 + rq.hud.text_width(text:sub(1, caret), 16)
+  rq.hud.text(20, 20, text, { size = 16 })
+  rq.hud.rect(x, 20, 2, 18, 255, 255, 255, 220)
+end
+```
 
 | Returns | Type | Description |
 | --- | --- | --- |
 | `text` | `string` | The text so far, in UTF-8. |
 | `active` | `boolean` | true between `text_begin` and `text_end`. |
+| `caret` | `integer` | The bytes of `text` before the caret, 0 to `#text`; never inside a character. |
+
+> Changed in 2.29.0: The caret.
 
 ### rq.hud.text_end
 
