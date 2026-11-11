@@ -27,8 +27,6 @@ first, so that a simple change never needs the game's code (`rq.ain`).
 
 | Area | What |
 | --- | --- |
-| Battle rewards | The EXP, gold and gold bags of a won fight, after the game's own bonuses, changeable, with the result screen showing the new numbers. |
-| Save data | Data that follows the game's save: loading an older save brings back the mod's older data too. Events when the game saves and loads. |
 | Screens | Since 2.20.1 `rq.ui` lists the footer on every screen that shows it, Rance Castle as the screen `castle` with its rooms, and the town tabs on Quests; since 2.31.0 the Party screen's 2nd Army box (its characters, their STATUS buttons and the places a dragged character is dropped on). When a mod asks: names for Trivia, CG mode, Music mode and the castle's bonus rooms, and the castle's rooms as data in `rq.ui.get`. |
 
 ### Later
@@ -37,7 +35,8 @@ When a mod asks for it, or at low priority.
 
 | Area | What |
 | --- | --- |
-| Money, fights and levels | The money and charisma (`rq.game`), random fights (`rq.encounters`), EXP and levels (`rq.chara.add_exp`, `level_up`, `on_level_up`) and timers and jobs that wait (`rq.after`, `rq.every`, `rq.spawn`, `rq.wait`) came in 2.33.0 ([Gold, encounters and levels](guide/game-state.md)). Later: which group or enemies a random fight brings (with the monsters), the 1 in 10 chance once the bar is full, an event on every change of the money, timers on the game's clock (following `rq.speed`), and the charisma bar's flash and sound when a mod adds charisma. |
+| Money, fights and levels | The money and charisma (`rq.game`), random fights (`rq.encounters`), EXP and levels (`rq.chara.add_exp`, `level_up`, `on_level_up`) and timers and jobs that wait (`rq.after`, `rq.every`, `rq.spawn`, `rq.wait`) came in 2.33.0 ([Gold, encounters and levels](guide/game-state.md)); a fight's gold and EXP before the result screen (`rq.battle.on_reward`) and the gold bags (`rq.battle.bags`, `set_bag`) in 2.34.0 ([Fight rewards](guide/game-state.md#fight-rewards)). Later: a fight's gold and EXP before the game's own rules apply, the labels beside each ally's EXP on the result screen, a quest's own reward (with the quest's fields), which group or enemies a random fight brings (with the monsters), the 1 in 10 chance once the bar is full, an event on every change of the money, timers on the game's clock (following `rq.speed`), and the charisma bar's flash and sound when a mod adds charisma. |
+| Save data | Data that follows the game's save (`rq.savedata`) and its moments (`rq.saves.on_save`, `on_load`) came in 2.34.0 ([Data that follows the save](guide/save-data.md)). Later, when a mod asks: states made by mods that last until the save is loaded again (`lasts = "save"`), an event for a new game, and which mods have data in a save in the Save Profiles list. |
 | Settings and setup | A mod's Config page built from a list of settings; the `install()` calls done on their own; the party's HP calls under `rq.party` as well as `rq.orb`. |
 | Monsters | Reading a monster's stats and skills, changing them for every fight, and an event when the game builds an enemy (to scale it, say). The game's mode (normal, easy, TADA). `rq.battle.start` with a boss, a background, music and more. |
 | Battle events | Calls for the places mods hook through `rq.ain` today: the speeds the turn order is built from, with a familiar's own speed and its owner (the most likely to be used: familiar balance, speed states); the stun roll, as `rq.combat.on_crit` is for criticals; each line of the battle log, to skip or change it; and whether TADA mode is on. With them: heals, escapes, ambushes, and every counter, not only the one after Ally Guard. A character's short name is already `rq.chara.get(iic).short`. |

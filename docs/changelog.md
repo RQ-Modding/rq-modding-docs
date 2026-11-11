@@ -5,6 +5,17 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.34.0
+
+Fight rewards and save data (`notes/plans/plan-rewards-savedata.md` in the workspace, phase I of the priority order). The rewards are Lua over `rq.ain` (`src/lua/basics.lua`); the save data is kept in C beside `rq.store` and written with the game's own save files.
+- `rq.battle.on_reward(fn)`: once per fight that pays (results 1 and 4), after the game has summed the gold and EXP and before the result screen shows them. `ctx.gold`, `ctx.exp` (the fight's EXP after the fight's bonuses; writing it scales every ally's EXP at once), each ally's `exp` in `ctx.allies` (with `down` and `capped`, who get none) and `ctx.reserve` (each reserve character's share; until written it follows the game's rule, the smallest ally EXP over 20) can be changed, and the result screen shows them, the party gets them and the gold is paid. Also `result`, `group`, `rank`, `kills`, `bags`, `base`, `enemies`. The quest's EXP total, its level-up bonus and the cheat check's gold count follow; the reserve's share is held during the game's sum and given after the callbacks with the game's free level for a full bar, still reported by `rq.chara.on_level_up` with `battle` and `free`.
+- `rq.battle.bags()` and `rq.battle.set_bag(iic, carries)`: the enemies' gold bags (the game gives each a bag at 50%; the bags picked set the gold). `set_bag` in `rq.battle.on_start` is kept and written over the game's roll, which comes after it; during the fight it changes a bag before the enemy falls.
+- `rq.savedata`: `get`, `set`, `delete`, `keys`, as `rq.store`, for data that follows the game's save. Kept in memory, written beside the save when the game writes it (`RanceQuestMagnum_030.rqmod.json`, `_930` for the suspend save), read back when the game loads it, emptied at the title, deleted with the save and copied into the game's daily backup. Values are numbers (a whole number comes back an integer), strings, booleans and tables of them. The data of a mod that is not loaded is kept.
+- `rq.saves.on_save(fn)` (just before the game writes a save) and `rq.saves.on_load(fn)` (after the game loaded one, with `rq.savedata` in), each with `ctx.suspend`.
+- The reference of `rq.store` says it follows the save profile and is written at once, so it can be ahead of the save; `rq.battle.get_drop` and `set_drop` work in `on_reward` too; `rq.on_reset` points to `on_load`.
+- `rq.ain.patch_float`, `patch_int`, `patch_int_after` and `set_code_int` reach the game's code of a function hooked with `rq.ain.hook`, before or after the patch: a hook moves the function to a stub that jumps to its code, and the patches read the stub. The loader's new hook on `Ｔ戦闘前初期化` at boot (the gold bags) had hidden Custom TADA Mode's familiar growth from it.
+- Binoculars 1.2.1 keeps the pairs that went into a quest and the number bought in `rq.savedata`, taking its old `rq.store` values once.
+
 ## 2.33.0
 
 The basics a new creator tries first (`notes/plans/plan-creator-basics.md` in the workspace, phase H of the priority order). Built in Lua over `rq.ain` (`src/lua/basics.lua`, `timers.lua`), so a mod no longer calls the game's functions for these.

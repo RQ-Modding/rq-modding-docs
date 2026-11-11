@@ -22,7 +22,7 @@ skipped, with `skip <folder>: no mod.json` in the log.
 
 | Field | Type | What it does |
 | --- | --- | --- |
-| `id` | string | The mod's id. Other mods name it in their lists, and the engine keys the mod's `rq.store` data and log lines by it. Default: the folder's name. Keep it the same across versions. |
+| `id` | string | The mod's id. Other mods name it in their lists, and the engine keys the mod's `rq.store` and `rq.savedata` data and log lines by it. Default: the folder's name. Keep it the same across versions. |
 | `name` | string | The name for players. The engine records it, with `version`, in a save profile's mod list (`rq.saves`). Default: the id. A page in the Mods tab has its own title, set in `rq.config.page`. |
 | `version` | string | The mod's own version, recorded in save profiles. Not used to order or gate anything. |
 | `author` | string | Who made it. The engine does not read it. |

@@ -250,3 +250,75 @@ It records the choice, starts a new process (which waits for this one to exit) a
 | --- | --- | --- |
 | `ok` | `nil` | Nothing: on success it does not return. |
 | `err` | `string?` | Why the choice could not be recorded. |
+
+## Events
+
+| Name | Summary |
+| --- | --- |
+| [`rq.saves.on_save`](#rqsaveson_save) | Calls `fn` just before the game writes its save. |
+| [`rq.saves.on_load`](#rqsaveson_load) | Calls `fn` after the game has loaded a save. |
+
+### rq.saves.on_save
+
+```lua
+rq.saves.on_save(fn) -> fun()
+```
+
+`since 2.34.0`
+
+Calls `fn` just before the game writes its save.
+
+The game saves before a quest starts, when one ends, from the SYSTEM menu's Save, and on Suspend
+(then `ctx.suspend` is true and the game closes). Put a mod's last numbers into `rq.savedata` here;
+`rq.savedata` is written with the save right after. An error is logged once for each new error
+text.
+
+```lua
+local steps = 0
+rq.saves.on_save(function()
+  rq.savedata.set("steps", steps)
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(ctx:` [`rq.SaveCtx`](../types/rq.SaveCtx.md) `)` | Runs before the save is written. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |
+
+See also: [`rq.savedata`](rq.savedata.md)
+
+### rq.saves.on_load
+
+```lua
+rq.saves.on_load(fn) -> fun()
+```
+
+`since 2.34.0`
+
+Calls `fn` after the game has loaded a save.
+
+It runs for the title's Continue, the SYSTEM menu's Load and the title's Resume, after the game's
+own after-load step, with `rq.savedata` holding that save's data. For the suspend save it runs
+before the map shows again. A new game loads nothing, and starts with no `rq.savedata`.
+`rq.on_reset("load")` runs before the load instead. An error is logged once for each new error
+text.
+
+```lua
+local steps = 0
+rq.saves.on_load(function()
+  steps = rq.savedata.get("steps", 0)
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(ctx:` [`rq.SaveCtx`](../types/rq.SaveCtx.md) `)` | Runs after the save is loaded. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |
+
+See also: [`rq.savedata`](rq.savedata.md)

@@ -5,8 +5,10 @@ money and charisma ([`rq.game`](../reference/api/rq.game.md)), random fights on 
 ([`rq.encounters`](../reference/api/rq.encounters.md)), EXP and levels
 ([`rq.chara.add_exp`](../reference/api/rq.chara.md#rqcharaadd_exp), `level_up` and `on_level_up`),
 and timers and jobs that wait ([`rq.after`](../reference/api/rq.md#rqafter), `rq.every`,
-`rq.spawn`, `rq.wait`). Each example on this page is a whole `init.lua`; set `loader` to `2.33.0`
-in its `mod.json`.
+`rq.spawn`, `rq.wait`). A fight's gold and EXP came in 2.34.0
+([`rq.battle.on_reward`](../reference/api/rq.battle.md#rqbattleon_reward)). Each example on this
+page is a whole `init.lua`; set `loader` to `2.33.0` in its `mod.json`, or `2.34.0` for the fight
+rewards.
 
 All of these read or change the game, so call them from a callback or `rq.on_frame`, not at the
 top level of `init.lua` ([When code runs](sandbox.md#when-code-runs)). `rq.encounters.hold` and the
@@ -17,24 +19,15 @@ top level of `init.lua` ([When code runs](sandbox.md#when-code-runs)). `rq.encou
 `rq.game.gold()` gives the money, and `set_gold` and `add_gold` change it. The game keeps it from
 0 to 999,999,999: a value past either end stops there. Every change redraws the system bar.
 
-Double the gold of every fight on a quest's map. The game pays a fight's gold as its result screen
-closes, before `rq.battle.on_end` runs, so the difference is the fight's gold:
+Double the gold of every fight. `rq.battle.on_reward` gets the fight's gold before the result
+screen shows it, so the screen shows the new amount and that is what the game pays
+([Fight rewards](#fight-rewards)):
 
 ```lua
-local before = 0
-
-rq.battle.on_start(function()
-  before = rq.game.gold()
-end)
-
-rq.battle.on_end(function()
-  local won = rq.game.gold() - before
-  if won > 0 then rq.game.add_gold(won) end
+rq.battle.on_reward(function(ctx)
+  ctx.gold = ctx.gold * 2
 end)
 ```
-
-The result screen still shows the game's own amount; the system bar shows the money with the
-bonus.
 
 Charisma (the game calls it fame) is a rank and the points toward the next one.
 `rq.game.charisma()` returns the rank, the points and the points the rank needs. `add_charisma`
@@ -45,6 +38,65 @@ for the next one. Taking points away never lowers the rank. `set_charisma(rank, 
 local rank, points, max = rq.game.charisma()
 rq.log(("charisma rank %d, %d / %d"):format(rank, points, max))
 ```
+
+## Fight rewards
+
+`rq.battle.on_reward(fn)` runs once for every fight that pays: one won, and one the enemies ran
+from, which the game pays too (its result 4). It comes after the game has summed the gold and EXP
+with all its own rules (TADA mode, skills, items, the quest's bonus) and before the result screen
+shows them. What the callbacks leave is what the screen shows, what the party gets and the gold
+paid.
+
+- `ctx.gold`: the gold.
+- `ctx.exp`: the fight's EXP, the result screen's second number. Writing it scales every ally's EXP
+  by the same ratio at once.
+- `ctx.allies`: the party, each with its `exp`. Write one ally's `exp` for that ally alone. An ally
+  who is `down` or `capped` (at the level cap) gets nothing, whatever is written.
+- `ctx.reserve`: what each reserve character gets. Until a callback writes it, it follows the
+  allies as they stand: the smallest ally EXP over 20, as the game reckons it.
+- To read: `result`, `kills` (the enemies defeated), `bags` (the gold bags picked up), `base` (the
+  screen's top number), `group`, `rank` and `enemies`.
+
+Twice the EXP and a tenth more gold:
+
+```lua
+rq.battle.on_reward(function(ctx)
+  ctx.exp = ctx.exp * 2
+  ctx.gold = ctx.gold + ctx.gold // 10
+end)
+```
+
+The reserve's share follows the doubled EXP. A fixed share for the reserve instead:
+
+```lua
+rq.battle.on_reward(function(ctx)
+  ctx.reserve = 100
+end)
+```
+
+Callbacks run in load order, and each reads what the ones before wrote, so two mods that each double
+the EXP give four times. The rest follows the new numbers: the quest's EXP total (a twentieth of
+which goes to the characters in training when the quest ends), the quest's level-up bonus for an
+ally the new EXP levels up, and the reserve's levels, which `rq.chara.on_level_up` reports with
+`battle` and `free`.
+
+### Gold bags
+
+The game gives each enemy a gold bag at 50%, and the bags picked up as the enemies fall set the
+gold: none gives 1, one a quarter of the quest's gold, two a half, three all of it, four twice and
+five four times. `rq.battle.bags()` lists the enemies' bags in a fight (`enemy`, `carries`,
+`picked`), and `rq.battle.set_bag(iic, carries)` gives or takes one. In `rq.battle.on_start` the
+bags are not rolled yet: a `set_bag` there is kept and written over the game's roll. Every enemy
+with a bag:
+
+```lua
+rq.battle.on_start(function(ctx)
+  for _, e in ipairs(ctx.enemies) do rq.battle.set_bag(e, true) end
+end)
+```
+
+During the fight `set_bag` changes a bag before its enemy falls; on a fallen enemy it returns false.
+The item a fight drops is `rq.battle.get_drop` and `set_drop`, which work in `on_reward` too.
 
 ## Random fights
 
@@ -187,5 +239,6 @@ belong to one save. `rq.wait` and `rq.wait_until` work only inside a job from `r
 ## Not yet
 
 Some of this still needs [the game's own code](game-code.md): which group a random fight brings,
-the 1 in 10 roll, an event when the money changes, and timers on the game's clock. The
-[roadmap](../roadmap.md) lists what is planned.
+the 1 in 10 roll, an event when the money changes, timers on the game's clock, the gold and EXP
+before the game's own rules apply, the labels beside each ally's EXP on the result screen, and a
+quest's own reward. The [roadmap](../roadmap.md) lists what is planned.

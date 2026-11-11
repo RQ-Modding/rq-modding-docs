@@ -5,7 +5,8 @@ A mod is its folder. To share it, zip the folder so that the zip holds the folde
 
 ## Before you share
 
-- **`id`** is final. Saves keep `rq.store` data under it, and other mods name it in their lists.
+- **`id`** is final. Saves keep `rq.savedata` and `rq.store` data under it, and other mods name it
+  in their lists.
   Text ids (`"hellomod:lens"`) are final too: a save holds the numbers they turn into.
 - **`loader`** is the lowest RQ MOD version that has every call you use. Each entry in the
   [API reference](../reference/index.md) shows when it was added and changed.
@@ -20,8 +21,10 @@ sounds, data) inside the folder.
 ## Changes to a save
 
 Say in the README when the mod writes to the save: characters it recruits, items it gives, quests it
-unlocks. Those stay in the save after the mod is removed. Values in `rq.store` stay in
-`rqmod-store.json` beside the save, and the game ignores them without the mod.
+unlocks. Those stay in the save after the mod is removed. Values in `rq.savedata` stay in a file
+beside each save (`RanceQuestMagnum_030.rqmod.json`) and those in `rq.store` in `rqmod-store.json`
+in the save profile; the game ignores both without the mod, and the loader keeps a removed mod's
+`rq.savedata` in case it comes back.
 
 ## Testing
 

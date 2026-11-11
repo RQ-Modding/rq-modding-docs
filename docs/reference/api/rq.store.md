@@ -1,12 +1,14 @@
 # rq.store
 
-`since 0.4.0`
+`since 0.4.0` `changed 2.34.0`
 
-Small key and value storage for each mod and each save.
+Small key and value storage for each mod and each save profile.
 
-It lives in `rqmod-store.json` in the active save folder, so it follows the `rq.saves` profile. Use
-it for facts such as "this character was already recruited". Values are numbers, strings and
-booleans. Each mod sees only its own keys. The file is written on every `set` and `delete`.
+It lives in `rqmod-store.json` in the active save folder, so it follows the `rq.saves` profile, not
+the game's save: the file is written on every `set` and `delete`, so after a quit without saving
+or a load it is ahead of the save. Keep progress that must match the save (counts, unlocks,
+"already given") in `rq.savedata`, and settings in `rq.store.global`. Values are numbers (read back
+as floats), strings and booleans. Each mod sees only its own keys.
 
 ```lua
 if not rq.store.get("alice_joined", false) then

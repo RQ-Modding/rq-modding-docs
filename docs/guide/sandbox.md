@@ -19,8 +19,10 @@ an error.
 | `package.loadlib`, C modules | Not available. |
 | `debug` | Not there. `rq.traceback` gives what `debug.traceback` would. |
 
-For data a mod keeps between runs, `rq.store` is simpler than files: it lives with the save, and
-`rq.store.global` lives with every save profile.
+For data a mod keeps between runs, `rq.savedata` and `rq.store` are simpler than files:
+`rq.savedata` follows the game's save (an older save loaded brings back older data), `rq.store`
+lives with the save profile, and `rq.store.global` with every profile ([Data that follows the
+save](save-data.md)).
 
 ## require
 

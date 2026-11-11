@@ -114,13 +114,18 @@ Start a quest and fight. Each ally action adds a line to the log. `ev.user` is a
 ## 6. Remember something
 
 A mod's variables start over every time the game starts. To keep a value with the save, use
-[`rq.store`](../reference/api/rq.store.md):
+[`rq.savedata`](../reference/api/rq.savedata.md). It is written when the game saves and comes back
+when the game loads, so loading an older save brings back the older value too. It came in 2.34.0:
+set `loader` in `mod.json` to `2.34.0` to use it.
 
 ```lua
 rq.battle.on_end(function()
-  rq.store.set("fights", rq.store.get("fights", 0) + 1)
+  rq.savedata.set("fights", rq.savedata.get("fights", 0) + 1)
 end)
 ```
+
+For settings, which should not go back with a load, there is `rq.store`. [Data that follows the
+save](save-data.md) tells them apart.
 
 ::: tip Waiting
 To do something later, `rq.after(3000, fn)` calls `fn` three seconds from now. For steps with

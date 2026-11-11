@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.33.0.
+Loader version 2.34.0.
 
 ## Namespaces
 
@@ -34,6 +34,7 @@ Loader version 2.33.0.
 | [`rq.party`](api/rq.party.md) | Reads and changes who is in the party. |
 | [`rq.quests`](api/rq.quests.md) | Lists the quests and follows them: clears, endings, quest moments and state. |
 | [`rq.random`](api/rq.random.md) | Controls the random number generator the game and the loader share. |
+| [`rq.savedata`](api/rq.savedata.md) | Each mod's data that follows the game's save. |
 | [`rq.saves`](api/rq.saves.md) | Save profiles: whole save folders the player can switch between. |
 | [`rq.scene`](api/rq.scene.md) | Plays scenes with the game's own commands, so a mod can do anything a game scene does. |
 | [`rq.shop`](api/rq.shop.md) | Adds stock to Frostbuy, the item shop, and reports purchases. |
@@ -44,7 +45,7 @@ Loader version 2.33.0.
 | [`rq.sprite`](api/rq.sprite.md) | Sprites a mod makes once and changes later, drawn among the game's own in z order. |
 | [`rq.status`](api/rq.status.md) | Battle states made by mods, such as a burn, a bleed, a regeneration, a freeze or a weaken, that live beside the game's poison, stun and ▲▼, in one registry every mod shares. |
 | [`rq.statuspage`](api/rq.statuspage.md) | A character's status page, for mods. |
-| [`rq.store`](api/rq.store.md) | Small key and value storage for each mod and each save. |
+| [`rq.store`](api/rq.store.md) | Small key and value storage for each mod and each save profile. |
 | [`rq.store.global`](api/rq.store.global.md) | The same calls as `rq.store`, in one file for every save profile. |
 | [`rq.ui`](api/rq.ui.md) | Reads what is on the screen and saves screenshots. |
 | [`rq.uikit`](api/rq.uikit.md) | Widgets in the look of the game's Config screen and, since 2.6.0, of its hub. |
@@ -60,6 +61,7 @@ Loader version 2.33.0.
 | [`rq.AgentWidget`](types/rq.AgentWidget.md) | A control a mod drew on this update, for `rqmod-ctl ui`. |
 | [`rq.AinHookCtx`](types/rq.AinHookCtx.md) | What an `rq.ain.hook` callback gets. |
 | [`rq.AreaCtx`](types/rq.AreaCtx.md) | What `rq.dungeon.on_area` gets. |
+| [`rq.BagInfo`](types/rq.BagInfo.md) | One enemy in `rq.battle.bags`. |
 | [`rq.BattleActor`](types/rq.BattleActor.md) | The ally whose turn it is, from `rq.battle.actor`. |
 | [`rq.BattleDownCtx`](types/rq.BattleDownCtx.md) | What `rq.battle.on_down` gets. |
 | [`rq.BattleEndCtx`](types/rq.BattleEndCtx.md) | What `rq.battle.on_end` gets. |
@@ -146,6 +148,9 @@ Loader version 2.33.0.
 | [`rq.QuestEndCtx`](types/rq.QuestEndCtx.md) | What an `rq.quests.on_end` callback gets. |
 | [`rq.QuestEvent`](types/rq.QuestEvent.md) | What `rq.quests.on_event` and `on_event_after` callbacks get. |
 | [`rq.RecruitOpts`](types/rq.RecruitOpts.md) | Options for `rq.chara.recruit`. |
+| [`rq.RewardAlly`](types/rq.RewardAlly.md) | One ally in `rq.battle.on_reward`'s `ctx.allies`. |
+| [`rq.RewardCtx`](types/rq.RewardCtx.md) | What `rq.battle.on_reward` callbacks get. Fields marked writable change what the game gives. |
+| [`rq.SaveCtx`](types/rq.SaveCtx.md) | What `rq.saves.on_save` and `on_load` callbacks get. |
 | [`rq.SaveMod`](types/rq.SaveMod.md) | A mod, as a profile records it. |
 | [`rq.SaveProfile`](types/rq.SaveProfile.md) | A save profile, from `rq.saves.list`. |
 | [`rq.SaveSummary`](types/rq.SaveSummary.md) | What a profile's save holds, read from its file. |

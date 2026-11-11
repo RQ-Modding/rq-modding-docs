@@ -36,6 +36,8 @@ end)
 | [`rq.battle.buffs`](#rqbattlebuffs) | Lists the marks a card shows in turn. |
 | [`rq.battle.get_drop`](#rqbattleget_drop) | Returns the item a won fight hands out (`◆戦闘後アイテム取得`). |
 | [`rq.battle.set_drop`](#rqbattleset_drop) | Sets the item a won fight hands out. |
+| [`rq.battle.bags`](#rqbattlebags) | Lists the gold bags of the fight's enemies. |
+| [`rq.battle.set_bag`](#rqbattleset_bag) | Gives an enemy a gold bag, or takes its bag away, before it falls. |
 | [`rq.battle.set_face`](#rqbattleset_face) | Shows another face for an ally on the cards in a fight. |
 | [`rq.battle.get_face`](#rqbattleget_face) | Returns what `rq.battle.set_face` set for a character. |
 | [`rq.battle.in_ally_select`](#rqbattlein_ally_select) | Returns whether an ally is choosing a skill. |
@@ -314,15 +316,17 @@ wait for their return. A game mark hidden by `set_mark` is not listed.
 rq.battle.get_drop() -> integer
 ```
 
-`since 0.9.0`
+`since 0.9.0` `changed 2.34.0`
 
 Returns the item a won fight hands out (`◆戦闘後アイテム取得`).
 
-Read it inside `rq.battle.on_end`.
+Read it inside `rq.battle.on_end` or `rq.battle.on_reward`: the game chooses it before the fight.
 
 | Returns | Type | Description |
 | --- | --- | --- |
 | `no` | `integer` | The item number; 0 for none. |
+
+> Changed in 2.34.0: Also in `rq.battle.on_reward`.
 
 ### rq.battle.set_drop
 
@@ -330,12 +334,12 @@ Read it inside `rq.battle.on_end`.
 rq.battle.set_drop(who)
 ```
 
-`since 0.9.0`
+`since 0.9.0` `changed 2.34.0`
 
 Sets the item a won fight hands out.
 
-Set it inside `rq.battle.on_end`. The game then skips its own drop rules and puts the item in quest
-storage, which goes to the vault after the result screen.
+Set it inside `rq.battle.on_end` or `rq.battle.on_reward`. The game then skips its own drop rules
+and puts the item in quest storage, which goes to the vault after the result screen.
 
 Raises an error for a value that is not a number, a text id, nil or false.
 
@@ -348,6 +352,62 @@ end)
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `who` | `string\|integer\|nil\|false` | An item number or text id; nil or false clears it. |
+
+> Changed in 2.34.0: Also in `rq.battle.on_reward`.
+
+### rq.battle.bags
+
+```lua
+rq.battle.bags() -> rq.BagInfo[]
+```
+
+`since 2.34.0`
+
+Lists the gold bags of the fight's enemies.
+
+At a fight's start the game gives each enemy a bag at 50%. When an enemy with a bag falls, the bag
+shows where it stood and is picked up; the bags picked set the fight's gold (`rq.battle.on_reward`'s
+`bags`). The game rolls the bags after `rq.battle.on_start`, so there the list shows only the bags a
+mod set with `rq.battle.set_bag`.
+
+Raises an error at the top level of a mod.
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `bags` | [`rq.BagInfo`](../types/rq.BagInfo.md) `[]` | One entry per enemy, in the game's order; empty outside a fight. |
+
+### rq.battle.set_bag
+
+```lua
+rq.battle.set_bag(iic, carries) -> boolean
+```
+
+`since 2.34.0`
+
+Gives an enemy a gold bag, or takes its bag away, before it falls.
+
+The bag shows where the enemy stood when it falls, as the game's, and the gold follows the game's
+table for the bags picked: one bag a quarter of the quest's gold, two a half, three all of it, four
+twice, five four times. Called in `rq.battle.on_start`, it is kept and written over the game's roll.
+
+Raises an error for a slot that is not an enemy of this fight, for `carries` that is not a
+boolean, and at the top level of a mod.
+
+```lua
+--- Every enemy carries a bag
+rq.battle.on_start(function(ctx)
+  for _, e in ipairs(ctx.enemies) do rq.battle.set_bag(e, true) end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `iic` | `integer` | The enemy's slot. |
+| `carries` | `boolean` | true for a bag, false for none. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `ok` | `boolean` | false for an enemy that already fell, or whose bag was picked up. |
 
 ### rq.battle.set_face
 
@@ -578,6 +638,7 @@ Returns a copy of what the fight screen shows.
 | [`rq.battle.on_select_key`](#rqbattleon_select_key) | Calls `fn` for each key pressed while an ally chooses a skill. |
 | [`rq.battle.on_start`](#rqbattleon_start) | Calls `fn` once per fight, at the end of `Ｔ戦闘前初期化`. |
 | [`rq.battle.on_end`](#rqbattleon_end) | Calls `fn` at the start of `戦闘後処理`, before the game cleans up the fight. |
+| [`rq.battle.on_reward`](#rqbattleon_reward) | Calls `fn` once per fight that pays, after the game has summed the gold and EXP and before the result screen shows them. |
 | [`rq.battle.on_support`](#rqbattleon_support) | Calls `fn` at the start of every support (blue) skill action (`Ｔ補助行動`). |
 | [`rq.battle.on_down`](#rqbattleon_down) | Calls `fn` when the game sets a character to downed (`Ｃ状態変化` 3). |
 | [`rq.battle.on_switch`](#rqbattleon_switch) | Calls `fn` for each ally rank that holds someone else after a switch in a fight. |
@@ -660,7 +721,8 @@ rq.battle.on_end(fn) -> fun()
 
 Calls `fn` at the start of `戦闘後処理`, before the game cleans up the fight.
 
-Set a drop here with `rq.battle.set_drop`.
+Set a drop here with `rq.battle.set_drop`. The fight's gold has been paid and the party's EXP
+given by then: change them in `rq.battle.on_reward`, which the result screen shows.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -671,6 +733,48 @@ Set a drop here with `rq.battle.set_drop`.
 | `remove` | `fun()` | Removes this callback. |
 
 > Changed in 0.23.0: Returns a remover.
+
+### rq.battle.on_reward
+
+```lua
+rq.battle.on_reward(fn) -> fun()
+```
+
+`since 2.34.0`
+
+Calls `fn` once per fight that pays, after the game has summed the gold and EXP and before the result screen shows them.
+
+What the callbacks leave is what the result screen shows, what the party gets and the gold paid.
+Callbacks run in load order, each one reading what the ones before wrote. A fight the enemies ran
+from pays as a won one does (`ctx.result` 4); a fight lost pays nothing and calls nothing.
+
+The rest follows the new numbers: the quest's EXP total (a twentieth of which goes to the
+characters in training at the quest's end) moves with `ctx.exp`, an ally the new EXP levels up
+counts toward the quest's level-up bonus, and the reserve gets `ctx.reserve` with the game's own
+free level for a full bar (`rq.chara.on_level_up` reports it with `battle` and `free`). An ally
+at 0 HP or at the cap gets no level, as with `rq.chara.add_exp`. The item a fight drops was chosen
+before it: `rq.battle.get_drop` and `set_drop` work here too.
+
+An error in a callback is logged once for each new error text; what it wrote before the error
+stays.
+
+```lua
+--- Twice the EXP and half again the gold, on the result screen too
+rq.battle.on_reward(function(ctx)
+  ctx.exp = ctx.exp * 2
+  ctx.gold = ctx.gold * 1.5
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(ctx:` [`rq.RewardCtx`](../types/rq.RewardCtx.md) `)` | Reads and changes the fight's rewards. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |
+
+See also: [`rq.battle.bags`](rq.battle.md#rqbattlebags)
 
 ### rq.battle.on_support
 

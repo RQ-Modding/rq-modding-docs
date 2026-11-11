@@ -36,7 +36,7 @@ check the count it gets back.
 rq.ain.patch_float(name, from, to, n) -> integer
 ```
 
-`since 0.2.0` `changed 1.3.0`
+`since 0.2.0` `changed 1.3.0` `changed 2.34.0`
 
 Replaces float constants in one AIN function.
 
@@ -53,13 +53,15 @@ Replaces float constants in one AIN function.
 
 > Changed in 1.3.0: Reaches the game's code of a function the loader wraps (such as `Ｔ戦闘前初期化`); before, it patched only the wrapper and found nothing.
 
+> Changed in 2.34.0: Reaches the game's code of a function hooked with `rq.ain.hook` (a hook moves the function to a stub); before, a hook made first, as the loader's own on `Ｔ戦闘前初期化` since this version, left nothing to find.
+
 ### rq.ain.patch_int
 
 ```lua
 rq.ain.patch_int(name, from, to, n) -> integer
 ```
 
-`since 0.17.0` `changed 1.3.0`
+`since 0.17.0` `changed 1.3.0` `changed 2.34.0`
 
 Replaces integer constants in one AIN function, such as a hard-coded skill number.
 
@@ -79,6 +81,8 @@ versions of the game's AIN; to find one constant by what it follows, use `patch_
 
 > Changed in 1.3.0: Reaches the game's code of a function the loader wraps.
 
+> Changed in 2.34.0: Reaches the game's code of a function hooked with `rq.ain.hook`.
+
 See also: [`rq.ain.patch_int_after`](rq.ain.md#rqainpatch_int_after)
 
 ### rq.ain.patch_int_after
@@ -87,7 +91,7 @@ See also: [`rq.ain.patch_int_after`](rq.ain.md#rqainpatch_int_after)
 rq.ain.patch_int_after(name, global, from, to, nth_ref, window) -> integer, integer[]
 ```
 
-`since 1.3.0` `changed 2.22.0`
+`since 1.3.0` `changed 2.22.0` `changed 2.34.0`
 
 Replaces the first integer constant `from` that follows a read of a global.
 
@@ -121,6 +125,8 @@ rq.ain.set_code_int(at[1], 5) -- later, with no search
 
 > Changed in 2.22.0: Returns the places too.
 
+> Changed in 2.34.0: Reaches the game's code of a function hooked with `rq.ain.hook`.
+
 See also: [`rq.ain.set_code_int`](rq.ain.md#rqainset_code_int)
 
 ### rq.ain.set_code_int
@@ -129,7 +135,7 @@ See also: [`rq.ain.set_code_int`](rq.ain.md#rqainset_code_int)
 rq.ain.set_code_int(place, value) -> boolean
 ```
 
-`since 2.22.0`
+`since 2.22.0` `changed 2.34.0`
 
 Writes a new value into a constant of the game's code that `rq.ain.patch_int_after` changed.
 
@@ -137,7 +143,7 @@ The place is the constant `patch_int_after` found, written now as it wrote it. T
 the next time it runs that code, so a value changed between fights counts from the next fight. When
 another install wraps the function later, the place is still found: the wrapped code stays where
 it was, and a body moved and grown is searched for the same constant with the same instructions
-around it.
+around it. So is it when the function is hooked later with `rq.ain.hook`.
 
 Raises an error for a place that `patch_int_after` did not give.
 
@@ -149,6 +155,8 @@ Raises an error for a place that `patch_int_after` did not give.
 | Returns | Type | Description |
 | --- | --- | --- |
 | `ok` | `boolean` | false when the place is no longer in the game's code as it was written (it is logged); nothing is written then. |
+
+> Changed in 2.34.0: A place in a function hooked with `rq.ain.hook` after the patch is found; before, it returned false.
 
 See also: [`rq.ain.patch_int_after`](rq.ain.md#rqainpatch_int_after)
 

@@ -55,6 +55,7 @@ end)
 | [`rq.party`](rq.party.md) | Reads and changes who is in the party. |
 | [`rq.quests`](rq.quests.md) | Lists the quests and follows them: clears, endings, quest moments and state. |
 | [`rq.random`](rq.random.md) | Controls the random number generator the game and the loader share. |
+| [`rq.savedata`](rq.savedata.md) | Each mod's data that follows the game's save. |
 | [`rq.saves`](rq.saves.md) | Save profiles: whole save folders the player can switch between. |
 | [`rq.scene`](rq.scene.md) | Plays scenes with the game's own commands, so a mod can do anything a game scene does. |
 | [`rq.shop`](rq.shop.md) | Adds stock to Frostbuy, the item shop, and reports purchases. |
@@ -65,7 +66,7 @@ end)
 | [`rq.sprite`](rq.sprite.md) | Sprites a mod makes once and changes later, drawn among the game's own in z order. |
 | [`rq.status`](rq.status.md) | Battle states made by mods, such as a burn, a bleed, a regeneration, a freeze or a weaken, that live beside the game's poison, stun and ▲▼, in one registry every mod shares. |
 | [`rq.statuspage`](rq.statuspage.md) | A character's status page, for mods. |
-| [`rq.store`](rq.store.md) | Small key and value storage for each mod and each save. |
+| [`rq.store`](rq.store.md) | Small key and value storage for each mod and each save profile. |
 | [`rq.ui`](rq.ui.md) | Reads what is on the screen and saves screenshots. |
 | [`rq.uikit`](rq.uikit.md) | Widgets in the look of the game's Config screen and, since 2.6.0, of its hub. |
 | [`rq.units`](rq.units.md) | Lists the recruited characters. |
@@ -358,7 +359,8 @@ rq.on_reset(fn) -> fun()
 
 Calls `fn` after a load or after going to the title, once the game runs again.
 
-Use it to clear a mod's own flags, such as "a scene is playing". These are the same callbacks as
+Use it to clear a mod's own flags, such as "a scene is playing". For a load it runs when the game
+starts reading the save, before that save's `rq.savedata` is in: read that in `rq.saves.on_load`. These are the same callbacks as
 `rq.sprite.on_reset`, and they run after every mod sprite is gone. On the title, every Lua call
 that was waiting in the game (a scene, a fight from `rq.battle.start`) has already ended with the
 error "rq: the game went to the title".
@@ -370,3 +372,5 @@ error "rq: the game went to the title".
 | Returns | Type | Description |
 | --- | --- | --- |
 | `remove` | `fun()` | Removes this callback. |
+
+See also: [`rq.saves.on_load`](rq.saves.md#rqsaveson_load)
