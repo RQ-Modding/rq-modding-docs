@@ -111,7 +111,7 @@ Shows a page, now or the next time the Mods tab opens.
 rq.config.settings(opts) -> rq.Settings
 ```
 
-`since 2.35.0`
+`since 2.35.0` `changed 2.44.0`
 
 Adds a page of settings to the Mods tab, built from a list of rows.
 
@@ -124,7 +124,8 @@ The page is `rq.config.page`'s, with the same id rules: calling it again with th
 the page, and its object keeps working on the same keys.
 
 Raises an error for a row that is not one of the kinds, a value row with no key or a key used
-twice, a default the row cannot take, or a `keep` that is not one of the three; and when called
+twice, a default the row cannot take, a `recommend` that is not two numbers inside the row's `min`
+and `max`, a `warn` without `recommend`, or a `keep` that is not one of the three; and when called
 from no mod's code.
 
 ```lua
@@ -136,6 +137,9 @@ local settings = rq.config.settings({
       note = "How many each time." },
     { kind = "choice", key = "speed", label = "Speed", options = { "Slow", "Fast" },
       values = { 0.5, 2 }, disabled = function() return not settings.get("on") end },
+    { kind = "slider", key = "zoom", label = "Farthest zoom", min = 35, max = 250, step = 1,
+      default = 120, format = "%.0f", recommend = { 60, 150 },
+      warn = "Past 150 the edge of the sky shows as black corners." },
   },
 })
 settings.on_change(function(key, value) rq.log(key, "is now", value) end)
@@ -149,5 +153,7 @@ if settings.get("on") then rq.log("count:", settings.get("count")) end
 | Returns | Type | Description |
 | --- | --- | --- |
 | `settings` | [`rq.Settings`](../types/rq.Settings.md) | The values. |
+
+> Changed in 2.44.0: Rows with `recommend` and `warn`; a slider's value.
 
 See also: [`rq.config.page`](rq.config.md#rqconfigpage)

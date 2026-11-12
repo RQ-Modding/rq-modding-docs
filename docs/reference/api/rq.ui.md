@@ -248,7 +248,7 @@ mouse buttons are up after it.
 rq.ui.confirm(text, opts) -> boolean|nil
 ```
 
-`since 2.19.0` `changed 2.28.0`
+`since 2.19.0` `changed 2.28.0` `changed 2.44.0`
 
 Asks the player Yes or No in the game's own dialog, and waits for the answer.
 
@@ -276,12 +276,17 @@ lists it on a Confirmations page in Config's Mods tab, where the player can turn
 Resetting in Config's Confirmations tab turns it back on too. The key is the mod's own, found as
 `rq.mod.id` finds it (through `return rq.ui.confirm(...)` too, since 2.24.1).
 
+The row starts unticked, as the game's. `opts.remember_checked` shows it ticked, with its words
+and the game's tick (the game's own ticked row reads "UNDO"): when the player answers with it still
+ticked, the question is turned off, whichever button they pressed. Ticked or not, a tick takes
+effect at once, as in the game's own dialogs.
+
 The game has one list of dialog rows, so the call shows nothing and returns nil while another
 dialog is being built or shows (`rq.ui.choosing`, or one of these calls), and logs it once.
 
 Raises an error while `init.lua` loads (the game is not running yet), for an empty text or one that
-is not a string, for more than 9 lines, for an option of the wrong type, and for a `remember` that
-is neither a text nor 1 to 99.
+is not a string, for more than 9 lines, for an option of the wrong type, for a `remember` that
+is neither a text nor 1 to 99, and for a `remember_checked` without `remember`.
 
 ```lua
 if rq.ui.confirm("Swap the absorbed item?\nThe old one goes back to the vault.",
@@ -293,13 +298,15 @@ end
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `text` | `string` | The question. |
-| `opts` *(optional)* | `{yes?: string, no?: string, cursor?: "yes"\|"no", sound_yes?: integer, sound_no?: integer, remember?: string\|integer, remember_label?: string, game?: boolean}` | `yes`, `no`: the buttons' labels (default "Yes", "No"). `cursor`: the button the cursor starts on (default "yes"). `sound_yes`, `sound_no`: sound numbers for the buttons (default the game's). `remember`: a key for the mod's own "don't ask again", or 1 to 99 for the game's own. `remember_label`: how the Confirmations page names the mod's question (default the key). `game`: the text is the game's, where `@` and `$` start a line. |
+| `opts` *(optional)* | `{yes?: string, no?: string, cursor?: "yes"\|"no", sound_yes?: integer, sound_no?: integer, remember?: string\|integer, remember_label?: string, remember_checked?: boolean, game?: boolean}` | `yes`, `no`: the buttons' labels (default "Yes", "No"). `cursor`: the button the cursor starts on (default "yes"). `sound_yes`, `sound_no`: sound numbers for the buttons (default the game's). `remember`: a key for the mod's own "don't ask again", or 1 to 99 for the game's own. `remember_label`: how the Confirmations page names the mod's question (default the key). `remember_checked`: the row starts ticked (default false; since 2.44.0). `game`: the text is the game's, where `@` and `$` start a line. |
 
 | Returns | Type | Description |
 | --- | --- | --- |
 | `yes` | `boolean\|nil` | true for Yes (or a question turned off), false for No, nil when it was not shown. |
 
 > Changed in 2.28.0: Shown over Config.
+
+> Changed in 2.44.0: `remember_checked`.
 
 See also: [`rq.ui.notice`](rq.ui.md#rquinotice), [`rq.ui.ask`](rq.ui.md#rquiask)
 
@@ -341,7 +348,7 @@ rq.ui.notice("The vault cannot take " .. name .. ".")
 rq.ui.ask(text, rows, opts) -> any|nil
 ```
 
-`since 2.19.0` `changed 2.28.0`
+`since 2.19.0` `changed 2.28.0` `changed 2.44.0`
 
 Asks the player a question with any choices in the game's own dialog, and waits for the answer.
 
@@ -355,6 +362,8 @@ With `opts.remember`, the window adds the game's "don't ask again" row under the
 mod's own question. The row stands for one answer, `opts.remember_answer` (default the first row):
 once the player turns the question off, the call returns that row's id without asking. Pressing
 the row keeps the window open, as in the game's own dialogs; the player then picks a row.
+`opts.remember_checked` shows the row ticked: when the player picks a row with it still ticked, the
+question is turned off, whichever row they picked (a cancel turns nothing off).
 
 The window does not scroll: the rows to pick and the lines of text together are at most 20 (two
 separators count as one), for example 9 lines and 11 rows, or 20 rows and no text. With
@@ -364,24 +373,30 @@ them as one more separator.
 Raises an error while `init.lua` loads, for a text that is not a string, for more than 9 lines, for
 a row without text, with no row to pick, with more rows and lines than fit, for an option of the
 wrong type, for a `remember` that is neither a text nor 1 to 99, for a `remember_answer` that is no
-row's id, and for a `remember_answer` without `remember`.
+row's id, and for a `remember_answer` or a `remember_checked` without `remember`.
 
 ```lua
 local pick = rq.ui.ask("Take Quest@Gem Lady?", {
   { id = "yes", text = "Yes", sound = 5012 }, { id = "trade", text = "Trade a Jewel" }, { id = "no", text = "No" },
 }, { game = true, cursor = "yes", remember = 11 }) -- the game's "Take Quest" switch
+
+-- Asked once: ticked from the start, and "no" while it is turned off.
+local copy = rq.ui.ask("Copy the other save?", { { id = "yes", text = "Yes" }, { id = "no", text = "No" } },
+  { remember = "copy", remember_answer = "no", remember_checked = true })
 ```
 
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `text` | `string\|nil` | The question, or nil for rows only. |
 | `rows` | `(string\|` [`rq.UiAskRow`](../types/rq.UiAskRow.md) `)[]` | The rows: a text, `"-"` for a separator, or a table. |
-| `opts` *(optional)* | `{cursor?: any, cancel?: boolean, x?: integer, y?: integer, game?: boolean, remember?: string\|integer, remember_label?: string, remember_answer?: any}` | `cursor`: the id of the row the cursor starts on. `cancel`: true lets a right click or Space close it, and the call returns 0 (default false, as the game's questions). `x`, `y`: the dialog's top left (default the center). `game`: the text is the game's, where `@` and `$` start a line. `remember`: a key for the mod's own "don't ask again", or 1 to 99 for the game's own. `remember_label`: how the Confirmations page names the mod's question (default the key). `remember_answer`: the id of the row returned while the question is turned off (default the first row). |
+| `opts` *(optional)* | `{cursor?: any, cancel?: boolean, x?: integer, y?: integer, game?: boolean, remember?: string\|integer, remember_label?: string, remember_answer?: any, remember_checked?: boolean}` | `cursor`: the id of the row the cursor starts on. `cancel`: true lets a right click or Space close it, and the call returns 0 (default false, as the game's questions). `x`, `y`: the dialog's top left (default the center). `game`: the text is the game's, where `@` and `$` start a line. `remember`: a key for the mod's own "don't ask again", or 1 to 99 for the game's own. `remember_label`: how the Confirmations page names the mod's question (default the key). `remember_answer`: the id of the row returned while the question is turned off (default the first row). `remember_checked`: the row starts ticked (default false; since 2.44.0). |
 
 | Returns | Type | Description |
 | --- | --- | --- |
 | `id` | `any\|nil` | The picked row's id, 0 when cancelled, `remember_answer` while the question is turned off, nil when it was not shown. |
 
 > Changed in 2.28.0: Shown over Config; `remember`, `remember_label` and `remember_answer`.
+
+> Changed in 2.44.0: `remember_checked`.
 
 See also: [`rq.ui.choose`](rq.ui.md#rquichoose)

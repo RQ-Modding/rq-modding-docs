@@ -24,6 +24,8 @@ end)
 | Name | Summary |
 | --- | --- |
 | [`rq.combat.install`](#rqcombatinstall) | Installs the hooks the combat callbacks need. |
+| [`rq.combat.rules`](#rqcombatrules) | Returns what a skill can do in a fight: crit, stun, poison and accuracy. |
+| [`rq.combat.set_rules`](#rqcombatset_rules) | Changes what a skill can do in a fight: its crit, stun or poison rule, in the fight and in `rq.combat.rules` together. |
 
 ### rq.combat.install
 
@@ -47,6 +49,96 @@ Raises an error when the AIN is not loaded or a hook cannot be placed.
 | `ok` | `boolean` | Always true; a failure raises an error. |
 
 > Changed in 2.35.0: Not needed: the callbacks make it.
+
+### rq.combat.rules
+
+```lua
+rq.combat.rules(skill) -> rq.CombatRules|nil
+```
+
+`since 2.44.0`
+
+Returns what a skill can do in a fight: crit, stun, poison and accuracy.
+
+Worked out at each call from the skill's data as it is now (`rq.skill.get`: its action kind,
+multiplier and function, so a `rq.skill.patch` shows), the game's rules by skill number, which
+the game keeps only in its combat code (the loader knows them), and the rules mods set with
+`rq.combat.set_rules`. For a skill's hover text, as Better Explained writes it.
+
+The game's own exceptions show as "sometimes": a skill whose crit chance the game zeroes can
+still crit with skill 549 or item 91. A rule a mod changes through a callback (`on_crit`,
+`on_stun`, `on_poison`) does not show here unless that mod also calls `set_rules`.
+
+Raises an error when `skill` is not a whole number.
+
+```lua
+rq.skill.on_describe(function(no, text)
+  local r = rq.combat.rules(no)
+  if r and r.crit == false then return text .. "\nCan't Crit" end
+  return text
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `skill` | `integer` | The skill number. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `rules` | [`rq.CombatRules`](../types/rq.CombatRules.md) `\|nil` | What it can do; nil when there is no such skill, and before the game runs (at a mod's top level). |
+
+See also: [`rq.combat.set_rules`](rq.combat.md#rqcombatset_rules)
+
+### rq.combat.set_rules
+
+```lua
+rq.combat.set_rules(skill, rules) -> rq.CombatRules|nil
+```
+
+`since 2.44.0`
+
+Changes what a skill can do in a fight: its crit, stun or poison rule, in the fight and in
+`rq.combat.rules` together.
+
+Each field of `rules` sets one rule; the fields left out keep theirs:
+
+- `crit = true`: the skill rolls the attacker's crit chance even where the game zeroes it (a
+  multiplier over 150, or skill 120), with the game's other rules (+30 hidden, halved for all
+  enemies). `false`: it never crits.
+- `stun = true`: it stuns at the chance of the game's formula even where the game never stuns
+  (skills 120, Fortune 448 and 152; `rq.combat.on_stun`'s `base`). `false`: it never stuns.
+- `poison = N` (0 to 100): its own poison chance, as the game's poison skills have; the
+  weapon's or the coat's chance when higher, and a target the game shields (a barrier, character
+  22, skill 502, item 195) is not poisoned. `false`: it never poisons.
+- `"sometimes"`: the fight is left as it is, and `rules` says "sometimes", for a mod whose change
+  depends on the fight and stays in its own callback.
+- `"game"`: back to the game's rule.
+
+In the fight the rules act where the game works out those rolls: on physical attacks
+(`クリティカル計算`, `衝撃計算`, `毒計算`). The callbacks (`on_crit`, `on_stun`, `on_poison`) run
+after the rule and see its chance. The last call for a skill wins, whichever mod made it.
+
+A mod sets its rules from `init.lua`, before the game's skills are read: the skill is not checked
+then, and the call returns nil until the game runs.
+
+Raises an error when `skill` is not a whole number above 0, `rules` is not a table, or a field is
+not one of the three or has another value.
+
+```lua
+rq.combat.set_rules(rq.ids.skill.FORTUNE, { crit = true, stun = true }) -- Fortune crits and stuns
+rq.combat.set_rules(MY_SKILL, { poison = 40 })
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `skill` | `integer` | The skill number. |
+| `rules` | `{crit?: boolean\|"sometimes"\|"game", stun?: boolean\|"sometimes"\|"game", poison?: integer\|false\|"sometimes"\|"game"}` | The rules to change. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `rules` | [`rq.CombatRules`](../types/rq.CombatRules.md) `\|nil` | What the skill can do now; nil before the game runs, or for no such skill. |
+
+See also: [`rq.combat.rules`](rq.combat.md#rqcombatrules)
 
 ## Events
 

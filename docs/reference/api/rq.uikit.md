@@ -114,7 +114,7 @@ end)
 | [`rq.uikit.item_card`](#rquikititem_card) | Draws the game's item card now, on the top layer, and returns its box. |
 | [`rq.uikit.item_card_size`](#rquikititem_card_size) | Returns the item card's size, to place it beside a widget as the game's screens do. |
 | [`rq.uikit.item_list`](#rquikititem_list) | Draws the vault's item list: rows 128 apart and the game's scroll bar beside them. |
-| [`rq.uikit.item_dropped`](#rquikititem_dropped) | Returns the row dropped on this update on another list of a drag group (`item_list`'s `drag`). |
+| [`rq.uikit.item_dropped`](#rquikititem_dropped) | Returns the row dropped on this update on another list of a drag group (`item_list`'s `drag`), and the row of the list it was dropped on, for a list whose rows are places (slots). |
 | [`rq.uikit.item_storage`](#rquikititem_storage) | Draws the game's storage screen: the storage's red list on the left and the vault's list right of it (437 pixels apart, as the game places them), each with its scroll bar, the vault's count and the storage's in their boxes, and the vault's filter column and SORT. Drag a row from one list to the other to move the item (`rq.item.store`). |
 | [`rq.uikit.number`](#rquikitnumber) | Draws a number as the game does: the vault's counters (`font = "count"`: the game's font, 20 pixels, bold, white), or one of the game's digit fonts. |
 | [`rq.uikit.filters`](#rquikitfilters) | Draws the vault's filter column and returns what is picked: the categories (Special, Weapon, Armor, Item / Other), the classes, and Locked / Unlocked, on the column's grey with its "[FILTERING]" heads; and, while a category with sub-filters is picked, its panel of sub-filters over the list's first row. |
@@ -230,10 +230,10 @@ Draws one of several checkboxes, as the 3D tab's quality.
 ### rq.uikit.slider
 
 ```lua
-rq.uikit.slider(value, opts) -> number, boolean
+rq.uikit.slider(value, opts) -> number, boolean, boolean
 ```
 
-`since 1.7.0` `changed 1.8.0` `changed 2.12.0`
+`since 1.7.0` `changed 1.8.0` `changed 2.12.0` `changed 2.44.0`
 
 Draws the Sound tab's slider.
 
@@ -242,19 +242,31 @@ The wheel over it moves it by `step`, or by a twentieth, and the game does not g
 Under the keys' cursor, Page Down raises it and Page Up lowers it by `step`, or a twentieth (5%),
 as Config's sliders: on the press, then on every update after 250 ms.
 
+`opts.band` draws a part of the track lighter, such as a range a mod recommends; it does not limit
+the value. The third value it returns tells a drag that goes on from a value that is final: a page
+that acts on the value (a question, a write to a file) can wait for the knob's release.
+
+```lua
+local v, changed, held = rq.uikit.slider(zoom, { min = 5, max = 250, step = 0.5, band = { 60, 150 } })
+if changed and not held then save(v) end -- a wheel step, a click; a drag saves at its release
+```
+
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `value` | `number` | The value. |
-| `opts` *(optional)* | [`rq.UiPlace`](../types/rq.UiPlace.md) `\|{min?: number, max?: number, step?: number, low?: string, high?: string, label?: string, disabled?: boolean}` | `w`: the track's width (default 200). `min` (default 0), `max` (default 1), `step`, `low` and `high` (texts at the ends), `label` (its name in `rqmod-ctl ui`), `disabled`. |
+| `opts` *(optional)* | [`rq.UiPlace`](../types/rq.UiPlace.md) `\|{min?: number, max?: number, step?: number, low?: string, high?: string, band?: number[], label?: string, disabled?: boolean}` | `w`: the track's width (default 200). `min` (default 0), `max` (default 1), `step`, `low` and `high` (texts at the ends), `band` ({from, to}: that part of the track drawn lighter), `label` (its name in `rqmod-ctl ui`), `disabled`. |
 
 | Returns | Type | Description |
 | --- | --- | --- |
 | `value` | `number` | The new value. |
 | `changed` | `boolean` | true on the update it changed. |
+| `held` | `boolean` | true while the knob is dragged: the value may still change. Since 2.44.0. |
 
 > Changed in 1.8.0: Added `opts.label`.
 
 > Changed in 2.12.0: Page Up and Page Down.
+
+> Changed in 2.44.0: `opts.band`, and a third value, `held`.
 
 ### rq.uikit.stepper
 
@@ -1663,12 +1675,13 @@ end)
 ### rq.uikit.item_dropped
 
 ```lua
-rq.uikit.item_dropped(group) -> integer|rq.UiItemRow|nil, string|nil, string|nil, integer|nil
+rq.uikit.item_dropped(group) -> integer|rq.UiItemRow|nil, string|nil, string|nil, integer|nil, integer|nil
 ```
 
-`since 2.9.0`
+`since 2.9.0` `changed 2.44.0`
 
-Returns the row dropped on this update on another list of a drag group (`item_list`'s `drag`).
+Returns the row dropped on this update on another list of a drag group (`item_list`'s `drag`),
+and the row of the list it was dropped on, for a list whose rows are places (slots).
 
 Raises an error when `group` is not a name.
 
@@ -1676,8 +1689,8 @@ Raises an error when `group` is not a name.
 rq.on_frame(function()
   a_pick = rq.uikit.item_list(a, a_pick, { x = 101, y = 0, id = "a", drag = "mine" })
   b_pick = rq.uikit.item_list(b, b_pick, { x = 538, y = 0, id = "b", drag = "mine" })
-  local row, from, to = rq.uikit.item_dropped("mine")
-  if row then move(row, from, to) end
+  local row, from, to, _, at = rq.uikit.item_dropped("mine")
+  if row then move(row, from, to, at) end -- at: the row of `to` under the mouse
 end)
 ```
 
@@ -1691,6 +1704,9 @@ end)
 | `from` | `string\|nil` | The `id` of the list it came from. |
 | `to` | `string\|nil` | The `id` of the list it was dropped on. |
 | `index` | `integer\|nil` | Its index in the list it came from. |
+| `at` | `integer\|nil` | The index of the row it was dropped on in the list `to`; nil past its last row. Since 2.44.0. |
+
+> Changed in 2.44.0: The fifth value, `at`.
 
 ### rq.uikit.item_storage
 
@@ -1793,7 +1809,7 @@ rq.uikit.number(level, { x = 300, y = 200, font = level >= max and "level_max" o
 rq.uikit.filters(state, opts) -> rq.UiFilterState, boolean
 ```
 
-`since 2.8.0` `changed 2.9.0`
+`since 2.8.0` `changed 2.9.0` `changed 2.44.0`
 
 Draws the vault's filter column and returns what is picked: the categories (Special, Weapon,
 Armor, Item / Other), the classes, and Locked / Unlocked, on the column's grey with its
@@ -1811,7 +1827,11 @@ The state table is changed in place. The buttons are listed for `rqmod-ctl` as
 `-unlocked`, `-equippable`, `-unequippable`, and the sub-filters by their names
 (`filter-<id>-swords`, `-rank-a`, `-others`).
 
-Raises an error when the state is not a table of whole numbers, or with another style.
+With `opts.type` the category stays picked: the others are drawn dim and take no click, for a
+list of one kind (`item_picker`'s `type`). The sub-filters of that category work as usual.
+
+Raises an error when the state is not a table of whole numbers, with another style, or with a
+`type` that is not a category.
 
 ```lua
 local state = {}
@@ -1824,7 +1844,7 @@ end)
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `state` *(optional)* | [`rq.UiFilterState`](../types/rq.UiFilterState.md) | The state; a new one when nil. |
-| `opts` *(optional)* | [`rq.UiPlace`](../types/rq.UiPlace.md) `\|{style?: "vault"\|"shop"\|"equip", back?: boolean, classes?: boolean, lock?: boolean, equip?: boolean, sub?: false\|{x: integer, y: integer}}` | Place (the categories' top left, 945, 154 in the vault, the shop and the equip list) and `id`; `style` (default "vault"); `back` (the column's grey, default true); `classes`, `lock` and `equip` (false leaves them out); `sub` (where the sub-filters' panel goes, default 407 left and 153 up, over the list's first row; false leaves it out). |
+| `opts` *(optional)* | [`rq.UiPlace`](../types/rq.UiPlace.md) `\|{style?: "vault"\|"shop"\|"equip", back?: boolean, classes?: boolean, lock?: boolean, equip?: boolean, sub?: false\|{x: integer, y: integer}, type?: integer}` | Place (the categories' top left, 945, 154 in the vault, the shop and the equip list) and `id`; `style` (default "vault"); `back` (the column's grey, default true); `classes`, `lock` and `equip` (false leaves them out); `sub` (where the sub-filters' panel goes, default 407 left and 153 up, over the list's first row; false leaves it out); `type` (a category kept picked: 21, 1, 11 or 17; since 2.44.0). |
 
 | Returns | Type | Description |
 | --- | --- | --- |
@@ -1832,6 +1852,8 @@ end)
 | `changed` | `boolean` | true on the update it changed. |
 
 > Changed in 2.9.0: `style`, and Equippable / Unequippable.
+
+> Changed in 2.44.0: `type`.
 
 ### rq.uikit.item_filter
 
@@ -1917,7 +1939,7 @@ rq.ui.choose(rows, function(mode) if mode ~= 0 then sort_by(mode) end end)
 rq.uikit.item_picker(opts) -> integer|nil, integer|nil
 ```
 
-`since 2.8.0` `changed 2.9.0` `changed 2.10.0`
+`since 2.8.0` `changed 2.9.0` `changed 2.10.0` `changed 2.44.0`
 
 Draws an item picker over the player's items, laid out as the vault: the list with its scroll
 bar, the filter column 407 pixels right and 154 down, the count of items listed in the column's
@@ -1940,9 +1962,19 @@ Enter, with `keys`) returns its instance; the picker moves nothing. The filters,
 scroll and the pick are kept by `opts.id` (`rq.uikit.state("picker:<id>")` has `filter`, `sort`,
 `list` and `ii`).
 
-Raises an error with another place, or when `chara` is not a whole number.
+For a list of some items only: `opts.only` keeps the items it returns true for, `opts.type` keeps
+one category picked in the column (21 for special items: the rank buttons over the list and
+Locked / Unlocked still filter), and `opts.first` puts rows before the rest, in its order and
+unsorted, filtered as the rest (an item worn now, as a row table with its own `level` words).
+`opts.drag` lets the rows be dragged onto another list of that group (`item_list`'s `drag`,
+`item_dropped`). With `shown` under 6 the SORT sits at the list's own foot. The current instance
+is one the list shows: an item used up, sold or filtered out is no longer current.
+
+Raises an error with another place, when `chara` is not a whole number, when `only` is not a
+function, `first` not a list, `drag` not a name, or `type` not a category.
 
 (`button-<id>-sort` is now `tab-<id>-sort-default-sort` and the mode's tab); the saved sort mode.
+current instance cleared when the list no longer shows it.
 
 ```lua
 local picking = true
@@ -1955,20 +1987,26 @@ rq.on_frame(function()
     give(ii)
   end
 end)
+
+-- Special items only, unlocked ones, the worn one first.
+local ii = rq.uikit.item_picker({ x = 538, y = 0, id = "special", type = 21,
+  only = function(ii) return not rq.uikit.item_data(ii).locked end, first = { worn_row } })
 ```
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `opts` *(optional)* | [`rq.UiPlace`](../types/rq.UiPlace.md) `\|{where?: "vault"\|"storage"\|"both"\|"shop"\|"quest", chara?: integer, shown?: integer, style?: "vault"\|"storage"\|"shop"\|"equip", sort?: integer, keys?: boolean}` | Place and `id`; `where` (default "vault"); `chara` (a character's roster slot: their equip list); `shown` (rows, default 6); `style` of the rows (default from `where`); `sort` (the first sort mode, default the stores' saved one; a mode under 10 is 1, as in the game); `keys` (the list's keys). |
+| `opts` *(optional)* | [`rq.UiPlace`](../types/rq.UiPlace.md) `\|{where?: "vault"\|"storage"\|"both"\|"shop"\|"quest", chara?: integer, shown?: integer, style?: "vault"\|"storage"\|"shop"\|"equip", sort?: integer, keys?: boolean, only?: fun(ii: integer): boolean, type?: integer, first?: (integer\|` [`rq.UiItemRow`](../types/rq.UiItemRow.md) `)[], drag?: string}` | Place and `id`; `where` (default "vault"); `chara` (a character's roster slot: their equip list); `shown` (rows, default 6); `style` of the rows (default from `where`); `sort` (the first sort mode, default the stores' saved one; a mode under 10 is 1, as in the game); `keys` (the list's keys); since 2.44.0: `only` (keeps the items it returns true for), `type` (a category kept picked: 21, 1, 11 or 17), `first` (rows before the rest), `drag` (a drag group). |
 
 | Returns | Type | Description |
 | --- | --- | --- |
 | `picked` | `integer\|nil` | The instance picked on this update. |
-| `current` | `integer\|nil` | The instance picked last. |
+| `current` | `integer\|nil` | The instance picked last, while the list shows it. |
 
 > Changed in 2.9.0: The shop and quest places, `chara`, `keys`; a click on the current row picks it again.
 
 > Changed in 2.10.0: The game's SORT at the bottom right, in place of the sort button under the column
+
+> Changed in 2.44.0: `only`, `type`, `first` and `drag`; the SORT at the foot of a shorter list; the
 
 ### rq.uikit.music_list
 

@@ -1,6 +1,6 @@
 # rq.SettingsRow
 
-`since 2.35.0`
+`since 2.35.0` `changed 2.44.0`
 
 One row of a settings page, for `rq.config.settings`.
 
@@ -9,6 +9,13 @@ One row of a settings page, for `rq.config.settings`.
 (a text, `rq.uikit.input`) keep a value under `key`; "label" (a line of text) and "space" (a gap)
 keep none. Each value's row checks it: a stored value it cannot take, as a number past `max` after
 the mod lowered it, reads as the default.
+
+A slider shows its value beside the track (`format`) and writes it when the knob is let go. A
+stepper or a slider with `recommend` draws that range lighter on the track (a slider's), says
+"Recommended: a to b" after the control (under the row when the line has no room), and asks with
+the game's Yes / No when the player sets a value outside it: the question gives the value, the
+range and `warn`; Yes keeps the value, No puts the range's nearest end. Moving further on the same side does not ask again. `Settings.set` and
+Reset never ask.
 
 ## Fields
 
@@ -29,6 +36,10 @@ the mod lowered it, reads as the default.
 | `big` *(optional)* | `integer` | A stepper's step with Shift held. Default `step` x 10. |
 | `low` *(optional)* | `string` | A slider's text at its low end. |
 | `high` *(optional)* | `string` | A slider's text at its high end. |
+| `format` *(optional)* | `string` | How a slider's value is written beside it, a `string.format` pattern for one number, such as "%.1f". Default "%g". Since 2.44.0. |
+| `value` *(optional)* | `boolean` | false hides a slider's value. Default true. Since 2.44.0. |
+| `recommend` *(optional)* | `number[]` | A stepper's or a slider's recommended range, {min, max}, inside its `min` and `max`; leaving it asks the player first. Since 2.44.0. |
+| `warn` *(optional)* | `string` | What the question says past the recommended range: what goes wrong there. Needs `recommend`. Since 2.44.0. |
 | `options` *(optional)* | `string[]` | A choice's texts. |
 | `values` *(optional)* | `any[]` | A choice's values, one for each option; without them a choice keeps the option's number, 1 and up. |
 | `dir` *(optional)* | `"row"\|"col"` | A choice's options side by side (default) or one under another. |

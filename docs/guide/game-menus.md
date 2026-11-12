@@ -265,8 +265,21 @@ end)
   past `max` after the mod lowered it) reads as the default. `set(key, value)` changes it as the page
   would, `on_change(fn)` runs on every change (the page, `set`, Reset) and returns a remover, and
   `reset()` is the button.
+- **A recommended range** (since 2.44.0): `recommend = { 60, 150 }` on a stepper or a slider
+  draws that range lighter on a slider's track and says "Recommended: 60 to 150" after the control.
+  When the player sets a value outside it, the game's Yes / No asks first, with the value, the
+  range and `warn` (what goes wrong there): Yes keeps it, No puts the range's nearest end. A slider
+  shows its value beside the track (`format`, such as `"%.1f"`) and writes it when the knob is let
+  go. Camera Zoom's sliders work this way.
+
+  ```lua
+  { kind = "slider", key = "out_max", label = "Farthest outdoors", min = 35, max = 250, step = 1,
+    default = 150, format = "%.0f", recommend = { 60, 150 },
+    warn = "Past 150 the edge of the sky shows as black corners, and past 180 the far ground is cut." },
+  ```
 - **Mistakes raise an error at the call**: an unknown `kind`, a value row with no key or a key used
-  twice, a default the row cannot take.
+  twice, a default the row cannot take, a `recommend` outside `min` and `max`, a `warn` without
+  `recommend`.
 - **Agents** see the widgets by their row's `id`, default the key: `check-on`, `stepper-count`,
   `slider-volume`, `check-speed-2`, `input-name` and `button-reset`.
 
@@ -313,6 +326,16 @@ local pick = rq.ui.ask("What now?", { { id = "trade", text = "Trade a Jewel" }, 
   local pick = rq.ui.ask(text, {
     { id = YES, text = "Yes" }, { id = TRADE, text = "Trade a Jewel" }, { id = NO, text = "No" },
   }, { game = true, remember = 11 }) -- while "Take Quest" is off: YES at once
+  ```
+- **Ticked from the start** (since 2.44.0): `remember_checked = true` shows the row ticked. An
+  answer with it still ticked turns the question off, whichever button or row was picked, and the
+  call then gives `remember_answer` (for `ask`) or true (for `confirm`) without asking. Save
+  Profiles asks once this way whether to copy a vanilla save further along:
+
+  ```lua
+  local pick = rq.ui.ask(text, { { id = "yes", text = "Yes, copy it and play" },
+    { id = "no", text = "No, start a new game" } },
+    { remember = "vanilla-start", remember_answer = "no", remember_checked = true })
   ```
 - **Agents** see the screen `select`: `confirm`'s buttons are `yes` and `no`, `notice`'s is `yes`,
   `ask`'s rows are `select-<label>`, and `select.message` holds the text.

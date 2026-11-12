@@ -13,7 +13,7 @@ What `rq.combat.on_stun` gets where the game works out a stun.
 | `skill` | `integer` | The skill number. |
 | `rate` | `integer` | The stun chance about to be rolled, 0 to 100: the game's, then what the callback before left. 0 when `blocked`. |
 | `base` | `integer` | The chance of the game's formula (impact, the skill, hiding, a charging target, the target's resilience, at most 75, and its other rules), also where the game does not stun. |
-| `blocked` *(optional)* | `"skill"\|"repeat"` | Why the game does not stun here: "skill" for the skills that never stun (120, Fortune 448, 152), "repeat" for a target stunned in the turn before. nil when the game rolls. |
+| `blocked` *(optional)* | `"skill"\|"repeat"` | Why the game does not stun here: "skill" for the skills that never stun (120, Fortune 448, 152, or a skill a mod's `rq.combat.set_rules` gave `stun = false`; not one it gave `stun = true`, since 2.44.0), "repeat" for a target stunned in the turn before. nil when the game rolls. |
 | `forecast` | `boolean` | true when the game only works out the battle forecast: count nothing and roll no dice then. |
 
 ## Used by

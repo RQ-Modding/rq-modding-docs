@@ -3,9 +3,48 @@
 Loader 2.37.0 lets a mod change the rules of a fight. A mod can set the chance of a stun, a poison,
 a counter or an escape, and how much HP a heal gives. It can also change the speeds the turn list is
 built from, the list itself, the ambush, and each line of the battle log. Since 2.38.0 it can also
-choose what an enemy or the familiar does on its turn. Every mod's callbacks run in turn on the same
+choose what an enemy or the familiar does on its turn, and since 2.44.0 read and change what a
+skill can do (its crit, stun and poison rules). Every mod's callbacks run in turn on the same
 fight, and the game shows the result as its own: the forecast, the log, the numbers and the turn
 icons.
+
+## What a skill can do: the rules
+
+The game decides some things by skill number, in its combat code: Assassinate (120) never crits,
+Fortune (448) never stuns, a few skills have a poison chance of their own. It keeps them in no
+table. The loader does, and `rq.combat.rules(skill)` answers with them, joined to the skill's data
+as it is then (a `rq.skill.patch` shows) and to what mods set:
+
+```lua
+local r = rq.combat.rules(448) -- Fortune
+-- r.crit = "sometimes", r.stun = false, r.poison = "coat", r.accuracy = "ignores"
+```
+
+- `crit` and `stun` are true, false or `"sometimes"`. "sometimes" is the game's exceptions: a skill
+  whose crit chance the game sets to 0 (a multiplier above 150, or Assassinate) still crits with
+  skill 549 or party item 91.
+- `poison` is `"own"` (with `poison_rate`), `"coat"` (only through the weapon or Poison Effect, as
+  most physical attacks), `"sometimes"` or false.
+- `accuracy` is `"ignores"` for the skills that never miss, else `"rolls"`.
+
+`rq.combat.set_rules(skill, rules)` changes a rule in the fight and in `rules` together, so a hover
+that reads `rules` (Better Explained's) can never disagree with the fight. Copandon Dot QoL lets
+Fortune crit and stun:
+
+```lua
+rq.combat.set_rules(rq.ids.skill.FORTUNE, { crit = true, stun = true })
+```
+
+- `crit = true` rolls the game's chance where the game zeroes it, with the game's other rules
+  (halved on all enemies, +30 while hidden); `false` never crits.
+- `stun = true` stuns at the game's formula where the game never does; `false` never stuns.
+- `poison = 30` gives the skill its own chance (the weapon's or the coat's when higher); `false`
+  never poisons.
+- `"sometimes"` leaves the fight alone and only changes what `rules` says, for a mod whose change
+  depends on the fight and stays in a callback. `"game"` puts the game's rule back.
+
+The rules act where the game works those rolls out, on physical attacks. The callbacks below run
+after a rule and see its chance.
 
 ## A chance: stun, poison, counter, escape
 
@@ -39,20 +78,24 @@ end)
 The game blocks some rolls, and the callbacks still run there with `ctx.blocked` saying why. Return
 a chance to lift the block:
 
-- A stun: `"skill"` for the skills that never stun (120, Fortune 448, 152), or `"repeat"` for a
-  target stunned in the turn before.
+- A stun: `"skill"` for the skills that never stun (120, Fortune 448, 152, or a skill a mod's
+  `set_rules` gave `stun = false`), or `"repeat"` for a target stunned in the turn before.
 - A counter: `"familiar"` (the familiar's attack), `"area"` (a skill on more than one target),
   `"stunned"` (a stunned defender) or `"guard"` (a hit Ally Guard took).
 - An escape: `"enemy"` (an enemy with skill 437 in the fight), `"rank"` or `"quest"` (for "Relax,
   relax").
 
-Copandon Dot QoL lets Fortune stun this way:
+Skill 152 stunning at the formula's chance, in a callback:
 
 ```lua
 rq.combat.on_stun(function(ctx)
-  if ctx.skill == 448 and ctx.blocked == "skill" then return ctx.base end
+  if ctx.skill == 152 and ctx.blocked == "skill" then return ctx.base end
 end)
 ```
+
+For a rule that holds on every hit, `set_rules` is shorter and shows in `rules` too. A callback
+fits a rule that depends on the fight: Copandon Dot QoL keeps one that holds Fortune's stun at 0 on
+Bad Luck.
 
 The stun callbacks also run for the battle forecast, with `ctx.forecast` true. A callback that
 counts or rolls dice should do nothing then.
