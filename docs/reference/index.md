@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.36.0.
+Loader version 2.37.0.
 
 ## Namespaces
 
@@ -66,8 +66,12 @@ Loader version 2.36.0.
 | [`rq.BattleActor`](types/rq.BattleActor.md) | The ally whose turn it is, from `rq.battle.actor`. |
 | [`rq.BattleDownCtx`](types/rq.BattleDownCtx.md) | What `rq.battle.on_down` gets. |
 | [`rq.BattleEndCtx`](types/rq.BattleEndCtx.md) | What `rq.battle.on_end` gets. |
+| [`rq.BattleFamiliar`](types/rq.BattleFamiliar.md) | The familiar of a fight, as `rq.battle.familiar` returns it. |
 | [`rq.BattleForecastCtx`](types/rq.BattleForecastCtx.md) | What `rq.battle.on_forecast` gets for one forecast line. |
 | [`rq.BattleHitCtx`](types/rq.BattleHitCtx.md) | What `rq.battle.on_hit` gets for one hit. |
+| [`rq.BattleLogCtx`](types/rq.BattleLogCtx.md) | What `rq.battle.on_log` gets for one line of the battle log. |
+| [`rq.BattleOrderAfterCtx`](types/rq.BattleOrderAfterCtx.md) | What `rq.battle.on_order_after` gets after the game built the turn list. |
+| [`rq.BattleOrderCtx`](types/rq.BattleOrderCtx.md) | What `rq.battle.on_order` gets before the game builds the turn list. |
 | [`rq.BattleSelectKeyCtx`](types/rq.BattleSelectKeyCtx.md) | What `rq.battle.on_select_key` gets. |
 | [`rq.BattleSnap`](types/rq.BattleSnap.md) | What `rq.battle.snapshot` returns: a copy of the fight screen. |
 | [`rq.BattleStartCtx`](types/rq.BattleStartCtx.md) | What `rq.battle.on_start` gets. |
@@ -95,6 +99,7 @@ Loader version 2.36.0.
 | [`rq.ChestAttemptResult`](types/rq.ChestAttemptResult.md) | What `rq.chest.on_attempt` may return instead of a number. |
 | [`rq.ChestInfo`](types/rq.ChestInfo.md) | What `rq.chest.on_attempt` and `on_result` get for a red chest. |
 | [`rq.ConfigPage`](types/rq.ConfigPage.md) | A page in the Mods tab of the game's Config screen. |
+| [`rq.CounterCtx`](types/rq.CounterCtx.md) | What `rq.combat.on_counter` gets after a hit. |
 | [`rq.CounterGuardCtx`](types/rq.CounterGuardCtx.md) | What `rq.counter.on_guard_counter` gets. |
 | [`rq.CreateCtx`](types/rq.CreateCtx.md) | What `rq.chara.on_create` gets. |
 | [`rq.CritCtx`](types/rq.CritCtx.md) | What `rq.combat.on_crit` gets where the game rolls a critical. |
@@ -104,6 +109,7 @@ Loader version 2.36.0.
 | [`rq.DungeonInfo`](types/rq.DungeonInfo.md) | Where the party is in a dungeon, from `rq.dungeon.info()`. |
 | [`rq.EncounterCtx`](types/rq.EncounterCtx.md) | What `rq.encounters.on_encounter` callbacks get. |
 | [`rq.EncounterInfo`](types/rq.EncounterInfo.md) | What `rq.encounters.info` returns. |
+| [`rq.EscapeCtx`](types/rq.EscapeCtx.md) | What `rq.combat.on_escape` gets. |
 | [`rq.FightBackground`](types/rq.FightBackground.md) | One of the game's fight backgrounds. |
 | [`rq.FightOpts`](types/rq.FightOpts.md) | What `rq.battle.start` takes. Only `enemies` is needed. |
 | [`rq.FightResult`](types/rq.FightResult.md) | How a fight from `rq.battle.start` ended, its second value. |
@@ -117,6 +123,7 @@ Loader version 2.36.0.
 | [`rq.GameButtonSpec`](types/rq.GameButtonSpec.md) | An entry for `rq.gamebutton.add`. |
 | [`rq.GifInfo`](types/rq.GifInfo.md) | What `rq.image.gif_info` returns. |
 | [`rq.GifOpts`](types/rq.GifOpts.md) | Options for `rq.image.add_gif`. |
+| [`rq.HealCtx`](types/rq.HealCtx.md) | What `rq.combat.on_heal` gets for one heal; `amount` is writable. |
 | [`rq.HpEvent`](types/rq.HpEvent.md) | What `rq.battle.on_hp` gets. |
 | [`rq.HudCgOpts`](types/rq.HudCgOpts.md) | How `rq.hud.cg` draws a CG. |
 | [`rq.HudTextStyle`](types/rq.HudTextStyle.md) | How `rq.hud.text` draws text. |
@@ -151,8 +158,10 @@ Loader version 2.36.0.
 | [`rq.OfferCtx`](types/rq.OfferCtx.md) | What `rq.chara.on_offer` gets for the character whose buy list the game just filled. |
 | [`rq.OfferRow`](types/rq.OfferRow.md) | A row of the skill buy list, from `rq.chara.offers`. |
 | [`rq.OrbMember`](types/rq.OrbMember.md) | A roster member, from `rq.orb.roster`. `rq.party.roster` gives the same with `hp_max` and `status`. |
+| [`rq.OrderUnit`](types/rq.OrderUnit.md) | One unit of a fight, as `rq.battle.on_order` lists it. |
 | [`rq.PartyMember`](types/rq.PartyMember.md) | A recruited character, from `rq.party.roster`. |
 | [`rq.PhysicalCtx`](types/rq.PhysicalCtx.md) | What `rq.combat.on_physical` gets for one physical hit. |
+| [`rq.PoisonCtx`](types/rq.PoisonCtx.md) | What `rq.combat.on_poison` gets where the game works out a poison. |
 | [`rq.Quest`](types/rq.Quest.md) | A quest, from `rq.quests()`. |
 | [`rq.QuestClearCtx`](types/rq.QuestClearCtx.md) | What an `rq.quests.on_clear` callback gets. |
 | [`rq.QuestEndCtx`](types/rq.QuestEndCtx.md) | What an `rq.quests.on_end` callback gets. |
@@ -186,6 +195,7 @@ Loader version 2.36.0.
 | [`rq.StatusInfo`](types/rq.StatusInfo.md) | What `rq.status.info` gives about a definition. |
 | [`rq.StatusInstance`](types/rq.StatusInstance.md) | A state on one character, from `rq.status.add`, `get` and `list`. |
 | [`rq.StepsCtx`](types/rq.StepsCtx.md) | What `rq.encounters.on_steps` callbacks get. |
+| [`rq.StunCtx`](types/rq.StunCtx.md) | What `rq.combat.on_stun` gets where the game works out a stun. |
 | [`rq.TakeContext`](types/rq.TakeContext.md) | What an `rq.quests.on_take` callback gets. |
 | [`rq.TransferContext`](types/rq.TransferContext.md) | What `rq.world.on_transfer` and `on_transfer_after` callbacks get. |
 | [`rq.UiAskRow`](types/rq.UiAskRow.md) | One row of `rq.ui.ask`. |

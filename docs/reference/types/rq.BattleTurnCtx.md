@@ -133,6 +133,8 @@ Raises an error for a value that is not a string.
 | --- | --- | --- |
 | `text` | `string` | The text to add. |
 
+See also: [`rq.battle.on_log`](../api/rq.battle.md#rqbattleon_log)
+
 ## Used by
 
 [`rq.StatusDef`](rq.StatusDef.md), [`rq.battle.on_turn`](../api/rq.battle.md#rqbattleon_turn)

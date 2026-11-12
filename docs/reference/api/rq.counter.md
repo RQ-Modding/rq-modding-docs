@@ -73,3 +73,5 @@ callbacks in all. The first call places the patch.
 > Changed in 0.23.0: Returns a remover.
 
 > Changed in 2.35.0: Places the patch itself; before, it needed `rq.counter.install`.
+
+See also: [`rq.combat.on_counter`](rq.combat.md#rqcombaton_counter)

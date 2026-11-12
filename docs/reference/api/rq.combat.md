@@ -56,6 +56,11 @@ Raises an error when the AIN is not loaded or a hook cannot be placed.
 | [`rq.combat.on_accuracy`](#rqcombaton_accuracy) | Calls `fn` for each accuracy check, to add to the hit chance. |
 | [`rq.combat.on_crit`](#rqcombaton_crit) | Calls `fn` where the game rolls a critical (the `確率演算` call in `クリティカル計算`). |
 | [`rq.combat.on_magic`](#rqcombaton_magic) | Calls `fn` for each magic hit, to change its final damage by a percent. |
+| [`rq.combat.on_stun`](#rqcombaton_stun) | Calls `fn` where the game works out a stun, to change its chance. |
+| [`rq.combat.on_poison`](#rqcombaton_poison) | Calls `fn` after each hit on a target with no status, to change the chance it is poisoned. |
+| [`rq.combat.on_counter`](#rqcombaton_counter) | Calls `fn` after each hit that leaves the character hit standing, to change the chance it counters. |
+| [`rq.combat.on_heal`](#rqcombaton_heal) | Calls `fn` when a skill gives HP in a fight, to change how much. |
+| [`rq.combat.on_escape`](#rqcombaton_escape) | Calls `fn` when an ally uses Escape or "Relax, relax", to change the chance it ends the fight. |
 
 ### rq.combat.on_physical
 
@@ -143,6 +148,8 @@ end)
 
 > Changed in 0.23.0: Returns a remover.
 
+See also: [`rq.combat.on_stun`](rq.combat.md#rqcombaton_stun)
+
 ### rq.combat.on_magic
 
 ```lua
@@ -179,3 +186,190 @@ end)
 > Changed in 2.26.0: Runs for the battle forecast too, with `ctx.forecast`.
 
 See also: [`rq.combat.on_physical`](rq.combat.md#rqcombaton_physical)
+
+### rq.combat.on_stun
+
+```lua
+rq.combat.on_stun(fn) -> fun()
+```
+
+`since 2.37.0`
+
+Calls `fn` where the game works out a stun, to change its chance.
+
+It runs in `衝撃計算` for each hit of an attack, and for the battle forecast with `ctx.forecast`
+true. `fn` returns the chance, 0 to 100, or nil to keep it; true is 100 and false is 0, and a
+number past either end is held there. Each callback sees in `ctx.rate` what the one before left.
+The game then rolls the last chance with its own roll (`確率演算`): the forecast's "Stun N%" and
+the log's " (Stun rate = N)" show it.
+
+It also runs for the hits the game never stuns with: the skills 120, Fortune (448) and 152, and a
+target stunned in the turn before (the game's rule against a stun every turn). There `ctx.rate`
+is 0 and `ctx.blocked` says why; `ctx.base` is what the formula gives, so a mod can let one of
+them stun.
+
+A stunned target loses its next turn and stops charging, as with the game's own stun. A target
+that is already stunned, or a hit that does no damage, is the game's to judge as before.
+
+Raises an error, logged, for a return that is not a number, a boolean or nil.
+
+```lua
+rq.combat.on_stun(function(ctx)
+  if ctx.skill == FORTUNE and ctx.blocked == "skill" then return ctx.base end -- Fortune stuns
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(ctx:` [`rq.StunCtx`](../types/rq.StunCtx.md) `): integer\|boolean\|nil` | Returns the chance, true, false or nil. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |
+
+See also: [`rq.combat.on_crit`](rq.combat.md#rqcombaton_crit)
+
+### rq.combat.on_poison
+
+```lua
+rq.combat.on_poison(fn) -> fun()
+```
+
+`since 2.37.0`
+
+Calls `fn` after each hit on a target with no status, to change the chance it is poisoned.
+
+It runs in `毒計算`, after the stun, for each hit of an attack on a target that is not poisoned,
+stunned or down. `fn` returns the chance, 0 to 100, or nil to keep it; true is 100 and false is
+0. Most hits have a chance of 0 in the game, so a mod can give one to any attack. The log's first
+line shows " (Poison = N)", as for the game's own poison (the game shows no word when it takes).
+The game makes no forecast for a poison.
+
+Raises an error, logged, for a return that is not a number, a boolean or nil.
+
+```lua
+rq.combat.on_poison(function(ctx)
+  if rq.item.number(rq.item.equipped(ctx.attacker).weapon or 0) == VENOM_BLADE then return 30 end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(ctx:` [`rq.PoisonCtx`](../types/rq.PoisonCtx.md) `): integer\|boolean\|nil` | Returns the chance, true, false or nil. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |
+
+See also: [`rq.combat.on_stun`](rq.combat.md#rqcombaton_stun)
+
+### rq.combat.on_counter
+
+```lua
+rq.combat.on_counter(fn) -> fun()
+```
+
+`since 2.37.0`
+
+Calls `fn` after each hit that leaves the character hit standing, to change the chance it counters.
+
+It runs in `ダメージ後計算`, for allies, enemies and familiars, whether or not the one hit has the
+Counter skill (259), a yellow skill of any class that learned it. `fn` returns the chance, 0 to
+100, or nil to keep it; true is 100 and false is 0. A counter is the game's: the one hit uses
+Counter Attack (116) on the attacker, with " (counter)" in the log, and `rq.battle.on_hit` and
+`on_use` see it with `counter` true. A counter can be countered, as in the game; after 10 counters
+in a row the loader grants no more, so two callbacks that always counter cannot loop.
+
+`rq.counter.on_guard_counter` still decides first whether Ally Guard clears the Counter skill's
+chance; `ctx.rate` is then what it left.
+
+Raises an error, logged, for a return that is not a number, a boolean or nil.
+
+```lua
+rq.combat.on_counter(function(ctx)
+  if thorns[ctx.defender] and not ctx.counter then return math.max(ctx.rate, 50) end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(ctx:` [`rq.CounterCtx`](../types/rq.CounterCtx.md) `): integer\|boolean\|nil` | Returns the chance, true, false or nil. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |
+
+See also: [`rq.counter.on_guard_counter`](rq.counter.md#rqcounteron_guard_counter)
+
+### rq.combat.on_heal
+
+```lua
+rq.combat.on_heal(fn) -> fun()
+```
+
+`since 2.37.0`
+
+Calls `fn` when a skill gives HP in a fight, to change how much.
+
+It runs after a support skill's heal or revive (`Ｔ補助行動`: First Aid, the Healing spells,
+Recovery Rain, Maiden's Spirit, Bishamonten, Am Powder, Epinephrend, Status Restore, Full Revive,
+and a mod skill patched to one of them) and after a hit with HP absorb (`ダメージ後計算`), before
+anything shows. Each callback sees in `ctx.amount` what the one before left. The HP given, the
+number shown and the number in the log's " recovered N HP." follow the last amount. A revive
+gives at least 1 HP. A heal the game makes 0 (a downed target, Medicine on Suzume, skill 366) is
+not reported.
+
+Regeneration at a turn start is not a skill: give or take it with `rq.battle.on_turn`'s
+`ctx:heal`. Outside fights the game's heals are `rq.chara.heal` and `rq.party.heal`.
+
+```lua
+rq.combat.on_heal(function(ctx)
+  if cursed[ctx.target] then ctx.amount = ctx.amount // 2 end -- a curse halves healing
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(ctx:` [`rq.HealCtx`](../types/rq.HealCtx.md) `)` | Gets the heal; writes `ctx.amount` to change it. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |
+
+See also: [`rq.battle.on_turn`](rq.battle.md#rqbattleon_turn)
+
+### rq.combat.on_escape
+
+```lua
+rq.combat.on_escape(fn) -> fun()
+```
+
+`since 2.37.0`
+
+Calls `fn` when an ally uses Escape or "Relax, relax", to change the chance it ends the fight.
+
+Escape (211) flees the fight (the result "fled"): the game rolls the fight's escape chance. "Relax,
+relax" (217) ends it as the enemies leave (the game's result 6), always, but not at fight rank 2
+or under the quest's rule. `fn` returns the chance, 0 to 100, or nil to keep it; true is 100 and
+false is 0. When the last chance differs from the game's, the loader rolls it with the game's
+roll. A failed Escape still raises the chance by 5, as the game does.
+
+It does not run in a boss fight, where nothing ends the fight but a win or a loss.
+
+Raises an error, logged, for a return that is not a number, a boolean or nil.
+
+```lua
+rq.combat.on_escape(function(ctx)
+  if ctx.skill == 211 and has_smoke_bomb(ctx.iic) then return 100 end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(ctx:` [`rq.EscapeCtx`](../types/rq.EscapeCtx.md) `): integer\|boolean\|nil` | Returns the chance, true, false or nil. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |
+
+See also: [`rq.battle.set_escape`](rq.battle.md#rqbattleset_escape)

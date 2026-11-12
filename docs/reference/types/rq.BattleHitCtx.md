@@ -42,6 +42,8 @@ Raises an error for a value that is not a string.
 | --- | --- | --- |
 | `text` | `string` | The text to add. |
 
+See also: [`rq.battle.on_log`](../api/rq.battle.md#rqbattleon_log)
+
 ## Used by
 
 [`rq.battle.on_hit`](../api/rq.battle.md#rqbattleon_hit)

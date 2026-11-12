@@ -24,6 +24,11 @@ end)
 | Name | Summary |
 | --- | --- |
 | [`rq.battle.install`](#rqbattleinstall) | Installs the ally skill select hooks. |
+| [`rq.battle.familiar`](#rqbattlefamiliar) | Returns the familiar in the current fight. |
+| [`rq.battle.escape`](#rqbattleescape) | Returns the escape chance of the current fight. |
+| [`rq.battle.set_escape`](#rqbattleset_escape) | Sets the escape chance of the current fight. |
+| [`rq.battle.set_ambush`](#rqbattleset_ambush) | Changes the fight's ambush, from `rq.battle.on_start`. |
+| [`rq.battle.log`](#rqbattlelog) | Adds a line to the battle log now. |
 | [`rq.battle.install_flame`](#rqbattleinstall_flame) | Installs the hooks the flame, the buffs and the marks need. |
 | [`rq.battle.set_flame`](#rqbattleset_flame) | Shows or hides the enemies' "charging" flame on an ally. |
 | [`rq.battle.set_buff`](#rqbattleset_buff) | Adds, changes or removes a mod's buff on a character. |
@@ -73,6 +78,142 @@ Raises an error when the AIN is not loaded or a hook cannot be placed.
 | `ok` | `boolean` | Always true; a failure raises an error. |
 
 > Changed in 2.35.0: Not needed: `on_select_key`, `in_ally_select`, `actor` and `skill_usable` make it.
+
+### rq.battle.familiar
+
+```lua
+rq.battle.familiar() -> rq.BattleFamiliar|nil
+```
+
+`since 2.37.0`
+
+Returns the familiar in the current fight.
+
+An ally holding a familiar item may call its familiar at a fight's start (the item's class,
+Familiar Knowledge), and a strong familiar from the vault sometimes jumps in. It is built from its
+monster in slot 10, with its attack and magic raised by its growth.
+
+```lua
+local f = rq.battle.familiar()
+if f then rq.log("familiar " .. f.no .. " beside " .. rq.chara.get(f.owner).name) end
+```
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `familiar` | [`rq.BattleFamiliar`](../types/rq.BattleFamiliar.md) `\|nil` | The familiar, or nil outside a fight or with none. |
+
+### rq.battle.escape
+
+```lua
+rq.battle.escape() -> integer|nil
+```
+
+`since 2.37.0`
+
+Returns the escape chance of the current fight.
+
+The game sets it at a fight's start to 20, or the party's Escape Boost (268) if higher, 0 in a
+boss fight. It grows by 5 at each ally's turn while it is not 0, and by 5 after a failed Escape,
+up to 100. Escape (211) works when a roll of 1 to 100 is at most the chance.
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `chance` | `integer\|nil` | 0 to 100; nil outside a fight. |
+
+See also: [`rq.battle.set_escape`](rq.battle.md#rqbattleset_escape), [`rq.combat.on_escape`](rq.combat.md#rqcombaton_escape)
+
+### rq.battle.set_escape
+
+```lua
+rq.battle.set_escape(n) -> integer
+```
+
+`since 2.37.0`
+
+Sets the escape chance of the current fight.
+
+It is the game's own setter: a boss fight keeps 0. A chance of 0 stays 0, as the game's growth
+adds only to a chance that is not 0. Set it from `rq.battle.on_start` for the whole fight, or any
+time in it. `rq.battle.start`'s `escape` sets it too, before every `on_start` callback.
+
+Raises an error for a chance that is not whole, 0 to 100, or outside a fight.
+
+```lua
+rq.battle.on_start(function(ctx)
+  if has_smoke_bomb() then rq.battle.set_escape(80) end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `n` | `integer` | The chance, 0 to 100. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `chance` | `integer` | The chance now, after the game's rule. |
+
+See also: [`rq.battle.escape`](rq.battle.md#rqbattleescape)
+
+### rq.battle.set_ambush
+
+```lua
+rq.battle.set_ambush(kind, iic)
+```
+
+`since 2.37.0`
+
+Changes the fight's ambush, from `rq.battle.on_start`.
+
+The game decides the ambush before `on_start` (`ctx.ambush`): "surprise" gives every ally the
+first entries of the turn list, "first_strike" gives the Gunners of the party two first entries
+each and names the ally in the notice, "ambushed" gives every enemy the first entries. The notice
+shows after the setup. The game's other effects of an ambush it rolled stay (an ambush by the
+enemies gives the fight one more action per enemy).
+
+Raises an error for an unknown kind, an ally not in the fight, an ally with another kind, or a
+call outside the setup of a fight (`rq.battle.on_start`).
+
+```lua
+rq.battle.on_start(function(ctx)
+  if ctx.ambush == "ambushed" and has_lookout() then rq.battle.set_ambush("none") end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `kind` | `"none"\|"surprise"\|"first_strike"\|"ambushed"` | The ambush. |
+| `iic` *(optional)* | `integer` | For "first_strike", the ally the notice names. Default: the first ally. |
+
+### rq.battle.log
+
+```lua
+rq.battle.log(text) -> boolean
+```
+
+`since 2.37.0`
+
+Adds a line to the battle log now.
+
+It goes through `rq.battle.on_log` as the game's lines do, in the game's color. Write a whole
+line; the game's own start with the turn's number or "→".
+
+Raises an error for a value that is not a string, or outside a fight.
+
+```lua
+rq.battle.on_start(function()
+  rq.battle.log("→The air is thick with spores.")
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `text` | `string` | The line. An empty line adds nothing. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `added` | `boolean` | false when the game added nothing. |
+
+See also: [`rq.battle.on_log`](rq.battle.md#rqbattleon_log)
 
 ### rq.battle.install_flame
 
@@ -699,6 +840,9 @@ Returns a copy of what the fight screen shows.
 | [`rq.battle.on_turn`](#rqbattleon_turn) | Calls `fn` at the start of every turn in a fight, for allies, enemies and familiars. |
 | [`rq.battle.on_hit`](#rqbattleon_hit) | Calls `fn` after each attack or special skill on a target, with its result. |
 | [`rq.battle.on_forecast`](#rqbattleon_forecast) | Calls `fn` each time the game builds a battle forecast line, to add text to it. |
+| [`rq.battle.on_order`](#rqbattleon_order) | Calls `fn` each time the game builds the turn list, to change the speeds it is built from. |
+| [`rq.battle.on_order_after`](#rqbattleon_order_after) | Calls `fn` each time the game has built the turn list, to read or replace it. |
+| [`rq.battle.on_log`](#rqbattleon_log) | Calls `fn` for each line before it goes into the battle log, to drop or change it. |
 | [`rq.battle.on_hp`](#rqbattleon_hp) | Calls `fn` in a fight each time a character's HP changes. |
 
 ### rq.battle.on_select_key
@@ -742,7 +886,7 @@ end)
 rq.battle.on_start(fn) -> fun()
 ```
 
-`since 0.5.0` `changed 0.23.0`
+`since 0.5.0` `changed 0.23.0` `changed 2.37.0`
 
 Calls `fn` once per fight, at the end of `Ｔ戦闘前初期化`.
 
@@ -750,6 +894,9 @@ Every start-of-fight effect of the game has already run (skills such as Cough, a
 tea), so `rq.chara.get` and `set` on the lists see the real state. The enemies were built before
 it: change how they are built with `rq.monster.on_create`. In a fight of `rq.battle.start`, its
 `escape` is written before the first callback.
+
+The ambush is decided by then (`ctx.ambush`); `rq.battle.set_ambush` changes it here, before the
+turn list is built. The escape chance is `rq.battle.escape` and `set_escape`.
 
 ```lua
 rq.battle.on_start(function(ctx)
@@ -766,6 +913,8 @@ end)
 | `remove` | `fun()` | Removes this callback. |
 
 > Changed in 0.23.0: Returns a remover.
+
+> Changed in 2.37.0: `ctx.ambush` and `first_striker`.
 
 ### rq.battle.on_end
 
@@ -1053,6 +1202,113 @@ end)
 | `remove` | `fun()` | Removes this callback. |
 
 See also: [`rq.combat.on_physical`](rq.combat.md#rqcombaton_physical)
+
+### rq.battle.on_order
+
+```lua
+rq.battle.on_order(fn) -> fun()
+```
+
+`since 2.37.0`
+
+Calls `fn` each time the game builds the turn list, to change the speeds it is built from.
+
+The game builds the whole list of a fight's turns at its start (`Ｔ順番生成`) and again after a
+switch, a shuffle or a revive, reading each unit's speed there and nowhere else in a fight.
+`ctx:speed` sets a speed for that build only. Each round of the list every unit takes its speed,
+with chance, from a box of 300 and gets an entry when it is empty; a unit far faster gets
+several entries a round. The game's other rules stay: Head Start, the first entries of an ambush,
+the catch-up of a unit with no turn yet, an enemy far slower than the party sped up half the time.
+
+The familiar's unit has `owner`, `item` and `own_spd`: the game holds a familiar's speed to the
+party's top speed when it builds it, and `own_spd` is the speed before that.
+
+```lua
+rq.battle.on_order(function(ctx)
+  for _, u in ipairs(ctx.units) do
+    if hasted[u.iic] then ctx:speed(u.iic, u.spd * 6 // 5) end -- a fifth faster
+  end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(ctx:` [`rq.BattleOrderCtx`](../types/rq.BattleOrderCtx.md) `)` | Gets the units before the build. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |
+
+See also: [`rq.battle.on_order_after`](rq.battle.md#rqbattleon_order_after)
+
+### rq.battle.on_order_after
+
+```lua
+rq.battle.on_order_after(fn) -> fun()
+```
+
+`since 2.37.0`
+
+Calls `fn` each time the game has built the turn list, to read or replace it.
+
+It runs after `rq.battle.on_order`'s build, before the turn icons are made from the list. Each
+callback sees in `ctx.order` the list the one before left.
+
+```lua
+rq.battle.on_order_after(function(ctx)
+  if not ctx.rebuild and first_mover then
+    local list = ctx.order
+    table.insert(list, 1, first_mover) -- one more turn for them, first
+    if #list > 50 then list[51] = nil end
+    ctx:set_order(list)
+  end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(ctx:` [`rq.BattleOrderAfterCtx`](../types/rq.BattleOrderAfterCtx.md) `)` | Gets the list. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |
+
+See also: [`rq.battle.on_order`](rq.battle.md#rqbattleon_order)
+
+### rq.battle.on_log
+
+```lua
+rq.battle.on_log(fn) -> fun()
+```
+
+`since 2.37.0`
+
+Calls `fn` for each line before it goes into the battle log, to drop or change it.
+
+Every line goes through it: a turn's two lines (with the text of `rq.battle.on_turn`'s and
+`on_hit`'s `ctx:log` in them), the game's notices at a fight's start (terrain, a familiar called,
+Cough-Cough Disease), a familiar's cut-in, the end message, and `rq.battle.log`. `fn` returns false
+to drop the line, a string to put in its place, or nil to keep it. After a false the later
+callbacks do not see the line. A line added with `rq.battle.log` from inside `fn` goes into the
+log without passing through `on_log` again. An empty line is never added.
+
+Raises an error, logged, for a return that is not false, a string or nil.
+
+```lua
+rq.battle.on_log(function(ctx)
+  return (ctx.text:gsub("Poison", "Venom")) -- the game's word in this mod's world
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(ctx:` [`rq.BattleLogCtx`](../types/rq.BattleLogCtx.md) `): string\|false\|nil` | Returns false, a new line, or nil. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |
+
+See also: [`rq.battle.log`](rq.battle.md#rqbattlelog)
 
 ### rq.battle.on_hp
 

@@ -105,9 +105,9 @@ number or a multiplier. `rq.ain.patch_int_after` finds one by the global it foll
 many it replaced: check that count, since a game update can move or remove the number.
 
 ```lua
--- 衝撃計算 checks for Fortune by its number; make that check match no skill.
-if rq.ain.patch_int("衝撃計算", rq.ids.skill.FORTUNE, -1) ~= 1 then
-  rq.log("衝撃計算 changed; the patch is off")
+-- 毒計算 never poisons Suzume; make that check match no character.
+if rq.ain.patch_int("毒計算", rq.ids.chara.SUZUME, -1) ~= 1 then
+  rq.log("毒計算 changed; the patch is off")
 end
 ```
 
@@ -133,5 +133,7 @@ end
   check it.
 - Something many mods would do through `rq.ain` is a call `rq.*` is missing. The money, charisma,
   random fights, EXP and levels became calls that way in 2.33.0
-  ([Gold, encounters and levels](game-state.md)). The [roadmap](../roadmap.md) lists the ones
-  planned, such as `rq.ain.call` with reference and struct arguments.
+  ([Gold, encounters and levels](game-state.md)), and the stun, the turn list and the battle log
+  that the shipped mods hooked in 2.37.0 ([Combat rules](combat.md)). The
+  [roadmap](../roadmap.md) lists the ones planned, such as `rq.ain.call` with reference and struct
+  arguments.

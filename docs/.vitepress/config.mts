@@ -50,6 +50,7 @@ const guide: DefaultTheme.SidebarItem[] = [
       { text: 'Pictures', link: '/guide/pictures' },
       { text: 'Replacing music', link: '/guide/music' },
       { text: 'Battle states', link: '/guide/states' },
+      { text: 'Combat rules', link: '/guide/combat' },
       { text: "Buttons in the game's menus", link: '/guide/game-menus' },
       { text: 'Editor setup', link: '/guide/editor-setup' },
       { text: 'Logs and debugging', link: '/guide/debugging' },

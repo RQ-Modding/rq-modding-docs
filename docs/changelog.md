@@ -5,6 +5,22 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.37.0
+
+The combat formulas and the last hooks the mods placed on the game's code (`notes/plans/plan-combat-hooks.md` in the workspace, phase L of the priority order). In Lua over `rq.ain` (`src/lua/combat.lua`); the hooks are placed by the first call that needs them.
+- `rq.combat.on_stun(fn)`: each hit's stun chance in `衝撃計算`, for the battle forecast too (`ctx.forecast`). `fn` returns the chance (0 to 100, true is 100, false is 0) or nil; each callback sees the chance the one before left. It also runs where the game never stuns: the skills 120, Fortune (448) and 152 (`blocked = "skill"`), and a target stunned the turn before (`"repeat"`), with `ctx.base`, the formula's chance, so a mod can let them stun. The forecast and the log's " (Stun rate = N)" show the last chance.
+- `rq.combat.on_poison(fn)`: the poison chance of each hit on a target with no status (`毒計算`). Most hits have 0 in the game; when the last chance is above 0 and the game made no roll, the loader rolls it with the game's roll. The log's first line shows " (Poison = N)" as for the game's own poison.
+- `rq.combat.on_counter(fn)`: after each hit that leaves the one hit standing (`ダメージ後計算`), whether or not it learned Counter (259), a yellow skill of any class. The ctx has `rate`, `base` (the Counter skill's chance), `damage`, `guarded`, `counter` and `blocked` ("familiar", "area", "stunned", "guard"). A counter is the game's Counter Attack (116) with " (counter)" in the log; after 10 counters in a row the loader grants no more. `rq.counter.on_guard_counter` still decides first.
+- `rq.combat.on_heal(fn)`: the HP a support skill's heal or revive gives (`Ｔ補助行動`) and HP absorb from a hit, with `kind` ("skill", "revive", "absorb") and a writable `amount`; the HP, the number shown and the log's " recovered N HP." follow it, a revive gives at least 1.
+- `rq.combat.on_escape(fn)`: the chance Escape (211) flees and "Relax, relax" (217) ends the fight, with `blocked` ("enemy", "rank", "quest"). A changed chance is rolled with the game's roll. Not in a boss fight.
+- `rq.battle.on_order(fn)` and `on_order_after(fn)`: the turn list (`Ｔ順番生成`, at a fight's start and after a switch, a shuffle or a revive, `rebuild`). `on_order` lists the units (`iic`, `side`, `rank`, `spd`, `out`, and for the familiar `owner`, `item`, `own_spd`) and `ctx:speed(iic, n)` sets a speed for that build only; `on_order_after` reads `ctx.order` and replaces it with `ctx:set_order(list)` (1 to 50 entries).
+- `rq.battle.familiar()`: the fight's familiar (`iic`, `no`, `owner`, `item`, `joined`, `spd`, `own_spd`, `growth`).
+- `rq.battle.escape()` and `set_escape(n)`: the fight's escape chance, through the game's setter (a boss fight keeps 0).
+- `rq.battle.on_start`'s ctx has `ambush` ("none", "surprise", "first_strike", "ambushed") and `first_striker`; `rq.battle.set_ambush(kind, iic)` changes it from `on_start`, before the turn list is built.
+- `rq.battle.on_log(fn)`: every line before it goes into the battle log (`戦闘ログ_追加`), with `text`, `color` and `last` (the end message); `fn` drops it (false), replaces it (a string) or keeps it (nil). `rq.battle.log(text)` adds a line, through `on_log`.
+- The reference of `rq.combat.on_crit`, `rq.counter.on_guard_counter` and the `log` of `on_turn` and `on_hit` points to the new calls.
+- copandon-dot-qol 1.0.4 lets Fortune stun with `rq.combat.on_stun`, nozomi-okita-qol 1.0.4 drops the disease's line with `rq.battle.on_log`, and onoha-qol 1.0.3 sets the two speeds with `rq.battle.on_order`; none of the three hooks or patches the game's code any more (copandon-dot-qol still reads the next Fortune's result, `FA[102]`), and all need loader 2.37.0.
+
 ## 2.36.0
 
 Monsters, modes and fights from a mod (`notes/plans/plan-monsters-modes.md` in the workspace, phase K of the priority order).

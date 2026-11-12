@@ -149,6 +149,12 @@ and counts its turns only in fights. When the quest ends, `on_remove` gets the r
 | `"down"` | The character is down |
 | `"immune"` | `immune` or `set_immune` says no |
 
+## A state that changes the rules
+
+A state can also change the rules of a fight. A state can stand for Haste or Slow by changing the
+turn list. It can change a stun or poison chance, give thorns that counter, or curse the healing it
+gets. All of these are in [Combat rules](combat.md).
+
 ## Not yet
 
 - The `desc` text shows nowhere in the game yet; it comes with the card's marks side by side,
