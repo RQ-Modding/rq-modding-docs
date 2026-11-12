@@ -26,7 +26,7 @@ Reads what is on the screen and saves screenshots.
 rq.ui.get() -> table|nil
 ```
 
-`since 0.20.0` `changed 0.21.0` `changed 2.11.0` `changed 2.12.0` `changed 2.19.0` `changed 2.20.0` `changed 2.20.1` `changed 2.22.1` `changed 2.28.0` `changed 2.31.0`
+`since 0.20.0` `changed 0.21.0` `changed 2.11.0` `changed 2.12.0` `changed 2.19.0` `changed 2.20.0` `changed 2.20.1` `changed 2.22.1` `changed 2.28.0` `changed 2.31.0` `changed 2.41.0`
 
 Returns what is on the screen.
 
@@ -63,6 +63,10 @@ dropped: `unit-N` dragged onto `store-drop` goes to the 2nd Army, `store-N` drag
 comes back. `storeUnits` lists the whole 2nd Army as `units` lists the roster (`visible` for the
 cards shown), and `storeState` has `topIndex` (the box's scroll), `listCount` and `shown` (cards).
 
+After a quest's success, the appraisal of the quest storage's items is the screen `appraisal`:
+`finish` (the Finish button, bottom right) and `close`, in section `appraisal`. Its questions (an
+item not identified is lost) are `select`. The items' own buttons are not listed.
+
 It builds the whole list, so do not call it on every `rq.on_frame`.
 
 every screen that shows it; Rance Castle is the screen `castle`, with its rooms as `room-<area>`
@@ -71,6 +75,7 @@ and the town tabs; the town tabs on `quests`; the SYSTEM menu over Quests or the
 `other` with the footer only (they were the town or the castle under them, with its tabs).
 chosen (they were, and gave no hover).
 `store-drop`, `grid-drop`, `storeUnits` and `storeState` (it was not listed).
+`close` (it was not listed).
 
 ```lua
 local s = rq.ui.get()
@@ -98,6 +103,8 @@ if s and s.screen == "camp" then rq.log(#s.controls, "controls") end
 > Changed in 2.28.0: A dialog over Config is `select`; the quest rows are not `enabled` while a quest is
 
 > Changed in 2.31.0: The Party screen's 2nd Army box: `store-N`, `store-status-N`, `store-close`,
+
+> Changed in 2.41.0: The appraisal after a quest's success is the screen `appraisal`, with `finish` and
 
 See also: [`rq.ui.aim`](rq.ui.md#rquiaim)
 

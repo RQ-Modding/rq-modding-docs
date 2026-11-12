@@ -24,4 +24,4 @@ and `rq.quests.edit` ignores them, so a condition from `rq.quests.get` can be gi
 
 ## Used by
 
-[`rq.QuestData`](rq.QuestData.md), [`rq.QuestEdit`](rq.QuestEdit.md)
+[`rq.QuestData`](rq.QuestData.md), [`rq.QuestDef`](rq.QuestDef.md), [`rq.QuestEdit`](rq.QuestEdit.md)

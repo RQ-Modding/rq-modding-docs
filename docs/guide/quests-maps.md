@@ -3,7 +3,8 @@
 Loader 2.39.0 lets a mod read and change a quest as the quest list shows it, and change the
 counters and rules of the quest being played. On a quest's map, a mod can list, remove and place
 objects, put its own objects with Lua behind them, and change the traps. A mod's object looks like
-one of the game's own props: a chest, a spring, a marker and so on.
+one of the game's own props: a chest, a spring, a marker and so on. Since 2.41.0 a mod can also add
+quests of its own with no map: [Quests of your own](new-quests.md).
 
 ## A quest's data
 
@@ -21,8 +22,8 @@ end
 Each condition is a table with a `kind`: `party_max` (`count`), `member` (`chara`), `own` (`charas`,
 two characters), `member_level` (`chara`, `level`), `item` (`item`) or `special` (the story's own
 rule; its text is in `special`). `text` is the line the list writes, and `met` says whether the
-party meets it now. `kind` is `"quest"`, `"fights"` (a quest of fights only) or `"menu"` (an entry
-such as "Support: character adjust").
+party meets it now. `kind` gives the list's marks: `"quest"` (a quest with a map), `"fights"` (fights
+and no map) or `"menu"` (no map and no fights: a story quest, or a menu such as Alice's Mansion).
 
 ### Changing a quest
 
@@ -182,7 +183,9 @@ chance. It runs for the game's traps and for those a mod placed.
 
 These are on the [Roadmap](../roadmap.md):
 
-- New quests (phases O2 and O3); new 3D models, warps and new maps (phase P). New monsters and
-  enemy groups for the game's areas came in 2.40.0: [Monsters and enemy groups](monsters.md).
+- Quests of a mod's own with a map (phase O3); new 3D models, warps and new maps (phase P). New
+  monsters and enemy groups for the game's areas came in 2.40.0 ([Monsters and enemy
+  groups](monsters.md)), quests of a mod's own with no map in 2.41.0 ([Quests of your
+  own](new-quests.md)).
 - A trap with a mod's own text and effect: a custom object does it today.
 - Writing the run's EXP so far, its gold, fee and progress.

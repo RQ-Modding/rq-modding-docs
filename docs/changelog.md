@@ -5,6 +5,24 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.41.0
+
+Quests of a mod's own with no map (`notes/plans/plan-new-quests.md` in the workspace, phase O2 of the priority order). In Lua over `rq.ain` (`src/lua/quests.lua`). The hooks that number, hide and reset the mods' quests (after `Ｑ起動時登録` and `ワールド切り替え処理`) are placed at the loader's start; the script's hook by the first `define`.
+- `rq.quests.define(def)`: a quest of a mod's own (`rq.QuestDef`): the name, the text (up to 5 lines), the place, `fights` (the list's battle mark, the game's kind 2; without it kind 3, no mark), `main` (the main tab, else a side quest), the difficulty with the world's addition, the fame of the first clear (written as `Ｑ初期セット` writes it, only while the quest has no fame and no clear), the conditions and a condition of the mod's own as `rq.quests.edit` takes them, how it opens (`open`, `after` a quest's clear) and `run(q)`, its script.
+  - The number: the first free one from 303 to 500 the first time a save has the quest (the game resets only 1 to 301), marked with `rq:` and the id in `Ｑ[n].チェック`, which only the developers' scenario test reads. The mark is in the save, so the number stays with it; no `rq.savedata`. Past 198 quests in one save, a quest is left out with a log line.
+  - The data is written after each `Ｑ起動時登録` (a new game, a load, a world transfer), the kit 0.
+  - `run(q)` runs at the quest's moment 8, in place of kit 0's script (a hook before `クエスト処理／基本`, so `rq.quests.on_event`'s `start` on the dispatcher runs first). `q` has `id`, `no`, `tries`, `clears` and `first`. It may wait (scenes, fights, choices, dialogs) and returns `"clear"` (or nil), `"fail"`, `"abandon"` or `"escape"`, the game's results 1 to 4: the game's end, result screen, fame and clear count follow. An error or another value is logged and gives the quest up (3); the title passes through.
+  - `after`: opened by that quest's clear through `Ｑ状態(no, 1)`, so the victory screen lists it with the game's new quests; at once when a save first has the quest and that one is cleared.
+  - A world transfer resets the mods' quests after the game's own reset: the entry as new (`Ｑ初期化`), the data, the state from `open` and `after`.
+  - A save holding a quest no loaded mod defines: hidden at each load (state 0, the state kept in the mark as `rq<state>:<id>`), its state back when the mod is loaded again; a world transfer made without the mod frees its number.
+- `rq.quests.no(id)`: the number of a mod's quest in the loaded save.
+- `rq.quests.get`, `edit`, `state`, `set_state`, `unlock`, `start` and `can_take` take a mod's quest's id. `edit` keeps a patch on a mod's quest by its id, over the definition's fields, in every save.
+- `rq.quests.get` gives `text_id` (a mod's quest's id; `id` stays the number) and `main`. The description of `kind`'s `"menu"` was wrong: the game's kind 3 is any quest with no map and no fights (a story, Alice's Mansion), not only a menu entry.
+- The ctx of `rq.quests.on_clear`, `on_end`, `on_take`, `on_event` and `on_event_after` has `id` for a mod's quest.
+- A mod's own condition (`edit`'s `condition`) joined to an empty special text no longer starts with " / ".
+- `rq.ui.get`: the appraisal after a quest's success is the screen `appraisal`, with `finish` and `close` in section `appraisal` (it was not listed, so an agent could not leave it).
+- `rq.quests.state`, `set_state` and `unlock` are Lua now: they raise "the game is not running yet" at a mod's top level themselves, and the loader's guard no longer logs them (nor `rq.battle.start`, Lua since 2.36.0).
+
 ## 2.40.0
 
 New monsters and enemy groups (`notes/plans/plan-new-monsters.md` in the workspace, phase O1 of the priority order). In Lua over `rq.ain` (`src/lua/monster.lua`, `src/lua/basics.lua`), and the model table in C (`src/hll/MonsterInfo.c`). The hooks that build a monster or a group whose mod is gone are placed at the loader's start; the others by the first call that needs them.

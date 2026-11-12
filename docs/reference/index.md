@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.40.0.
+Loader version 2.41.0.
 
 ## Namespaces
 
@@ -177,10 +177,12 @@ Loader version 2.40.0.
 | [`rq.QuestClearCtx`](types/rq.QuestClearCtx.md) | What an `rq.quests.on_clear` callback gets. |
 | [`rq.QuestCondition`](types/rq.QuestCondition.md) | A condition to take part in a quest, from `rq.QuestData.conditions` and for `rq.quests.edit`. |
 | [`rq.QuestData`](types/rq.QuestData.md) | A quest's data as the quest list shows it, from `rq.quests.get`. |
+| [`rq.QuestDef`](types/rq.QuestDef.md) | What `rq.quests.define` takes: a quest of the mod's own, with no map. |
 | [`rq.QuestEdit`](types/rq.QuestEdit.md) | A patch for `rq.quests.edit`: the fields to change; one left out keeps the game's. |
 | [`rq.QuestEndCtx`](types/rq.QuestEndCtx.md) | What an `rq.quests.on_end` callback gets. |
 | [`rq.QuestEvent`](types/rq.QuestEvent.md) | What `rq.quests.on_event` and `on_event_after` callbacks get. |
 | [`rq.QuestRun`](types/rq.QuestRun.md) | The quest being played, from `rq.quests.run`. |
+| [`rq.QuestRunCtx`](types/rq.QuestRunCtx.md) | What a quest's `run` gets (`rq.QuestDef.run`). |
 | [`rq.QuestRunEdit`](types/rq.QuestRunEdit.md) | What `rq.quests.set_run` writes; a field left out stays. |
 | [`rq.RecruitOpts`](types/rq.RecruitOpts.md) | Options for `rq.chara.recruit`. |
 | [`rq.RewardAlly`](types/rq.RewardAlly.md) | One ally in `rq.battle.on_reward`'s `ctx.allies`. |

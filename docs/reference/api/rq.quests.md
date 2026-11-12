@@ -9,6 +9,9 @@ Lists the quests and follows them: clears, endings, quest moments and state.
 from `on_clear` show on the victory screen with the game's own animation, as the game does for
 Tomato. Dialogue inside a quest is quest script and is not part of these hooks.
 
+A mod can add quests of its own with no map (`rq.quests.define`): each gets a number from 303 to
+500 in the save, and the calls that take a quest number take its id too.
+
 ```lua
 rq.chara.define{ id = "mymod:alice", name = "Alice", face = "faces/alice.png", class = 5 }
 rq.quests.on_clear(function(ctx)
@@ -39,6 +42,8 @@ end)
 | [`rq.quests.refresh`](#rqquestsrefresh) | Draws the quest list again, with the chosen quest's buttons as the game draws them. |
 | [`rq.quests.get`](#rqquestsget) | Returns a quest's data, as the quest list shows it. |
 | [`rq.quests.edit`](#rqquestsedit) | Changes a quest's name, text, place, difficulty or conditions while the mod runs. |
+| [`rq.quests.define`](#rqquestsdefine) | Adds a quest of the mod's own, with no map: a story, fights, a menu. |
+| [`rq.quests.no`](#rqquestsno) | Returns the number a mod's quest has in the loaded save. |
 | [`rq.quests.run`](#rqquestsrun) | Returns the counters, bonuses and rules of the quest being played. |
 | [`rq.quests.set_run`](#rqquestsset_run) | Changes the counters, bonuses and rules of the quest being played. |
 
@@ -48,17 +53,19 @@ end)
 rq.quests.state(no) -> integer
 ```
 
-`since 0.7.0`
+`since 0.7.0` `changed 2.41.0`
 
 Returns a quest's state.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `no` | `integer` | The quest number. |
+| `no` | `integer\|string` | The quest number, or the id of a quest a mod defined. |
 
 | Returns | Type | Description |
 | --- | --- | --- |
 | `state` | `integer` | 0 locked, 1 available, 2 cleared. |
+
+> Changed in 2.41.0: Takes a mod's quest's id.
 
 ### rq.quests.set_state
 
@@ -66,7 +73,7 @@ Returns a quest's state.
 rq.quests.set_state(no, state)
 ```
 
-`since 0.7.0` `changed 2.23.0`
+`since 0.7.0` `changed 2.23.0` `changed 2.41.0`
 
 Sets a quest's state, through the game's `Ｑ状態`.
 
@@ -77,10 +84,12 @@ other than 0, 1 or 2.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `no` | `integer` | The quest number. |
+| `no` | `integer\|string` | The quest number, or the id of a quest a mod defined. |
 | `state` | `integer` | 0 locked, 1 available, 2 cleared. |
 
 > Changed in 2.23.0: State 1 on a cleared quest is written; before, the call did nothing there.
+
+> Changed in 2.41.0: Takes a mod's quest's id.
 
 See also: [`rq.quests.unlock`](rq.quests.md#rqquestsunlock)
 
@@ -90,7 +99,7 @@ See also: [`rq.quests.unlock`](rq.quests.md#rqquestsunlock)
 rq.quests.unlock(no) -> boolean
 ```
 
-`since 0.7.0`
+`since 0.7.0` `changed 2.41.0`
 
 Makes a locked quest available.
 
@@ -99,11 +108,13 @@ on the victory screen.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `no` | `integer` | The quest number. |
+| `no` | `integer\|string` | The quest number, or the id of a quest a mod defined. |
 
 | Returns | Type | Description |
 | --- | --- | --- |
 | `unlocked` | `boolean` | false when the quest was not locked. |
+
+> Changed in 2.41.0: Takes a mod's quest's id.
 
 ### rq.quests.current
 
@@ -125,7 +136,7 @@ Returns the quest being played.
 rq.quests.start(no)
 ```
 
-`since 0.23.0`
+`since 0.23.0` `changed 2.41.0`
 
 Starts a quest through the game's own flow, with no click on the quest list.
 
@@ -145,7 +156,9 @@ if rq.ui.get().screen == "hub" then rq.quests.start(126) end
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `no` | `integer` | The quest number. |
+| `no` | `integer\|string` | The quest number, or the id of a quest a mod defined. |
+
+> Changed in 2.41.0: Takes a mod's quest's id.
 
 ### rq.quests.new_this_run
 
@@ -170,7 +183,7 @@ ends.
 rq.quests.can_take(no) -> boolean
 ```
 
-`since 2.23.0` `changed 2.39.0`
+`since 2.23.0` `changed 2.39.0` `changed 2.41.0`
 
 Returns whether a quest can be taken now: the game's `クエスト_有効`, which lights the quest list's
 Take button.
@@ -187,13 +200,15 @@ if not rq.quests.can_take(80) then rq.log("Gem Lady needs a Jewel") end
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `no` | `integer` | The quest number. |
+| `no` | `integer\|string` | The quest number, or the id of a quest a mod defined. |
 
 | Returns | Type | Description |
 | --- | --- | --- |
 | `ok` | `boolean` | true when Take would be lit for it. |
 
 > Changed in 2.39.0: Asks the mods' own conditions (`rq.quests.edit`) first.
+
+> Changed in 2.41.0: Takes a mod's quest's id.
 
 ### rq.quests.refresh
 
@@ -227,7 +242,7 @@ rq.quests.refresh() -- Take greys if that was the last one
 rq.quests.get(no) -> rq.QuestData
 ```
 
-`since 2.39.0`
+`since 2.39.0` `changed 2.41.0`
 
 Returns a quest's data, as the quest list shows it.
 
@@ -237,6 +252,8 @@ of every quest.
 Raises an error for a number the game does not have (no quest has it, or it has no name), also
 before a save is loaded.
 
+`menu` was corrected: the game's kind 3 is any quest with no map and no fights.
+
 ```lua
 local q = rq.quests.get(126)
 rq.log(q.name, q.difficulty, q.fame, #q.conditions, q.can_take)
@@ -244,11 +261,13 @@ rq.log(q.name, q.difficulty, q.fame, #q.conditions, q.can_take)
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `no` | `integer` | The quest number. |
+| `no` | `integer\|string` | The quest number, or the id of a quest a mod defined. |
 
 | Returns | Type | Description |
 | --- | --- | --- |
 | `data` | [`rq.QuestData`](../types/rq.QuestData.md) | The quest's data. |
+
+> Changed in 2.41.0: Takes a mod's quest's id; gives `text_id` and `main`. The description of `kind`'s
 
 See also: [`rq.quests.edit`](rq.quests.md#rqquestsedit)
 
@@ -258,7 +277,7 @@ See also: [`rq.quests.edit`](rq.quests.md#rqquestsedit)
 rq.quests.edit(no, patch)
 ```
 
-`since 2.39.0`
+`since 2.39.0` `changed 2.41.0`
 
 Changes a quest's name, text, place, difficulty or conditions while the mod runs.
 
@@ -280,8 +299,13 @@ special condition: the first free condition slot holds it, the quest list greys 
 texts are joined with " / ". An error in `ok` is logged and counts as met. With the quest list open,
 call `rq.quests.refresh` to show a change.
 
+A mod's quest (`rq.quests.define`) is patched by its id the same way, over its definition's fields,
+in every save whatever its number there.
+
 Raises an error for an unknown quest (once a save is loaded), an unknown field, a value of the
 wrong kind or too long, more than 3 conditions, or `condition` with 3 `conditions`.
+
+no longer starts with " / ".
 
 ```lua
 -- A harder quest that needs Kanami in the party and the three shrines found.
@@ -295,10 +319,118 @@ rq.quests.edit(126, {
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `no` | `integer` | The quest number. |
+| `no` | `integer\|string` | The quest number, or the id of a quest a mod defined. |
 | `patch` | [`rq.QuestEdit`](../types/rq.QuestEdit.md) `\|nil` | The fields to change; nil removes this mod's patch. |
 
+> Changed in 2.41.0: Takes a mod's quest's id. A mod's own condition joined to an empty special text
+
 See also: [`rq.quests.get`](rq.quests.md#rqquestsget)
+
+### rq.quests.define
+
+```lua
+rq.quests.define(def)
+```
+
+`since 2.41.0`
+
+Adds a quest of the mod's own, with no map: a story, fights, a menu.
+
+The quest list shows it as one of the game's, and Take starts it through the game's own flow (the
+autosave, the try counted, the quest storage emptied). Then `run(q)` runs in place of a game
+quest's script: it plays scenes (`rq.scene.play`), fights (`rq.battle.start`), choices
+(`rq.scene.choice`, `rq.ui.choose`) and dialogs, gives items into the quest storage
+(`rq.item.give` with `place = "quest"`), and returns how the quest ends:
+- `"clear"` (or nil): the game's success screen, the fame and the appraisal; the clear is counted,
+  the quest stays in the list as cleared, `rq.quests.on_clear` runs;
+- `"fail"`: the failure screen, as when the party loses;
+- `"abandon"`: given up, the quest storage's items lost;
+- `"escape"`: given up with the items kept, as with the escape device.
+
+An error in `run` is written to the log and the quest is given up. `rq.quests.on_event`'s `start`
+runs before `run`, and `on_end` after it, with `id` in their ctx.
+
+**The number.** The first time a save has the quest (a new game, a load, a world transfer), it
+takes the first free number from 303 to 500 and keeps it in that save, marked with its id; another
+save can give it another number. `rq.quests.no(id)` gives it. Past 198 quests in one save, a quest
+is left out with a line in the log.
+
+**The data** (name, text, place, difficulty, conditions) is written again after each load, so a
+new version of the mod shows its new text in an old save; the state, tries, clears and fame are the
+save's. Another mod's `rq.quests.edit` works on it by id.
+
+**Opening it**: `open`, `after`, or `rq.quests.unlock(id)` from the mod. A quest opened by a clear
+shows on the victory screen with the game's new quests.
+
+**A world transfer** resets the mods' quests as it resets the game's: their tries, clears and
+fame, and their state back to what `open` and `after` give.
+
+**Without the mod**: a save that has the quest keeps it hidden (state 0, so the list leaves it
+out) with its state kept, and brings it back as it was when the mod is loaded again. A world
+transfer made without the mod forgets it: it starts as new when the mod comes back.
+
+Call it at the mod's top level. Calling it again with the same id from the same mod replaces the
+definition. Raises an error for an id another mod defined, an unknown field, a value of the wrong
+kind or too long, more than 3 conditions, `open` with `after`, or no `run`.
+
+```lua
+rq.item.define({ id = "mymod:lotion", name = "Dancer's Lotion", price = 200, info = "It smells of roses." })
+
+rq.quests.define({
+  id = "mymod:lotion_quest",
+  name = "The Lost Lotion",
+  text = { "A dancer lost her lotion in the bathhouse.", "She will pay well to get it back." },
+  place = "Copan Empire",
+  fights = true,
+  fame = 5,
+  open = true,
+  run = function(q)
+    rq.scene.play(function(s)
+      s.narrate("The bathhouse is dark, and something skitters in the steam.")
+    end)
+    local r = rq.battle.start({ enemies = { 0, rq.ids.monster.COCKROACH, 0 }, exp = 300 })
+    if r ~= "won" then return "fail" end
+    rq.item.give("mymod:lotion", { place = "quest" })
+    return "clear"
+  end,
+})
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `def` | [`rq.QuestDef`](../types/rq.QuestDef.md) | The quest. |
+
+See also: [`rq.quests.no`](rq.quests.md#rqquestsno), [`rq.quests.edit`](rq.quests.md#rqquestsedit)
+
+### rq.quests.no
+
+```lua
+rq.quests.no(id) -> integer|nil
+```
+
+`since 2.41.0`
+
+Returns the number a mod's quest has in the loaded save.
+
+A quest takes its number when a save first has it, so the number of one id can differ from save to
+save; keep the id, not the number. Also the number of a quest whose mod is not loaded, while the save
+keeps it.
+
+```lua
+rq.quests.on_clear(function(ctx)
+  if ctx.quest == rq.quests.no("mymod:lotion_quest") then rq.log("the lotion is back") end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `id` | `string` | The quest's id. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `no` | `integer\|nil` | The number, or nil when no save is loaded or the save has no such quest. |
+
+See also: [`rq.quests.define`](rq.quests.md#rqquestsdefine)
 
 ### rq.quests.run
 
@@ -373,7 +505,7 @@ See also: [`rq.quests.run`](rq.quests.md#rqquestsrun)
 rq.quests.on_clear(fn) -> fun()
 ```
 
-`since 0.7.0` `changed 0.23.0`
+`since 0.7.0` `changed 0.23.0` `changed 2.41.0`
 
 Registers a function that runs when a quest is cleared.
 
@@ -393,6 +525,8 @@ the log.
 
 > Changed in 0.23.0: Returns a remover.
 
+> Changed in 2.41.0: The ctx has `id` for a mod's quest.
+
 See also: [`rq.quests.on_end`](rq.quests.md#rqquestson_end)
 
 ### rq.quests.on_end
@@ -401,7 +535,7 @@ See also: [`rq.quests.on_end`](rq.quests.md#rqquestson_end)
 rq.quests.on_end(fn) -> fun()
 ```
 
-`since 0.9.0` `changed 0.23.0`
+`since 0.9.0` `changed 0.23.0` `changed 2.41.0`
 
 Registers a function that runs when a quest ends, however it ends.
 
@@ -424,6 +558,8 @@ end)
 
 > Changed in 0.23.0: Returns a remover.
 
+> Changed in 2.41.0: The ctx has `id` for a mod's quest.
+
 See also: [`rq.quests.on_clear`](rq.quests.md#rqquestson_clear)
 
 ### rq.quests.on_event
@@ -432,13 +568,15 @@ See also: [`rq.quests.on_clear`](rq.quests.md#rqquestson_clear)
 rq.quests.on_event(fn) -> fun()
 ```
 
-`since 0.18.0` `changed 0.23.0`
+`since 0.18.0` `changed 0.23.0` `changed 2.41.0`
 
 Registers a function that runs before the game handles a quest moment.
 
 It hooks the game's `クエスト処理`. Return nothing to let the game handle it, or a number to skip the
 game's handling: 0 continues the quest, other values end it (1 returns to town). Do not play a scene
 on `map_load`; the map is not ready. A mod's own map objects (`rq.dungeon.on_object`) do not reach it.
+A mod's own quest (`rq.quests.define`) gets `start` before its `run`; a number returned there ends
+the quest before `run`.
 
 ```lua
 rq.quests.on_event(function(ev)
@@ -456,6 +594,8 @@ end)
 
 > Changed in 0.23.0: Returns a remover.
 
+> Changed in 2.41.0: The ev has `id` for a mod's quest.
+
 See also: [`rq.quests.on_event_after`](rq.quests.md#rqquestson_event_after)
 
 ### rq.quests.on_event_after
@@ -464,7 +604,7 @@ See also: [`rq.quests.on_event_after`](rq.quests.md#rqquestson_event_after)
 rq.quests.on_event_after(fn) -> fun()
 ```
 
-`since 0.18.0` `changed 0.23.0`
+`since 0.18.0` `changed 0.23.0` `changed 2.41.0`
 
 Registers a function that runs after the game handled a quest moment.
 
@@ -481,6 +621,8 @@ own map objects (`rq.dungeon.on_object`) do not reach it.
 
 > Changed in 0.23.0: Returns a remover.
 
+> Changed in 2.41.0: The ev has `id` for a mod's quest.
+
 See also: [`rq.quests.on_event`](rq.quests.md#rqquestson_event)
 
 ### rq.quests.on_take
@@ -489,7 +631,7 @@ See also: [`rq.quests.on_event`](rq.quests.md#rqquestson_event)
 rq.quests.on_take(fn) -> fun()
 ```
 
-`since 2.23.0`
+`since 2.23.0` `changed 2.41.0`
 
 Registers a function that runs when the player presses Take on the quest list.
 
@@ -517,3 +659,5 @@ end)
 | Returns | Type | Description |
 | --- | --- | --- |
 | `remove` | `fun()` | Removes this callback. |
+
+> Changed in 2.41.0: The ctx has `id` for a mod's quest.
