@@ -114,6 +114,8 @@ number and none of them has the plain key ("Fortune" gives 448; "Attack" gives n
 ## Finding a number
 
 - The [Game data](../data/index.md) tables, or `rq.ids.find` and `rq.ids.find_all`.
+- [RQ Browser](file-browser.md)'s Names tab: every `rq.ids` list with its keys, and each character's
+  face and each item's icon. Its other tabs give the numbers of CGs, music tracks and sounds.
 - `rq.units()` and `rq.items()` list what the save has, and `rq.quests()` every quest, with names.
 - `rq.skill.get(no).name` and `rq.chara.get(iic).name` give a name for a number, also for things a
   mod defined.

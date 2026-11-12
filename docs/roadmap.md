@@ -28,7 +28,7 @@ first, so that a simple change never needs the game's code (`rq.ain`).
 | Area | What |
 | --- | --- |
 | Screens | Since 2.20.1 `rq.ui` lists the footer on every screen that shows it, Rance Castle as the screen `castle` with its rooms, and the town tabs on Quests; since 2.31.0 the Party screen's 2nd Army box (its characters, their STATUS buttons and the places a dragged character is dropped on). When a mod asks: names for Trivia, CG mode, Music mode and the castle's bonus rooms, and the castle's rooms as data in `rq.ui.get`. |
-| New content | In three steps, each built from the game's own pieces so none waits for new 3D. New monsters wearing a game monster's model, with enemy groups of a mod's own for random fights (in a mod's quests and the game's), their capture and their drops, came in 2.40.0 ([Monsters and enemy groups](guide/monsters.md)). Quests of a mod's own with no map (story, menu, arena) in the quest list, with their script in Lua, came in 2.41.0 ([Quests of your own](guide/new-quests.md)), and their dungeons, built from the game's tilesets and stock rooms on its 4 by 4 grid, in 2.42.0 ([A quest with a map](guide/new-quests.md#a-quest-with-a-map)). Later (phase P, after a browser for the game's files): rooms of a mod's own, new 3D models and warps off the grid. |
+| New content | In three steps, each built from the game's own pieces so none waits for new 3D. New monsters wearing a game monster's model, with enemy groups of a mod's own for random fights (in a mod's quests and the game's), their capture and their drops, came in 2.40.0 ([Monsters and enemy groups](guide/monsters.md)). Quests of a mod's own with no map (story, menu, arena) in the quest list, with their script in Lua, came in 2.41.0 ([Quests of your own](guide/new-quests.md)), and their dungeons, built from the game's tilesets and stock rooms on its 4 by 4 grid, in 2.42.0 ([A quest with a map](guide/new-quests.md#a-quest-with-a-map)). Later, in the ongoing 3D project (see [Tools](#tools)): rooms of a mod's own, new 3D models and warps off the grid. |
 
 ### Later
 
@@ -63,7 +63,12 @@ When a mod asks for it, or at low priority.
 - **Animations from your own art.** A tool that builds the game's animation files (`.aff`) from a PNG
   sequence and checks a Flash file against what the engine can play. Unpacking the game's own came in
   2.25.0: `rqmod-ctl flashdump` saves a file's pictures.
-- **A browser for the game's files.** Once the API is ready for release: a program in the release that
-  opens the game's pictures, sounds, Flash files and 3D textures by number or by name, with the names
-  of `rq.ids`, so you can see what CG 10023 is before you replace it. It reads your own game folder;
-  nothing of the game ships with it.
+- **A browser for the game's files.** Came with 2.43.0: [RQ Browser](guide/file-browser.md) shows the
+  game's CGs, Flash files, music, sounds, 3D textures and the names of `rq.ids` with their pictures,
+  gives the Lua line that replaces or plays each, and saves them. Later: a Flash file's motion
+  played, the pictures and music the installed mods put in place, and the game's text.
+- **3D models in Blender (ongoing).** Worked on over time, each step with a guide
+  for people new to 3D: the game's models and animations shown in the browser and exported to glTF for
+  Blender; a mod's own textures on the game's models; a mod's own models and animations, read from the
+  mod's `.glb` and checked against what the engine can draw; rooms of a mod's own; fight backgrounds
+  and effects.

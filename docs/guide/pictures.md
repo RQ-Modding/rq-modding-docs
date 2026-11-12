@@ -30,8 +30,10 @@ rq.chara.edit(52, { face = "faces/kaoru.png" })  -- 52 is Kaoru (rq.ids.chara)
 ```
 
 `rq.image.info(no)` gives a number's size and whether a mod's picture is on it. Read the size of a
-game picture there before you draw one for it, and use `rqmod-ctl cgdump FROM TO DIR` to save the
-game's own pictures to look at.
+game picture there before you draw one for it. To find a picture's number, look through them all
+in [RQ Browser](./file-browser) (`rq-browser.exe` in the game's `xsystem4` folder): it shows each
+CG with its number, size and what uses it, gives the `rq.image.replace` line and saves PNGs. With
+the game running, `rqmod-ctl cgdump FROM TO DIR` saves a range of them too.
 
 ## Moving pictures
 
@@ -68,7 +70,9 @@ inside them. `rq.image.flash_bitmap(file, id, path)` puts your picture in place 
 pictures. It is fitted to the same size, so the file moves, fades and blends it as it did the old
 one: a new face in a cut-in slides in as the old one did.
 
-**1. Find the pictures.** With the game running, save a file's pictures with their ids:
+**1. Find the pictures.** [RQ Browser](./file-browser)'s Flash tab shows every Flash file's pictures
+with their ids and sizes, and saves them. With the game running, `rqmod-ctl` saves a file's pictures
+with their ids too:
 
 ```
 rqmod-ctl flashdump カットイン・チハ C:\temp\chiha

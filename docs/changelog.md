@@ -5,6 +5,24 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.43.0
+
+RQ Browser (`rq-browser.exe`), a window to look through the game's files and copy the Lua line that replaces or plays each one (`notes/plans/plan-file-browser.md` in the workspace, phase P1 of the priority order). No `rq.*` call changes; the version is raised for the program that ships with this loader.
+- Where: `xsystem4\rq-browser.exe`, beside the engine. It opens the game folder above it, else asks for one and remembers it (`rq-browser.json` beside it); `--game DIR` names one. It reads the game's archives and never changes the game's files; the one file it writes is its own `rq-browser.json`.
+- Six tabs, each with a search, its details and Save:
+  - CGs: the 2,315 CGs in `RanceQuestCG.afa` by folder (English labels, the Japanese folder names in the details), as a list with thumbnails or a grid, a view with zoom (the wheel, sharp pixels from 200 %), drag and a checkerboard under see-through pixels; the `rq.image.replace` line; Save as PNG, and the shown ones as PNG into a folder.
+  - Flash: the 412 Flash files in `RanceQuestAFF.afa` (Battle, Monster, System), each one's bitmaps with the `rq.image.flash_bitmap` and `flash_bitmaps` lines (the file's key as those calls take it), and its sounds, played when stored as PCM, with the `rq.sound.play_flash` line. The motion is not played.
+  - Music: the 72 tracks in `RanceQuestBA.ald` with the game's names (`rq.ids.music`): play, pause, seek, volume, and the loop from `RanceQuestBA.bgi`, shown on the seek bar and played as the game plays it; the `rq.music.replace` and `rq.music.play` lines; Save as OGG (the file as stored).
+  - Sounds: the 140 sounds in `RanceQuestWA.ald`, with the `rq.sound.play` line; Save as OGG.
+  - 3D textures: the 5,351 textures in `Data/ReignData.red` by folder (Chara, Map, BG, Etc, Texture) and model; Save as PNG.
+  - Names: every `rq.ids` list with each name's key and `rq.ids` line, and the game's picture for it: each character's face (and standing picture, in the CGs tab), each item's icon (`data/ids/pictures.tsv`, 435 lines). A CG a name uses is labelled with it in the CGs tab ("Rance: face").
+- Playing music, a sound or a Flash sound stops when another tab opens.
+- Sharp on a scaled display: the program is per-monitor DPI aware, so Windows does not stretch it, and it draws its text and layout at the display's scale (1.5 on a 150 % screen), again when the window moves to a screen with another scale. `--scale F` (1 to 4) sets the size by hand.
+- The Lua lines the program writes are checked at build time against `dist/lua/rq.lua` (`tools/rq-browser/check_lua_lines.py`): a call that is not there stops the build.
+- `--check [--out FILE]` opens every archive, decodes samples of each kind, reads every track's loop and every sound, and checks the names' pictures and the font, then prints a JSON report (exit 0 when all is well); `--shot TAB FILE [--select N] [--size WxH] [--scale F]` saves one tab as a PNG (at scale 1 unless `--scale` says otherwise). `--help` lists them.
+- Built with Dear ImGui 1.92.9 through cimgui 1.92.9b (MIT, `third_party/cimgui`, see its README), linked statically; the release zip has `rq-browser.exe` in `xsystem4\` and the two licenses in `xsystem4\licenses`.
+- `tools/ids/extract.lua` also writes the names' pictures (`ids-pictures.tsv`), and leaves out quests 303 and up, the mods' own (`rq.quests.define`), such as the Test Lab's.
+
 ## 2.42.0
 
 Maps for a mod's own quests (`notes/plans/plan-new-dungeons.md` in the workspace, phase O3 of the priority order). In Lua over `rq.ain` (`src/lua/quests.lua`). The script's hook (before `クエスト処理／基本`) answers moments 8 and 9 of a mod's quest with a map, and a hook before the dispatcher `クエスト処理` answers moment 7: `ＱＭ登録` asks for it from inside moment 8, while the first hook runs, and a hook's callbacks do not run for a nested call of the same function; the hook that ends a quest on the map of a mod that is gone (before `Ｔマップ割り込み`) is placed at the loader's start.
