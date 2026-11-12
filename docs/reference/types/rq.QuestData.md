@@ -22,6 +22,7 @@ A quest's data as the quest list shows it, from `rq.quests.get`.
 | `conditions` | [`rq.QuestCondition`](rq.QuestCondition.md) `[]` | Its conditions to take part, up to 3; empty for none. |
 | `can_take` | `boolean` | Take would be lit for it now (`rq.quests.can_take`). |
 | `edited` | `string[]` | The ids of the mods whose `rq.quests.edit` patch is on it, in load order. |
+| `map` *(optional)* | [`rq.QuestMapShape`](rq.QuestMapShape.md) | The shape of the map of a mod's quest with a map (`rq.QuestDef.map`); nil for the others. Since 2.42.0. |
 
 ## Used by
 

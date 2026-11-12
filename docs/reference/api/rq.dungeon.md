@@ -448,13 +448,13 @@ See also: [`rq.dungeon.on_map`](rq.dungeon.md#rqdungeonon_map)
 rq.dungeon.on_object(id, fn) -> fun()
 ```
 
-`since 2.39.0`
+`since 2.39.0` `changed 2.42.0`
 
 Registers the function that runs when the party steps on a mod's own object.
 
 It runs in place of the quest's own handling of a map event. What it returns ends the quest or not:
-nil or 0 go on, 1 clears the quest, 4 ends it as the escape device does (the items kept), 2 and 3
-as a defeat and a give-up. The object is taken off its cell before the function runs, as the game
+nil or 0 go on; `"clear"` or 1 clears the quest; `"escape"` or 4 ends it as the escape device does
+(the items kept); `"fail"` or 2 and `"abandon"` or 3 as a defeat and a give-up. The object is taken off its cell before the function runs, as the game
 does with its events; with `ctx.keep` it is put back after. The function may wait as a quest moment
 does: `rq.ui.confirm`, `rq.ui.notice`, `rq.battle.start`. `rq.quests.on_event` does not see these
 events.
@@ -486,11 +486,13 @@ end)
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `id` | `string` | The object's id, 1 to 64 bytes, such as `"mymod:altar"`. |
-| `fn` | `fun(ctx:` [`rq.ObjectCtx`](../types/rq.ObjectCtx.md) `): integer\|nil` | Returns nil to go on, or how the quest ends. |
+| `fn` | `fun(ctx:` [`rq.ObjectCtx`](../types/rq.ObjectCtx.md) `): ("clear"\|"fail"\|"abandon"\|"escape"\|integer\|nil)` | Returns nil to go on, or how the quest ends. |
 
 | Returns | Type | Description |
 | --- | --- | --- |
 | `remove` | `fun()` | Removes this function. |
+
+> Changed in 2.42.0: The function may return the result as a text, as `rq.QuestDef.run` does.
 
 See also: [`rq.dungeon.place`](rq.dungeon.md#rqdungeonplace)
 

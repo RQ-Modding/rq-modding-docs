@@ -76,7 +76,8 @@ the quest has none) and its rules: `party_change` (`"normal"`, `"none"` or `"fre
 `no_area_map` and `no_warp`.
 
 `rq.quests.set_run(fields)` writes `fame`, `exp_bonus` (0 to 50, the game's cap), the bonuses,
-`party_change`, `no_area_map` and `no_warp`. The quest panel shows the change at once, and a bonus
+`party_change`, `no_area_map`, `no_warp` and, since 2.42.0, `progress` (the percent on the map
+panel, 0 to 100, also lower than before). The quest panel shows the change at once, and a bonus
 that reaches its maximum shows the game's flash. A run that pays double fame:
 
 ```lua
@@ -89,8 +90,8 @@ end)
 ```
 
 A bonus the quest does not have is turned on by giving its `max`; `false` turns one off. A count
-above the maximum is cut to it. The progress, the EXP so far, the gold and the fee are read only:
-the game's own systems make them.
+above the maximum is cut to it. The EXP so far, the gold and the fee are read only: the game's own
+systems make them.
 
 ## Objects on a map
 
@@ -144,8 +145,9 @@ end)
   runs. With `keep = true` in `place` it comes back on its cell after every step, and
   `ctx:remove()` takes it away. `ctx.keep = true` in the function brings it back after this step
   only: at the next step `ctx.keep` starts again as `place`'s `keep`, as in the altar above.
-- **The quest's end.** The function returns nil or 0 to go on, 1 to clear the quest, 4 to end it as
-  the escape device does (the items kept), 2 and 3 as a defeat and a give-up.
+- **The quest's end.** The function returns nil or 0 to go on, `"clear"` (or 1) to clear the quest,
+  `"escape"` (4) to end it as the escape device does (the items kept), `"fail"` (2) and `"abandon"`
+  (3) as a defeat and a give-up. The words came in 2.42.0, as a mod's own quest's `run` returns them.
 - **Areas and saves.** The object stays on its cell for the whole quest, when the party leaves the
   area and comes back, and in a save made on the map. Register `on_object` at the mod's top level, so
   those objects answer after a load. An object whose id has no function logs a line and does nothing.
@@ -183,9 +185,9 @@ chance. It runs for the game's traps and for those a mod placed.
 
 These are on the [Roadmap](../roadmap.md):
 
-- Quests of a mod's own with a map (phase O3); new 3D models, warps and new maps (phase P). New
-  monsters and enemy groups for the game's areas came in 2.40.0 ([Monsters and enemy
-  groups](monsters.md)), quests of a mod's own with no map in 2.41.0 ([Quests of your
+- New 3D models, rooms of a mod's own and warps off the 4 by 4 grid (phase P). New monsters and
+  enemy groups for the game's areas came in 2.40.0 ([Monsters and enemy groups](monsters.md)),
+  quests of a mod's own in 2.41.0 and their maps of the game's rooms in 2.42.0 ([Quests of your
   own](new-quests.md)).
 - A trap with a mod's own text and effect: a custom object does it today.
-- Writing the run's EXP so far, its gold, fee and progress.
+- Writing the run's EXP so far, its gold and fee.

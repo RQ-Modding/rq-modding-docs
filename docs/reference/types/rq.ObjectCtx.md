@@ -17,4 +17,4 @@ What an `rq.dungeon.on_object` function gets.
 
 ## Used by
 
-[`rq.dungeon.on_object`](../api/rq.dungeon.md#rqdungeonon_object)
+[`rq.QuestObject`](rq.QuestObject.md), [`rq.dungeon.on_object`](../api/rq.dungeon.md#rqdungeonon_object)

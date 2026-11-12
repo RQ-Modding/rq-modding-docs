@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.41.0.
+Loader version 2.42.0.
 
 ## Namespaces
 
@@ -173,14 +173,19 @@ Loader version 2.41.0.
 | [`rq.PhysicalCtx`](types/rq.PhysicalCtx.md) | What `rq.combat.on_physical` gets for one physical hit. |
 | [`rq.PoisonCtx`](types/rq.PoisonCtx.md) | What `rq.combat.on_poison` gets where the game works out a poison. |
 | [`rq.Quest`](types/rq.Quest.md) | A quest, from `rq.quests()`. |
+| [`rq.QuestArea`](types/rq.QuestArea.md) | An area of a mod's quest's map, in `rq.QuestMap.areas`. |
+| [`rq.QuestAreaCtx`](types/rq.QuestAreaCtx.md) | What an area's `setup` gets (`rq.QuestArea.setup`). |
 | [`rq.QuestBonus`](types/rq.QuestBonus.md) | A quest bonus in `rq.QuestRun.bonuses`. |
 | [`rq.QuestClearCtx`](types/rq.QuestClearCtx.md) | What an `rq.quests.on_clear` callback gets. |
 | [`rq.QuestCondition`](types/rq.QuestCondition.md) | A condition to take part in a quest, from `rq.QuestData.conditions` and for `rq.quests.edit`. |
 | [`rq.QuestData`](types/rq.QuestData.md) | A quest's data as the quest list shows it, from `rq.quests.get`. |
-| [`rq.QuestDef`](types/rq.QuestDef.md) | What `rq.quests.define` takes: a quest of the mod's own, with no map. |
+| [`rq.QuestDef`](types/rq.QuestDef.md) | What `rq.quests.define` takes: a quest of the mod's own, with a map or with none. |
 | [`rq.QuestEdit`](types/rq.QuestEdit.md) | A patch for `rq.quests.edit`: the fields to change; one left out keeps the game's. |
 | [`rq.QuestEndCtx`](types/rq.QuestEndCtx.md) | What an `rq.quests.on_end` callback gets. |
 | [`rq.QuestEvent`](types/rq.QuestEvent.md) | What `rq.quests.on_event` and `on_event_after` callbacks get. |
+| [`rq.QuestMap`](types/rq.QuestMap.md) | A mod's quest's map, in `rq.QuestDef.map`. |
+| [`rq.QuestMapShape`](types/rq.QuestMapShape.md) | The shape of a mod's quest's map, in `rq.QuestData.map`. |
+| [`rq.QuestObject`](types/rq.QuestObject.md) | An object of a mod's quest's area, in `rq.QuestArea.objects`. |
 | [`rq.QuestRun`](types/rq.QuestRun.md) | The quest being played, from `rq.quests.run`. |
 | [`rq.QuestRunCtx`](types/rq.QuestRunCtx.md) | What a quest's `run` gets (`rq.QuestDef.run`). |
 | [`rq.QuestRunEdit`](types/rq.QuestRunEdit.md) | What `rq.quests.set_run` writes; a field left out stays. |

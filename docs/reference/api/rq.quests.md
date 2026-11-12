@@ -42,7 +42,7 @@ end)
 | [`rq.quests.refresh`](#rqquestsrefresh) | Draws the quest list again, with the chosen quest's buttons as the game draws them. |
 | [`rq.quests.get`](#rqquestsget) | Returns a quest's data, as the quest list shows it. |
 | [`rq.quests.edit`](#rqquestsedit) | Changes a quest's name, text, place, difficulty or conditions while the mod runs. |
-| [`rq.quests.define`](#rqquestsdefine) | Adds a quest of the mod's own, with no map: a story, fights, a menu. |
+| [`rq.quests.define`](#rqquestsdefine) | Adds a quest of the mod's own: a story, fights, a menu, or a map of the game's rooms. |
 | [`rq.quests.no`](#rqquestsno) | Returns the number a mod's quest has in the loaded save. |
 | [`rq.quests.run`](#rqquestsrun) | Returns the counters, bonuses and rules of the quest being played. |
 | [`rq.quests.set_run`](#rqquestsset_run) | Changes the counters, bonuses and rules of the quest being played. |
@@ -242,7 +242,7 @@ rq.quests.refresh() -- Take greys if that was the last one
 rq.quests.get(no) -> rq.QuestData
 ```
 
-`since 2.39.0` `changed 2.41.0`
+`since 2.39.0` `changed 2.41.0` `changed 2.42.0`
 
 Returns a quest's data, as the quest list shows it.
 
@@ -268,6 +268,8 @@ rq.log(q.name, q.difficulty, q.fame, #q.conditions, q.can_take)
 | `data` | [`rq.QuestData`](../types/rq.QuestData.md) | The quest's data. |
 
 > Changed in 2.41.0: Takes a mod's quest's id; gives `text_id` and `main`. The description of `kind`'s
+
+> Changed in 2.42.0: Gives `map` for a mod's quest with a map.
 
 See also: [`rq.quests.edit`](rq.quests.md#rqquestsedit)
 
@@ -332,9 +334,9 @@ See also: [`rq.quests.get`](rq.quests.md#rqquestsget)
 rq.quests.define(def)
 ```
 
-`since 2.41.0`
+`since 2.41.0` `changed 2.42.0`
 
-Adds a quest of the mod's own, with no map: a story, fights, a menu.
+Adds a quest of the mod's own: a story, fights, a menu, or a map of the game's rooms.
 
 The quest list shows it as one of the game's, and Take starts it through the game's own flow (the
 autosave, the try counted, the quest storage emptied). Then `run(q)` runs in place of a game
@@ -349,6 +351,17 @@ quest's script: it plays scenes (`rq.scene.play`), fights (`rq.battle.start`), c
 
 An error in `run` is written to the log and the quest is given up. `rq.quests.on_event`'s `start`
 runs before `run`, and `on_end` after it, with `id` in their ctx.
+
+**A map** (`map`) makes it a quest with the map mark, played as the game's: `run`, if any, is a
+prologue; then the party enters the area `start`. Each area is set up as the game's quest scripts
+set theirs, at each entry: the tileset, name, gold, loot, music, traps, groups and bonuses, then the
+room with its exits and counted objects; on its first entry in a run, its `objects`; then `setup`.
+A custom object's `run` is its `rq.dungeon.on_object` function, and the quest ends when one returns
+a result, as the boss or the goal of the game's quests do; the escape device and a lost fight end
+it too. `rq.quests.set_run`'s `progress` fills the panel's bar. The rooms drawn are kept in the
+save, so every try has the same rooms; a new shape of the map (an area's tileset, room or exits)
+draws them anew. A save made on the map of a mod that is gone ends the quest as with the escape
+device the first time the map hands over to the quest (a fight, a touch, the menu key).
 
 **The number.** The first time a save has the quest (a new game, a load, a world transfer), it
 takes the first free number from 303 to 500 and keeps it in that save, marked with its id; another
@@ -371,7 +384,10 @@ transfer made without the mod forgets it: it starts as new when the mod comes ba
 
 Call it at the mod's top level. Calling it again with the same id from the same mod replaces the
 definition. Raises an error for an id another mod defined, an unknown field, a value of the wrong
-kind or too long, more than 3 conditions, `open` with `after`, or no `run`.
+kind or too long, more than 3 conditions, `open` with `after`, or no `run` and no `map`. For a map:
+`fights`; an exit off the grid or with no way back; an area `start` does not reach; an area with no
+tileset or no groups; a room, fixed map or exit the tileset or the fixed map does not have; more
+objects than the room's spots; an object's field of the wrong kind.
 
 ```lua
 rq.item.define({ id = "mymod:lotion", name = "Dancer's Lotion", price = 200, info = "It smells of roses." })
@@ -394,11 +410,31 @@ rq.quests.define({
     return "clear"
   end,
 })
+
+-- A cave of two areas, its queen at the end.
+rq.quests.define({
+  id = "mymod:bat_cave", name = "The Bat Cave", place = "Leazas", difficulty = 12, fame = 60, open = true,
+  map = {
+    tileset = rq.ids.map_kind.CAVE, name = "Bat Cave", loot = "B", groups = { 47, 49 },
+    areas = {
+      [1] = { exits = "E", enemies = 2, chests = 1 },
+      [2] = { exits = "W", room = 203, objects = {
+        { kind = "custom", id = "mymod:bat_queen", look = "event-4", spot = "wide", run = function(ctx)
+          local r = rq.battle.start({ enemies = { 0, rq.ids.monster.COCKROACH, 0 }, boss = true })
+          if r ~= "won" then return "fail" end
+          return "clear"
+        end },
+      } },
+    },
+  },
+})
 ```
 
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `def` | [`rq.QuestDef`](../types/rq.QuestDef.md) | The quest. |
+
+> Changed in 2.42.0: Takes `map`; `run` is then the prologue and may be left out.
 
 See also: [`rq.quests.no`](rq.quests.md#rqquestsno), [`rq.quests.edit`](rq.quests.md#rqquestsedit)
 
@@ -461,14 +497,15 @@ See also: [`rq.quests.set_run`](rq.quests.md#rqquestsset_run)
 rq.quests.set_run(fields)
 ```
 
-`since 2.39.0`
+`since 2.39.0` `changed 2.42.0`
 
 Changes the counters, bonuses and rules of the quest being played.
 
 The quest panel on the map is drawn again: the EXP bonus, the bonuses, AREA DISPLAY and the PARTY
 button follow. A bonus that reaches its maximum shows the game's flash on the map, as a level-up or
-a placed enemy does. The progress, the fights, the EXP total, the fee and the gold base are read
-only: the game's systems make them. The quest's script sets its rules at the start and in some
+a placed enemy does. The progress is written as given, up or down; the game's quests raise it at
+their own moments. The fights, the EXP total, the fee and the gold base are read only: the game's
+systems make them. The quest's script sets its rules at the start and in some
 areas, so a rule written early can be written again by the quest; set it from `rq.dungeon.on_area`
 to keep it.
 
@@ -486,6 +523,8 @@ end)
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `fields` | [`rq.QuestRunEdit`](../types/rq.QuestRunEdit.md) | The fields to write. |
+
+> Changed in 2.42.0: Writes `progress`.
 
 See also: [`rq.quests.run`](rq.quests.md#rqquestsrun)
 
