@@ -2,9 +2,10 @@
 
 Loader 2.37.0 lets a mod change the rules of a fight. A mod can set the chance of a stun, a poison,
 a counter or an escape, and how much HP a heal gives. It can also change the speeds the turn list is
-built from, the list itself, the ambush, and each line of the battle log. Every mod's callbacks run
-in turn on the same fight, and the game shows the result as its own: the forecast, the log, the
-numbers and the turn icons.
+built from, the list itself, the ambush, and each line of the battle log. Since 2.38.0 it can also
+choose what an enemy or the familiar does on its turn. Every mod's callbacks run in turn on the same
+fight, and the game shows the result as its own: the forecast, the log, the numbers and the turn
+icons.
 
 ## A chance: stun, poison, counter, escape
 
@@ -157,11 +158,71 @@ end)
 
 `ctx.last` is true for the fight's end message: Victory, Defeat, Time exceeded, or the flight.
 
+## What enemies choose
+
+On an enemy's turn the game draws a skill from the monster's list. Each skill has a chance, read as
+a threshold: the draw, 0 to 99, takes the first skill whose chance is at least the number, so 50
+then 100 is half each. An enemy in the back row whose skill reaches only the front row stands by
+(Standby, 384) while an enemy stands in the front row. The familiar always uses its first skill.
+The game then rolls the target among the units the skill can reach.
+
+`rq.battle.on_choose` (2.38.0) runs after both, before the enemy acts. `ctx.skill` and `ctx.target`
+hold the game's choice, and a mod writes them to change it. `ctx.skills` is the actor's list, and
+`ctx:targets(skill)` the units a skill may aim at. A boss that heals when its HP is low, and
+otherwise hits whoever has the least HP:
+
+```lua
+local HEAL = 1234 -- a support skill on its own side
+
+rq.battle.on_choose(function(ctx)
+  if ctx.side ~= "enemy" or rq.chara.get(ctx.iic).no ~= MY_BOSS then return end
+  local me = rq.chara.get(ctx.iic)
+  if me.hp * 3 < me.hp_max then
+    ctx.skill, ctx.target = HEAL, ctx.iic
+    return
+  end
+  local weakest
+  for _, iic in ipairs(ctx:targets()) do
+    if not weakest or rq.chara.get(iic).hp < rq.chara.get(weakest).hp then weakest = iic end
+  end
+  ctx.target = weakest
+end)
+```
+
+The loader checks what a callback writes, and keeps the value before it when a check fails, with a
+line in the log:
+
+- A skill must act (physical, magic, special or support, not an ability), and cannot be Escape or
+  "Relax, relax". It goes through the Standby rule. A skill the actor does not have is put at the
+  end of its list for the rest of the fight, with chance 0 so the game never draws it. The game
+  shows the skill's own log text, and the enemy plays the motion of its first skill.
+- A target must be one of `ctx:targets(ctx.skill)`: standing, on the side the skill aims at, not a
+  hidden ally, and in the front row for a melee skill while one stands there. An attack on the
+  enemy's own side is refused: the game draws an enemy's attack only on the party's side.
+- A callback that writes a new skill and leaves the target gets the game's roll for the new skill,
+  unless a mod set the target and it still fits. `nil` lets the game roll again.
+
+A target a mod set takes every hit of a multi-hit skill while it stands; writing the unit the game
+rolled counts as setting it. On the turn a charged
+skill is released, `ctx.charged` is true and only the target can change.
+
+The familiar's turns come here too, with `ctx.side == "familiar"`: a familiar that uses its second
+skill on the enemy with the most HP is a few lines. The allies' turns do not: the player chooses
+them, and AUTO is the game's.
+
+### The taunt
+
+The game has a taunt of its own: a skill that "got the enemy's attention" names an ally, and the
+enemies' rolls take that ally first while it stands, is not hidden and is in the rows the skill
+reaches. `rq.battle.taunt()` reads it and `rq.battle.set_taunt(iic)` sets it (nil clears it). It
+lasts until it changes or the fight ends. A taunt state is in [Battle states](states.md#a-state-that-changes-the-rules).
+
 ## Not yet
 
 These are on the [Roadmap](../roadmap.md):
 
-- What an enemy or a familiar does on its turn.
+- The allies' AUTO choices, an ally's turn taken by a state (charm, berserk), and confusion (an
+  attack on the attacker's own side).
 - The skill a counter uses (always Counter Attack).
 - The turn list read at any time, with the turn the fight is on.
 - The game's own ambush chances.

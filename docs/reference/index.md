@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.37.0.
+Loader version 2.38.0.
 
 ## Namespaces
 
@@ -98,6 +98,8 @@ Loader version 2.37.0.
 | [`rq.CharaState`](types/rq.CharaState.md) | Everything `rq.chara.get` returns about a character. `rq.chara.set` takes the same names. |
 | [`rq.ChestAttemptResult`](types/rq.ChestAttemptResult.md) | What `rq.chest.on_attempt` may return instead of a number. |
 | [`rq.ChestInfo`](types/rq.ChestInfo.md) | What `rq.chest.on_attempt` and `on_result` get for a red chest. |
+| [`rq.ChooseCtx`](types/rq.ChooseCtx.md) | What `rq.battle.on_choose` gets on an enemy's or the familiar's turn. |
+| [`rq.ChooseSkill`](types/rq.ChooseSkill.md) | A skill in `rq.ChooseCtx.skills`: one slot of the actor's list as it is now. |
 | [`rq.ConfigPage`](types/rq.ConfigPage.md) | A page in the Mods tab of the game's Config screen. |
 | [`rq.CounterCtx`](types/rq.CounterCtx.md) | What `rq.combat.on_counter` gets after a hit. |
 | [`rq.CounterGuardCtx`](types/rq.CounterGuardCtx.md) | What `rq.counter.on_guard_counter` gets. |

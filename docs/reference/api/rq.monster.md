@@ -70,7 +70,9 @@ level and the lines are written after the build.
 
 Each mod keeps one patch per monster: calling again replaces that mod's patch, and `nil` removes
 it. The patches apply in load order, a later mod's field over an earlier one's. A change applies
-from the next build; an enemy already in a fight keeps its numbers.
+from the next build; an enemy already in a fight keeps its numbers. A skill's `chance` changes how
+often the game draws it in every fight; to choose a skill or a target turn by turn, use
+`rq.battle.on_choose`.
 
 Raises an error for an unknown monster, an unknown field, a value of the wrong kind, or a skill
 position outside 1 to 5.
@@ -87,6 +89,8 @@ rq.monster.edit(rq.ids.monster.COCKROACH, {
 | --- | --- | --- |
 | `no` | `integer` | The monster number (`rq.ids.monster`). |
 | `patch` | [`rq.MonsterEdit`](../types/rq.MonsterEdit.md) `\|nil` | The fields to change; nil removes this mod's patch. |
+
+See also: [`rq.battle.on_choose`](rq.battle.md#rqbattleon_choose)
 
 ## Events
 

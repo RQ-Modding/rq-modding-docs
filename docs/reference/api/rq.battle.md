@@ -29,6 +29,8 @@ end)
 | [`rq.battle.set_escape`](#rqbattleset_escape) | Sets the escape chance of the current fight. |
 | [`rq.battle.set_ambush`](#rqbattleset_ambush) | Changes the fight's ambush, from `rq.battle.on_start`. |
 | [`rq.battle.log`](#rqbattlelog) | Adds a line to the battle log now. |
+| [`rq.battle.taunt`](#rqbattletaunt) | The ally the game's taunt names now, or nil. |
+| [`rq.battle.set_taunt`](#rqbattleset_taunt) | Names the ally the enemies aim at, as the game's taunt does, or clears it with nil. |
 | [`rq.battle.install_flame`](#rqbattleinstall_flame) | Installs the hooks the flame, the buffs and the marks need. |
 | [`rq.battle.set_flame`](#rqbattleset_flame) | Shows or hides the enemies' "charging" flame on an ally. |
 | [`rq.battle.set_buff`](#rqbattleset_buff) | Adds, changes or removes a mod's buff on a character. |
@@ -214,6 +216,59 @@ end)
 | `added` | `boolean` | false when the game added nothing. |
 
 See also: [`rq.battle.on_log`](rq.battle.md#rqbattleon_log)
+
+### rq.battle.taunt
+
+```lua
+rq.battle.taunt() -> integer|nil
+```
+
+`since 2.38.0`
+
+The ally the game's taunt names now, or nil.
+
+The game sets it when a skill like that ("X got the enemy's attention") lands, and clears it at a
+fight's start. While that ally stands, is not hidden and is in the rows the enemy's skill
+reaches, the enemies' rolls take it first. nil outside a fight.
+
+```lua
+local who = rq.battle.taunt()
+```
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `iic` | `integer\|nil` | The ally's roster slot. |
+
+See also: [`rq.battle.set_taunt`](rq.battle.md#rqbattleset_taunt)
+
+### rq.battle.set_taunt
+
+```lua
+rq.battle.set_taunt(iic)
+```
+
+`since 2.38.0`
+
+Names the ally the enemies aim at, as the game's taunt does, or clears it with nil.
+
+It is the game's own taunt: hiding still wins, a melee skill still takes the front row when the
+taunting ally stands in the back row, and it lasts until it is changed or the fight ends. A mod's
+`rq.battle.on_choose` sees the target it gave and may still change it.
+
+Raises an error outside a fight, for a slot that is not an ally in this fight, or for an ally who
+is down.
+
+```lua
+rq.battle.on_turn(function(ctx) -- a state that draws the enemies' attacks
+  if ctx.side == "ally" and rq.status.get(ctx.iic, "mymod:taunt") then rq.battle.set_taunt(ctx.iic) end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `iic` | `integer\|nil` | The ally's roster slot, or nil to clear it. |
+
+See also: [`rq.battle.taunt`](rq.battle.md#rqbattletaunt)
 
 ### rq.battle.install_flame
 
@@ -843,6 +898,7 @@ Returns a copy of what the fight screen shows.
 | [`rq.battle.on_order`](#rqbattleon_order) | Calls `fn` each time the game builds the turn list, to change the speeds it is built from. |
 | [`rq.battle.on_order_after`](#rqbattleon_order_after) | Calls `fn` each time the game has built the turn list, to read or replace it. |
 | [`rq.battle.on_log`](#rqbattleon_log) | Calls `fn` for each line before it goes into the battle log, to drop or change it. |
+| [`rq.battle.on_choose`](#rqbattleon_choose) | Calls `fn` on each turn of an enemy or the familiar, after the game chose a skill and a target and before it acts, to change them. |
 | [`rq.battle.on_hp`](#rqbattleon_hp) | Calls `fn` in a fight each time a character's HP changes. |
 
 ### rq.battle.on_select_key
@@ -1068,7 +1124,8 @@ rq.battle.on_use(fn) -> fun()
 Calls `fn` each time a skill is carried out, before its effects.
 
 It runs for allies, enemies and summons, once per hit of a multi-hit skill, and for a counter
-too. It only reports: it cannot change or stop the skill.
+too. It only reports: it cannot change or stop the skill. To choose an enemy's or the familiar's
+skill and target, use `rq.battle.on_choose`.
 
 ```lua
 rq.battle.on_use(function(ev)
@@ -1309,6 +1366,60 @@ end)
 | `remove` | `fun()` | Removes this callback. |
 
 See also: [`rq.battle.log`](rq.battle.md#rqbattlelog)
+
+### rq.battle.on_choose
+
+```lua
+rq.battle.on_choose(fn) -> fun()
+```
+
+`since 2.38.0`
+
+Calls `fn` on each turn of an enemy or the familiar, after the game chose a skill and a target and
+before it acts, to change them.
+
+The game draws an enemy's skill from its list's chances (see `rq.ChooseSkill.chance`) and turns a
+front-row skill from the back row into Standby while the front row stands; the familiar always
+uses its first skill. The target is the game's random roll for that skill, with its own taunt
+rules (`rq.battle.taunt`, Easy Target). `fn` reads them in `ctx` and writes `ctx.skill` and
+`ctx.target`; each callback sees what the one before left.
+
+A new skill is checked: a skill number the game has, that acts (physical, magic, special or
+support; not an ability), not Escape (211) or "Relax, relax" (217). It goes through the game's
+Standby rule. A skill the actor does not have is put at the end of its list for the rest of the
+fight, with chance 0 (the game never draws it), the motion of its first skill and the skill's own
+text for the log. When a callback writes a new skill and leaves `target`, the loader rolls the
+game's target for the new skill, unless a mod set the target and it still fits.
+
+A new target is checked by `ctx:targets`' rules: a unit standing on the right side, not a hidden
+ally, the front row for melee while one stands there. An attack on the actor's own side is
+refused. A target a callback writes is a target a mod set, also when it is the unit the game
+rolled. For a multi-hit skill a target a mod set takes every hit while it stands; then the game
+picks for each hit, as it does for its own targets. On the turn a charged skill is released
+(`ctx.charged`) only the target can change.
+
+A write that fails a check keeps the value before it and logs a line naming the mod; an error in
+`fn` keeps both. The allies' turns (their menu, AUTO) do not come here.
+
+```lua
+rq.battle.on_choose(function(ctx) -- a boss that heals when low, and a taunt state
+  local me = rq.chara.get(ctx.iic)
+  if ctx.side == "enemy" and me.hp * 3 < me.hp_max then ctx.skill = HEAL_SKILL end
+  for _, iic in ipairs(ctx:targets()) do
+    if rq.status.get(iic, "mymod:taunt") then ctx.target = iic end
+  end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(ctx:` [`rq.ChooseCtx`](../types/rq.ChooseCtx.md) `)` | Reads and writes the choice. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |
+
+See also: [`rq.battle.on_use`](rq.battle.md#rqbattleon_use), [`rq.monster.edit`](rq.monster.md#rqmonsteredit)
 
 ### rq.battle.on_hp
 

@@ -5,6 +5,16 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.38.0
+
+What enemies and the familiar choose (`notes/plans/plan-enemy-choices.md` in the workspace, phase M of the priority order). In Lua over `rq.ain` (`src/lua/choices.lua`); the hooks are placed by the first `on_choose`.
+- `rq.battle.on_choose(fn)`: on each turn of an enemy or the familiar, after the game drew the skill (`戦闘敵_行動選択`, `戦闘従魔_行動選択`) and rolled its target (`Ｔ戦闘_対象選択`, called by the loader with the same arguments), before it acts. The ctx (`rq.ChooseCtx`) has `iic`, `unit`, `side` ("enemy", "familiar"), `rank`, `turn`, a writable `skill` and `target`, `rolled` and `standby` (the game's Standby rule for a front-row skill from the back row), `charged` (a charged skill released: the target only), `skills` (`rq.ChooseSkill`: the list with its chances as they are now) and `ctx:targets(skill)`.
+  - A new skill must act (not an ability), not be Escape (211) or "Relax, relax" (217), and goes through the Standby rule; one the actor does not have is put at the end of its list for the fight (chance 0, the first skill's motion, the skill's own log text). A new skill with the target left gets the game's roll for it, unless a mod set a target that still fits.
+  - A new target must be standing, on the side the skill's target kind names, not a hidden ally, and in the front row for melee while one stands there (`ctx:targets`); an attack on the actor's own side is refused. A target a mod set (written by a callback, also the unit the game rolled) takes every hit of a multi-hit skill while it stands.
+  - A write that fails a check keeps the value before it and logs a line naming the mod.
+- `rq.battle.taunt()` and `set_taunt(iic)`: the game's own taunt (`◆戦闘タゲ取り`, set by its "got the enemy's attention" skill and cleared at a fight's start), which the enemies' target rolls take first.
+- The reference of `rq.battle.on_use` and `rq.monster.edit` points to `on_choose`; `rq.MonsterSkill.chance` says how the game draws.
+
 ## 2.37.0
 
 The combat formulas and the last hooks the mods placed on the game's code (`notes/plans/plan-combat-hooks.md` in the workspace, phase L of the priority order). In Lua over `rq.ain` (`src/lua/combat.lua`); the hooks are placed by the first call that needs them.

@@ -153,11 +153,37 @@ and counts its turns only in fights. When the quest ends, `on_remove` gets the r
 
 A state can also change the rules of a fight. A state can stand for Haste or Slow by changing the
 turn list. It can change a stun or poison chance, give thorns that counter, or curse the healing it
-gets. All of these are in [Combat rules](combat.md).
+gets. It can also change what the enemies choose. All of these are in [Combat rules](combat.md).
+
+A taunt, with the game's own (2.38.0): while an ally has it, the enemies aim at that ally first.
+
+```lua
+rq.status.define("mymod:taunt", {
+  name = "Taunt", kind = "good", turns = 3,
+  on_add = function(s) rq.battle.set_taunt(s.iic) end,
+  on_remove = function(s)
+    if rq.battle.taunt() == s.iic then rq.battle.set_taunt(nil) end
+  end,
+})
+```
+
+A state that makes the enemies leave its bearer alone writes another target in
+`rq.battle.on_choose` instead:
+
+```lua
+rq.battle.on_choose(function(ctx)
+  if ctx.target and rq.status.get(ctx.target, "mymod:smoke") then
+    for _, iic in ipairs(ctx:targets()) do
+      if not rq.status.get(iic, "mymod:smoke") then ctx.target = iic break end
+    end
+  end
+end)
+```
 
 ## Not yet
 
 - The `desc` text shows nowhere in the game yet; it comes with the card's marks side by side,
   each with its own hover text.
-- States that last in the save, the AI choosing skills by mod states, and states shown between
-  fights are on the [Roadmap](../roadmap.md).
+- States that last in the save and states shown between fights are on the
+  [Roadmap](../roadmap.md). The enemies choosing by mod states came in 2.38.0
+  (`rq.battle.on_choose`).
