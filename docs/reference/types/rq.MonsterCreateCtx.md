@@ -8,6 +8,7 @@ What `rq.monster.on_create` callbacks get. Fields marked writable change the ene
 | --- | --- | --- |
 | `iic` | `integer` | The slot: 1 to 5 for an enemy, 10 for the familiar. |
 | `no` | `integer` | The monster number. |
+| `id` *(optional)* | `string` | The text id, for a monster a mod defined. Since 2.40.0. |
 | `rank` | `integer` | The fight rank the enemy stands in, 1 to 5; 0 for the familiar. |
 | `familiar` | `boolean` | The familiar of the party's held item, not an enemy. |
 | `world` | `integer` | The world, 1 to 3. |

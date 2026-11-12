@@ -743,7 +743,7 @@ from the back.
 rq.battle.start(opts) -> "won"|"lost"|"other", rq.FightResult
 ```
 
-`since 0.22.0` `changed 2.22.1` `changed 2.36.0`
+`since 0.22.0` `changed 2.22.1` `changed 2.36.0` `changed 2.40.0`
 
 Opens a fight with the current party, using the game's scripted fight or its boss fight.
 
@@ -789,6 +789,8 @@ end)
 > Changed in 2.22.1: Away from a quest's map, the screen under the fight came back black and without
 
 > Changed in 2.36.0: The options `boss`, `strong`, `double_hp`, `names`, `background`, `music`,
+
+> Changed in 2.40.0: The option `group`, and a mod's monster by text id in `enemies`.
 
 ### rq.battle.backgrounds
 

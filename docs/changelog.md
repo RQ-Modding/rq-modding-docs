@@ -5,6 +5,17 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.40.0
+
+New monsters and enemy groups (`notes/plans/plan-new-monsters.md` in the workspace, phase O1 of the priority order). In Lua over `rq.ain` (`src/lua/monster.lua`, `src/lua/basics.lua`), and the model table in C (`src/hll/MonsterInfo.c`). The hooks that build a monster or a group whose mod is gone are placed at the loader's start; the others by the first call that needs them.
+- `rq.monster.define(def)`: a monster of a mod's own on a game monster's data (`base`), with any field of `rq.monster.edit`. Its number is 1000 + an FNV-1a hash of its id modulo 9000, as an item's. The game builds it through its base's block (look, motions, the world's rules), so it fights in `rq.battle.start`, in a mod's group and as a familiar. An edit of the base does not reach it; an edit of its own number or id does. Its kills and whether its weak point is known are kept in the loader's part of `rq.savedata`, by its id, through the game's own accessors (`■Ｍ／撃破数`, `■Ｍ／弱点把握`).
+- `capture` on `define`: the game's capture skills (166, 451, 531) catch the monster under the game's rules and give the mod's item, with the scene's CG and text; without `capture` the monster escapes, as one the game has no item for.
+- `drops` on `define` and `edit`: up to 8 items with a chance, rolled after a won fight with no item yet, each enemy defeated in rank order, before every mod's `rq.battle.on_end`; the first that rolls is the fight's one item, in the place of the game's later drops.
+- `rq.monster.get` and `edit` take a mod's monster by number or text id; `get` gives `id`, `base`, `kills` and `weak_known`; `on_create`'s ctx has `id`.
+- `rq.monster.group(def)`: an enemy group of a mod's own: a name for the game's log, the EXP, the rank and 1 to 6 line-ups of up to five monsters (numbers or a mod's ids), drawn as the game draws its own (1 to 5, not the last one twice; the 6th for an enemy standing on the map one time in 3). `rq.encounters.set_groups(list)` writes the area's list with the game's and the mods' groups; `rq.battle.start`'s `group` fights one, with the group's EXP, and `enemies` takes a mod's monster by text id.
+- `rq.monster.models()` and `model(def)`: the game's model table (`MonsterInfo`), and a game model at another scale and offset, added after the table and put back each time the game reads it.
+- A save holding a number of a mod that is not loaded any more: an unknown monster of 1000 or more is built as the game's Data-less Ghost (`Ｃカスタム登録`), an unknown group in an area's list becomes the area's first game group (135 when it has none), each with one line in the log.
+
 ## 2.39.0
 
 Quests and map objects (`notes/plans/plan-quests-map-objects.md` in the workspace, phase N of the priority order). In Lua over `rq.ain` (`src/lua/quests.lua`); the hooks of `edit` and `on_trap` are placed by their first call, those of a mod's objects at the loader's start.

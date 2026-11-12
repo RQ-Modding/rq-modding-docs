@@ -22,6 +22,7 @@ rq.encounters.on_steps(function(ctx) return ctx.steps * 2 end)
 | [`rq.encounters.info`](#rqencountersinfo) | Returns the random fights of the area the party is in. |
 | [`rq.encounters.hold`](#rqencountershold) | Holds random fights off for this mod, or lets them come back. |
 | [`rq.encounters.set_steps`](#rqencountersset_steps) | Sets the steps that fill the encounter bar, from now to the next fight or area change. |
+| [`rq.encounters.set_groups`](#rqencountersset_groups) | Sets the enemy groups of the area the party is in, as the area's script writes them. |
 
 ### rq.encounters.info
 
@@ -85,6 +86,37 @@ mod.
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `n` | `integer` | The steps, 1 to 999. |
+
+### rq.encounters.set_groups
+
+```lua
+rq.encounters.set_groups(list)
+```
+
+`since 2.40.0`
+
+Sets the enemy groups of the area the party is in, as the area's script writes them.
+
+Random fights and the enemies standing on the map draw from this list until the party enters
+another area, where the game writes that area's own list: to change every area, call it from
+`rq.dungeon.on_area`. A group is one of the game's (2 to 135, but 71 and 72) or a mod's
+(`rq.monster.group`), by number or text id. `{}` leaves the area with no random fights and no
+bar, as the game's areas with no groups. The steps that fill the bar stay as they are.
+
+Raises an error for a list that is not a list of up to 5 groups, a group that is neither the
+game's nor a mod's, away from a quest's map, and at the top level of a mod. A call that raises
+an error changes nothing.
+
+```lua
+local ROACHES = rq.monster.group({ id = "mymod:roaches", lineups = { { 0, rq.ids.monster.COCKROACH } } })
+rq.dungeon.on_area(function(ctx)
+  if ctx.stratum == 1 then rq.encounters.set_groups({ ROACHES, 2 }) end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `list` | `(integer\|string)[]` | Up to 5 groups, by number or a mod's text id. |
 
 ## Events
 

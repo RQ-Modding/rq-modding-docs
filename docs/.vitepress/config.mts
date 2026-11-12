@@ -45,6 +45,7 @@ const guide: DefaultTheme.SidebarItem[] = [
       { text: 'What a mod can reach', link: '/guide/sandbox' },
       { text: 'Numbers and ids', link: '/guide/ids' },
       { text: 'Gold, encounters and levels', link: '/guide/game-state' },
+      { text: 'Monsters and enemy groups', link: '/guide/monsters' },
       { text: 'Data that follows the save', link: '/guide/save-data' },
       { text: "The game's own code", link: '/guide/game-code' },
       { text: 'Pictures', link: '/guide/pictures' },

@@ -32,6 +32,10 @@ A monster's data, as `rq.monster.get` returns it. The names are `rq.chara.get`'s
 | `dark_res` | `integer` | Dark resistance. |
 | `skills` | [`rq.MonsterSkill`](rq.MonsterSkill.md) `[]` | Up to five, in the game's order; the empty positions are left out. |
 | `lines` | `{wait?: string, attack?: string, big?: string, support?: string}` | The lines the fight shows: waiting, attacking, a big move, supporting. A kind the monster has not is nil. |
+| `id` *(optional)* | `string` | The text id, for a monster a mod defined (`rq.monster.define`). Since 2.40.0. |
+| `base` *(optional)* | `integer` | The game monster it is built on, for a monster a mod defined. Since 2.40.0. |
+| `kills` | `integer` | How many the party has defeated, as the game's Monster Info counts them (a mod's monster's in the save, by its id). Since 2.40.0. |
+| `weak_known` | `boolean` | The party knows its weak point, as the game marks it once a fight shows it; the next build of the monster shows it from the start. Since 2.40.0. |
 
 ## Used by
 

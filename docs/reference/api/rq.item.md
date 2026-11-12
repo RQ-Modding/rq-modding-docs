@@ -13,7 +13,8 @@ and does the work in Lua.
 
 A familiar is an item in the item slot with `subtype = 20`; its owner needs Familiar Knowledge
 (321). The game reads three effects by place: the monster number, the class (1 to 4) and the
-growth. Its icon must be 6500 to 6516 or 6632, or the familiar never takes a turn.
+growth. Its icon must be 6500 to 6516 or 6632, or the familiar never takes a turn. The monster may
+be a mod's (`rq.monster.define`), whose `capture` gives such an item (`rq.MonsterCapture`).
 
 ```lua
 local broken = rq.item.define({ id = "mymod:broken_lens", name = "Broken Lens", price = 10,

@@ -182,6 +182,7 @@ chance. It runs for the game's traps and for those a mod placed.
 
 These are on the [Roadmap](../roadmap.md):
 
-- New quests and new monsters (phase O); new 3D models, warps and new maps (phase P).
+- New quests (phases O2 and O3); new 3D models, warps and new maps (phase P). New monsters and
+  enemy groups for the game's areas came in 2.40.0: [Monsters and enemy groups](monsters.md).
 - A trap with a mod's own text and effect: a custom object does it today.
 - Writing the run's EXP so far, its gold, fee and progress.

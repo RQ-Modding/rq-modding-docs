@@ -31,6 +31,7 @@ What `rq.monster.edit` changes. Every field is optional; the numbers are whole a
 | `dark_res` *(optional)* | `integer` | Dark resistance. |
 | `skills` *(optional)* | `table<integer,` [`rq.MonsterSkillEdit`](rq.MonsterSkillEdit.md) `\|false>` | By position, 1 to 5: a table changes the fields it gives; `false` empties the position. |
 | `lines` *(optional)* | `{wait?: string\|false, attack?: string\|false, big?: string\|false, support?: string\|false}` | By kind: a text replaces the line; `false` removes it. |
+| `drops` *(optional)* | [`rq.MonsterDrop`](rq.MonsterDrop.md) `[]` | Up to 8 items the monster may leave after a won fight, rolled in order; the first that rolls is given. `{}` gives none. Since 2.40.0. |
 
 ## Used by
 

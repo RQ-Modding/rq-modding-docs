@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.39.0.
+Loader version 2.40.0.
 
 ## Namespaces
 
@@ -29,7 +29,7 @@ Loader version 2.39.0.
 | [`rq.items`](api/rq.items.md) | Lists the item instances the player owns. |
 | [`rq.loot`](api/rq.loot.md) | Chest loot: what the pools roll, and the items the player will find, known in advance. |
 | [`rq.mod`](api/rq.mod.md) | Finds out about other mods, and reaches what they share. |
-| [`rq.monster`](api/rq.monster.md) | The game's list of monsters: read a monster's data, change it each time the game builds it, and change each enemy a fight builds. |
+| [`rq.monster`](api/rq.monster.md) | The game's list of monsters: read a monster's data, change it each time the game builds it, and change each enemy a fight builds. A mod's own monsters, enemy groups and models. |
 | [`rq.music`](api/rq.music.md) | Music from a mod's own file, in place of one of the game's tracks. |
 | [`rq.orb`](api/rq.orb.md) | The blue Recovery Spring on the map (`回復の泉`, object 203). |
 | [`rq.party`](api/rq.party.md) | Reads and changes who is in the party. |
@@ -144,9 +144,15 @@ Loader version 2.39.0.
 | [`rq.MapCtx`](types/rq.MapCtx.md) | What `rq.dungeon.on_map` gets. |
 | [`rq.MapObject`](types/rq.MapObject.md) | An object on the current map, from `rq.dungeon.objects()`. |
 | [`rq.MarkDef`](types/rq.MarkDef.md) | How `rq.battle.set_mark` shows one of the game's marks. |
+| [`rq.ModelDef`](types/rq.ModelDef.md) | What `rq.monster.model` takes. |
+| [`rq.ModelInfo`](types/rq.ModelInfo.md) | A model in the game's model table, as `rq.monster.models` lists it. |
 | [`rq.Monster`](types/rq.Monster.md) | A monster's data, as `rq.monster.get` returns it. The names are `rq.chara.get`'s. |
+| [`rq.MonsterCapture`](types/rq.MonsterCapture.md) | A mod's monster's capture (`rq.MonsterDef.capture`): what the game's capture skills (the two Capture skills, 166 and 451, and Capture Thread, 531) give when they catch it. |
 | [`rq.MonsterCreateCtx`](types/rq.MonsterCreateCtx.md) | What `rq.monster.on_create` callbacks get. Fields marked writable change the enemy in its slot. |
+| [`rq.MonsterDef`](types/rq.MonsterDef.md) | What `rq.monster.define` takes: a game monster to start from, then any field of `rq.MonsterEdit` for the mod's monster. |
+| [`rq.MonsterDrop`](types/rq.MonsterDrop.md) | An item a monster may leave after a won fight (`rq.MonsterEdit.drops`). |
 | [`rq.MonsterEdit`](types/rq.MonsterEdit.md) | What `rq.monster.edit` changes. Every field is optional; the numbers are whole and 0 or more. |
+| [`rq.MonsterGroup`](types/rq.MonsterGroup.md) | A mod's enemy group, as `rq.monster.group` takes it. |
 | [`rq.MonsterSkill`](types/rq.MonsterSkill.md) | A skill in a monster's list (`rq.Monster.skills`). |
 | [`rq.MonsterSkillEdit`](types/rq.MonsterSkillEdit.md) | A skill's fields in `rq.MonsterEdit.skills`: the ones given replace the list's. |
 | [`rq.MusicInfo`](types/rq.MusicInfo.md) | What `rq.music.info` tells about a track. |

@@ -50,7 +50,7 @@ end)
 | [`rq.items`](rq.items.md) | Lists the item instances the player owns. |
 | [`rq.loot`](rq.loot.md) | Chest loot: what the pools roll, and the items the player will find, known in advance. |
 | [`rq.mod`](rq.mod.md) | Finds out about other mods, and reaches what they share. |
-| [`rq.monster`](rq.monster.md) | The game's list of monsters: read a monster's data, change it each time the game builds it, and change each enemy a fight builds. |
+| [`rq.monster`](rq.monster.md) | The game's list of monsters: read a monster's data, change it each time the game builds it, and change each enemy a fight builds. A mod's own monsters, enemy groups and models. |
 | [`rq.music`](rq.music.md) | Music from a mod's own file, in place of one of the game's tracks. |
 | [`rq.orb`](rq.orb.md) | The blue Recovery Spring on the map (`回復の泉`, object 203). |
 | [`rq.party`](rq.party.md) | Reads and changes who is in the party. |

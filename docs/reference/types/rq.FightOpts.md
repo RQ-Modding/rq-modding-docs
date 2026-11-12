@@ -6,8 +6,9 @@ What `rq.battle.start` takes. Only `enemies` is needed.
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `enemies` | `integer[]` | Up to five monster numbers (`rq.ids.monster`) in rank order, 0 for an empty rank. |
-| `exp` *(optional)* | `integer` | Experience for the win. Default 0. |
+| `enemies` *(optional)* | `(integer\|string)[]` | Up to five monster numbers (`rq.ids.monster`) in rank order, 0 for an empty rank; a mod's monster by number or text id (`rq.monster.define`) since 2.40.0. Needed unless `group` is given. |
+| `group` *(optional)* | `integer\|string` | A mod's enemy group (`rq.monster.group`), by number or text id, in place of `enemies`: a line-up drawn as the game draws one, and the group's EXP unless `exp` is given. Since 2.40.0. |
+| `exp` *(optional)* | `integer` | Experience for the win. Default 0, or the group's. |
 | `boss` *(optional)* | `boolean` | The game's boss fight: fight rank 2, no escape, 999 actions, no ambush, no capture, the fight lost when no ally can act, the boss music (53, or the boss's own) and the `boss` moment of `rq.music.on_play`. Since 2.36.0. |
 | `strong` *(optional)* | `boolean` | Needs `boss`. The game's stronger boss (`◆敵強化率` 130): a "+" on the name and ×1.3 in world 1; HP ×2 and ×1.3 in worlds 2 and 3. Since 2.36.0. |
 | `double_hp` *(optional)* | `boolean` | Needs `boss`. Each enemy's HP twice (four times in world 3), after `rq.monster.on_create`. With `strong`, both apply. Since 2.36.0. |
