@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.38.0.
+Loader version 2.39.0.
 
 ## Namespaces
 
@@ -142,6 +142,7 @@ Loader version 2.38.0.
 | [`rq.LootItem`](types/rq.LootItem.md) | An item the player will find, from `rq.loot.list`. |
 | [`rq.MagicCtx`](types/rq.MagicCtx.md) | What `rq.combat.on_magic` gets for one spell. |
 | [`rq.MapCtx`](types/rq.MapCtx.md) | What `rq.dungeon.on_map` gets. |
+| [`rq.MapObject`](types/rq.MapObject.md) | An object on the current map, from `rq.dungeon.objects()`. |
 | [`rq.MarkDef`](types/rq.MarkDef.md) | How `rq.battle.set_mark` shows one of the game's marks. |
 | [`rq.Monster`](types/rq.Monster.md) | A monster's data, as `rq.monster.get` returns it. The names are `rq.chara.get`'s. |
 | [`rq.MonsterCreateCtx`](types/rq.MonsterCreateCtx.md) | What `rq.monster.on_create` callbacks get. Fields marked writable change the enemy in its slot. |
@@ -156,6 +157,7 @@ Loader version 2.38.0.
 | [`rq.MusicPageOpts`](types/rq.MusicPageOpts.md) | What `rq.music.page` takes. |
 | [`rq.MusicPlayCtx`](types/rq.MusicPlayCtx.md) | What `rq.music.on_play` gets: a track the game is about to play. |
 | [`rq.NewThisRun`](types/rq.NewThisRun.md) | What `rq.quests.new_this_run` returns. |
+| [`rq.ObjectCtx`](types/rq.ObjectCtx.md) | What an `rq.dungeon.on_object` function gets. |
 | [`rq.Offer`](types/rq.Offer.md) | A row `rq.chara.on_offer` adds to the skill buy list. |
 | [`rq.OfferCtx`](types/rq.OfferCtx.md) | What `rq.chara.on_offer` gets for the character whose buy list the game just filled. |
 | [`rq.OfferRow`](types/rq.OfferRow.md) | A row of the skill buy list, from `rq.chara.offers`. |
@@ -165,9 +167,15 @@ Loader version 2.38.0.
 | [`rq.PhysicalCtx`](types/rq.PhysicalCtx.md) | What `rq.combat.on_physical` gets for one physical hit. |
 | [`rq.PoisonCtx`](types/rq.PoisonCtx.md) | What `rq.combat.on_poison` gets where the game works out a poison. |
 | [`rq.Quest`](types/rq.Quest.md) | A quest, from `rq.quests()`. |
+| [`rq.QuestBonus`](types/rq.QuestBonus.md) | A quest bonus in `rq.QuestRun.bonuses`. |
 | [`rq.QuestClearCtx`](types/rq.QuestClearCtx.md) | What an `rq.quests.on_clear` callback gets. |
+| [`rq.QuestCondition`](types/rq.QuestCondition.md) | A condition to take part in a quest, from `rq.QuestData.conditions` and for `rq.quests.edit`. |
+| [`rq.QuestData`](types/rq.QuestData.md) | A quest's data as the quest list shows it, from `rq.quests.get`. |
+| [`rq.QuestEdit`](types/rq.QuestEdit.md) | A patch for `rq.quests.edit`: the fields to change; one left out keeps the game's. |
 | [`rq.QuestEndCtx`](types/rq.QuestEndCtx.md) | What an `rq.quests.on_end` callback gets. |
 | [`rq.QuestEvent`](types/rq.QuestEvent.md) | What `rq.quests.on_event` and `on_event_after` callbacks get. |
+| [`rq.QuestRun`](types/rq.QuestRun.md) | The quest being played, from `rq.quests.run`. |
+| [`rq.QuestRunEdit`](types/rq.QuestRunEdit.md) | What `rq.quests.set_run` writes; a field left out stays. |
 | [`rq.RecruitOpts`](types/rq.RecruitOpts.md) | Options for `rq.chara.recruit`. |
 | [`rq.RewardAlly`](types/rq.RewardAlly.md) | One ally in `rq.battle.on_reward`'s `ctx.allies`. |
 | [`rq.RewardCtx`](types/rq.RewardCtx.md) | What `rq.battle.on_reward` callbacks get. Fields marked writable change what the game gives. |
@@ -200,6 +208,8 @@ Loader version 2.38.0.
 | [`rq.StunCtx`](types/rq.StunCtx.md) | What `rq.combat.on_stun` gets where the game works out a stun. |
 | [`rq.TakeContext`](types/rq.TakeContext.md) | What an `rq.quests.on_take` callback gets. |
 | [`rq.TransferContext`](types/rq.TransferContext.md) | What `rq.world.on_transfer` and `on_transfer_after` callbacks get. |
+| [`rq.TrapCtx`](types/rq.TrapCtx.md) | What an `rq.dungeon.on_trap` callback gets. |
+| [`rq.TrapWeights`](types/rq.TrapWeights.md) | The weights of the trap kinds, from `rq.dungeon.traps()`: each 0 to 10. |
 | [`rq.UiAskRow`](types/rq.UiAskRow.md) | One row of `rq.ui.ask`. |
 | [`rq.UiBarOpts`](types/rq.UiBarOpts.md) | What `rq.uikit.bar` takes. |
 | [`rq.UiBox`](types/rq.UiBox.md) | A row or column for `rq.uikit.row` and `col`. |

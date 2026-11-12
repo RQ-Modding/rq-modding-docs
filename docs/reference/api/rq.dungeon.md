@@ -18,6 +18,11 @@ On a map grid, `x` runs east and `z` north.
 | [`rq.dungeon.grid`](#rqdungeongrid) | Returns the current map, as `rqmod-ctl grid` shows it. |
 | [`rq.dungeon.place_player`](#rqdungeonplace_player) | Puts the player on a floor cell of the current map at once, as the game does after a portal. |
 | [`rq.dungeon.place`](#rqdungeonplace) | Puts an object on a free floor cell of the current map. |
+| [`rq.dungeon.objects`](#rqdungeonobjects) | Lists the objects on the current map. |
+| [`rq.dungeon.remove`](#rqdungeonremove) | Removes the object on a cell of the current map. |
+| [`rq.dungeon.looks`](#rqdungeonlooks) | Lists the looks a mod's object can have: the game's props, by name. |
+| [`rq.dungeon.traps`](#rqdungeontraps) | Returns the trap kinds' weights in the current area. |
+| [`rq.dungeon.set_traps`](#rqdungeonset_traps) | Sets the trap kinds' weights in the current area. |
 
 ### rq.dungeon.camera
 
@@ -201,13 +206,25 @@ map.
 rq.dungeon.place(kind, x, z, opts) -> boolean
 ```
 
-`since 0.25.0`
+`since 0.25.0` `changed 2.39.0`
 
 Puts an object on a free floor cell of the current map.
 
-Walking onto it works as for the game's own. The game leaves a used "exp" in `grid().events`.
+Walking onto it works as for the game's own: `trap` is the game's trap (its kind drawn from the
+area's weights, `rq.dungeon.traps`), `enemy` a placed enemy (the game picks the fight when it is
+touched, and a fight won counts for the placed-enemy bonus; as with the game's own, the touch may
+be one of the quest's meetings, such as the adventurers, once a quest), `escape` the escape
+device. The game leaves a
+used "exp" in `grid().events`.
 
-Raises an error for an unknown kind, a cell that is not free floor, or when not on a map.
+`custom` puts a mod's own object: a silent map event whose number the loader makes from `opts.id`,
+shown with one of the game's props (`opts.look`, `rq.dungeon.looks()`). A step on it runs the
+function `rq.dungeon.on_object` registered for that id. It is used once, as the game's events, unless
+`opts.keep` is true. It stays for the whole quest, area by area, and in a save made in the quest.
+
+Raises an error for an unknown kind or look, `opts` that is not a table, an id that is not a text of
+1 to 64 bytes or that has the number of another id, a cell that is not free floor, or when not on a
+map.
 
 ```lua
 local g = rq.dungeon.grid()
@@ -216,14 +233,126 @@ if g then rq.dungeon.place("chest", g.player.x + 1, g.player.z, { content = 120 
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `kind` | `"chest"\|"red-chest"\|"spring"\|"achievement"\|"exp"\|"gold"` | The object. |
+| `kind` | `"chest"\|"red-chest"\|"spring"\|"achievement"\|"exp"\|"gold"\|"trap"\|"enemy"\|"escape"\|"custom"` | The object. |
 | `x` | `integer` | The cell, east. |
 | `z` | `integer` | The cell, north. |
-| `opts` *(optional)* | `{content?: integer, rank?: integer}` | For a chest: `content`, a fixed item number; `rank`, its rank. |
+| `opts` *(optional)* | `{content?: integer, rank?: integer, id?: string, look?: string, keep?: boolean}` | For a chest: `content`, a fixed item number; `rank`, its rank. For `custom`: `id`, the object's id, such as `"mymod:altar"`; `look`, a name from `rq.dungeon.looks()`, default "event"; `keep`, true to put it back after each step, default false. |
 
 | Returns | Type | Description |
 | --- | --- | --- |
 | `placed` | `boolean` | true when the object was put down. |
+
+> Changed in 2.39.0: The kinds `trap`, `enemy`, `escape` and `custom`, and `opts.id`, `look` and `keep`.
+
+### rq.dungeon.objects
+
+```lua
+rq.dungeon.objects() -> rq.MapObject[]|nil
+```
+
+`since 2.39.0`
+
+Lists the objects on the current map.
+
+Every object of the area, also those the player cannot reach yet, north to south, then west to
+east.
+
+```lua
+for _, o in ipairs(rq.dungeon.objects() or {}) do
+  if o.kind == "trap" then rq.dungeon.remove(o.x, o.z) end
+end
+```
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `objects` | [`rq.MapObject`](../types/rq.MapObject.md) `[]\|nil` | nil when not on a map. |
+
+### rq.dungeon.remove
+
+```lua
+rq.dungeon.remove(x, z) -> boolean
+```
+
+`since 2.39.0`
+
+Removes the object on a cell of the current map.
+
+The object and its prop go at once, as when the game takes away a used one, for the rest of the
+quest. A warp cannot be removed: the map would lose its way on.
+
+Raises an error for a cell that is not whole numbers or is off the map, a warp, or when not on a
+map.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `x` | `integer` | The cell, east. |
+| `z` | `integer` | The cell, north. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `removed` | `boolean` | false when the cell has no object. |
+
+### rq.dungeon.looks
+
+```lua
+rq.dungeon.looks() -> string[]
+```
+
+`since 2.39.0`
+
+Lists the looks a mod's object can have: the game's props, by name.
+
+`chest` (a green chest), `red-chest`, `spring` (blue rings), `achievement` (a yellow flower),
+`exp` (a cyan die), `gold` (a coin), `trap` (dark dots on the floor), `enemy` and `enemy-2` (a red
+star), `escape` (a green frame), `warp` and `warp-2` (a purple frame), `event` and `event-2` (a
+green star with a yellow "!"), `event-3` (a green star), `event-4` (a red star with a "!") and
+`hidden` (the game's silent event, which shows nothing). The look is only what is drawn: a step on
+the cell runs the object's function whatever its look, also for the props the game would
+otherwise take itself (spring, achievement, EXP, gold).
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `looks` | `string[]` | The names, sorted. |
+
+### rq.dungeon.traps
+
+```lua
+rq.dungeon.traps() -> rq.TrapWeights|nil
+```
+
+`since 2.39.0`
+
+Returns the trap kinds' weights in the current area.
+
+A trap stepped on draws its kind with these weights. The area's script sets them when the party
+enters it. With all four at 0, every trap is an electric current.
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `weights` | [`rq.TrapWeights`](../types/rq.TrapWeights.md) `\|nil` | nil outside a quest. |
+
+### rq.dungeon.set_traps
+
+```lua
+rq.dungeon.set_traps(weights)
+```
+
+`since 2.39.0`
+
+Sets the trap kinds' weights in the current area.
+
+The area's script writes them again when the party enters an area, so set them from
+`rq.dungeon.on_area` to keep them.
+
+Raises an error outside a quest, for an unknown kind, or a weight that is not 0 to 10.
+
+```lua
+rq.dungeon.on_area(function() rq.dungeon.set_traps({ shroom = 0, pit = 0 }) end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `weights` | `{shroom?: integer, shock?: integer, alarm?: integer, pit?: integer}` | The weights to change, 0 to 10; one left out stays. |
 
 ## Events
 
@@ -231,6 +360,8 @@ if g then rq.dungeon.place("chest", g.player.x + 1, g.player.z, { content = 120 
 | --- | --- |
 | [`rq.dungeon.on_map`](#rqdungeonon_map) | Calls `fn` when the dungeon map screen is built. |
 | [`rq.dungeon.on_area`](#rqdungeonon_area) | Calls `fn` each time the party enters an area of a quest. |
+| [`rq.dungeon.on_object`](#rqdungeonon_object) | Registers the function that runs when the party steps on a mod's own object. |
+| [`rq.dungeon.on_trap`](#rqdungeonon_trap) | Registers a function that runs when the party steps on a trap. |
 
 ### rq.dungeon.on_map
 
@@ -310,3 +441,89 @@ end)
 | `remove` | `fun()` | Removes this callback. |
 
 See also: [`rq.dungeon.on_map`](rq.dungeon.md#rqdungeonon_map)
+
+### rq.dungeon.on_object
+
+```lua
+rq.dungeon.on_object(id, fn) -> fun()
+```
+
+`since 2.39.0`
+
+Registers the function that runs when the party steps on a mod's own object.
+
+It runs in place of the quest's own handling of a map event. What it returns ends the quest or not:
+nil or 0 go on, 1 clears the quest, 4 ends it as the escape device does (the items kept), 2 and 3
+as a defeat and a give-up. The object is taken off its cell before the function runs, as the game
+does with its events; with `ctx.keep` it is put back after. The function may wait as a quest moment
+does: `rq.ui.confirm`, `rq.ui.notice`, `rq.battle.start`. `rq.quests.on_event` does not see these
+events.
+
+One function per id: calling again replaces it. An object whose id has no function logs a line and
+does nothing. Register at a mod's top level, so the objects in a save made in a quest answer after
+a load.
+
+Raises an error for an id that is not a text of 1 to 64 bytes or that has the number of another
+id, or a value that is not a function.
+
+```lua
+rq.dungeon.on_object("mymod:altar", function(ctx)
+  if rq.ui.confirm("Touch the altar?") then
+    local r = rq.battle.start({ enemies = { 0, rq.ids.monster.COCKROACH, 0 }, boss = true })
+    if r ~= "won" then ctx.keep = true end
+  else
+    ctx.keep = true
+  end
+end)
+rq.dungeon.on_area(function(ctx)
+  if ctx.quest == 126 and ctx.area == 1 and ctx.first then
+    local g = rq.dungeon.grid()
+    rq.dungeon.place("custom", g.player.x + 2, g.player.z, { id = "mymod:altar", look = "spring" })
+  end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `id` | `string` | The object's id, 1 to 64 bytes, such as `"mymod:altar"`. |
+| `fn` | `fun(ctx:` [`rq.ObjectCtx`](../types/rq.ObjectCtx.md) `): integer\|nil` | Returns nil to go on, or how the quest ends. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this function. |
+
+See also: [`rq.dungeon.place`](rq.dungeon.md#rqdungeonplace)
+
+### rq.dungeon.on_trap
+
+```lua
+rq.dungeon.on_trap(fn) -> fun()
+```
+
+`since 2.39.0`
+
+Registers a function that runs when the party steps on a trap.
+
+It runs after the game drew the trap's kind and before the scene. Callbacks run in load order,
+each seeing what the one before left; a value that is not allowed is logged and the one before kept.
+A changed chance is rolled with the game's roll; the scene's line still names the game's chance
+(20%, 50% or Trap Evasion). Sloth shrooms with one member are always avoided, as in the game. The
+trap is gone after, avoided or not. It runs for the game's traps and for those of
+`rq.dungeon.place("trap", ...)`.
+
+Raises an error when `fn` is not a function.
+
+```lua
+rq.dungeon.on_trap(function(ctx)
+  if ctx.kind == "pit" then ctx.kind = "alarm" end
+  ctx.chance = math.max(0, ctx.chance - 10)
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(ctx:` [`rq.TrapCtx`](../types/rq.TrapCtx.md) `)` | Changes the trap. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |
