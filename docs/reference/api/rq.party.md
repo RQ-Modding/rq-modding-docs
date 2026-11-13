@@ -171,3 +171,41 @@ rq.party.heal({ half = true })        -- up to half the HP
 | `count` | `integer` | How many characters were healed. |
 
 See also: [`rq.chara.heal`](rq.chara.md#rqcharaheal)
+
+## Events
+
+| Name | Summary |
+| --- | --- |
+| [`rq.party.on_go_home`](#rqpartyon_go_home) | Registers a function that runs when the game would send a character home after a fight. |
+
+### rq.party.on_go_home
+
+```lua
+rq.party.on_go_home(fn) -> fun()
+```
+
+`since 2.47.0`
+
+Registers a function that runs when the game would send a character home after a fight.
+
+After each fight the game's `割り込み２／戦闘後` sends Aten home one time in five when she is in a
+party of two or more (her skill Go Home is only its description), and the wearer of item 209
+always. The callback gets who and why, and returns another chance in percent: 0 keeps the
+character in the party, 100 sends them home, nil leaves it as it is. The callbacks run in the
+order they were added, each seeing the chance the one before it set. A return that is not a whole
+number from 0 to 100 is ignored, and written to the log once. An error in a callback is written
+to the log.
+
+```lua
+rq.party.on_go_home(function(ctx)
+  if ctx.reason == "aten" and rq.item.equipped(ctx.iic).item then return 0 end -- she stays
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(ctx:` [`rq.GoHomeCtx`](../types/rq.GoHomeCtx.md) `): integer\|nil` | Returns the chance, from 0 to 100, or nil. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |

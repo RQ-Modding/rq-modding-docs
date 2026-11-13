@@ -11,10 +11,12 @@ is and the game's heals in 2.35.0 ([`rq.party`](../reference/api/rq.party.md)). 
 ([`rq.monster`](../reference/api/rq.monster.md)), the mode and the fights a mod opens
 ([`rq.battle.start`](../reference/api/rq.battle.md#rqbattlestart)) came in 2.36.0, and skill buying
 with its price and the record of what each skill cost in 2.45.0; Athena's Studies, the game's skill
-reset and who can equip an item in 2.46.0. Each example on this page is a whole `init.lua`; set
+reset and who can equip an item in 2.46.0; a free appraisal, an item stocked in the open shop and
+Go Home in 2.47.0. Each example on this page is a whole `init.lua`; set
 `loader` to `2.33.0` in its `mod.json`, `2.34.0` for the fight rewards, `2.35.0` for the party,
-`2.36.0` for the monsters, the mode and a fight from a mod, `2.45.0` for skill buying, or `2.46.0`
-for the Studies, the reset and the equip check.
+`2.36.0` for the monsters, the mode and a fight from a mod, `2.45.0` for skill buying, `2.46.0`
+for the Studies, the reset and the equip check, or `2.47.0` for the appraisal, the shop and Go
+Home.
 
 All of these read or change the game, so call them from a callback or `rq.on_frame`, not at the
 top level of `init.lua` ([When code runs](sandbox.md#when-code-runs)). `rq.encounters.hold` and the
@@ -267,6 +269,43 @@ rq.item.on_can_equip(function(ctx)
 end)
 ```
 
+## Appraisal and the shop
+
+An item found on a quest is often unidentified: `rq.item.get(ii).identified` is false (2.47.0),
+and its name, icon and text are the game's "Unidentified item". The game appraises the quest
+storage's items after a quest's success, for a price. [`rq.item.appraise`](../reference/api/rq.item.md#rqitemappraise)
+(2.47.0) does it at once and for free, wherever the item is: the game's own appraisal, with a rare
+item's quest bonuses. Return Bonsai keeps items in the storage during a quest and appraises them
+at its end:
+
+```lua
+rq.quests.on_end(function(ctx)
+  for _, row in ipairs(rq.items()) do
+    if row.place == 11 and not rq.item.get(row.id).identified then rq.item.appraise(row.id) end
+  end
+end)
+```
+
+Frostbuy's stock comes from `rq.shop.on_stock`, which runs each time the shop opens, and
+`rq.shop.stock`. Since 2.47.0 an item stocked while the shop shows is on its list at once, so an
+item that is always on sale can come back in the same visit it was bought (Aten Gnu QoL's Box of
+Books):
+
+```lua
+local BOOKS = rq.item.define({ id = "my-mod:books", name = "Box of Books", price = 5000,
+  effects = { { kind = 14, value = 60 } } })
+rq.shop.on_stock(function()
+  if not rq.shop.in_stock(BOOKS) then rq.shop.stock(BOOKS) end
+end)
+rq.shop.on_buy(function(ctx)
+  if ctx.no == BOOKS then rq.shop.stock(BOOKS) end
+end)
+```
+
+`rq.shop.on_buy` runs for a purchase in the shop's own window. A price that grows with each
+purchase goes in `on_stock` with `rq.item.set(ii, { price = ... })` on the stocked instance
+(`rq.item.find(no, { place = 6 })`), counted in [`rq.savedata`](save-data.md).
+
 ## Waiting and timers
 
 `rq.on_frame` runs on every update of the game, which can be thousands of times a second on a
@@ -348,6 +387,22 @@ rq.debug.action({
 
 HP and the status are `rq.chara.get(iic).hp`, `hp_max` and `status`, and `rq.chara.set` writes
 them. The older `rq.orb` calls do the same and stay.
+
+### Going home after a fight
+
+After each fight the game may send a character out of the party: Aten one time in five when she
+is in a party of two or more (her skill Go Home is only its description), and the wearer of item
+209 always. [`rq.party.on_go_home`](../reference/api/rq.party.md#rqpartyon_go_home) (2.47.0) runs
+at that moment with who (`iic`, `no`), why (`reason`: `"aten"` or `"item"`) and the chance in
+percent; return another chance, 0 to keep the character, or nil. Aten Gnu QoL keeps her while she
+wears a Box of Books, and gives Go Home's text a line with `rq.skill.patch`:
+
+```lua
+rq.skill.patch(369, { desc = "Has a 20% chance of leaving the party after battle.$$I mean...$it's so much work.$...Unless I get books to read." })
+rq.party.on_go_home(function(ctx)
+  if ctx.reason == "aten" and rq.item.equipped(ctx.iic).item then return 0 end
+end)
+```
 
 ## Monsters
 

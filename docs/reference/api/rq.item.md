@@ -32,6 +32,7 @@ rq.item.transform(ii, "mymod:broken_lens")                       -- later, it br
 | [`rq.item.define`](#rqitemdefine) | Registers an item template. |
 | [`rq.item.give`](#rqitemgive) | Creates an instance (`Ｉ生成`) and puts it in the vault, in quest storage, or on a character. |
 | [`rq.item.get`](#rqitemget) | Returns an instance's fields. |
+| [`rq.item.appraise`](#rqitemappraise) | Appraises an unidentified item for free, as the game's appraisal does. |
 | [`rq.item.set`](#rqitemset) | Writes an instance's fields. |
 | [`rq.item.transform`](#rqitemtransform) | Turns an instance into another item, keeping its place and owner. |
 | [`rq.item.edit`](#rqitemedit) | Patches an item number, for every new instance and the ones in the save. |
@@ -110,6 +111,39 @@ Returns an instance's fields.
 | Returns | Type | Description |
 | --- | --- | --- |
 | `info` | [`rq.ItemInfo`](../types/rq.ItemInfo.md) `\|nil` | A copy of the fields, or nil when there is no such instance. |
+
+### rq.item.appraise
+
+```lua
+rq.item.appraise(ii, opts) -> boolean
+```
+
+`since 2.47.0`
+
+Appraises an unidentified item for free, as the game's appraisal does.
+
+It runs the game's `Ｉ鑑定` on the instance: a rare item gets the bonuses of the quest being
+played, the effects 21 to 25 stop at 99, and the name, icon and description become the item
+number's. The item stays where it is. The game appraises the quest storage's items itself after
+a quest's success; this is for an item it never reaches, such as one a mod kept in the storage.
+
+Raises an error for an instance that is not a whole number, `opts` that is not a table, or a
+`sound` that is not true or false.
+
+```lua
+for _, row in ipairs(rq.items()) do
+  if row.place == 11 and not rq.item.get(row.id).identified then rq.item.appraise(row.id) end
+end
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `ii` | `integer` | The instance. |
+| `opts` *(optional)* | `{sound?: boolean}` | `sound`: play the game's appraisal sound. Default false. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `appraised` | `boolean` | true when it was unidentified and is now identified; false for no such instance, or one already identified. |
 
 ### rq.item.set
 

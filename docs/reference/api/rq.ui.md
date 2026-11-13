@@ -19,6 +19,8 @@ Reads what is on the screen and saves screenshots.
 | [`rq.ui.confirm`](#rquiconfirm) | Asks the player Yes or No in the game's own dialog, and waits for the answer. |
 | [`rq.ui.notice`](#rquinotice) | Tells the player something in the game's own dialog, with one OK button, and waits until it is pressed. |
 | [`rq.ui.ask`](#rquiask) | Asks the player a question with any choices in the game's own dialog, and waits for the answer. |
+| [`rq.ui.quest_storage`](#rquiquest_storage) | Returns the game's Quest Storage window while it shows, with its item tiles. |
+| [`rq.ui.quest_storage_refresh`](#rquiquest_storage_refresh) | Builds the game's Quest Storage window again from the quest storage's items. |
 
 ### rq.ui.get
 
@@ -26,7 +28,7 @@ Reads what is on the screen and saves screenshots.
 rq.ui.get() -> table|nil
 ```
 
-`since 0.20.0` `changed 0.21.0` `changed 2.11.0` `changed 2.12.0` `changed 2.19.0` `changed 2.20.0` `changed 2.20.1` `changed 2.22.1` `changed 2.28.0` `changed 2.31.0` `changed 2.41.0`
+`since 0.20.0` `changed 0.21.0` `changed 2.11.0` `changed 2.12.0` `changed 2.19.0` `changed 2.20.0` `changed 2.20.1` `changed 2.22.1` `changed 2.28.0` `changed 2.31.0` `changed 2.41.0` `changed 2.47.0`
 
 Returns what is on the screen.
 
@@ -67,6 +69,10 @@ After a quest's success, the appraisal of the quest storage's items is the scree
 `finish` (the Finish button, bottom right) and `close`, in section `appraisal`. Its questions (an
 item not identified is lost) are `select`. The items' own buttons are not listed.
 
+The Quest Storage window over a quest's map is the screen `quest-storage`: `close`, or `yes` and
+`no` for Give Up, and its tiles `item-1` to `item-15` in the window's order, with the item
+instance as the value (see `rq.ui.quest_storage`).
+
 It builds the whole list, so do not call it on every `rq.on_frame`.
 
 every screen that shows it; Rance Castle is the screen `castle`, with its rooms as `room-<area>`
@@ -105,6 +111,8 @@ if s and s.screen == "camp" then rq.log(#s.controls, "controls") end
 > Changed in 2.31.0: The Party screen's 2nd Army box: `store-N`, `store-status-N`, `store-close`,
 
 > Changed in 2.41.0: The appraisal after a quest's success is the screen `appraisal`, with `finish` and
+
+> Changed in 2.47.0: The Quest Storage window's tiles, `item-1` to `item-15` (they were not listed).
 
 See also: [`rq.ui.aim`](rq.ui.md#rquiaim)
 
@@ -400,3 +408,59 @@ local copy = rq.ui.ask("Copy the other save?", { { id = "yes", text = "Yes" }, {
 > Changed in 2.44.0: `remember_checked`.
 
 See also: [`rq.ui.choose`](rq.ui.md#rquichoose)
+
+### rq.ui.quest_storage
+
+```lua
+rq.ui.quest_storage() -> rq.UiQuestStorage|nil
+```
+
+`since 2.47.0`
+
+Returns the game's Quest Storage window while it shows, with its item tiles.
+
+The window (`T_StoreQuest`) shows over a quest's map. Its tiles are 100 × 100, five to a row,
+106 apart, from x 482, y 204, the same in every mode. A mod draws on them from `rq.on_frame`, such
+as a mark or a button in a tile's corner (`rq.uikit.icon_button`); a click on a tile does nothing
+in the game, and the game gets no mouse over a kit widget. After a mod moves an item in or out of
+the quest storage (`rq.item.set`'s `place`, 8), `rq.ui.quest_storage_refresh` shows the change.
+Agents see the tiles as the controls `item-<index>` of the `quest-storage` screen, with the
+instance as the value.
+
+```lua
+rq.on_frame(function()
+  local qs = rq.ui.quest_storage()
+  if not qs or qs.mode ~= "view" or qs.dialog then return end
+  for _, t in ipairs(qs.tiles) do
+    if not t.identified then rq.hud.rect(t.x + 80, t.y + 4, 16, 16, 255, 200, 0, 200) end
+  end
+end)
+```
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `qs` | [`rq.UiQuestStorage`](../types/rq.UiQuestStorage.md) `\|nil` | The window, or nil when it does not show. |
+
+See also: [`rq.ui.quest_storage_refresh`](rq.ui.md#rquiquest_storage_refresh)
+
+### rq.ui.quest_storage_refresh
+
+```lua
+rq.ui.quest_storage_refresh() -> boolean
+```
+
+`since 2.47.0`
+
+Builds the game's Quest Storage window again from the quest storage's items.
+
+It does what the window's erase button does after an erase: the list, the tiles, their z and the
+buttons. Call it after moving items in or out of the quest storage while the window shows.
+
+```lua
+rq.item.set(ii, { place = 11 })  -- out of the quest storage, into the storage
+rq.ui.quest_storage_refresh()
+```
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `ok` | `boolean` | false when the window does not show, or when the game refused (written to the log). |

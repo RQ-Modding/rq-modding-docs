@@ -5,6 +5,19 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.47.0
+
+The calls Return Bonsai and Aten Gnu QoL need (`notes/plans/plan-new-mods.md` in the workspace, phase R, step 3): the game's Quest Storage window's tiles, a free appraisal, locked cells in the item window, a picture as a button, an item stocked while the shop shows, and the moment the game sends a character home after a fight. In Lua over `rq.ain` (`src/lua/item.lua`, `basics.lua`, `uikit_hub.lua`, `uikit_windows.lua`), with the tiles listed in C.
+- `rq.ui.quest_storage()`: the Quest Storage window (`g_sStoreQuest`, `T_StoreQuest`) while it shows: its `mode` (`"view"` from the map panel, `"give-up"`, `"failure"`), its z, whether the game's question shows over it (`g_sSelect`), and each tile with an item: its place (1 to 15), the instance, its box (100 × 100 from x 482, y 204, 106 apart) and `identified`.
+- `rq.ui.quest_storage_refresh()`: builds the window again from the quest storage's items, as `T_StoreQuest::execErase` does after an erase (the list, `createIcon`, `setZ`, `setButtonActive`, `setShow`), for a mod that moved items in or out.
+- `rq.ui.get`: the window's tiles are the controls `item-1` to `item-15` of the `quest-storage` screen, with the instance as the value.
+- `rq.item.appraise(ii, opts)`: the game's `Ｉ鑑定` on an unidentified instance, where it is (a rare item's quest bonuses, the effects 21 to 25 capped at 99, the item number's name, icon and text); `opts.sound` plays the game's appraisal sound.
+- `rq.item.get`: `identified` (false while `未確定` is 1).
+- `rq.uikit.icon_button(icon, opts)`: a CG as a button, shrunk to fit its box and centered, with the item tile's yellow frame under the mouse or the keys, the picture moved 1 pixel while held and grey while disabled; a text tip has the label as its title.
+- `rq.uikit.item_window`: `capacity`, the cells that hold items. A tile past it is darkened, cannot be clicked and has the vault's lock mark (CG 11419), and so has each empty cell past it on the page shown.
+- `rq.shop.stock`: while the shop shows (`g_sStoreItem`'s `m_nStoreType` 3), the item is on its list at once (`アイテム倉庫_再作成`). `T_Shop::buyItem` builds the list before `on_buy` runs, so an item stocked from `on_buy` waited for the next visit.
+- `rq.party.on_go_home(fn)`: at `割り込み２／戦闘後`, after each fight, when the game would send Aten (character 40) home (her `RAND(5) == 1`, 20%) or the wearer of item 209 (`ＰＴＡ＿Ｉ有無(209)`, always), both only in a party of two or more. `rq.GoHomeCtx` has the character, the reason (`"aten"`, `"item"`) and the chance; `fn` returns another chance from 0 (stays) to 100, or nil. The game's own roll is replaced only when the chance changed.
+
 ## 2.46.0
 
 The calls Athena QoL and Rebecca Copley QoL need (`notes/plans/plan-new-mods.md` in the workspace, phase R, step 2): who can equip an item, a hit's damage limit and element, Athena's Studies, the game's Weakness Search shown from a mod, and the game's reset of a character's skills. In Lua over `rq.ain` (`src/lua/combat_more.lua`, `item.lua`, `skills.lua`).

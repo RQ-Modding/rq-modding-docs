@@ -96,6 +96,7 @@ end)
 | [`rq.uikit.use`](#rquikituse) | Uses a theme from now on, for every mod. |
 | [`rq.uikit.layers`](#rquikitlayers) | Returns a piece as layers for `rq.image.compose`, to make a CG of it. |
 | [`rq.uikit.close`](#rquikitclose) | Draws the close button of the hub's windows (24 by 20). |
+| [`rq.uikit.icon_button`](#rquikiticon_button) | Draws a picture as a button, as the game's CG buttons. |
 | [`rq.uikit.castle_row`](#rquikitcastle_row) | Draws a room row of Rance Castle: the grey button with the room's name, the face beside it, and the NEW and heart marks. |
 | [`rq.uikit.quest_row`](#rquikitquest_row) | Draws a quest row: the number, the yellow name, and the clear count in its box on the left. |
 | [`rq.uikit.quest_list`](#rquikitquest_list) | Draws the quest list: rows 34 apart and the game's scroll bar 15 pixels right of them. |
@@ -984,6 +985,44 @@ Draws the close button of the hub's windows (24 by 20).
 | --- | --- | --- |
 | `clicked` | `boolean` | true on the update it is clicked. |
 
+### rq.uikit.icon_button
+
+```lua
+rq.uikit.icon_button(icon, opts) -> boolean
+```
+
+`since 2.47.0`
+
+Draws a picture as a button, as the game's CG buttons.
+
+The CG is shrunk to fit the box (never grown) and centered in it. Under the mouse or the keys'
+cursor the box gets the item tile's yellow frame; while held the picture moves 1 pixel right and
+down; while `disabled` it is grey and cannot be clicked. With a `label`, a text `tip` is the game's
+comment window with the label as its title. Agents see it as `button-<id>`, or `button-<label>`
+without an id.
+
+Raises an error for an icon that is not a CG number, `opts` that is not a table, or a `label` that
+is not text.
+
+```lua
+local ICON = rq.image.add("mymod:bag", "icons/bag.png", { fit = "contain", w = 24, h = 24 })
+rq.on_frame(function()
+  if rq.uikit.icon_button(ICON, { x = 700, y = 120, w = 28, h = 28, id = "bag", label = "My Bag",
+      tip = "Opens the bag." }) then
+    rq.log("bag")
+  end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `icon` | `integer` | A CG number, such as one from `rq.image.add`. |
+| `opts` *(optional)* | [`rq.UiPlace`](../types/rq.UiPlace.md) `\|{label?: string, disabled?: boolean}` | Place (`w` and `h` default to the CG's size), `label` (for agents and the tip's title; default "button") and `disabled`. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `clicked` | `boolean` | true on the update it is clicked. |
+
 ### rq.uikit.castle_row
 
 ```lua
@@ -1237,7 +1276,7 @@ end)
 rq.uikit.item_window(items, opts) -> boolean, integer|nil
 ```
 
-`since 2.32.0`
+`since 2.32.0` `changed 2.47.0`
 
 Draws the game's Quest Storage window holding item tiles, and returns whether it is still open.
 
@@ -1274,12 +1313,14 @@ end)
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `items` | `(integer\|` [`rq.UiItemRow`](../types/rq.UiItemRow.md) `\|` [`rq.UiItemWindowEntry`](../types/rq.UiItemWindowEntry.md) `)[]` | The tiles, in order. |
-| `opts` *(optional)* | [`rq.UiItemWindowOpts`](../types/rq.UiItemWindowOpts.md) | `id`, `title`, `rows`, `x`, `y`, `empty`, `cell`. |
+| `opts` *(optional)* | [`rq.UiItemWindowOpts`](../types/rq.UiItemWindowOpts.md) | `id`, `title`, `rows`, `x`, `y`, `empty`, `cell`, `capacity`. |
 
 | Returns | Type | Description |
 | --- | --- | --- |
 | `open` | `boolean` | false on the update it closes. |
 | `clicked` | `integer\|nil` | The place in `items` of the tile clicked on this update. |
+
+> Changed in 2.47.0: `capacity`: the cells past it are locked.
 
 ### rq.uikit.section
 

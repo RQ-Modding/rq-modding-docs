@@ -223,6 +223,46 @@ game keeps the panel drawn under its Quest Storage screen, so the tabs show ther
 not see them and a click does nothing.
 Loot Preview's Item Previews tab is made this way.
 
+### The game's Quest Storage window
+
+The map panel's Quest Storage button opens the game's own window of the quest's items.
+[`rq.ui.quest_storage()`](../reference/api/rq.ui.md#rquiquest_storage) (2.47.0) gives it while it
+shows: its `mode` (`"view"` from the panel's button, `"give-up"` from Give Up, `"failure"` at a
+failed quest's end), whether the game's question is over it (`dialog`), and each tile with an item:
+its place in the window, the instance and its box (100 × 100). A mod draws on the tiles from
+`rq.on_frame`; the game gets no mouse over a kit widget, and a click on a tile does nothing in the
+game anyway. [`rq.uikit.icon_button`](../reference/api/rq.uikit.md#rquikiticon_button) is a picture
+as a button, the size of a corner. After moving items in or out (`rq.item.set(ii, { place = ... })`,
+8 is the quest storage), `rq.ui.quest_storage_refresh()` builds the window again.
+
+Return Bonsai puts a button on each tile that moves the item into its own window, made with
+`rq.uikit.item_window` and its `capacity` (2.47.0): the cells past it are locked, with the vault's
+lock mark.
+
+```lua
+local ICON = rq.image.add("my-mod:button", "icons/bonsai.webp", { fit = "contain", w = 22, h = 24 })
+local kept, cap = {}, 4
+rq.on_frame(function()
+  local qs = rq.ui.quest_storage()
+  if not qs or qs.mode ~= "view" or qs.dialog then return end
+  local moved = false
+  for _, tile in ipairs(qs.tiles) do
+    if rq.uikit.icon_button(ICON, { x = tile.x + 72, y = tile.y + 2, w = 26, h = 28,
+        id = "keep-" .. tile.index, label = "Keep", tip = "Keep this one.", disabled = #kept >= cap }) then
+      rq.item.set(tile.ii, { place = 11 })
+      kept[#kept + 1] = tile.ii
+      moved = true
+    end
+  end
+  if moved then rq.ui.quest_storage_refresh() end
+end)
+-- and in the tab's window:
+-- open = rq.uikit.item_window(kept, { id = "kept", title = "Kept", capacity = cap })
+```
+
+Agents see the window's tiles as `item-1` to `item-15` of the `quest-storage` screen, with the
+instance as the value.
+
 ## A page in Config
 
 Once a mod adds a page, the game's Config screen gets a **Mods** tab after Other 2, with the pages

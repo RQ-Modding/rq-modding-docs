@@ -25,6 +25,7 @@ lists take it as a row.
 | `locked` | `integer` | Non-zero when it cannot be taken off. |
 | `vanishes` | `integer` | Non-zero when it vanishes. |
 | `effects` | [`rq.ItemEffect`](rq.ItemEffect.md) `[]` | The effects. |
+| `identified` | `boolean` | false while the item is unidentified (`未確定` 1): its name, icon and text are the game's "Unidentified item" until it is appraised (`rq.item.appraise`, or the game's appraisal after a quest). Since 2.47.0. |
 | `no` | `integer` | The item number. |
 | `name` | `string` | Its name. |
 | `level` | `string` | The level line, or "". |

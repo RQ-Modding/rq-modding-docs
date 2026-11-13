@@ -15,6 +15,7 @@ Options for `rq.uikit.item_window`.
 | `y` *(optional)* | `integer` | The top edge, in game pixels. Default 165, the game's, or higher for a window that would go past y 607 (the 3D view's bottom). |
 | `empty` *(optional)* | `string` | Text in the window's middle when the list is empty. |
 | `cell` *(optional)* | `fun(index: integer, x: integer, y: integer, entry: any)` | Called after each tile is drawn, with the item's place in the list, the tile's top left (100 × 100) and the list's value, to draw marks on it. |
+| `capacity` *(optional)* | `integer` | How many cells hold items, 0 or more (since 2.47.0). A tile past it is darkened, cannot be clicked and has the vault's lock mark (CG 11419) in its middle, and so has each empty cell past it on the page shown. Default: no limit. |
 
 ## Used by
 

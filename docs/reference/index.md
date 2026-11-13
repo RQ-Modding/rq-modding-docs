@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.46.0.
+Loader version 2.47.0.
 
 ## Namespaces
 
@@ -129,6 +129,7 @@ Loader version 2.46.0.
 | [`rq.GameButtonSpec`](types/rq.GameButtonSpec.md) | An entry for `rq.gamebutton.add`. |
 | [`rq.GifInfo`](types/rq.GifInfo.md) | What `rq.image.gif_info` returns. |
 | [`rq.GifOpts`](types/rq.GifOpts.md) | Options for `rq.image.add_gif`. |
+| [`rq.GoHomeCtx`](types/rq.GoHomeCtx.md) | What an `rq.party.on_go_home` callback gets. |
 | [`rq.HealCtx`](types/rq.HealCtx.md) | What `rq.combat.on_heal` gets for one heal; `amount` is writable. |
 | [`rq.HpEvent`](types/rq.HpEvent.md) | What `rq.battle.on_hp` gets. |
 | [`rq.HudCgOpts`](types/rq.HudCgOpts.md) | How `rq.hud.cg` draws a CG. |
@@ -249,6 +250,8 @@ Loader version 2.46.0.
 | [`rq.UiOptionRow`](types/rq.UiOptionRow.md) | One row of `rq.uikit.options`. |
 | [`rq.UiPiece`](types/rq.UiPiece.md) | A part of a CG drawn at any size: the edges stay as they are, the middle stretches. |
 | [`rq.UiPlace`](types/rq.UiPlace.md) | Where a widget goes. |
+| [`rq.UiQuestStorage`](types/rq.UiQuestStorage.md) | What `rq.ui.quest_storage` returns. |
+| [`rq.UiQuestStorageTile`](types/rq.UiQuestStorageTile.md) | A tile of the game's Quest Storage window, from `rq.ui.quest_storage`. |
 | [`rq.UiScrollPieces`](types/rq.UiScrollPieces.md) | The pieces of the game's scroll bar. |
 | [`rq.UiSkillOpts`](types/rq.UiSkillOpts.md) | What `rq.uikit.skill_button` takes. |
 | [`rq.UiStepperOpts`](types/rq.UiStepperOpts.md) | What `rq.uikit.stepper` takes. |

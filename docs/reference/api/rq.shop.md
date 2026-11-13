@@ -73,7 +73,7 @@ It asks the game whether an instance of that item has the shop's existence value
 rq.shop.stock(no) -> integer
 ```
 
-`since 0.2.0` `changed 0.9.0` `changed 0.26.0` `changed 2.35.0`
+`since 0.2.0` `changed 0.9.0` `changed 0.26.0` `changed 2.35.0` `changed 2.47.0`
 
 Puts one item on sale, through the game's `Ｔアイテム屋／入荷品`.
 
@@ -92,6 +92,8 @@ Raises an error for an unknown item, or for a value that is not a number or a te
 > Changed in 0.26.0: An unknown item raises an error instead of closing the game.
 
 > Changed in 2.35.0: No `rq.shop.install` needed; it raised an error before it.
+
+> Changed in 2.47.0: While the shop shows, the item is on its list at once (it waited for the next visit).
 
 ### rq.shop.donations
 
