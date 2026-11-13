@@ -9,9 +9,11 @@ and timers and jobs that wait ([`rq.after`](../reference/api/rq.md#rqafter), `rq
 ([`rq.battle.on_reward`](../reference/api/rq.battle.md#rqbattleon_reward)), and where each
 character is and the game's heals in 2.35.0 ([`rq.party`](../reference/api/rq.party.md)). The
 monsters ([`rq.monster`](../reference/api/rq.monster.md)), the mode and the fights a mod opens
-([`rq.battle.start`](../reference/api/rq.battle.md#rqbattlestart)) came in 2.36.0. Each example on
+([`rq.battle.start`](../reference/api/rq.battle.md#rqbattlestart)) came in 2.36.0, and skill
+buying with its price and the record of what each skill cost in 2.45.0. Each example on
 this page is a whole `init.lua`; set `loader` to `2.33.0` in its `mod.json`, `2.34.0` for the fight
-rewards, `2.35.0` for the party, or `2.36.0` for the monsters, the mode and a fight from a mod.
+rewards, `2.35.0` for the party, `2.36.0` for the monsters, the mode and a fight from a mod, or
+`2.45.0` for skill buying.
 
 All of these read or change the game, so call them from a callback or `rq.on_frame`, not at the
 top level of `init.lua` ([When code runs](sandbox.md#when-code-runs)). `rq.encounters.hold` and the
@@ -195,6 +197,40 @@ rq.chara.on_level_up(function(ctx)
   if ctx.level % 10 == 0 then rq.chara.add_skill_points(ctx.iic, 1) end
 end)
 ```
+
+## Skills and their price
+
+Since 2.45.0 the loader keeps a record of what each skill cost in the skill row itself (a field the
+game saves but never used), so a mod can tell a bought skill from one the character started with
+or one a mod gave. [`rq.chara.slots`](../reference/api/rq.chara.md#rqcharaslots) shows it on each
+row as `cost` (the points paid; -1 for a mod's gift; 0 when nothing was recorded), with the skill's
+level as `n` (most uses, or the rank). `rq.chara.on_forget`'s `cost` is the same record.
+
+- [`rq.chara.base_skills`](../reference/api/rq.chara.md#rqcharabase_skills): the skills the
+  character starts with, as Morurun's reset gives them back.
+- [`rq.chara.learnable`](../reference/api/rq.chara.md#rqcharalearnable) and
+  [`price`](../reference/api/rq.chara.md#rqcharaprice): the game's buy list and its price from one
+  level to another, with its own rules (one more point at 3, 5 and 7 uses, Rance's 147).
+- [`rq.chara.learn`](../reference/api/rq.chara.md#rqcharalearn): the game's own buy without its
+  questions, paid or free, refused with the reason (`"points"` with how many are missing, `"room"`,
+  `"not sold"`, `"condition"` with the game's text).
+- [`rq.chara.skill_room`](../reference/api/rq.chara.md#rqcharaskill_room) and
+  [`skill_points_max`](../reference/api/rq.chara.md#rqcharaskill_points_max): the free rows for a
+  new skill and the most points the character can have had.
+- [`rq.chara.on_learn`](../reference/api/rq.chara.md#rqcharaon_learn): each purchase, the skill
+  window's or a mod's.
+
+Half the points back for every ERASE in the skill window (Skill Removal Payback gives them all):
+
+```lua
+rq.chara.on_forget(function(ctx)
+  if ctx.caller == "キャラスキル_消去" and ctx.cost > 0 then return ctx.cost // 2 end
+end)
+```
+
+A purchase made before loader 2.45.0 has no record (its `cost` is 0): its steps above
+`base_skills` at today's `price` are the best guess, as Skill Removal Payback and Loadouts do.
+Set `loader` to `2.45.0` in `mod.json` for these.
 
 ## Waiting and timers
 

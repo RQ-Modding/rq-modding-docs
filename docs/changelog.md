@@ -5,6 +5,20 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.45.0
+
+Skill buying, for Skill Removal Payback and Loadouts (`notes/plans/plan-new-mods.md` in the workspace, phase R, step 1). In Lua over `rq.ain` (`src/lua/skills.lua`), with two private calls in C.
+- The purchase record: the game keeps a cost field in each skill row (`Ｃ[iic].スキル[row].コスト`, in the save) but only ever writes 0 there, so `rq.chara.on_forget`'s `cost` was always 0. Now the loader adds the points of each purchase there, after the skill window's buy (`キャラスキル_新規追加`) and upgrade (`キャラスキル_更新`) and each step of `rq.chara.learn`. A row with no record and more than its starting level (bought before this loader) gets its older steps priced by `rq.chara.price` at its next upgrade. -1 marks a skill a mod gave: `rq.chara.grant` and `edit`'s `learn` on a row with no record, `rq.chara.learn` with `pay = false`. The game never reads the field. `on_forget`'s and `rq.chara.forget`'s `cost` are this record.
+- `rq.chara.on_learn(fn)`: each purchase, once per step (`rq.LearnCtx`: the row, the points, the record after it, `new`, the level `n`, `by` "game" or "learn").
+- `rq.chara.base_skills(iic)`: the skills a character starts with, as Morurun's reset gives them back: the game's `Ｃ生成／キャラデータ(iic, 0, "スキル")` and `Ｃスキルドレイン`'s additions by flag, run on the character itself and put back.
+- `rq.chara.skill_points_max(iic)`: the game's `Ｃ最大スキルポイント取得`, with the counter it clears (`FA[33]`) put back.
+- `rq.chara.learnable(iic)`: the buy list the game would make (`Ｔ購入スキル登録`, with `on_offer`), read and put back: each skill's price, its level on the character, and the game's reason when it is not for sale.
+- `rq.chara.price(iic, skill, from, to)`: the game's price from one level to another, each step read from the list with the skill set to that step on the character, then put back. The game's rules hold: +1 at 3, 5 and 7 most uses, prices that change with the skill (Rance's 147), skill 384's 3 uses a step. nil and why ("not sold", "condition" with the game's text, "max", "room").
+- `rq.chara.skill_room(iic)`: how many more skills the character can learn, the game's check before a new skill (`キャラスキル_空き確認`) as a number.
+- `rq.chara.slots(iic)`: each row has `cost` (the purchase record) and `n` (its level, as `base_skills` gives it).
+- `rq.chara.learn(iic, skill, opts)`: the game's own buy and upgrade, step by step at the list's price, its questions answered Yes, then the recalculation (and the refill outside a quest) the window does. `to` (default one step), `pay` (default true). Checks the whole price, the points and a free row first: false with "points" and the missing points, "room", "not sold", "condition", "max", or "refused" when the game refused a step.
+- Private (for the loader's own Lua): `priv.keep(paths, fn)` runs `fn` and puts back a whole character, a whole array or a plain value as they were (writing the values back into the same heap slots); `priv.forget_quiet` keeps `on_forget` from running while the character builder removes skills (Athena's 108) inside it.
+
 ## 2.44.0
 
 The calls the first batch of the mods' review needed (`notes/plans/plan-mod-review.md` in the workspace, phase Q): the combat rules as data, recommended ranges on settings rows, a "don't ask again" row ticked from the start, and an item picker for one kind of item with drag and drop.

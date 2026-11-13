@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.44.0.
+Loader version 2.45.0.
 
 ## Namespaces
 
@@ -138,6 +138,8 @@ Loader version 2.44.0.
 | [`rq.ItemEffect`](types/rq.ItemEffect.md) | One of an item's effects: the game's own code and amount. |
 | [`rq.ItemFindOpts`](types/rq.ItemFindOpts.md) | What `rq.item.find` and `rq.item.count` take. |
 | [`rq.ItemInfo`](types/rq.ItemInfo.md) | What `rq.item.info` returns: an item number's row data, as `rq.uikit.item_data` gives it for an instance, without the fields that belong to one instance (`ii`, `locked`, `place`). The kit's item lists take it as a row. |
+| [`rq.LearnableRow`](types/rq.LearnableRow.md) | One row of the skill buy list, from `rq.chara.learnable`. |
+| [`rq.LearnCtx`](types/rq.LearnCtx.md) | What `rq.chara.on_learn` gets for one purchase. |
 | [`rq.LevelUpCtx`](types/rq.LevelUpCtx.md) | What `rq.chara.on_level_up` callbacks get. |
 | [`rq.LootAdd`](types/rq.LootAdd.md) | An item for `rq.loot.add`. |
 | [`rq.LootItem`](types/rq.LootItem.md) | An item the player will find, from `rq.loot.list`. |
@@ -205,6 +207,7 @@ Loader version 2.44.0.
 | [`rq.SettingsRow`](types/rq.SettingsRow.md) | One row of a settings page, for `rq.config.settings`. |
 | [`rq.SkillBrief`](types/rq.SkillBrief.md) | A skill as `rq.units()` lists it. |
 | [`rq.SkillInfo`](types/rq.SkillInfo.md) | What `rq.skill.get` returns. |
+| [`rq.SkillLevel`](types/rq.SkillLevel.md) | A skill and its level, as `rq.chara.base_skills` lists them and `edit`'s `learn` takes them. |
 | [`rq.SkillListCtx`](types/rq.SkillListCtx.md) | What `rq.skilllist.on_page` gets. |
 | [`rq.SkillPatch`](types/rq.SkillPatch.md) | Fields for `rq.skill.patch`, named after the game's. |
 | [`rq.SkillSpec`](types/rq.SkillSpec.md) | A new skill for `rq.skill.define`. |

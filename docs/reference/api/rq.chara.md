@@ -70,6 +70,12 @@ rq.chara.edit(62, { init = { eva = 50, spd = 25 }, learn = { { id = 246, n = 2 }
 | [`rq.chara.add_skill_points`](#rqcharaadd_skill_points) | Adds to a character's free skill points. |
 | [`rq.chara.heal`](#rqcharaheal) | Heals one character as the game does: HP to the most, and with `skills` the skill uses too. |
 | [`rq.chara.forget`](#rqcharaforget) | Removes a skill from a character (`ＣＳ削除`). |
+| [`rq.chara.base_skills`](#rqcharabase_skills) | Returns the skills a character starts with, as Morurun's reset would give them back. |
+| [`rq.chara.skill_points_max`](#rqcharaskill_points_max) | Returns the most skill points a character can have had (`Ｃ最大スキルポイント取得`). |
+| [`rq.chara.learnable`](#rqcharalearnable) | Returns the skill buy list the game would make for a character, without opening the window. |
+| [`rq.chara.price`](#rqcharaprice) | Returns what the game charges a character for a skill from one level to another. |
+| [`rq.chara.learn`](#rqcharalearn) | Buys a skill for a character as the skill window does, without its questions. |
+| [`rq.chara.skill_room`](#rqcharaskill_room) | Returns how many more skills a character can learn, as the skill window counts its free rows. |
 | [`rq.chara.add_exp`](#rqcharaadd_exp) | Gives a character EXP, as a fight's result does, and the levels it fills. |
 | [`rq.chara.level_up`](#rqcharalevel_up) | Raises a character's level for free, as the game's story and training do. |
 
@@ -104,9 +110,12 @@ Raises an error when the AIN is not loaded or a hook cannot be placed (the reaso
 rq.chara.grant(iic, skillId, n) -> integer
 ```
 
-`since 0.2.0`
+`since 0.2.0` `changed 2.45.0`
 
 Gives a character a skill (`ＣＳ追加`).
+
+A new row is marked as given in the purchase record (its cost is -1), so `rq.chara.on_forget`
+can tell it from a bought skill. A row that already holds a record keeps it.
 
 Raises an error for a slot with no character or a skill number outside 1 to 1000.
 
@@ -119,6 +128,8 @@ Raises an error for a slot with no character or a skill number outside 1 to 1000
 | Returns | Type | Description |
 | --- | --- | --- |
 | `slot` | `integer` | The skill-list row it went to. |
+
+> Changed in 2.45.0: Marks the row as given in the purchase record.
 
 ### rq.chara.rank
 
@@ -145,7 +156,7 @@ Returns a character's rank in a skill (`ＣＳ有無／ランク`).
 rq.chara.slots(iic) -> rq.CharaSlot[]
 ```
 
-`since 0.2.0`
+`since 0.2.0` `changed 2.45.0`
 
 Lists the rows of a character's skill list that hold a skill.
 
@@ -158,6 +169,8 @@ The game's screens show 6 hotbar positions, so a `slots` value above 6 adds rows
 | Returns | Type | Description |
 | --- | --- | --- |
 | `slots` | [`rq.CharaSlot`](../types/rq.CharaSlot.md) `[]` | The rows in order; empty when there is no character. |
+
+> Changed in 2.45.0: Each row has the purchase record (`cost`) and the level (`n`).
 
 ### rq.chara.set_slot
 
@@ -723,7 +736,7 @@ See also: [`rq.party.heal`](rq.party.md#rqpartyheal)
 rq.chara.forget(iic, skill) -> boolean, integer?
 ```
 
-`since 0.4.0`
+`since 0.4.0` `changed 2.45.0`
 
 Removes a skill from a character (`ＣＳ削除`).
 
@@ -739,7 +752,226 @@ Raises an error for a slot with no character.
 | Returns | Type | Description |
 | --- | --- | --- |
 | `removed` | `boolean` | false when the character did not have the skill. |
-| `cost` | `integer?` | The skill points the character had paid for it. |
+| `cost` | `integer?` | The purchase record, as `rq.ForgetCtx.cost`. |
+
+> Changed in 2.45.0: `cost` is the purchase record.
+
+### rq.chara.base_skills
+
+```lua
+rq.chara.base_skills(iic) -> rq.SkillLevel[]
+```
+
+`since 2.45.0`
+
+Returns the skills a character starts with, as Morurun's reset would give them back.
+
+The game rebuilds a character's skills for that reset (`Ｃスキルドレイン`) from the character's
+own data (`Ｃ生成／キャラデータ`): Skill Slots, the class's skills, the character's own, the
+Morurun marks, then the ones flags add (the familiar, a few story skills). This call runs that
+same code on the character and puts everything back before it returns, so the character does not
+change and `rq.chara.on_forget` does not run. A mod's character gives its definition's `skills`.
+Skills a mod gives through `edit` are not part of it.
+
+What a character has above this set was bought, or given by a story event or a mod; the
+purchase record (`rq.ForgetCtx.cost`) tells which, for what was bought from loader 2.45.0 on.
+
+Raises an error for a slot with no character.
+
+```lua
+for _, s in ipairs(rq.chara.base_skills(iic)) do
+  rq.log(("starts with skill %d at %d"):format(s.id, s.n))
+end
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `iic` | `integer` | The character's roster slot. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `skills` | [`rq.SkillLevel`](../types/rq.SkillLevel.md) `[]` | The starting skills, in their rows' order. |
+
+See also: [`rq.chara.price`](rq.chara.md#rqcharaprice)
+
+### rq.chara.skill_points_max
+
+```lua
+rq.chara.skill_points_max(iic) -> integer
+```
+
+`since 2.45.0`
+
+Returns the most skill points a character can have had (`Ｃ最大スキルポイント取得`).
+
+It is the game's count: level - 1, 2 for each Morurun reset up to 5, one for each castle bonus up
+to 3, and the bonuses of a few skills and flags. Minus the free points
+(`rq.chara.skill_points`), it is what the character has spent, unless a mod gave points. The
+game's function also clears a counter (`FA[33]`); this call leaves it as it was.
+
+Raises an error for a slot with no character.
+
+```lua
+local spent = rq.chara.skill_points_max(iic) - rq.chara.skill_points(iic)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `iic` | `integer` | The character's roster slot. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `points` | `integer` | The most points. |
+
+### rq.chara.learnable
+
+```lua
+rq.chara.learnable(iic) -> rq.LearnableRow[]
+```
+
+`since 2.45.0`
+
+Returns the skill buy list the game would make for a character, without opening the window.
+
+The game fills its list (`Ｔ購入スキル登録`) and the loader reads it, then puts the list back as
+it was. `rq.chara.on_offer` callbacks run, so mods' offers are in it. A skill at its most uses
+(99) or rank (4) is not listed.
+
+Raises an error for a slot with no character.
+
+```lua
+for _, row in ipairs(rq.chara.learnable(iic)) do
+  if row.points > 0 then rq.log(("skill %d: %d points"):format(row.skill, row.points)) end
+end
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `iic` | `integer` | The character's roster slot. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `rows` | [`rq.LearnableRow`](../types/rq.LearnableRow.md) `[]` | The list, in the game's order. |
+
+See also: [`rq.chara.price`](rq.chara.md#rqcharaprice)
+
+### rq.chara.price
+
+```lua
+rq.chara.price(iic, skill, from, to) -> integer?, string?, string?
+```
+
+`since 2.45.0`
+
+Returns what the game charges a character for a skill from one level to another.
+
+Each step is priced as the buy list prices it at that step: the skill is set to the step on the
+character, the game fills its list, and the step's price is read; the character and the list are
+put back before the call returns. So the game's rules hold: one more point at 3, 5 and 7 most
+uses, the prices that change with the skill (Rance's 147), and a mod's `rq.chara.on_offer`.
+A level is most uses for a use skill (type 10), the rank for a ranked one (20, 30). Skill 384
+goes 3 uses a step, as the game sells it.
+
+It returns nil and why when a step is not for sale: `"not sold"` (the character's list does not
+have it, or the skill cannot be bought), `"condition"` with the game's text (a level it lacks),
+`"max"` (past 99 uses or rank 4), `"room"` (no free skill row to price a new skill in).
+
+Raises an error for a slot with no character, a skill number not in the game's table, or a
+level below 0.
+
+```lua
+-- what a starting skill would cost from nothing
+local points = rq.chara.price(iic, 100, 0, 3) or 1
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `iic` | `integer` | The character's roster slot. |
+| `skill` | `integer` | The skill number. |
+| `from` | `integer` | The level to start from; 0 for a skill the character does not have. |
+| `to` | `integer` | The level to reach; nothing to pay when it is not above `from`. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `points` | `integer?` | The points, or nil when a step is not for sale. |
+| `why` | `string?` | `"not sold"`, `"condition"`, `"max"` or `"room"`. |
+| `text` | `string?` | The game's reason, for `"condition"`. |
+
+See also: [`rq.chara.learnable`](rq.chara.md#rqcharalearnable)
+
+### rq.chara.learn
+
+```lua
+rq.chara.learn(iic, skill, opts) -> boolean, integer|string, integer|string?
+```
+
+`since 2.45.0`
+
+Buys a skill for a character as the skill window does, without its questions.
+
+Each step goes through the game's own buy (`キャラスキル_新規追加`) or upgrade
+(`キャラスキル_更新`) at the list's price, with the game's "Learn ...?" answered Yes, then the
+character is recalculated (and refilled outside a quest, as the window does). The purchase
+record grows and `rq.chara.on_learn` runs for each step. Before buying anything it checks the
+whole price, the free points and a free skill row, and refuses with the reason:
+
+- `"points"`, with how many points are missing
+- `"room"`: no free skill row for a new skill
+- `"not sold"`, `"condition"` (with the game's text) or `"max"`, as `rq.chara.price`
+- `"refused"`: the game refused a step; the steps before it stay bought
+
+Raises an error for a slot with no character, a skill number not in the game's table, `opts`
+that is not a table, a `to` below 0, or a call from inside another `learn`.
+
+```lua
+local ok, why, detail = rq.chara.learn(iic, 100, { to = 5 })
+if not ok and why == "points" then rq.log(detail .. " more points needed") end
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `iic` | `integer` | The character's roster slot. |
+| `skill` | `integer` | The skill number. |
+| `opts` *(optional)* | `{to?: integer, pay?: boolean}` | `to`: the level to reach (default one step more). `pay`: false gives the steps for free and marks a new row as given in the record (default true). |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `ok` | `boolean` | true when the skill reached `to`. |
+| `spent_or_why` | `integer\|string` | The points paid when ok; otherwise the reason. |
+| `detail` | `integer\|string?` | The missing points for `"points"`, the game's text for `"condition"`. |
+
+See also: [`rq.chara.price`](rq.chara.md#rqcharaprice)
+
+### rq.chara.skill_room
+
+```lua
+rq.chara.skill_room(iic) -> integer
+```
+
+`since 2.45.0`
+
+Returns how many more skills a character can learn, as the skill window counts its free rows.
+
+It is the game's check before a new skill (`キャラスキル_空き確認`) as a number: 17 rows, less
+the rows the game keeps free for the character's story skills (`キャラ_スキル枠キープ数`), less
+the skills the character has. A new skill from `rq.chara.learn` needs one; one more use or rank
+needs none. `rq.chara.grant` does not check it.
+
+Raises an error for a slot with no character.
+
+```lua
+if rq.chara.skill_room(iic) < 2 then rq.ui.notice("Erase a skill first.") end
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `iic` | `integer` | The character's roster slot. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `rows` | `integer` | The free rows, 0 or more. |
+
+See also: [`rq.chara.learn`](rq.chara.md#rqcharalearn)
 
 ### rq.chara.add_exp
 
@@ -821,6 +1053,7 @@ See also: [`rq.chara.add_exp`](rq.chara.md#rqcharaadd_exp)
 | [`rq.chara.on_offer`](#rqcharaon_offer) | Calls `fn` after the game filled a character's skill buy list, to add rows. |
 | [`rq.chara.on_create`](#rqcharaon_create) | Calls `fn` after any character is created (`Ｃ生成`), base game or mod. |
 | [`rq.chara.on_forget`](#rqcharaon_forget) | Calls `fn` before a skill row is emptied, to give skill points back. |
+| [`rq.chara.on_learn`](#rqcharaon_learn) | Calls `fn` after each skill purchase, once per step. |
 | [`rq.chara.on_level_up`](#rqcharaon_level_up) | Calls `fn` after a character goes up a level, whatever gave it. |
 
 ### rq.chara.on_recalc
@@ -914,7 +1147,7 @@ The engine then recalculates and heals the character. Up to 16 callbacks in all.
 rq.chara.on_forget(fn) -> fun()
 ```
 
-`since 0.4.0` `changed 0.23.0`
+`since 0.4.0` `changed 0.23.0` `changed 2.45.0`
 
 Calls `fn` before a skill row is emptied, to give skill points back.
 
@@ -937,6 +1170,37 @@ end)
 | `remove` | `fun()` | Removes this callback. |
 
 > Changed in 0.23.0: Returns a remover.
+
+> Changed in 2.45.0: `cost` is the purchase record.
+
+### rq.chara.on_learn
+
+```lua
+rq.chara.on_learn(fn) -> fun()
+```
+
+`since 2.45.0`
+
+Calls `fn` after each skill purchase, once per step.
+
+It runs for the skill window's buy and upgrade, and for each step of `rq.chara.learn`, after the
+loader wrote the purchase record. The tutorial's purchases count too.
+
+```lua
+rq.chara.on_learn(function(ctx)
+  rq.log(("%d paid %d for skill %d"):format(ctx.iic, ctx.points, ctx.skill))
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(ctx:` [`rq.LearnCtx`](../types/rq.LearnCtx.md) `)` | Gets the purchase. Its return value is not used. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |
+
+See also: [`rq.chara.on_forget`](rq.chara.md#rqcharaon_forget)
 
 ### rq.chara.on_level_up
 
