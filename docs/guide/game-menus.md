@@ -312,6 +312,11 @@ local pick = rq.ui.ask("What now?", { { id = "trade", text = "Trade a Jewel" }, 
   get a row of their own. `@` and `$`, where the game's own texts break, are drawn as `＠` and `＄`;
   pass `game = true` for a text that comes from the game, such as `h.args[2]` of its question.
   The dialog does not scroll: the rows and the lines of text together are at most 20.
+- **A row's `comment`** (in `ask`, `rq.ui.choose` and `rq.scene.choice`) is shown in the game's
+  comment window while the mouse is on the row. Since 2.45.1 the loader cuts its lines between
+  words, at most 28 half-width letters (14 Japanese) each, the width the game's menu takes; `\n`
+  starts a line and an empty line stays. Before, the game cut every 28 letters mid-word and went
+  on counting across a `\n`. `rq.uikit.options` shows a row's comment with the same lines.
 - **"Don't ask again"**: `confirm(text, { remember = "swap", remember_label = "Swapping" })` adds
   the game's row. Once the player turns it off, `confirm` gives true without asking, in every save.
   The question is then listed on a **Confirmations** page in Config's Mods tab, where the player

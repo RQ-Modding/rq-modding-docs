@@ -5,6 +5,13 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.45.1
+
+A fix found by Moru in Loadouts' menus: the comments of the game's choice menu were cut mid-word.
+- `rq.ui.choose`, `rq.ui.ask` and `rq.scene.choice`: a row's `comment` is cut into lines between words, at most 28 half-width letters (14 Japanese) each, before the game gets it. The game's menu (`T_Select::showComment`) cuts a comment at each `@` and then every 28 bytes with no regard for words, and only after that does its window start a line at a `\n` too: so words were cut (`skil` / `ls`), and a `\n` did not restart the count, which gave short lines and stray empty ones. A word longer than a line is still cut where it stops fitting. `@` and `$` in a comment are drawn as `＠` and `＄`, as in `rq.ui.confirm`, since the game's window starts a line at them.
+- `rq.uikit.options`: a row's comment shows the same lines as the game's menu.
+- The MODS list's tips (`rq.gamebutton`'s `"system-menu"`) are `rq.ui.choose` comments, so they are cut between words too.
+
 ## 2.45.0
 
 Skill buying, for Skill Removal Payback and Loadouts (`notes/plans/plan-new-mods.md` in the workspace, phase R, step 1). In Lua over `rq.ain` (`src/lua/skills.lua`), with two private calls in C.
