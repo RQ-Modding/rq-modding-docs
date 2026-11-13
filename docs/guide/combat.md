@@ -3,10 +3,11 @@
 Loader 2.37.0 lets a mod change the rules of a fight. A mod can set the chance of a stun, a poison,
 a counter or an escape, and how much HP a heal gives. It can also change the speeds the turn list is
 built from, the list itself, the ambush, and each line of the battle log. Since 2.38.0 it can also
-choose what an enemy or the familiar does on its turn, and since 2.44.0 read and change what a
-skill can do (its crit, stun and poison rules). Every mod's callbacks run in turn on the same
-fight, and the game shows the result as its own: the forecast, the log, the numbers and the turn
-icons.
+choose what an enemy or the familiar does on its turn, and since 2.44.0 read and change what a skill
+can do (its crit, stun and poison rules). Since 2.46.0 it can change a hit's damage limit and a
+physical hit's element, and show the game's Weakness Search. Every mod's callbacks run in turn on
+the same fight, and the game shows the result as its own: the forecast, the log, the numbers and the
+turn icons.
 
 ## What a skill can do: the rules
 
@@ -139,6 +140,60 @@ end)
 Regeneration at a turn's start is not a skill: change it with `rq.battle.on_turn`'s `ctx:heal`
 ([Battle states](states.md)). Outside fights, the game's heals are `rq.chara.heal` and
 `rq.party.heal`.
+
+## The damage limit
+
+Many skills hold their damage to a limit (500 for Ranged Attack 1): damage over it is halved, and
+over twice it quartered. Damage Maximum raises the limit by its percent. Since 2.46.0
+`rq.combat.on_cap` runs where the game works the limit out, for each physical hit, spell and
+forecast, after Damage Maximum. `ctx.base` is the skill's own limit, `ctx.damage_max` Damage
+Maximum's percent and `ctx.limit` the limit so far. Return a new limit (0 for none) or nil. Athena
+QoL's Athena Maximum adds +100% to Damage Maximum's percent:
+
+```lua
+rq.combat.on_cap(function(ctx)
+  if ctx.base > 0 and has_maximum(ctx.attacker) then
+    return ctx.base * (100 + ctx.damage_max + 100) // 100
+  end
+end)
+```
+
+## A hit's element
+
+`rq.combat.on_element` (2.46.0) runs once the game has picked a physical hit's element: the
+weapon's, then the skill's, then the game's arrows (Fire, Ice and Electric Arrows on a basic
+attack, and skill 145), which take the target's weakness when it is known and no guard took the
+hit. Return an element ([`rq.ids.element`](ids.md)) or nil. The game goes on with it: the weakness
+bonus, " (Attribute weakness)" in the log, the effect's look and the knowledges. A spell's element
+is the spell's own and does not go through here. Calculated Shot on a known weakness, as the game's
+arrows:
+
+```lua
+rq.combat.on_element(function(ctx)
+  if ctx.skill == SHOT and ctx.known and not ctx.guarded and ctx.weakness ~= 0 then
+    return ctx.weakness
+  end
+end)
+```
+
+## Weakness Search from a mod
+
+`rq.battle.reveal_weakness(enemies, opts)` (2.46.0) does what the game's Weakness Search does: each
+enemy's weakness becomes known (the hits see it at once, and the game keeps it for the monster),
+the effect plays over the enemies and their marks blink. From `rq.battle.on_start` it waits for the
+fight to show, after any ambush notice; from `rq.on_frame` or a timer, for the next turn; from the
+fight's own flow (`rq.battle.on_turn`, `on_hit`) it plays at once. Rebecca Copley QoL plays it in
+every fight Rebecca starts in:
+
+```lua
+rq.battle.on_start(function(ctx)
+  if rebecca_in(ctx.allies) then
+    rq.battle.reveal_weakness(nil, { log = "→Rebecca observed the enemies' weaknesses." })
+  end
+end)
+```
+
+`opts.effect = false` shows the marks without the effect and the blinking.
 
 ## The turn list: Haste and Slow
 

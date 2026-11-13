@@ -1054,6 +1054,7 @@ See also: [`rq.chara.add_exp`](rq.chara.md#rqcharaadd_exp)
 | [`rq.chara.on_create`](#rqcharaon_create) | Calls `fn` after any character is created (`Ｃ生成`), base game or mod. |
 | [`rq.chara.on_forget`](#rqcharaon_forget) | Calls `fn` before a skill row is emptied, to give skill points back. |
 | [`rq.chara.on_learn`](#rqcharaon_learn) | Calls `fn` after each skill purchase, once per step. |
+| [`rq.chara.on_skill_reset`](#rqcharaon_skill_reset) | Calls `fn` after the game resets a character's skills, to give back what a mod gave. |
 | [`rq.chara.on_level_up`](#rqcharaon_level_up) | Calls `fn` after a character goes up a level, whatever gave it. |
 
 ### rq.chara.on_recalc
@@ -1201,6 +1202,40 @@ end)
 | `remove` | `fun()` | Removes this callback. |
 
 See also: [`rq.chara.on_forget`](rq.chara.md#rqcharaon_forget)
+
+### rq.chara.on_skill_reset
+
+```lua
+rq.chara.on_skill_reset(fn) -> fun()
+```
+
+`since 2.46.0`
+
+Calls `fn` after the game resets a character's skills, to give back what a mod gave.
+
+The game resets them (`Ｃスキルドレイン`) for Morurun's reset and when Skill Again (item 306) is
+equipped: the skills become the starting set (`rq.chara.base_skills`) and the free points the
+game's own count, so the skills and points a mod gave are gone. `fn` can give the points back
+with `rq.chara.add_skill_points`; skills from `edit`'s `learn` come back by themselves at the
+next recalculation.
+
+A callback's error is logged once per mod.
+
+```lua
+rq.chara.on_skill_reset(function(ctx)
+  if ctx.no == 27 then rq.chara.add_skill_points(ctx.iic, rq.savedata.get("given", 0)) end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(ctx:` [`rq.SkillResetCtx`](../types/rq.SkillResetCtx.md) `)` | Gets the character. Its return value is not used. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |
+
+See also: [`rq.chara.base_skills`](rq.chara.md#rqcharabase_skills)
 
 ### rq.chara.on_level_up
 

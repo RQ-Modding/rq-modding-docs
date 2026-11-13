@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.45.1.
+Loader version 2.46.0.
 
 ## Namespaces
 
@@ -83,6 +83,8 @@ Loader version 2.45.1.
 | [`rq.BuffDef`](types/rq.BuffDef.md) | A mod's buff on a card, for `rq.battle.set_buff` and `set_rank_buff`. |
 | [`rq.BuffInfo`](types/rq.BuffInfo.md) | One mark a card shows, from `rq.battle.buffs`. |
 | [`rq.BuyCtx`](types/rq.BuyCtx.md) | What an `rq.shop.on_buy` callback gets. |
+| [`rq.CanEquipCtx`](types/rq.CanEquipCtx.md) | What `rq.item.on_can_equip` gets for one item and one character. |
+| [`rq.CapCtx`](types/rq.CapCtx.md) | What `rq.combat.on_cap` gets for one hit. |
 | [`rq.Castle`](types/rq.Castle.md) | The castle's state, from `rq.castle()`. |
 | [`rq.CastleRoom`](types/rq.CastleRoom.md) | A castle room, from `rq.castle()`. |
 | [`rq.CastleRoomHandle`](types/rq.CastleRoomHandle.md) | A mod's room, from `rq.castle.room`. |
@@ -110,6 +112,7 @@ Loader version 2.45.1.
 | [`rq.DungeonArea`](types/rq.DungeonArea.md) | One area of `rq.dungeon.areas()`. |
 | [`rq.DungeonCamera`](types/rq.DungeonCamera.md) | The camera range `rq.dungeon.camera` patches. |
 | [`rq.DungeonInfo`](types/rq.DungeonInfo.md) | Where the party is in a dungeon, from `rq.dungeon.info()`. |
+| [`rq.ElementCtx`](types/rq.ElementCtx.md) | What `rq.combat.on_element` gets for one physical hit. |
 | [`rq.EncounterCtx`](types/rq.EncounterCtx.md) | What `rq.encounters.on_encounter` callbacks get. |
 | [`rq.EncounterInfo`](types/rq.EncounterInfo.md) | What `rq.encounters.info` returns. |
 | [`rq.EscapeCtx`](types/rq.EscapeCtx.md) | What `rq.combat.on_escape` gets. |
@@ -193,6 +196,7 @@ Loader version 2.45.1.
 | [`rq.QuestRunCtx`](types/rq.QuestRunCtx.md) | What a quest's `run` gets (`rq.QuestDef.run`). |
 | [`rq.QuestRunEdit`](types/rq.QuestRunEdit.md) | What `rq.quests.set_run` writes; a field left out stays. |
 | [`rq.RecruitOpts`](types/rq.RecruitOpts.md) | Options for `rq.chara.recruit`. |
+| [`rq.RevealOpts`](types/rq.RevealOpts.md) | Options for `rq.battle.reveal_weakness`. |
 | [`rq.RewardAlly`](types/rq.RewardAlly.md) | One ally in `rq.battle.on_reward`'s `ctx.allies`. |
 | [`rq.RewardCtx`](types/rq.RewardCtx.md) | What `rq.battle.on_reward` callbacks get. Fields marked writable change what the game gives. |
 | [`rq.SaveCtx`](types/rq.SaveCtx.md) | What `rq.saves.on_save` and `on_load` callbacks get. |
@@ -210,6 +214,7 @@ Loader version 2.45.1.
 | [`rq.SkillLevel`](types/rq.SkillLevel.md) | A skill and its level, as `rq.chara.base_skills` lists them and `edit`'s `learn` takes them. |
 | [`rq.SkillListCtx`](types/rq.SkillListCtx.md) | What `rq.skilllist.on_page` gets. |
 | [`rq.SkillPatch`](types/rq.SkillPatch.md) | Fields for `rq.skill.patch`, named after the game's. |
+| [`rq.SkillResetCtx`](types/rq.SkillResetCtx.md) | What `rq.chara.on_skill_reset` gets. |
 | [`rq.SkillSpec`](types/rq.SkillSpec.md) | A new skill for `rq.skill.define`. |
 | [`rq.SoundOpts`](types/rq.SoundOpts.md) | How `rq.sound.play` and `play_flash` play a sound. |
 | [`rq.SpawnHandle`](types/rq.SpawnHandle.md) | What `rq.spawn` returns, to follow or stop the job. |
@@ -222,6 +227,7 @@ Loader version 2.45.1.
 | [`rq.StatusInfo`](types/rq.StatusInfo.md) | What `rq.status.info` gives about a definition. |
 | [`rq.StatusInstance`](types/rq.StatusInstance.md) | A state on one character, from `rq.status.add`, `get` and `list`. |
 | [`rq.StepsCtx`](types/rq.StepsCtx.md) | What `rq.encounters.on_steps` callbacks get. |
+| [`rq.StudyCtx`](types/rq.StudyCtx.md) | What `rq.battle.on_study` gets for one Study that fired. |
 | [`rq.StunCtx`](types/rq.StunCtx.md) | What `rq.combat.on_stun` gets where the game works out a stun. |
 | [`rq.TakeContext`](types/rq.TakeContext.md) | What an `rq.quests.on_take` callback gets. |
 | [`rq.TransferContext`](types/rq.TransferContext.md) | What `rq.world.on_transfer` and `on_transfer_after` callbacks get. |

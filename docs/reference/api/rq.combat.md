@@ -153,6 +153,8 @@ See also: [`rq.combat.rules`](rq.combat.md#rqcombatrules)
 | [`rq.combat.on_counter`](#rqcombaton_counter) | Calls `fn` after each hit that leaves the character hit standing, to change the chance it counters. |
 | [`rq.combat.on_heal`](#rqcombaton_heal) | Calls `fn` when a skill gives HP in a fight, to change how much. |
 | [`rq.combat.on_escape`](#rqcombaton_escape) | Calls `fn` when an ally uses Escape or "Relax, relax", to change the chance it ends the fight. |
+| [`rq.combat.on_cap`](#rqcombaton_cap) | Calls `fn` where the game holds a hit's damage to the skill's limit, to change the limit. |
+| [`rq.combat.on_element`](#rqcombaton_element) | Calls `fn` where the game picks a physical hit's element, to change it. |
 
 ### rq.combat.on_physical
 
@@ -465,3 +467,86 @@ end)
 | `remove` | `fun()` | Removes this callback. |
 
 See also: [`rq.battle.set_escape`](rq.battle.md#rqbattleset_escape)
+
+### rq.combat.on_cap
+
+```lua
+rq.combat.on_cap(fn) -> fun()
+```
+
+`since 2.46.0`
+
+Calls `fn` where the game holds a hit's damage to the skill's limit, to change the limit.
+
+It runs in `最終ダメージ計算`, for every physical hit and spell and for the battle forecast. The
+limit is the skill's (500 for Ranged Attack 1), raised by the attacker's Damage Maximum. Damage over
+the limit is halved, and over twice the limit quartered, as before. `fn` returns the new limit in
+damage points, 0 for none, or nil to keep it; a negative number is 0. Each callback sees in
+`ctx.limit` what the one before left.
+
+A skill with no limit (`base` 0) gets one when a callback returns a number above 0. Skill 460 in
+world 3 still has no limit on half its hits, as in the game.
+
+A callback's error, or a return that is not a number or nil, is logged once and changes nothing.
+
+```lua
+rq.combat.on_cap(function(ctx)
+  -- +100% more, added to Damage Maximum's percent
+  if ctx.base > 0 and has_mark(ctx.attacker) then
+    return ctx.base * (100 + ctx.damage_max + 100) // 100
+  end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(ctx:` [`rq.CapCtx`](../types/rq.CapCtx.md) `): integer\|nil` | Returns the limit, or nil. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |
+
+See also: [`rq.combat.on_physical`](rq.combat.md#rqcombaton_physical)
+
+### rq.combat.on_element
+
+```lua
+rq.combat.on_element(fn) -> fun()
+```
+
+`since 2.46.0`
+
+Calls `fn` where the game picks a physical hit's element, to change it.
+
+It runs in `物理属性計算` for each physical hit and for the battle forecast, once the game has
+picked: the weapon's element, the skill's over it, then the game's arrows over both (Fire, Ice and
+Electric Arrows on a basic attack, and skill 145's five, which take the weakness when it is known
+and no guard took the hit). `fn` returns an element 0 to 5, or nil to keep it. Each callback sees
+in `ctx.element` what the one before left.
+
+The game then goes on with the element: a hit on the weakness gets +50% damage, " (Attribute
+weakness)" in the log and the big number; the effect gets the element's look; the knowledges
+(Fire Knowledge and the rest) add their percent. A spell's element is the spell's and does not go
+through here.
+
+A callback's error, or a return that is not a whole number 0 to 5 or nil, is logged once and
+changes nothing.
+
+```lua
+rq.combat.on_element(function(ctx)
+  -- like the game's arrows: the weakness, when it is known and no guard took the hit
+  if ctx.basic and ctx.known and not ctx.guarded and ctx.weakness ~= 0 and has_arrows(ctx.attacker) then
+    return ctx.weakness
+  end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(ctx:` [`rq.ElementCtx`](../types/rq.ElementCtx.md) `): integer\|nil` | Returns the element, or nil. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |
+
+See also: [`rq.ids`](rq.ids.md)

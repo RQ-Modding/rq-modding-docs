@@ -29,6 +29,7 @@ end)
 | [`rq.battle.set_escape`](#rqbattleset_escape) | Sets the escape chance of the current fight. |
 | [`rq.battle.set_ambush`](#rqbattleset_ambush) | Changes the fight's ambush, from `rq.battle.on_start`. |
 | [`rq.battle.log`](#rqbattlelog) | Adds a line to the battle log now. |
+| [`rq.battle.reveal_weakness`](#rqbattlereveal_weakness) | Shows enemies' weaknesses as the game's Weakness Search does. |
 | [`rq.battle.taunt`](#rqbattletaunt) | The ally the game's taunt names now, or nil. |
 | [`rq.battle.set_taunt`](#rqbattleset_taunt) | Names the ally the enemies aim at, as the game's taunt does, or clears it with nil. |
 | [`rq.battle.install_flame`](#rqbattleinstall_flame) | Installs the hooks the flame, the buffs and the marks need. |
@@ -216,6 +217,44 @@ end)
 | `added` | `boolean` | false when the game added nothing. |
 
 See also: [`rq.battle.on_log`](rq.battle.md#rqbattleon_log)
+
+### rq.battle.reveal_weakness
+
+```lua
+rq.battle.reveal_weakness(enemies, opts) -> integer|nil
+```
+
+`since 2.46.0`
+
+Shows enemies' weaknesses as the game's Weakness Search does.
+
+Each standing enemy given (every enemy for nil) gets its weakness known: the hits see it at once,
+as Fire Arrows and `rq.combat.on_element` do, and the game keeps it for the monster at the fight's
+end, as after Weakness Search. The game's Weakness Search effect plays over the enemies and their
+weakness marks blink together.
+
+Called before the fight shows, from `rq.battle.on_start`, it plays when the fight first shows,
+after the ambush notice and before the first turn. Called from the game's flow in a fight, as from
+`rq.battle.on_turn` or `on_hit`, it plays at once, also in a fight `rq.battle.start` opened from a
+button or a timer; called from `rq.on_frame` or a timer itself, at the start of the next turn.
+Several calls play one after another.
+
+Raises an error outside a fight, for an enemy that is not a slot from 1 to 19, or for a bad option.
+
+```lua
+rq.battle.on_start(function(ctx)
+  rq.battle.reveal_weakness(nil, { log = "→Rebecca observed the enemies' weaknesses." })
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `enemies` *(optional)* | `integer[]` | The enemies' slots (below 20), or nil for all of them. |
+| `opts` *(optional)* | [`rq.RevealOpts`](../types/rq.RevealOpts.md) | The effect and a log line. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `revealed` | `integer\|nil` | How many enemies were shown, when it played at once; nil when it waits for a moment of the fight. |
 
 ### rq.battle.taunt
 
@@ -900,6 +939,7 @@ Returns a copy of what the fight screen shows.
 | [`rq.battle.on_order`](#rqbattleon_order) | Calls `fn` each time the game builds the turn list, to change the speeds it is built from. |
 | [`rq.battle.on_order_after`](#rqbattleon_order_after) | Calls `fn` each time the game has built the turn list, to read or replace it. |
 | [`rq.battle.on_log`](#rqbattleon_log) | Calls `fn` for each line before it goes into the battle log, to drop or change it. |
+| [`rq.battle.on_study`](#rqbattleon_study) | Calls `fn` for each of Athena 2.0's Studies that fired after a fight, to change its gain. |
 | [`rq.battle.on_choose`](#rqbattleon_choose) | Calls `fn` on each turn of an enemy or the familiar, after the game chose a skill and a target and before it acts, to change them. |
 | [`rq.battle.on_hp`](#rqbattleon_hp) | Calls `fn` in a fight each time a character's HP changes. |
 
@@ -1368,6 +1408,41 @@ end)
 | `remove` | `fun()` | Removes this callback. |
 
 See also: [`rq.battle.log`](rq.battle.md#rqbattlelog)
+
+### rq.battle.on_study
+
+```lua
+rq.battle.on_study(fn) -> fun()
+```
+
+`since 2.46.0`
+
+Calls `fn` for each of Athena 2.0's Studies that fired after a fight, to change its gain.
+
+Athena 2.0 (character 27) has five Studies (336 to 340). After a fight's EXP, with her in rank 4
+or 5 and the ally diagonally in front of her standing, each Study on her hotbar adds to her stat
+when that ally's stat is higher than hers: the game's rule decides which fire, and `fn` runs only
+for those. `fn` returns the gain, 0 or more, or nil to keep it. Each callback sees in `ctx.gain`
+what the one before left.
+
+The gains add to counters kept in the save, so they stay; her stats are recalculated after the
+last callback. Accuracy stops at 200, and speed and critical at 100, as the game holds them.
+
+A callback's error, or a return that is not a number or nil, is logged once and changes nothing.
+
+```lua
+rq.battle.on_study(function(ctx)
+  if ctx.stat == "attack" then return 100 * rq.world.current() end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(ctx:` [`rq.StudyCtx`](../types/rq.StudyCtx.md) `): integer\|nil` | Returns the gain, or nil. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |
 
 ### rq.battle.on_choose
 

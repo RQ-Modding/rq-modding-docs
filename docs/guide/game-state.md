@@ -1,19 +1,20 @@
 # Gold, encounters and levels
 
-The things a first mod usually wants to change have their own calls since loader 2.33.0: the
-money and charisma ([`rq.game`](../reference/api/rq.game.md)), random fights on a quest's map
+The things a first mod usually wants to change have their own calls since loader 2.33.0: the money
+and charisma ([`rq.game`](../reference/api/rq.game.md)), random fights on a quest's map
 ([`rq.encounters`](../reference/api/rq.encounters.md)), EXP and levels
 ([`rq.chara.add_exp`](../reference/api/rq.chara.md#rqcharaadd_exp), `level_up` and `on_level_up`),
-and timers and jobs that wait ([`rq.after`](../reference/api/rq.md#rqafter), `rq.every`,
-`rq.spawn`, `rq.wait`). A fight's gold and EXP came in 2.34.0
-([`rq.battle.on_reward`](../reference/api/rq.battle.md#rqbattleon_reward)), and where each
-character is and the game's heals in 2.35.0 ([`rq.party`](../reference/api/rq.party.md)). The
-monsters ([`rq.monster`](../reference/api/rq.monster.md)), the mode and the fights a mod opens
-([`rq.battle.start`](../reference/api/rq.battle.md#rqbattlestart)) came in 2.36.0, and skill
-buying with its price and the record of what each skill cost in 2.45.0. Each example on
-this page is a whole `init.lua`; set `loader` to `2.33.0` in its `mod.json`, `2.34.0` for the fight
-rewards, `2.35.0` for the party, `2.36.0` for the monsters, the mode and a fight from a mod, or
-`2.45.0` for skill buying.
+and timers and jobs that wait ([`rq.after`](../reference/api/rq.md#rqafter), `rq.every`, `rq.spawn`,
+`rq.wait`). A fight's gold and EXP came in 2.34.0
+([`rq.battle.on_reward`](../reference/api/rq.battle.md#rqbattleon_reward)), and where each character
+is and the game's heals in 2.35.0 ([`rq.party`](../reference/api/rq.party.md)). The monsters
+([`rq.monster`](../reference/api/rq.monster.md)), the mode and the fights a mod opens
+([`rq.battle.start`](../reference/api/rq.battle.md#rqbattlestart)) came in 2.36.0, and skill buying
+with its price and the record of what each skill cost in 2.45.0; Athena's Studies, the game's skill
+reset and who can equip an item in 2.46.0. Each example on this page is a whole `init.lua`; set
+`loader` to `2.33.0` in its `mod.json`, `2.34.0` for the fight rewards, `2.35.0` for the party,
+`2.36.0` for the monsters, the mode and a fight from a mod, `2.45.0` for skill buying, or `2.46.0`
+for the Studies, the reset and the equip check.
 
 All of these read or change the game, so call them from a callback or `rq.on_frame`, not at the
 top level of `init.lua` ([When code runs](sandbox.md#when-code-runs)). `rq.encounters.hold` and the
@@ -198,6 +199,20 @@ rq.chara.on_level_up(function(ctx)
 end)
 ```
 
+Athena 2.0 grows by her Studies instead: after a fight, with her in rank 4 or 5, each Study on her
+hotbar adds to her stat when the ally diagonally in front of her has more of it.
+[`rq.battle.on_study`](../reference/api/rq.battle.md#rqbattleon_study) (2.46.0) runs for each one
+that fired, with the stat and the game's gain; return another gain. Athena QoL scales them by the
+world:
+
+```lua
+local GAINS = { attack = { 100, 500, 2000 }, hp = { 100, 500, 2000 },
+  accuracy = { 5, 10, 20 }, speed = { 5, 10, 20 }, critical = { 5, 10, 20 } }
+rq.battle.on_study(function(ctx)
+  return GAINS[ctx.stat][rq.world.current() or 1]
+end)
+```
+
 ## Skills and their price
 
 Since 2.45.0 the loader keeps a record of what each skill cost in the skill row itself (a field the
@@ -219,6 +234,9 @@ level as `n` (most uses, or the rank). `rq.chara.on_forget`'s `cost` is the same
   new skill and the most points the character can have had.
 - [`rq.chara.on_learn`](../reference/api/rq.chara.md#rqcharaon_learn): each purchase, the skill
   window's or a mod's.
+- [`rq.chara.on_skill_reset`](../reference/api/rq.chara.md#rqcharaon_skill_reset) (2.46.0): after
+  Morurun's reset or Skill Again, which set the free points to the game's own count, so a mod can
+  give back the points it gave.
 
 Half the points back for every ERASE in the skill window (Skill Removal Payback gives them all):
 
@@ -231,6 +249,23 @@ end)
 A purchase made before loader 2.45.0 has no record (its `cost` is 0): its steps above
 `base_skills` at today's `price` are the best guess, as Skill Removal Payback and Loadouts do.
 Set `loader` to `2.45.0` in `mod.json` for these.
+
+## Who can equip an item
+
+The game asks one question before a character wears an item, in the vault, on the status page, in
+the shop and on the storage screen: is the character's level high enough, and is the item for that
+character or class. [`rq.item.on_can_equip`](../reference/api/rq.item.md#rqitemon_can_equip)
+(2.46.0) runs there with the game's answer and its reasons (`"level"`, then `"chara"` or
+`"class"`); return true, false or nil. Athena QoL lifts only the level, for bows:
+
+```lua
+rq.item.on_can_equip(function(ctx)
+  if ctx.chara == 27 and #ctx.reasons == 1 and ctx.reason == "level"
+    and rq.item.get(ctx.ii).subtype == rq.ids.item_kind.BOW then
+    return true
+  end
+end)
+```
 
 ## Waiting and timers
 

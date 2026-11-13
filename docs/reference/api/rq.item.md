@@ -531,6 +531,7 @@ See also: [`rq.item.find`](rq.item.md#rqitemfind)
 | Name | Summary |
 | --- | --- |
 | [`rq.item.on_create`](#rqitemon_create) | Calls `fn` after any item instance is created (`Ｉ生成`), game or mod. |
+| [`rq.item.on_can_equip`](#rqitemon_can_equip) | Calls `fn` where the game decides whether a character can equip an item, to change the answer. |
 
 ### rq.item.on_create
 
@@ -555,3 +556,43 @@ It is not called for the temporary instance of `rq.item.info`, which never enter
 > Changed in 0.23.0: Returns a remover.
 
 > Changed in 2.20.0: Not called for `rq.item.info`'s lookup.
+
+### rq.item.on_can_equip
+
+```lua
+rq.item.on_can_equip(fn) -> fun()
+```
+
+`since 2.46.0`
+
+Calls `fn` where the game decides whether a character can equip an item, to change the answer.
+
+It runs in `アイテム_装備可能`, the one check behind the vault, the status page, the shop, the
+storage screen's filters, the list of who can wear an item, and `rq.item.buy` with a `chara`.
+`fn` returns true to let the character equip it, false to refuse, or nil to keep the answer. Each
+callback sees in `ctx.allowed` what the one before left.
+
+The game checks the level first and stops there, so `ctx.reasons` says whether the item's
+characters or class would refuse it too: a mod that lifts only the level returns true only when
+"level" is the one reason. `reason`, `reasons` and the levels are worked out when a callback
+first reads them.
+
+A callback's error, or a return that is not a boolean or nil, is logged once and changes nothing.
+
+```lua
+rq.item.on_can_equip(function(ctx)
+  -- Athena 2.0 (27) wears any bow (subtype 5) whatever its level.
+  if ctx.chara == 27 and #ctx.reasons == 1 and ctx.reason == "level"
+    and rq.item.get(ctx.ii).subtype == 5 then
+    return true
+  end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(ctx:` [`rq.CanEquipCtx`](../types/rq.CanEquipCtx.md) `): boolean\|nil` | Returns true, false or nil. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |
