@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.47.0.
+Loader version 2.48.0.
 
 ## Namespaces
 
@@ -80,6 +80,7 @@ Loader version 2.47.0.
 | [`rq.BattleSwitchCtx`](types/rq.BattleSwitchCtx.md) | What `rq.battle.on_switch` gets for one rank. |
 | [`rq.BattleTurnCtx`](types/rq.BattleTurnCtx.md) | What `rq.battle.on_turn` gets: the character whose turn starts, and what can change it. |
 | [`rq.BattleUseEvent`](types/rq.BattleUseEvent.md) | What `rq.battle.on_use` gets. |
+| [`rq.BoostRow`](types/rq.BoostRow.md) | One Boost, from `rq.chara.boosts`. |
 | [`rq.BuffDef`](types/rq.BuffDef.md) | A mod's buff on a card, for `rq.battle.set_buff` and `set_rank_buff`. |
 | [`rq.BuffInfo`](types/rq.BuffInfo.md) | One mark a card shows, from `rq.battle.buffs`. |
 | [`rq.BuyCtx`](types/rq.BuyCtx.md) | What an `rq.shop.on_buy` callback gets. |
@@ -217,6 +218,7 @@ Loader version 2.47.0.
 | [`rq.SkillPatch`](types/rq.SkillPatch.md) | Fields for `rq.skill.patch`, named after the game's. |
 | [`rq.SkillResetCtx`](types/rq.SkillResetCtx.md) | What `rq.chara.on_skill_reset` gets. |
 | [`rq.SkillSpec`](types/rq.SkillSpec.md) | A new skill for `rq.skill.define`. |
+| [`rq.SkillStep`](types/rq.SkillStep.md) | A step for `rq.chara.learnable`'s `after`: a skill set to a level. |
 | [`rq.SoundOpts`](types/rq.SoundOpts.md) | How `rq.sound.play` and `play_flash` play a sound. |
 | [`rq.SpawnHandle`](types/rq.SpawnHandle.md) | What `rq.spawn` returns, to follow or stop the job. |
 | [`rq.Sprite`](types/rq.Sprite.md) | A mod sprite among the game's own, made by `rq.sprite.new`. |

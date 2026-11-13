@@ -73,6 +73,7 @@ rq.chara.edit(62, { init = { eva = 50, spd = 25 }, learn = { { id = 246, n = 2 }
 | [`rq.chara.base_skills`](#rqcharabase_skills) | Returns the skills a character starts with, as Morurun's reset would give them back. |
 | [`rq.chara.skill_points_max`](#rqcharaskill_points_max) | Returns the most skill points a character can have had (`Ｃ最大スキルポイント取得`). |
 | [`rq.chara.learnable`](#rqcharalearnable) | Returns the skill buy list the game would make for a character, without opening the window. |
+| [`rq.chara.boosts`](#rqcharaboosts) | Returns the Boosts and whether the character keeps each one's effect without the skill. |
 | [`rq.chara.price`](#rqcharaprice) | Returns what the game charges a character for a skill from one level to another. |
 | [`rq.chara.learn`](#rqcharalearn) | Buys a skill for a character as the skill window does, without its questions. |
 | [`rq.chara.skill_room`](#rqcharaskill_room) | Returns how many more skills a character can learn, as the skill window counts its free rows. |
@@ -826,10 +827,10 @@ local spent = rq.chara.skill_points_max(iic) - rq.chara.skill_points(iic)
 ### rq.chara.learnable
 
 ```lua
-rq.chara.learnable(iic) -> rq.LearnableRow[]
+rq.chara.learnable(iic, opts) -> rq.LearnableRow[]?, integer
 ```
 
-`since 2.45.0`
+`since 2.45.0` `changed 2.48.0`
 
 Returns the skill buy list the game would make for a character, without opening the window.
 
@@ -837,11 +838,74 @@ The game fills its list (`Ｔ購入スキル登録`) and the loader reads it, th
 it was. `rq.chara.on_offer` callbacks run, so mods' offers are in it. A skill at its most uses
 (99) or rank (4) is not listed.
 
-Raises an error for a slot with no character.
+A row the list shows but does not sell has the game's reason (`why`) and what its conditions
+name: the skills and levels (`needs`) and the character level (`level`). The game names a skill
+by its name only; the loader reads it back to a number, the list's and the character's skills
+first.
+
+`opts.after` is a list of steps, each a skill and a level (0 erases it), set in order on the
+character before the list is made and undone after: the list as it would be after those
+purchases or erasures, as Healing 3 for sale once Healing 2 is at 3, or Healing 2 off sale once
+Healing 1 is erased. A step sets the level as it is, with no price and none of the game's
+checks; a Boost set to rank 4 is kept as the game's recalculation would keep it
+(`rq.chara.boosts`). When a step needs a new row and none is left, the call returns nil and the
+step's index.
+
+The second value is the free skill rows after the steps, as `rq.chara.skill_room` counts them.
+
+Raises an error for a slot with no character, an `after` that is not a list, or a step that is
+not `{ skill = number, n = level from 0 }`.
+
+and `level`.
 
 ```lua
 for _, row in ipairs(rq.chara.learnable(iic)) do
   if row.points > 0 then rq.log(("skill %d: %d points"):format(row.skill, row.points)) end
+end
+-- Healing 3's price once Healing 2 is at 3 and Healing 1 erased
+local rows = rq.chara.learnable(iic, { after = { { skill = 221, n = 0 }, { skill = 222, n = 3 } } })
+for _, row in ipairs(rows or {}) do
+  if row.skill == 223 then rq.log("Healing 3: " .. row.points .. " points") end
+end
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `iic` | `integer` | The character's roster slot. |
+| `opts` *(optional)* | `{ after?:` [`rq.SkillStep`](../types/rq.SkillStep.md) `[] }` | `after`: the steps to set before the list is made. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `rows` | [`rq.LearnableRow`](../types/rq.LearnableRow.md) `[]?` | The list, in the game's order; nil when a step found no free row. |
+| `room` | `integer` | The free skill rows after the steps; with nil rows, the index of the step that found none. |
+
+> Changed in 2.48.0: `opts.after`, the free rows as a second value, and each row's `step`, `needs`
+
+See also: [`rq.chara.price`](rq.chara.md#rqcharaprice)
+
+### rq.chara.boosts
+
+```lua
+rq.chara.boosts(iic) -> rq.BoostRow[], boolean
+```
+
+`since 2.48.0`
+
+Returns the Boosts and whether the character keeps each one's effect without the skill.
+
+In the third world only (`rq.world.current`), the game's recalculation marks a Boost raised to
+rank 4 (`FA[38]` to `FA[45]`), and the character keeps its effect after the skill is erased:
++800 HP, +300 Attack or Magic, or +50 to a rate. The second version of Stamina, Attack and
+Magic Boost (455, 456, 457) is sold only once the first is at rank 4 or kept, and is kept on top
+of it. The game's reset of the skills (`Ｃスキルドレイン`: Morurun's reset, Skill Again) clears
+the marks, and so does a recalculation in another world.
+
+Raises an error for a slot with no character.
+
+```lua
+local boosts, keeps = rq.chara.boosts(iic)
+for _, b in ipairs(boosts) do
+  if b.kept then rq.log(("skill %d's effect stays"):format(b.skill)) end
 end
 ```
 
@@ -851,9 +915,10 @@ end
 
 | Returns | Type | Description |
 | --- | --- | --- |
-| `rows` | [`rq.LearnableRow`](../types/rq.LearnableRow.md) `[]` | The list, in the game's order. |
+| `boosts` | [`rq.BoostRow`](../types/rq.BoostRow.md) `[]` | The eleven Boosts, firsts before seconds. |
+| `keeps` | `boolean` | Whether this world keeps a Boost's effect (the third world). |
 
-See also: [`rq.chara.price`](rq.chara.md#rqcharaprice)
+See also: [`rq.chara.on_forget`](rq.chara.md#rqcharaon_forget)
 
 ### rq.chara.price
 
@@ -1148,12 +1213,14 @@ The engine then recalculates and heals the character. Up to 16 callbacks in all.
 rq.chara.on_forget(fn) -> fun()
 ```
 
-`since 0.4.0` `changed 0.23.0` `changed 2.45.0`
+`since 0.4.0` `changed 0.23.0` `changed 2.45.0` `changed 2.48.0`
 
 Calls `fn` before a skill row is emptied, to give skill points back.
 
 The points every callback returns are added up and given to the character. Use `caller` to skip
-the removals the game makes inside its recalculation. Up to 16 callbacks in all.
+the removals the game makes inside its recalculation. `kept` tells a Boost whose effect the
+character keeps once it is erased (`rq.chara.boosts`), so its points were not lost. Up to 16
+callbacks in all.
 
 ```lua
 rq.chara.on_forget(function(ctx)
@@ -1173,6 +1240,8 @@ end)
 > Changed in 0.23.0: Returns a remover.
 
 > Changed in 2.45.0: `cost` is the purchase record.
+
+> Changed in 2.48.0: `kept`.
 
 ### rq.chara.on_learn
 

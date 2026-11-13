@@ -5,6 +5,14 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.48.0
+
+The calls behind two reports from Moru's friends, for Loadouts 1.1.0 and Skill Removal Payback 1.1.0: a build the game sells only through other skills (Healing 2 once Healing 1 is at 3, Recovery Rain 2 once Healing 3 is learned, those then erased), two Attack Boosts, and the Boosts whose effect stays after they are erased. In Lua over `rq.ain` (`src/lua/skills.lua`).
+- `rq.chara.learnable(iic, opts)`: `opts.after`, a list of steps (`rq.SkillStep`: a skill and a level, 0 erases it) set on the character before the list is made and undone after, for the list as it would be after those purchases or erasures. A step sets the level as it is (`ＣＳ追加`, `ＣＳ使用回数最大`, `ＣＳランク`, `ＣＳ初期化`); nil and the step's index when a step needs a new row and none is left. A second value: the free skill rows after the steps, as `skill_room` counts them.
+- `rq.LearnableRow`: `step` (3 for skill 384, 1 for the rest), and for a row not for sale `needs` and `level`, read back from the game's text. The game names a skill by its name only: the loader takes the longest skill name that starts a condition, the list's and the character's skills first, and its level from what follows (`+`, ` N+` or stars). `Over LV N` is the level, full-width digits too (Melee Attack 4's `Over LV ４８`).
+- `rq.chara.boosts(iic)`: the eleven Boosts (Stamina, Attack and Magic Boost, their second versions 455 to 457, and 279 to 283), each with `kept`: whether the character keeps its effect without the skill. In the third world only (`◆ワールド == 3`), the game's recalculation (`Ｃ再計算`) marks a Boost at rank 4 in `FA[38]` to `FA[45]` (1 for a first version, 2 for a second) and adds its effect while the skill is gone (+800 HP, +300 Attack or Magic, +50 to a rate); the list sells a second version once the first is at rank 4 or marked. `Ｃスキルドレイン` clears the marks, and a recalculation in another world does too. `learnable`'s steps mark a Boost set to rank 4 as the recalculation would.
+- `rq.chara.on_forget`: `ctx.kept`, true when the erased skill is a Boost the character keeps.
+
 ## 2.47.0
 
 The calls Return Bonsai and Aten Gnu QoL need (`notes/plans/plan-new-mods.md` in the workspace, phase R, step 3): the game's Quest Storage window's tiles, a free appraisal, locked cells in the item window, a picture as a button, an item stocked while the shop shows, and the moment the game sends a character home after a fight. In Lua over `rq.ain` (`src/lua/item.lua`, `basics.lua`, `uikit_hub.lua`, `uikit_windows.lua`), with the tiles listed in C.

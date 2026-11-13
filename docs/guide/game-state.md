@@ -252,6 +252,32 @@ A purchase made before loader 2.45.0 has no record (its `cost` is 0): its steps 
 `base_skills` at today's `price` are the best guess, as Skill Removal Payback and Loadouts do.
 Set `loader` to `2.45.0` in `mod.json` for these.
 
+### Skills sold through others
+
+Some skills are for sale only once others are learned: Healing 2 once Healing 1 is at 3, Recovery
+Rain 2 once Healing 3 is learned, the second Attack Boost once the first is at rank 4. The game's
+list shows such a skill with its reason (`why`), and since 2.48.0 each of
+[`learnable`](../reference/api/rq.chara.md#rqcharalearnable)'s rows also has what that reason
+names: `needs` (the skills and their levels) and `level` (the character's level). Its
+`opts.after` makes the list as it would be after some steps (a skill set to a level, or erased
+with 0) without changing the character, and its second value is the free rows after them.
+Loadouts plans a load this way, one step at a time:
+
+```lua
+-- Is Healing 3 for sale once Healing 2 is at 3?
+local rows = rq.chara.learnable(iic, { after = { { skill = 222, n = 3 } } })
+for _, row in ipairs(rows or {}) do -- nil when a new skill found no free row
+  if row.skill == 223 then rq.log(row.points > 0 and "for sale" or row.why) end
+end
+```
+
+In the third world, a Boost raised to rank 4 keeps its effect after an ERASE, until the
+character's skills are reset (Morurun's reset, Skill Again).
+[`rq.chara.boosts`](../reference/api/rq.chara.md#rqcharaboosts) (2.48.0) tells which ones a
+character keeps, and `on_forget`'s `kept` tells it of the skill being erased: Skill Removal
+Payback gives nothing back for such a Boost unless its setting says so. Set `loader` to `2.48.0`
+for these.
+
 ## Who can equip an item
 
 The game asks one question before a character wears an item, in the vault, on the status page, in

@@ -11,4 +11,4 @@ A skill and its level, as `rq.chara.base_skills` lists them and `edit`'s `learn`
 
 ## Used by
 
-[`rq.chara.base_skills`](../api/rq.chara.md#rqcharabase_skills)
+[`rq.LearnableRow`](rq.LearnableRow.md), [`rq.chara.base_skills`](../api/rq.chara.md#rqcharabase_skills)
