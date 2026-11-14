@@ -89,6 +89,7 @@ end)
 | [`rq.scene.wait_click`](#rqscenewait_click) | Waits for a click (`キー待ち_クリック`). |
 | [`rq.scene.register_face`](#rqsceneregister_face) | Sets the name plate for one of the game's face numbers (`顔登録`). |
 | [`rq.scene.choice`](#rqscenechoice) | Shows a list of choices and waits until the player picks one. |
+| [`rq.scene.item`](#rqsceneitem) | Shows an item as the game does when a scene hands one over, and waits for a click. |
 | [`rq.scene.before`](#rqscenebefore) | Runs `fn` before a game scene or command. |
 | [`rq.scene.after`](#rqsceneafter) | Runs `fn` after a game scene or command. |
 | [`rq.scene.replace`](#rqscenereplace) | Replaces a game scene or command: the game's function does not run. |
@@ -99,13 +100,16 @@ end)
 rq.scene.play(fn, ...) -> any
 ```
 
-`since 0.18.0`
+`since 0.18.0` `changed 2.50.0`
 
 Opens a scene, runs `fn(s, ...)`, then clears the text and closes it.
 
 An error in `fn` is logged and the scene still closes; then it returns nothing. Its end runs the
 game's `ADVOFF`, which clears the scene layer, so inside a game scene (from a hook) that scene's
 background and pictures go too; `rq.scene.start` waits for a game scene to end instead.
+
+The vault's and Frostbuy's item window (a rack of the shop, the vault's list) is drawn over the
+message window, so the scene hides it and shows it again at its end.
 
 Raises the error "rq: the game went to the title" again when the player went to the title.
 
@@ -117,6 +121,8 @@ Raises the error "rq: the game went to the title" again when the player went to 
 | Returns | Type | Description |
 | --- | --- | --- |
 |  | `any` | ... What `fn` returns. |
+
+> Changed in 2.50.0: Hides the vault's and the shop's item window while it plays.
 
 ### rq.scene.once
 
@@ -146,14 +152,16 @@ It marks `id` seen with `rq.scene.seen` before it plays.
 rq.scene.start(fn, ...) -> boolean
 ```
 
-`since 1.14.0`
+`since 1.14.0` `changed 2.50.0`
 
 Plays a scene at the next frame, in a coroutine of its own, and returns at once.
 
 It returns false, and queues nothing, while a mod scene plays or waits to, so a mod can call it from
-anywhere, also every frame. It waits while the System menu or Config is open, and while a scene of
-the game's own is on screen. The scene draws over the current screen, takes the clicks, and leaves
-the screen as it was. An error that ends it is logged.
+anywhere, also every frame. It waits while the System menu or Config is open, while a scene of
+the game's own is on screen, and while the game saves (its "Auto-Saving" message holds 700 ms, and
+the game draws frames under it). The scene draws over the current screen, takes the clicks, and
+leaves the screen as it was, the vault's and Frostbuy's item window too (`rq.scene.play`). An
+error that ends it is logged.
 
 Raises an error when `fn` is not a function.
 
@@ -173,6 +181,8 @@ end)
 | Returns | Type | Description |
 | --- | --- | --- |
 | `started` | `boolean` | false when a mod scene plays or waits to. |
+
+> Changed in 2.50.0: Waits for the game's save to end, and hides the vault's and the shop's item window.
 
 See also: [`rq.scene.active`](rq.scene.md#rqsceneactive)
 
@@ -715,6 +725,37 @@ local pick = s.choice({ "Yes", "-", { id = 42, text = "No" } })
 | Returns | Type | Description |
 | --- | --- | --- |
 | `id` | `integer` | The picked row's id. |
+
+### rq.scene.item
+
+```lua
+rq.scene.item(ii, o)
+```
+
+`since 2.50.0`
+
+Shows an item as the game does when a scene hands one over, and waits for a click.
+
+It plays the game's jingle (1008 by default) and opens the game's item window with the item's
+icon, name, level and effects (`Ｒ８どこかからアイテム`, as for an event's reward or the dice's
+prize). It only shows the item: put it where it goes with `rq.item.give`, `rq.item.set` or
+`rq.item.store` first.
+
+Raises an error when `ii` is not a whole number or not an item instance, when `o` is not a table,
+or when `jingle` is neither a number nor false.
+
+```lua
+rq.scene.start(function(s)
+  local ii = rq.item.give("mymod:lens")
+  s.say(2020, "Here, take this.")
+  s.item(ii)
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `ii` | `integer` | The item instance. |
+| `o` *(optional)* | `{jingle?: integer\|false}` | `jingle`: the jingle number, or false for none. Default 1008. |
 
 ### rq.scene.before
 

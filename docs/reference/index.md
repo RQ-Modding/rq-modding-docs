@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.49.0.
+Loader version 2.50.0.
 
 ## Namespaces
 
@@ -84,6 +84,7 @@ Loader version 2.49.0.
 | [`rq.BuffDef`](types/rq.BuffDef.md) | A mod's buff on a card, for `rq.battle.set_buff` and `set_rank_buff`. |
 | [`rq.BuffInfo`](types/rq.BuffInfo.md) | One mark a card shows, from `rq.battle.buffs`. |
 | [`rq.BuyCtx`](types/rq.BuyCtx.md) | What an `rq.shop.on_buy` callback gets. |
+| [`rq.CanBuyCtx`](types/rq.CanBuyCtx.md) | What an `rq.shop.on_can_buy` callback gets. |
 | [`rq.CanEquipCtx`](types/rq.CanEquipCtx.md) | What `rq.item.on_can_equip` gets for one item and one character. |
 | [`rq.CapCtx`](types/rq.CapCtx.md) | What `rq.combat.on_cap` gets for one hit. |
 | [`rq.Castle`](types/rq.Castle.md) | The castle's state, from `rq.castle()`. |

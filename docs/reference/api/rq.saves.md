@@ -36,6 +36,7 @@ if id then rq.saves.switch(id) end
 | [`rq.saves.rename`](#rqsavesrename) | Renames a profile. |
 | [`rq.saves.delete`](#rqsavesdelete) | Deletes a profile. |
 | [`rq.saves.switch`](#rqsavesswitch) | Makes a profile active and restarts the game on it. |
+| [`rq.saves.autosave`](#rqsavesautosave) | Saves to the game's autosave slot now, as the game does when a quest is taken and when it ends. |
 
 ### rq.saves.install
 
@@ -250,6 +251,42 @@ It records the choice, starts a new process (which waits for this one to exit) a
 | --- | --- | --- |
 | `ok` | `nil` | Nothing: on success it does not return. |
 | `err` | `string?` | Why the choice could not be recorded. |
+
+### rq.saves.autosave
+
+```lua
+rq.saves.autosave() -> boolean, string?
+```
+
+`since 2.50.0`
+
+Saves to the game's autosave slot now, as the game does when a quest is taken and when it ends.
+
+It calls the game's own autosave (`自動セーブ(1)`): its "Auto-Saving" message shows for 700 ms and
+the save goes to the slot the title's Continue loads, with the `rq.saves.on_save` callbacks and
+`rq.savedata`. It saves on the hub only, where the SYSTEM menu's Save is on too (the footer's hub
+mode, outside a quest): a mod that changed the player's things in a scene can save them before
+anything else happens. The game draws frames while its message shows, so `rq.on_frame` runs under
+it; a call from there while the game saves is refused. `rq.scene.start` and `rq.ui.choose` wait
+for the save to end.
+
+```lua
+local save_after = false
+rq.on_frame(function()
+  if save_after and not rq.scene.active() and rq.ui.get().screen == "hub" then
+    save_after = false
+    local ok, why = rq.saves.autosave()
+    if not ok then rq.log("no autosave: " .. why) end
+  end
+end)
+```
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `saved` | `boolean` | true when the game wrote the save. |
+| `why` | `string?` | Why it did not save: "a quest is running", "only on the hub", "the game is saving" or "the game could not save". |
+
+See also: [`rq.saves.on_save`](rq.saves.md#rqsaveson_save)
 
 ## Events
 

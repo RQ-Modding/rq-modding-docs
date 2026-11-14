@@ -192,14 +192,15 @@ Returns how the last `rq.ui.shot` ended, once.
 rq.ui.choose(items, fn, opts) -> boolean
 ```
 
-`since 2.7.0`
+`since 2.7.0` `changed 2.50.0`
 
 Opens the game's own choice menu outside a scene, on the hub or any of the game's screens, and
 calls `fn` with the row the player picks.
 
 The menu opens at the next update, and `fn` runs when it closes. It is modal: the game's screen
 under it waits until the player picks, as under the vault's sort menu. It waits to open while the
-System menu or Config is open, while a scene plays, and while another choice menu shows. The
+System menu or Config is open, while a scene plays, while another choice menu shows, and while the
+game saves (its "Auto-Saving" message holds 700 ms, and the game draws frames under it). The
 menu does not scroll, so it takes at most 20 rows. With fewer than 3 rows it draws the game's tall
 buttons.
 
@@ -229,6 +230,8 @@ rq.ui.choose({ "Sell all", { id = "keep", text = "Keep the rare ones" }, "-", "S
 | Returns | Type | Description |
 | --- | --- | --- |
 | `opened` | `boolean` | true when the menu will open; false when one is already waiting or open, and then `fn` is not called. |
+
+> Changed in 2.50.0: Waits for the game's save to end.
 
 See also: [`rq.ui.choosing`](rq.ui.md#rquichoosing), [`rq.uikit.options`](rq.uikit.md#rquikitoptions)
 

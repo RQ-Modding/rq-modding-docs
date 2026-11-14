@@ -432,10 +432,10 @@ rq.item.store(ii, "storage")
 ### rq.item.buy
 
 ```lua
-rq.item.buy(ii, opts) -> boolean
+rq.item.buy(ii, opts) -> boolean, string?
 ```
 
-`since 2.10.0` `changed 2.49.0`
+`since 2.10.0` `changed 2.49.0` `changed 2.50.0`
 
 Buys an item from the shop's stock, as the shop's drag of a row onto the vault or a party member
 does (`T_EquitItem::setItem`): the game asks "Purchase ...?" first, and on Yes the item goes into
@@ -449,6 +449,9 @@ with `ask = false` it buys at once and returns false where the game would have s
 old item that vanishes when taken off also stops it. The question waits inside the call, as with
 `sell`. The money on the system bar updates, and the `rq.shop.on_buy` callbacks run, as for the
 shop's drag. Buying does not restock the shop: `rq.shop.restock` does what the next visit would.
+
+The `rq.shop.on_can_buy` callbacks run first: a refusal returns false and its text, which the
+game's notice shows when asking.
 
 Raises an error when `ii` or `chara` is not a whole number, or `opts` is not a table.
 
@@ -464,9 +467,12 @@ if ii and rq.item.buy(ii) then rq.log("bought", ii) end
 
 | Returns | Type | Description |
 | --- | --- | --- |
-| `bought` | `boolean` | false when it was not bought: not in the shop's stock, not enough money, a character who cannot wear it, an old item that cannot come off, No, or another question showing. |
+| `bought` | `boolean` | false when it was not bought: not in the shop's stock, refused by an `rq.shop.on_can_buy` callback, not enough money, a character who cannot wear it, an old item that cannot come off, No, or another question showing. |
+| `why` | `string?` | A refusal's text from `rq.shop.on_can_buy`, when it gave one. |
 
 > Changed in 2.49.0: Runs the `rq.shop.on_buy` callbacks (only the game's drag did).
+
+> Changed in 2.50.0: Runs the `rq.shop.on_can_buy` callbacks, and returns a refusal's text.
 
 ### rq.item.info
 

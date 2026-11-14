@@ -5,6 +5,18 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.50.0
+
+The calls Pluepet Rare Contract needs (`notes/plans/plan-rare-contract.md` in the workspace), from a tester's request: Pluepet tracks down a lost Rare Item for 50,000 Gold, the player chooses it in a scene over Frostbuy, and it comes to Rance's Room after three successful exploration quests, shown as the game shows an item from an event, with an autosave after. In Lua over `rq.ain` (`src/lua/item.lua`, `scene.lua`, `savedata.lua`).
+- `rq.shop.on_can_buy(fn)`: a callback that can refuse a Frostbuy purchase before the game checks the money and asks "Purchase ...?". A before hook on `T_EquitItem@setItem`, the one place the game buys (the rack's drag onto the vault, index 999, or onto a character's row), for an item whose place is the shop's (6); a refusal skips the method, which returns false, so the drag puts the tile back, and its text shows in the game's notice. `rq.CanBuyCtx`: `ii`, `no`, `id`, `name`, `price`, `to` (`"vault"` or `"character"`).
+- `rq.item.buy` runs the `on_can_buy` callbacks after its own checks of the item, and returns false and the refusal's text (shown in the notice when asking).
+- `rq.ItemDef.keep`: the vault's DISCARD, SELL and DONATE refuse the item, as the game does for Chaos the Darksword (item 100): an after hook on `アイテム_破棄可能`, which all three ask, for an item number defined with `keep`.
+- `rq.scene.item(ii, o)` (`s.item` in a scene): the game's moment for an item from an event, the jingle (`Ｒ８ジングル(1008)`, `o.jingle` another number or false) and `Ｒ８どこかからアイテム(ii)`, `T_ItemComment`'s window with the item's icon, name, level and effects, which waits for a click.
+- `rq.saves.autosave()`: the game's own autosave (`自動セーブ(1)`, slot 30, the "Auto-Saving" message held 700 ms), on the hub only (footer mode 10, the SYSTEM menu's Save is on there too) and outside a quest. Rance Quest saves its globals with `system.GroupSave`, not the running code, so the call from Lua saves as the game's own does (the loader refuses only `system.ResumeSave` under a mod's call). Refused while the game saves: its message waits in UPDATE (`T_SaveMessage::wait`), so `rq.on_frame` runs under it.
+- `rq.scene.play` and `start` hide the vault's and Frostbuy's item window (`g_sStoreItem`, z 9211 and up, over the message window at 8101 to 8301) while the scene plays, and show it again at its end. `T_StoreItem::setShow(false)` leaves the frame on the shown rack (`m_spLock`, CG 11416), so that one is hidden on its own.
+- `rq.scene.start` and `rq.ui.choose` wait while the game saves (`自動セーブ`, `中断セーブ` or `セーブファイル_保存` on `rq.ain.stack`): a scene started from `rq.on_frame` during the game's autosave at a quest's end played inside the save, under its message.
+- The Test Lab's `to_hub` goes back from the shop's racks and the vault too (`shop-buy`, `vault`, `vault-storage` in its BACK table): the "right click lost after a mod scene" in the plan was the Lab, not the game. The new scenario `rare-contract`.
+
 ## 2.49.0
 
 The calls Frostbuy Bulk Buy needs (`notes/plans/plan-bulk-buy.md` in the workspace), from a tester's request: tick several items at Frostbuy, buy several copies of an item the shop restocks, and pay once. In Lua over `rq.ain` (`src/lua/item.lua`, `uikit.lua`, `uikit_vault.lua`), but for one C call.

@@ -262,6 +262,7 @@ See also: [`rq.shop.donations`](rq.shop.md#rqshopdonations)
 | --- | --- |
 | [`rq.shop.on_stock`](#rqshopon_stock) | Registers a function that runs after the game refills the shop's stock. |
 | [`rq.shop.on_buy`](#rqshopon_buy) | Registers a function that runs after each Frostbuy purchase. |
+| [`rq.shop.on_can_buy`](#rqshopon_can_buy) | Registers a function that can refuse a Frostbuy purchase before it happens. |
 
 ### rq.shop.on_stock
 
@@ -323,3 +324,40 @@ end)
 > Changed in 0.23.0: Returns a remover.
 
 > Changed in 2.49.0: Runs for `rq.item.buy` too.
+
+### rq.shop.on_can_buy
+
+```lua
+rq.shop.on_can_buy(fn) -> fun()
+```
+
+`since 2.50.0`
+
+Registers a function that can refuse a Frostbuy purchase before it happens.
+
+It runs when the player drags an item from the shop's rack onto the vault or a party member, before
+the game checks the money and asks "Purchase ...?", and for `rq.item.buy`. Return false and a
+text to refuse: the game's notice shows the text (none for nil or ""), the item stays on the rack
+and nothing is paid. Return true or nil to let it go on. The first refusal wins. Use it for an item
+that may be bought only at some times; to take an item off the rack, use `rq.shop.on_stock`. An
+error in a callback is logged once per text, and the purchase goes on.
+
+Raises an error when `fn` is not a function.
+
+```lua
+rq.shop.on_can_buy(function(ctx)
+  if ctx.id == "mymod:ticket" and rq.game.gold() < 100000 then
+    return false, "Come back with 100,000 Gold."
+  end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(ctx:` [`rq.CanBuyCtx`](../types/rq.CanBuyCtx.md) `): (boolean\|nil, string?)` | Gets the purchase; returns false and a text to refuse. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |
+
+See also: [`rq.shop.on_buy`](rq.shop.md#rqshopon_buy), [`rq.item.buy`](rq.item.md#rqitembuy)

@@ -359,6 +359,24 @@ local function buy_copies(no, n)
 end
 ```
 
+A mod can also say no to a purchase. Since 2.50.0
+[`rq.shop.on_can_buy`](../reference/api/rq.shop.md#rqshopon_can_buy) runs before the game checks
+the money and asks "Purchase ...?", for the player's drag from the rack and for `rq.item.buy`:
+return false and a text, and the game's notice shows the text, the item stays on the rack and
+nothing is paid. `rq.item.buy` returns the text as its second value. An item that the player keeps
+until the mod takes it back, as a receipt, gets `keep = true` in `rq.item.define`: the vault's
+DISCARD, SELL and DONATE refuse it, as the game does for Chaos the Darksword. Pluepet Rare Contract
+sells one contract at a time this way:
+
+```lua
+local TICKET = rq.item.define({ id = "my-mod:ticket", name = "Ticket", type = "none",
+  price = 50000, keep = true, info = "Good for one wish." })
+rq.shop.on_can_buy(function(ctx)
+  if ctx.no ~= TICKET then return end
+  if #rq.item.find(TICKET) > 0 then return false, "You already have a ticket." end
+end)
+```
+
 ## Waiting and timers
 
 `rq.on_frame` runs on every update of the game, which can be thousands of times a second on a

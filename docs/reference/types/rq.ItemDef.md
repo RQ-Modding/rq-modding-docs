@@ -21,6 +21,7 @@ An item template for `rq.item.define`.
 | `info` *(optional)* | `string` | The description; `$` is a line break. |
 | `locked` *(optional)* | `boolean` | Cannot be taken off (`外せません`). |
 | `vanishes` *(optional)* | `boolean` | Vanishes (`消滅します`). |
+| `keep` *(optional)* | `boolean` | The player cannot get rid of it: the vault's DISCARD, SELL and DONATE refuse it, as the game does for Chaos the Darksword (`アイテム_破棄可能` says false). `rq.item.remove` still removes it. Default false. Since 2.50.0. |
 | `on_create` *(optional)* | `fun(ii: integer)` | Runs when an instance is created. |
 
 ## Used by

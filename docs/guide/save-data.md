@@ -77,6 +77,24 @@ end)
 At the top level of `init.lua` no save is loaded yet, so read the data in `on_load`, or when it is
 needed.
 
+A mod can also save now, as the game does when a quest is taken and when it ends:
+[`rq.saves.autosave`](../reference/api/rq.saves.md#rqsavesautosave) (2.50.0) writes the game's
+autosave, with its "Auto-Saving" message, on the hub only. A mod that gave the player something in
+a scene saves it before anything else can happen; Pluepet Rare Contract does it after its delivery:
+
+```lua
+local save_after = false
+rq.on_frame(function()
+  if not save_after or rq.scene.active() or rq.ui.get().screen ~= "hub" then return end
+  save_after = false
+  local ok, why = rq.saves.autosave()
+  if not ok then rq.log("no autosave: " .. why) end
+end)
+```
+
+The game draws frames while its message shows, and `rq.on_frame` runs under them: a second
+autosave there is refused, and `rq.scene.start` and `rq.ui.choose` wait for the save to end.
+
 ## Moving from rq.store
 
 A mod that kept its progress in `rq.store` can move it over once, on the first load after the
