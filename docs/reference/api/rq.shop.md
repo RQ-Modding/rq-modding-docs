@@ -21,6 +21,9 @@ end)
 | [`rq.shop.install`](#rqshopinstall) | Wraps the end of `Ｔアイテム屋` so `on_stock` callbacks run and `stock` works. |
 | [`rq.shop.in_stock`](#rqshopin_stock) | Returns whether an item is already on sale in the shop. |
 | [`rq.shop.stock`](#rqshopstock) | Puts one item on sale, through the game's `Ｔアイテム屋／入荷品`. |
+| [`rq.shop.restocks`](#rqshoprestocks) | Returns whether the shop puts another copy of an item on sale on the next visit, once the one on sale is bought. |
+| [`rq.shop.restock`](#rqshoprestock) | Puts the next copy of an item on sale now, as the next visit would. |
+| [`rq.shop.next`](#rqshopnext) | Returns the copies of an item the shop would sell one after another: the one on sale now, then one for each `rq.shop.restock`. |
 | [`rq.shop.donations`](#rqshopdonations) | Returns the donations count and Frostbuy's reward goal (`◆寄付`, `◆寄付ボーナス`). |
 | [`rq.shop.set_donations`](#rqshopset_donations) | Writes the donations count, and the reward goal when given. |
 
@@ -94,6 +97,108 @@ Raises an error for an unknown item, or for a value that is not a number or a te
 > Changed in 2.35.0: No `rq.shop.install` needed; it raised an error before it.
 
 > Changed in 2.47.0: While the shop shows, the item is on its list at once (it waited for the next visit).
+
+### rq.shop.restocks
+
+```lua
+rq.shop.restocks(no) -> boolean
+```
+
+`since 2.49.0`
+
+Returns whether the shop puts another copy of an item on sale on the next visit, once the one on
+sale is bought.
+
+These are the game's own rules (`Ｔアイテム屋`, which refills the stock once a visit): an item whose
+restock count (`◆アイテム補充数`) is not 0 (most weapons and armor, the special items the second
+world adds, some held items such as the Capture Rope), Forbidden Talent (304) from the third world
+on, and Forbidden Talent - Weak (305) once quest 20 is cleared. It is false for the items the game
+sells only while the player owns none (Skill Again, the Character Ticket, Tama's items), once, or
+never, and for a mod's item: a mod restocks its own items in `rq.shop.on_stock` or `on_buy`.
+
+Raises an error for a value that is not a number or a text id.
+
+```lua
+if rq.shop.restocks(304) then rq.log("Forbidden Talent comes back on every visit") end
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `no` | `integer\|string` | An item number or text id. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `restocks` | `boolean` | true when the next visit puts another on sale. |
+
+See also: [`rq.shop.restock`](rq.shop.md#rqshoprestock)
+
+### rq.shop.restock
+
+```lua
+rq.shop.restock(no) -> integer
+```
+
+`since 2.49.0`
+
+Puts the next copy of an item on sale now, as the next visit would.
+
+When `rq.shop.restocks(no)` is true and none is on sale, it calls `rq.shop.stock(no)`: the game's
+`Ｔアイテム屋／入荷品` adds 1 to the restock count and makes the copy, so a weapon or armor comes a
+level higher (① to ⑨, at the game's price), and an open shop lists it at once. Otherwise it does
+nothing. With it a mod can sell several copies in one visit, one `rq.item.buy` after another.
+
+Raises an error for a value that is not a number or a text id.
+
+```lua
+local no = rq.item.number(ii)
+if rq.item.buy(ii, { ask = false }) then rq.shop.restock(no) end
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `no` | `integer\|string` | An item number or text id. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `ii` | `integer` | The new instance, or 0 when the item does not restock, one is already on sale, or the game refused it. |
+
+See also: [`rq.shop.next`](rq.shop.md#rqshopnext)
+
+### rq.shop.next
+
+```lua
+rq.shop.next(no, n) -> rq.ShopCopy[]
+```
+
+`since 2.49.0`
+
+Returns the copies of an item the shop would sell one after another: the one on sale now, then one
+for each `rq.shop.restock`.
+
+Each copy is read from the game's own creation at the restock count it would have (an instance made
+quietly, read and deleted, and the count put back), so its level, name, price and stats are the
+game's, with a mod's `rq.item.edit` and the world's bonus. A weapon's or armor's copies go up a level
+each, up to ⑨; past it, and for an item whose data does not follow the count, the last copy
+repeats without another instance. One copy when the item does not restock
+(`rq.shop.restocks`), none when none is on sale. It only reads: buying is `rq.item.buy`, then
+`rq.shop.restock`, one copy at a time.
+
+Raises an error for a value that is not a number or a text id, or an `n` that is not a whole number
+of 1 or more.
+
+```lua
+local cost = 0
+for _, c in ipairs(rq.shop.next(90, 5)) do cost = cost + c.price end -- the next 5 Buster Swords
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `no` | `integer\|string` | An item number or text id. |
+| `n` *(optional)* | `integer` | How many copies, 1 or more. Default 1. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `copies` | [`rq.ShopCopy`](../types/rq.ShopCopy.md) `[]` | The copies, the one on sale first; empty when none is on sale. |
 
 ### rq.shop.donations
 
@@ -193,13 +298,13 @@ See also: [`rq.shop.stock`](rq.shop.md#rqshopstock)
 rq.shop.on_buy(fn) -> fun()
 ```
 
-`since 0.9.0` `changed 0.23.0`
+`since 0.9.0` `changed 0.23.0` `changed 2.49.0`
 
 Registers a function that runs after each Frostbuy purchase.
 
-It wraps the end of `T_Shop@buyItem` the first time it is used, so it needs no `install`. Use it to
-count purchases, and raise the next price in `on_stock`. Up to 16 callbacks; an error in one is
-written to the log.
+It wraps the end of `T_Shop@buyItem` the first time it is used, so it needs no `install`. It runs
+for `rq.item.buy` too, so a mod's purchase counts as the player's drag. Use it to count purchases,
+and raise the next price in `on_stock`. Up to 16 callbacks; an error in one is written to the log.
 
 ```lua
 rq.shop.on_buy(function(ctx)
@@ -216,3 +321,5 @@ end)
 | `remove` | `fun()` | Removes this callback. |
 
 > Changed in 0.23.0: Returns a remover.
+
+> Changed in 2.49.0: Runs for `rq.item.buy` too.

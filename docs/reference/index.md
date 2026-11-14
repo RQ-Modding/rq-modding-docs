@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.48.0.
+Loader version 2.49.0.
 
 ## Namespaces
 
@@ -211,6 +211,7 @@ Loader version 2.48.0.
 | [`rq.Settings`](types/rq.Settings.md) | A settings page's values, from `rq.config.settings`. |
 | [`rq.SettingsOpts`](types/rq.SettingsOpts.md) | What `rq.config.settings` takes. |
 | [`rq.SettingsRow`](types/rq.SettingsRow.md) | One row of a settings page, for `rq.config.settings`. |
+| [`rq.ShopCopy`](types/rq.ShopCopy.md) | What `rq.shop.next` gives for each copy: `rq.item.info`'s row data and the copy's shop level. |
 | [`rq.SkillBrief`](types/rq.SkillBrief.md) | A skill as `rq.units()` lists it. |
 | [`rq.SkillInfo`](types/rq.SkillInfo.md) | What `rq.skill.get` returns. |
 | [`rq.SkillLevel`](types/rq.SkillLevel.md) | A skill and its level, as `rq.chara.base_skills` lists them and `edit`'s `learn` takes them. |

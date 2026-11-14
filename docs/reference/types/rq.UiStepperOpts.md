@@ -14,6 +14,8 @@ What `rq.uikit.stepper` takes.
 | `big` *(optional)* | `integer` | The same with Shift held. Default `step` x 10. |
 | `label` *(optional)* | `string` | Text left of the field, in the theme's label font. Also its label in `rqmod-ctl ui`. |
 | `disabled` *(optional)* | `boolean` | Greyed: no buttons, no typing, no wheel. Its tip still shows. |
+| `h` *(optional)* | `integer` | The field's height in pixels, 18 to 30; the buttons are square, their text smaller. Default 30. Since 2.49.0. |
+| `ends` *(optional)* | `"max"\|"min"\|true` | A MAX button after +, a MIN button before -, or both. Since 2.49.0. |
 
 ## Used by
 

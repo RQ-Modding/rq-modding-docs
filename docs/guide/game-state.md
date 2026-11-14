@@ -328,9 +328,36 @@ rq.shop.on_buy(function(ctx)
 end)
 ```
 
-`rq.shop.on_buy` runs for a purchase in the shop's own window. A price that grows with each
+`rq.shop.on_buy` runs for a purchase in the shop's own window, and since 2.49.0 for
+`rq.item.buy` too, so a mod's purchase counts as the player's. A price that grows with each
 purchase goes in `on_stock` with `rq.item.set(ii, { price = ... })` on the stocked instance
 (`rq.item.find(no, { place = 6 })`), counted in [`rq.savedata`](save-data.md).
+
+The game refills the stock once a visit, one copy of each item. Since 2.49.0 a mod can sell more in
+the same visit, by the game's own rules:
+[`rq.shop.restocks`](../reference/api/rq.shop.md#rqshoprestocks) says whether the next visit puts
+another copy on sale (most weapons and armor, the special items that come back, Forbidden Talent in
+the third world; not Skill Again, which comes back only while the player owns none),
+[`rq.shop.restock`](../reference/api/rq.shop.md#rqshoprestock) puts it on sale now, and
+[`rq.shop.next`](../reference/api/rq.shop.md#rqshopnext) gives the copies' prices before any is
+bought. A weapon's or armor's copies go up a level each (① to ⑨), as the restock count rises, at
+the game's prices. Frostbuy Bulk Buy buys a cart this way:
+
+```lua
+local function buy_copies(no, n)
+  local cost = 0
+  for _, copy in ipairs(rq.shop.next(no, n)) do cost = cost + copy.price end
+  if cost > rq.game.gold() then return 0 end
+  local got = 0
+  for _ = 1, n do
+    local ii = rq.item.find(no, { place = 6 })[1]
+    if not ii or not rq.item.buy(ii, { ask = false }) then break end
+    got = got + 1
+    rq.shop.restock(no) -- the next copy, a level higher for a weapon
+  end
+  return got
+end
+```
 
 ## Waiting and timers
 

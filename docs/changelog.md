@@ -5,6 +5,19 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.49.0
+
+The calls Frostbuy Bulk Buy needs (`notes/plans/plan-bulk-buy.md` in the workspace), from a tester's request: tick several items at Frostbuy, buy several copies of an item the shop restocks, and pay once. In Lua over `rq.ain` (`src/lua/item.lua`, `uikit.lua`, `uikit_vault.lua`), but for one C call.
+- `rq.item.buy` runs the `rq.shop.on_buy` callbacks, as the shop's drag does (`T_Shop@buyItem`); a purchase a mod made was counted by no one before (Return Bonsai's price, Binoculars', Aten Gnu QoL's restock). The C side's `shop_buy` became `run_buy(ii)`, given to item.lua as a private `bought`.
+- `rq.shop.restocks(no)`: whether the next visit puts another copy on sale once the one on sale is bought, by `Ｔアイテム屋`'s rules: a restock count (`◆アイテム補充数[no]`) other than 0, Forbidden Talent (304) from the third world on, Forbidden Talent - Weak (305) once quest 20 is cleared. The items sold only while the player owns none, once or never, and a mod's items, are false.
+- `rq.shop.restock(no)`: what the next visit would do for that item, now: `rq.shop.stock(no)` when it restocks and none is on sale (the game's `入荷品` raises the count, so a weapon or armor comes a level higher). Returns the instance or 0.
+- `rq.shop.next(no, n)`: the copies the shop would sell one after another, the one on sale first (`rq.ShopCopy`: `rq.item.info`'s row data, `ii` on the first, `plus` 1 to 9 for ① to ⑨). Each is read from the game's own creation at the count it would have (a quiet instance, deleted, the count put back); a weapon's or armor's copies go up a level each up to ⑨, and a copy that cannot change (past ⑨, a count of 0, an item whose data does not follow the count) repeats the last one without another instance.
+- `rq.shop.restocks`, `restock` and `next` take a mod item's text id too (item.lua's private `no_of`, the C side's `resolve_no`).
+- `rq.uikit.stepper`: `h`, the field's height from 18 to 30 (the buttons square, their text smaller), and `ends`: `"max"` (a MAX button after +), `"min"` (MIN before -) or `true` (both), listed as `button-<id>-max` and `-min`.
+- `rq.uikit.item_row`: `mark`: false for an empty tick box at the icon's top right, true or a count for a ticked one, the count as "×n" at the icon's bottom right; the cyan cover and `selected` show the mark instead of `current`.
+- `rq.uikit.item_list` and `item_picker`: `marks`, a table from a row's instance (or, for a row table without one, its index) to true or a count, which gives each row its `mark`.
+- The Test Lab's `aten-qol` and `return-bonsai` buy with `rq.item.buy` alone (they called `T_Shop@buyItem` after it, which would now count twice); the new scenario `bulk-buy`.
+
 ## 2.48.0
 
 The calls behind two reports from Moru's friends, for Loadouts 1.1.0 and Skill Removal Payback 1.1.0: a build the game sells only through other skills (Healing 2 once Healing 1 is at 3, Recovery Rain 2 once Healing 3 is learned, those then erased), two Attack Boosts, and the Boosts whose effect stays after they are erased. In Lua over `rq.ain` (`src/lua/skills.lua`).

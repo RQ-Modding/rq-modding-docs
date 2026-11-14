@@ -435,7 +435,7 @@ rq.item.store(ii, "storage")
 rq.item.buy(ii, opts) -> boolean
 ```
 
-`since 2.10.0`
+`since 2.10.0` `changed 2.49.0`
 
 Buys an item from the shop's stock, as the shop's drag of a row onto the vault or a party member
 does (`T_EquitItem::setItem`): the game asks "Purchase ...?" first, and on Yes the item goes into
@@ -447,7 +447,8 @@ slot's old item must come off, with the game's notice or questions for one that 
 vanishes. Short of money, the game says "Not enough money.". The notices show only when asking;
 with `ask = false` it buys at once and returns false where the game would have said no, and an
 old item that vanishes when taken off also stops it. The question waits inside the call, as with
-`sell`. The money on the system bar updates. Buying does not restock the shop.
+`sell`. The money on the system bar updates, and the `rq.shop.on_buy` callbacks run, as for the
+shop's drag. Buying does not restock the shop: `rq.shop.restock` does what the next visit would.
 
 Raises an error when `ii` or `chara` is not a whole number, or `opts` is not a table.
 
@@ -464,6 +465,8 @@ if ii and rq.item.buy(ii) then rq.log("bought", ii) end
 | Returns | Type | Description |
 | --- | --- | --- |
 | `bought` | `boolean` | false when it was not bought: not in the shop's stock, not enough money, a character who cannot wear it, an old item that cannot come off, No, or another question showing. |
+
+> Changed in 2.49.0: Runs the `rq.shop.on_buy` callbacks (only the game's drag did).
 
 ### rq.item.info
 
