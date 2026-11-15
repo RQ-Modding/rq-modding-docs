@@ -5,6 +5,11 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.53.0
+
+A mod's skill that takes the place of others (`notes/plans/plan-better-elemental-knowledge.md` in the workspace): Better Elemental Knowledge folds the five Brawling Knowledges, or Aegis's three elemental Arrows, into one skill row, and its row's purchase record has to count what was paid for the ones it replaced, so that Skill Removal Payback gives all of it back. In Lua (`src/lua/skills.lua`).
+- `rq.chara.set_cost(iic, skill, cost)`: writes the purchase record of a skill the character holds (`rq.ForgetCtx.cost`, `rq.chara.slots`' `cost`); false when the character does not have it.
+
 ## 2.52.1
 
 A fix in RQ Browser found by Moru: changing the kind in the Names tab sometimes closed the program. No `rq.*` call changes; the version is raised for the program that ships with this loader, as in 2.43.0.

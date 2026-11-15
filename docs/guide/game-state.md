@@ -270,6 +270,29 @@ it, which is how Loadouts shows the price of a load less what any mod gives back
 local back = rq.chara.forget_points(iic, 223, { player = true, n = 3, cost = 9 })
 ```
 
+A mod's skill that takes the place of others writes what they had cost into its own row with
+[`rq.chara.set_cost`](../reference/api/rq.chara.md#rqcharaset_cost) (2.53.0), so an erasure later
+gives back what was paid for all of them. Better Elemental Knowledge sells one skill for the five
+Brawling Knowledges, its price less what the character holds of them; at the purchase it erases
+those (nothing back, they came off the price) and adds their records to the points paid:
+
+```lua
+rq.chara.on_learn(function(ctx)
+  if not ctx.new or ctx.skill ~= ALL_FIVE then return end
+  local total = math.max(ctx.cost, 0) -- what the purchase cost
+  for _, row in ipairs(rq.chara.slots(ctx.iic)) do
+    if SINGLE[row.skill] then
+      if row.cost > 0 then total = total + row.cost end
+      rq.chara.forget(ctx.iic, row.skill)
+    end
+  end
+  rq.chara.set_cost(ctx.iic, ALL_FIVE, total)
+end)
+```
+
+Like any purchase, such a skill needs a free row: the game refuses it on a full list (`"room"`)
+even when the rows it frees would make room.
+
 A purchase made before loader 2.45.0 has no record (its `cost` is 0): its steps above
 `base_skills` at today's `price` are the best guess, as Skill Removal Payback and Loadouts do.
 Set `loader` to `2.45.0` in `mod.json` for these.
