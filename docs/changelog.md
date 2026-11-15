@@ -5,6 +5,13 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.52.0
+
+The price of a change that erases skills, with what any mod gives back (`notes/plans/plan-new-mods.md` in the workspace, section 18): Loadouts counted only Skill Removal Payback's refunds before a load, through a call between the two mods. In Lua (`src/lua/skills.lua`).
+- `rq.chara.forget_points(iic, skill, opts)`: the skill points the `rq.chara.on_forget` callbacks would give back for erasing a skill, without erasing it. Each callback runs with the ctx the erasure would have and `preview` true. `opts.player` as in `forget`; `opts.n`, `cost` and `kept` describe the row as it would be after a plan's steps (a skill not there yet, or one raised first). The `on_forget` wrapper keeps each callback until its remover runs, and returns the remover as before.
+- `rq.ForgetCtx.n`: the skill's level in its row (most uses, rank, or 1), as `rq.chara.slots`' `n`.
+- `rq.ForgetCtx.preview`: true when `forget_points` asks; false for an erasure. A callback should only count then.
+
 ## 2.51.0
 
 An erasure a mod makes for the player (`notes/plans/plan-new-mods.md` in the workspace, section 17): Loadouts' erasures got Skill Removal Payback's points back through a call between the two mods; now any mod that erases for the player says so to `rq.chara.forget`, and any mod that pays back an ERASE sees it.

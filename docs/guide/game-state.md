@@ -259,6 +259,17 @@ that called `forget`.
 local removed, cost, back = rq.chara.forget(iic, skill, { player = true })
 ```
 
+To show a price before erasing,
+[`rq.chara.forget_points`](../reference/api/rq.chara.md#rqcharaforget_points) (2.52.0) asks the
+callbacks what an erasure would give back, with nothing erased: each one runs with `ctx.preview`
+true, so it should only count then. `n`, `cost` and `kept` ask about the row as a plan would leave
+it, which is how Loadouts shows the price of a load less what any mod gives back:
+
+```lua
+-- Healing 3, learned on the way to 3 uses for 9 points, then erased: what comes back?
+local back = rq.chara.forget_points(iic, 223, { player = true, n = 3, cost = 9 })
+```
+
 A purchase made before loader 2.45.0 has no record (its `cost` is 0): its steps above
 `base_skills` at today's `price` are the best guess, as Skill Removal Payback and Loadouts do.
 Set `loader` to `2.45.0` in `mod.json` for these.
