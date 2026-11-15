@@ -734,28 +734,44 @@ See also: [`rq.party.heal`](rq.party.md#rqpartyheal)
 ### rq.chara.forget
 
 ```lua
-rq.chara.forget(iic, skill) -> boolean, integer?
+rq.chara.forget(iic, skill, opts) -> boolean, integer?, integer?
 ```
 
-`since 0.4.0` `changed 2.45.0`
+`since 0.4.0` `changed 2.45.0` `changed 2.51.0`
 
 Removes a skill from a character (`ＣＳ削除`).
 
-`rq.chara.on_forget` callbacks run, with `caller` "lua".
+`rq.chara.on_forget` callbacks run, with `caller` "lua" and `mod` the calling mod's id. With
+`player = true` the erasure is the player's own, as the skill window's ERASE: a mod that erases
+for the player (a build it loads, a skill the player picked in its menu) sets it, and the
+callbacks see `player`, so a mod that gives points back for ERASE (Skill Removal Payback) gives
+them back here too. Without it the removal is the mod's own, as onoha-qol's head start, and such
+a mod gives nothing. The third value is the points the callbacks gave back, already added to
+the character.
 
-Raises an error for a slot with no character.
+Raises an error for a slot with no character, or for `iic`, `skill` or `opts` of the wrong type.
+
+```lua
+-- Erase a skill the player picked in the mod's menu, as ERASE would.
+local removed, cost, back = rq.chara.forget(iic, skill, { player = true })
+if removed then rq.log(("erased; it cost %d, %d back"):format(cost, back)) end
+```
 
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `iic` | `integer` | The character's roster slot. |
 | `skill` | `integer` | The skill number. |
+| `opts` *(optional)* | `{player?: boolean}` | `player`: the player chose this erasure (default false). |
 
 | Returns | Type | Description |
 | --- | --- | --- |
-| `removed` | `boolean` | false when the character did not have the skill. |
+| `removed` | `boolean` | false when the character did not have the skill (the only value then). |
 | `cost` | `integer?` | The purchase record, as `rq.ForgetCtx.cost`. |
+| `back` | `integer?` | The skill points the `rq.chara.on_forget` callbacks gave back (since 2.51.0). |
 
 > Changed in 2.45.0: `cost` is the purchase record.
+
+> Changed in 2.51.0: `opts.player`, and the points given back.
 
 ### rq.chara.base_skills
 
@@ -1213,19 +1229,21 @@ The engine then recalculates and heals the character. Up to 16 callbacks in all.
 rq.chara.on_forget(fn) -> fun()
 ```
 
-`since 0.4.0` `changed 0.23.0` `changed 2.45.0` `changed 2.48.0`
+`since 0.4.0` `changed 0.23.0` `changed 2.45.0` `changed 2.48.0` `changed 2.51.0`
 
 Calls `fn` before a skill row is emptied, to give skill points back.
 
-The points every callback returns are added up and given to the character. Use `caller` to skip
-the removals the game makes inside its recalculation. `kept` tells a Boost whose effect the
+The points every callback returns are added up and given to the character. `player` tells the
+erasures the player chose (the skill window's ERASE, and a mod's `rq.chara.forget` with
+`player = true`) from the game's other removals (its recalculation, the story, the reset) and a
+mod's own; `caller` names the AIN function, or "lua". `kept` tells a Boost whose effect the
 character keeps once it is erased (`rq.chara.boosts`), so its points were not lost. Up to 16
 callbacks in all.
 
 ```lua
+-- Half the points back for each erasure the player chose.
 rq.chara.on_forget(function(ctx)
-  if ctx.caller:find("Ｃ再計算") then return 0 end
-  return ctx.cost > 0 and ctx.cost or 1
+  if ctx.player and ctx.cost > 0 then return ctx.cost // 2 end
 end)
 ```
 
@@ -1242,6 +1260,8 @@ end)
 > Changed in 2.45.0: `cost` is the purchase record.
 
 > Changed in 2.48.0: `kept`.
+
+> Changed in 2.51.0: `player` and `mod`.
 
 ### rq.chara.on_learn
 

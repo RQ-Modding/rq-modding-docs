@@ -5,6 +5,15 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.51.0
+
+An erasure a mod makes for the player (`notes/plans/plan-new-mods.md` in the workspace, section 17): Loadouts' erasures got Skill Removal Payback's points back through a call between the two mods; now any mod that erases for the player says so to `rq.chara.forget`, and any mod that pays back an ERASE sees it.
+- `rq.chara.forget(iic, skill, opts)`: `opts.player = true` marks the erasure as the player's own, as the skill window's ERASE. The callbacks see it in `ctx.player`. Without it, a removal is the mod's own (onoha-qol's head start) as before.
+- `rq.chara.forget` returns a third value, the skill points the `on_forget` callbacks gave back (already added to the character): counted in C in `roster_forget` while the call runs.
+- `rq.ForgetCtx.player`: true for the skill window's ERASE (`caller` "キャラスキル_消去") and for `rq.chara.forget` with `player`; false for the game's other removals and a plain `forget`. `rq.ForgetCtx.mod`: the id of the mod that called `rq.chara.forget` (`rq.mod.id`), nil for the game's removals. In Lua (`src/lua/skills.lua`): `forget` marks its erasure while it runs, and the `on_forget` wrapper reads the mark for `caller` "lua", for that skill of that character only.
+- `rq.chara.forget` checks its arguments in Lua: an error now names the mod's line, and `opts` or `opts.player` of the wrong type raises one.
+- The reference's `on_forget` example pays back the erasures the player chose (`ctx.player`).
+
 ## 2.50.0
 
 The calls Pluepet Rare Contract needs (`notes/plans/plan-rare-contract.md` in the workspace), from a tester's request: Pluepet tracks down a lost Rare Item for 50,000 Gold, the player chooses it in a scene over Frostbuy, and it comes to Rance's Room after three successful exploration quests, shown as the game shows an item from an event, with an autosave after. In Lua over `rq.ain` (`src/lua/item.lua`, `scene.lua`, `savedata.lua`).

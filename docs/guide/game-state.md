@@ -240,18 +240,24 @@ level as `n` (most uses, or the rank). `rq.chara.on_forget`'s `cost` is the same
   Morurun's reset or Skill Again, which set the free points to the game's own count, so a mod can
   give back the points it gave.
 
-Half the points back for every ERASE in the skill window (Skill Removal Payback gives them all):
+Half the points back for every erasure the player chose (Skill Removal Payback gives them all):
 
 ```lua
 rq.chara.on_forget(function(ctx)
-  if ctx.caller == "キャラスキル_消去" and ctx.cost > 0 then return ctx.cost // 2 end
+  if ctx.player and ctx.cost > 0 then return ctx.cost // 2 end
 end)
 ```
 
-`rq.chara.forget` runs the callbacks too, with `caller` `"lua"`, so a mod can tell its own
-erasures from the window's. Skill Removal Payback answers only ERASE and the erasures made through
-its own `erase` (`rq.mod.get("skill-removal-payback")`), which Loadouts calls for the skills a load
-erases.
+`ctx.player` (2.51.0) is true for the skill window's ERASE and for a mod's erasure made for the
+player; the game's other removals (its recalculation, the story, the reset) are not. A mod that
+erases for the player, as Loadouts does when it loads a build, says so, and gets the points the
+callbacks gave back as a third value; any mod that pays back ERASE then pays it back too. A plain
+`rq.chara.forget` is the mod's own removal, and such a mod gives nothing. `ctx.mod` names the mod
+that called `forget`.
+
+```lua
+local removed, cost, back = rq.chara.forget(iic, skill, { player = true })
+```
 
 A purchase made before loader 2.45.0 has no record (its `cost` is 0): its steps above
 `base_skills` at today's `price` are the best guess, as Skill Removal Payback and Loadouts do.
