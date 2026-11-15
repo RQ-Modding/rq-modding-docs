@@ -251,29 +251,46 @@ local name = rq.ain.call("クエスト_名前", 126)
 rq.ain.hook(name, opts) -> fun()
 ```
 
-`since 0.18.0` `changed 0.23.0`
+`since 0.18.0` `changed 0.23.0` `changed 2.55.0`
 
 Runs Lua before and after any AIN function.
 
 A method is named `Class@method`. Many hooks may sit on one function. The function does not fire
 its hooks again while one of its callbacks runs. A table with neither side does nothing.
 
+`only` keeps the callbacks to the calls a mod wants, checked in C: on a function the game calls
+thousands of times a frame (a skill check, a stat read), a hook for one skill number costs Lua
+nothing on the other calls. Every position named must hold one of its values. The `after` side
+reads the arguments as the function leaves them. Hooks with a different `only` on one function
+each check their own.
+
+Raises an error for an unknown function, an `only` that is not a table of positions, a position
+the function has no argument at, an argument that is not an int, more than 4 positions, or a
+value that is not a whole number or a list of 1 to 16 of them.
+
 ```lua
 rq.ain.hook("message", { before = function(h)
   h.args[3] = h.args[3]:gsub("Rance", "Ranse")  -- rewrite every line of text
+end })
+
+-- Only the game's checks for skill 373: ＣＳ番号取得(character, skill, mode).
+rq.ain.hook("ＣＳ番号取得", { only = { [2] = 373 }, after = function(h)
+  rq.log("asked for Immature on", h.args[1], "->", h.result)
 end })
 ```
 
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `name` | `string` | The function's name. |
-| `opts` | `{before?: fun(h:` [`rq.AinHookCtx`](../types/rq.AinHookCtx.md) `), after?: fun(h:` [`rq.AinHookCtx`](../types/rq.AinHookCtx.md) `)}` | The callbacks. |
+| `opts` | [`rq.AinHookOpts`](../types/rq.AinHookOpts.md) | The callbacks, and `only`. |
 
 | Returns | Type | Description |
 | --- | --- | --- |
 | `remove` | `fun()` | Removes both sides of this hook. |
 
 > Changed in 0.23.0: Returns a remover.
+
+> Changed in 2.55.0: `only`: the callbacks run only for calls with these int arguments.
 
 ### rq.ain.method
 

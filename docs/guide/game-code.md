@@ -80,6 +80,20 @@ Hooks can sit at the top level of `init.lua`. Several mods may hook the same fun
 function the game calls often, such as `乱数`, runs every time, so keep its work small, and remove
 it once it is no longer needed.
 
+When only some calls matter, `only` (2.55.0) names them by their int arguments: argument position
+to a value or a list of values. The engine checks them before any Lua runs, so the other calls cost
+nothing. The game checks a character's skills thousands of times a frame in a fight; this hook
+sees only the checks for Immature (373), the second argument of `ＣＳ番号取得`:
+
+```lua
+rq.ain.hook("ＣＳ番号取得", { only = { [2] = 373 }, after = function(h)
+  rq.log("Immature asked for", h.args[1], "row", h.result)
+end })
+```
+
+Up to 4 positions, each with up to 16 values; a call runs the callbacks when every position named
+holds one of its values.
+
 ## Globals
 
 ```lua

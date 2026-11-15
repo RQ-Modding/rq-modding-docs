@@ -1230,6 +1230,7 @@ See also: [`rq.chara.add_exp`](rq.chara.md#rqcharaadd_exp)
 | [`rq.chara.on_forget`](#rqcharaon_forget) | Calls `fn` before a skill row is emptied, to give skill points back. |
 | [`rq.chara.on_learn`](#rqcharaon_learn) | Calls `fn` after each skill purchase, once per step. |
 | [`rq.chara.on_skill_reset`](#rqcharaon_skill_reset) | Calls `fn` after the game resets a character's skills, to give back what a mod gave. |
+| [`rq.chara.on_has_skill`](#rqcharaon_has_skill) | Calls `fn` when the game checks whether a character has one skill, to answer "no". |
 | [`rq.chara.on_level_up`](#rqcharaon_level_up) | Calls `fn` after a character goes up a level, whatever gave it. |
 
 ### rq.chara.on_recalc
@@ -1423,6 +1424,51 @@ end)
 | `remove` | `fun()` | Removes this callback. |
 
 See also: [`rq.chara.base_skills`](rq.chara.md#rqcharabase_skills)
+
+### rq.chara.on_has_skill
+
+```lua
+rq.chara.on_has_skill(skill, fn) -> fun()
+```
+
+`since 2.55.0`
+
+Calls `fn` when the game checks whether a character has one skill, to answer "no".
+
+The game's checks for a skill go through one function, `ＣＳ番号取得`: the stats (`Ｃ再計算`),
+battles, scenes and event conditions, and the party checks (`ＣＳ有無／スタメン`). `fn` returns
+false to answer that the character does not have the skill, for this one check, or nil to keep
+the game's answer. The skill row stays: the skill window, the status page and `rq.chara.slots`
+still show it. A check from one place only (`ctx.caller`) keeps the skill everywhere else: a
+character can keep a skill that scenes look for and lose what it does to the stats. After a
+change in the answer for stats, call `rq.chara.recalc`.
+
+The callbacks run only for checks of `skill` (an `rq.ain.hook` with `only`), so a check of
+another skill costs Lua nothing; the game checks skills many times a frame in a battle, so keep
+`fn` short. `chara`, `row` and `caller` are worked out when a callback first reads them.
+
+A callback's error, or a return other than false or nil, is logged once per mod and changes
+nothing.
+
+Raises an error when `skill` is not a whole number from 1 to 1000, or `fn` is not a function.
+
+```lua
+-- Immature (373) takes nothing off Kouhime's stats (character 20); scenes still see it.
+rq.chara.on_has_skill(373, function(ctx)
+  if ctx.chara == 20 and ctx.caller == "Ｃ再計算" then return false end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `skill` | `integer` | The skill number, 1 to 1000. |
+| `fn` | `fun(ctx:` [`rq.HasSkillCtx`](../types/rq.HasSkillCtx.md) `): false\|nil` | Returns false for "no", or nil. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |
+
+See also: [`rq.chara.slots`](rq.chara.md#rqcharaslots)
 
 ### rq.chara.on_level_up
 

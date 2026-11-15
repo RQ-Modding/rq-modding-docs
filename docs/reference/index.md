@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.54.0.
+Loader version 2.55.0.
 
 ## Namespaces
 
@@ -62,6 +62,7 @@ Loader version 2.54.0.
 | [`rq.AgentOpts`](types/rq.AgentOpts.md) | How `rq.agent.control` finds a control: a game button, or a rectangle a mod draws. |
 | [`rq.AgentWidget`](types/rq.AgentWidget.md) | A control a mod drew on this update, for `rqmod-ctl ui`. |
 | [`rq.AinHookCtx`](types/rq.AinHookCtx.md) | What an `rq.ain.hook` callback gets. |
+| [`rq.AinHookOpts`](types/rq.AinHookOpts.md) | What `rq.ain.hook` takes. |
 | [`rq.AreaCtx`](types/rq.AreaCtx.md) | What `rq.dungeon.on_area` gets. |
 | [`rq.BagInfo`](types/rq.BagInfo.md) | One enemy in `rq.battle.bags`. |
 | [`rq.BattleActor`](types/rq.BattleActor.md) | The ally whose turn it is, from `rq.battle.actor`. |
@@ -118,6 +119,7 @@ Loader version 2.54.0.
 | [`rq.ElementCtx`](types/rq.ElementCtx.md) | What `rq.combat.on_element` gets for one physical hit. |
 | [`rq.EncounterCtx`](types/rq.EncounterCtx.md) | What `rq.encounters.on_encounter` callbacks get. |
 | [`rq.EncounterInfo`](types/rq.EncounterInfo.md) | What `rq.encounters.info` returns. |
+| [`rq.EquipCtx`](types/rq.EquipCtx.md) | What `rq.item.on_equip` gets. |
 | [`rq.EscapeCtx`](types/rq.EscapeCtx.md) | What `rq.combat.on_escape` gets. |
 | [`rq.FightBackground`](types/rq.FightBackground.md) | One of the game's fight backgrounds. |
 | [`rq.FightOpts`](types/rq.FightOpts.md) | What `rq.battle.start` takes. Only `enemies` is needed. |
@@ -133,6 +135,7 @@ Loader version 2.54.0.
 | [`rq.GifInfo`](types/rq.GifInfo.md) | What `rq.image.gif_info` returns. |
 | [`rq.GifOpts`](types/rq.GifOpts.md) | Options for `rq.image.add_gif`. |
 | [`rq.GoHomeCtx`](types/rq.GoHomeCtx.md) | What an `rq.party.on_go_home` callback gets. |
+| [`rq.HasSkillCtx`](types/rq.HasSkillCtx.md) | What `rq.chara.on_has_skill` gets for one check. |
 | [`rq.HealCtx`](types/rq.HealCtx.md) | What `rq.combat.on_heal` gets for one heal; `amount` is writable. |
 | [`rq.HpEvent`](types/rq.HpEvent.md) | What `rq.battle.on_hp` gets. |
 | [`rq.HudCgOpts`](types/rq.HudCgOpts.md) | How `rq.hud.cg` draws a CG. |

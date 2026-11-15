@@ -13,4 +13,4 @@ What an `rq.ain.hook` callback gets.
 
 ## Used by
 
-[`rq.ain.hook`](../api/rq.ain.md#rqainhook), [`rq.scene.after`](../api/rq.scene.md#rqsceneafter), [`rq.scene.before`](../api/rq.scene.md#rqscenebefore), [`rq.scene.replace`](../api/rq.scene.md#rqscenereplace)
+[`rq.AinHookOpts`](rq.AinHookOpts.md), [`rq.scene.after`](../api/rq.scene.md#rqsceneafter), [`rq.scene.before`](../api/rq.scene.md#rqscenebefore), [`rq.scene.replace`](../api/rq.scene.md#rqscenereplace)

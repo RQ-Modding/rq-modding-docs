@@ -323,6 +323,24 @@ character keeps, and `on_forget`'s `kept` tells it of the skill being erased: Sk
 Payback gives nothing back for such a Boost unless its setting says so. Set `loader` to `2.48.0`
 for these.
 
+### A skill kept, its effect not
+
+Every check the game makes for a skill (the stats, a fight, a scene's condition) goes through one
+function. [`rq.chara.on_has_skill`](../reference/api/rq.chara.md#rqcharaon_has_skill) (2.55.0)
+runs there for one skill and can answer "no" (`return false`) for that one check, while the skill
+stays in the character's list. `ctx.caller` names the game function that asks: `Ｃ再計算` works
+out the stats. Dynamic Immature's Adult Card takes Immature's -20% off a character the story
+presents as a child, whose scenes still find the skill:
+
+```lua
+rq.chara.on_has_skill(373, function(ctx)
+  if grown[ctx.chara] and ctx.caller == "Ｃ再計算" then return false end
+end)
+```
+
+Call `rq.chara.recalc` after the answer changes, so the stats follow. The callbacks run only for
+the skill named, through `rq.ain.hook`'s `only`.
+
 ## Who can equip an item
 
 The game asks one question before a character wears an item, in the vault, on the status page, in
@@ -339,6 +357,41 @@ rq.item.on_can_equip(function(ctx)
   end
 end)
 ```
+
+A refusal can say why (2.55.0): `return false, "No free skill slot for Immature."`. The game shows
+the text in its notice where the player tries: dropped on a greyed character in the vault, in
+place of "Unable to equip.", or picked on the status page, where an item only a mod refuses stays
+bright so that it can be picked and explained. Without a text, the game's own behavior stays.
+
+### An item that works when equipped
+
+[`rq.item.on_equip`](../reference/api/rq.item.md#rqitemon_equip) (2.55.0) runs each time an item
+is put on a character, from the vault, the status page, the shop or a mod
+(`rq.item.equip`), once the game has worked out the stats again. An item defined with
+`vanishes = true` is deleted by the game when it comes off, as Rocky Chunk is, so an item that does
+its work in `on_equip` works once and what it did stays. Dynamic Immature's Randoseru gives its
+wearer the skill Immature:
+
+```lua
+local RANDOSERU = rq.item.define({ id = "dynamic-immature:randoseru", name = "Randoseru",
+  type = "special", icon = "icons/randoseru.png", price = 50000, vanishes = true,
+  info = "Equip: the wearer gains Immature." })
+
+rq.item.on_can_equip(function(ctx)
+  if ctx.no == RANDOSERU and rq.chara.skill_room(ctx.iic) < 1 then
+    return false, "No free skill slot for Immature."
+  end
+end)
+
+rq.item.on_equip(function(ctx)
+  if ctx.no == RANDOSERU then
+    rq.chara.grant(ctx.iic, 373, 0)
+    rq.chara.recalc(ctx.iic)
+  end
+end)
+```
+
+`ctx.old` is the item the slot held before (0 for none); taking an item off does not call it.
 
 ## Appraisal and the shop
 

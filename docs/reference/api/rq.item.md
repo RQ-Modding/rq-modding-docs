@@ -575,6 +575,7 @@ See also: [`rq.item.find`](rq.item.md#rqitemfind)
 | --- | --- |
 | [`rq.item.on_create`](#rqitemon_create) | Calls `fn` after any item instance is created (`Ｉ生成`), game or mod. |
 | [`rq.item.on_can_equip`](#rqitemon_can_equip) | Calls `fn` where the game decides whether a character can equip an item, to change the answer. |
+| [`rq.item.on_equip`](#rqitemon_equip) | Calls `fn` each time an item is put on a character. |
 
 ### rq.item.on_create
 
@@ -606,7 +607,7 @@ It is not called for the temporary instance of `rq.item.info`, which never enter
 rq.item.on_can_equip(fn) -> fun()
 ```
 
-`since 2.46.0`
+`since 2.46.0` `changed 2.55.0`
 
 Calls `fn` where the game decides whether a character can equip an item, to change the answer.
 
@@ -614,6 +615,14 @@ It runs in `アイテム_装備可能`, the one check behind the vault, the stat
 storage screen's filters, the list of who can wear an item, and `rq.item.buy` with a `chara`.
 `fn` returns true to let the character equip it, false to refuse, or nil to keep the answer. Each
 callback sees in `ctx.allowed` what the one before left.
+
+A refusal can say why: `return false, "No free skill slot."`. The text of the last callback that
+refused with one counts, unless a later one returns true. The game shows it in its notice where
+a player tries to equip the item: a drop on a greyed character in the vault's or the storage
+screen's equip list shows it instead of the game's "Unable to equip.". The status page's item
+list greys only what the game itself refuses, so an item only a mod refuses with a text stays
+bright there, and picking it shows the text and equips nothing. With no text, the game's own
+behavior stays: "Unable to equip." in the vault, a grey row on the status page.
 
 The game checks the level first and stops there, so `ctx.reasons` says whether the item's
 characters or class would refuse it too: a mod that lifts only the level returns true only when
@@ -623,19 +632,71 @@ first reads them.
 A callback's error, or a return that is not a boolean or nil, is logged once and changes nothing.
 
 ```lua
+local BAG = rq.item.define({ id = "mymod:bag", name = "Bag", type = "special" })
 rq.item.on_can_equip(function(ctx)
   -- Athena 2.0 (27) wears any bow (subtype 5) whatever its level.
   if ctx.chara == 27 and #ctx.reasons == 1 and ctx.reason == "level"
     and rq.item.get(ctx.ii).subtype == 5 then
     return true
   end
+  -- The bag gives a skill: refused, with the reason, when there is no row for it.
+  if ctx.no == BAG and rq.chara.skill_room(ctx.iic) < 1 then
+    return false, "No free skill slot."
+  end
 end)
 ```
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `fn` | `fun(ctx:` [`rq.CanEquipCtx`](../types/rq.CanEquipCtx.md) `): boolean\|nil` | Returns true, false or nil. |
+| `fn` | `fun(ctx:` [`rq.CanEquipCtx`](../types/rq.CanEquipCtx.md) `): (boolean\|nil, string?)` | Returns true, false or nil; with false, the text the game shows (since 2.55.0). |
 
 | Returns | Type | Description |
 | --- | --- | --- |
 | `remove` | `fun()` | Removes this callback. |
+
+> Changed in 2.55.0: A refusal's text, shown in the vault and on the status page.
+
+See also: [`rq.item.on_equip`](rq.item.md#rqitemon_equip)
+
+### rq.item.on_equip
+
+```lua
+rq.item.on_equip(fn) -> fun()
+```
+
+`since 2.55.0`
+
+Calls `fn` each time an item is put on a character.
+
+It runs in `キャラ_装備設定`, the one call the game equips through: the vault's and the storage
+screen's drag, the status page, buying onto a character in the shop, `rq.item.give` with `to`
+and `rq.item.equip`. It runs once the slot holds the item, after the game has worked out the
+stats again and, for a Special item, done its own effects (Skill Again, a Morurun). Putting the
+same instance on again does not call it. An item taken off does not call it.
+
+This is the place for an item that does something once, when equipped: give a skill, then
+`rq.chara.recalc`. With `vanishes = true` in `rq.item.define`, the game deletes the item when it
+comes off, as it does Rocky Chunk, and what it did stays.
+
+A callback's error is logged once per mod.
+
+```lua
+local BAG = rq.item.define({ id = "mymod:bag", name = "Bag", type = "special", icon = 6331,
+  price = 100, vanishes = true, info = "Equip: the wearer learns Immature." })
+rq.item.on_equip(function(ctx)
+  if ctx.no == BAG then
+    rq.chara.grant(ctx.iic, 373, 0)
+    rq.chara.recalc(ctx.iic)
+  end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(ctx:` [`rq.EquipCtx`](../types/rq.EquipCtx.md) `)` | Gets the item and the character. Its return value is not used. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |
+
+See also: [`rq.item.on_can_equip`](rq.item.md#rqitemon_can_equip)
