@@ -6,7 +6,7 @@ One row of a character's skill list, from `rq.chara.slots`.
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `slot` | `integer` | The row, 1 to 20. |
+| `slot` | `integer` | The row, 1 to 20; to `rq.knownskills.most()` + 3 with `rq.knownskills` (since 2.54.0). |
 | `skill` | `integer` | The skill number in the row; 0 when the row is empty. |
 | `uses` | `integer` | Uses left. |
 | `max` | `integer` | Most uses. |

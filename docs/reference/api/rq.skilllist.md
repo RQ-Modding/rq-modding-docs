@@ -9,7 +9,8 @@ The game keeps the skills a character can buy in rows 1 to 60 of three arrays (`
 hold rows 1 to 144 and the list shows them 36 at a time. A page is 36 rows of the game's own
 filtered list (no panel color 104, none the character holds) in the order they were added, then
 sorted with `compSkill` as the game sorts. Opening the window goes back to page 1, and so does
-another character in it (the window's scroll bar or the wheel over it). Known Skills is not paged.
+another character in it (the window's scroll bar or the wheel over it). The known skills are paged by
+`rq.knownskills`.
 
 It is Lua over the game's own code (`src/lua/skilllist.lua`): the arrays are made longer with
 `rq.ain.set_global_len` whenever the game fills them, `スキルポン` stops at row 145 instead of 54,

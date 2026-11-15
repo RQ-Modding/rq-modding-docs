@@ -178,6 +178,37 @@ end
 For a list of items by number, such as the ones the Morurun absorbed, `rq.item.info(no)` gives an
 item number's name, icon and stats line with no item in the game, as the kit's rows want them.
 
+## More known skills
+
+```lua
+rq.knownskills.install({ most = 34 })
+```
+
+A character knows at most 17 skills and the item effect skill: the game keeps them in rows 1 to 18 of
+the character's skill list, and both the status page and the skill window show those 18.
+`rq.knownskills.install` raises the most (17 to 102) and shows the known skills 17 at a time.
+
+- **The rows.** Every character's list grows to `most` + 4 rows, and the game's own code walks them
+  all: fights, the hotbar, passives and Boosts in the stats, refills, the check for a free row before
+  a buy, Skill Again. `rq.chara.slots`, `skill_room`, `learnable` and `learn` count the new rows.
+  Call `install` from `init.lua`: mods load before the game makes its characters, so they are made
+  with the longer list.
+- **The pages.** The page's 17 skills are sorted as the game sorts the list (panel color, then
+  number), with the item effect skill last. REMOVE and the upgrade buttons act on the skill shown.
+  The status page opens on page 1, and so does another character.
+- **The controls.** A slim scroll bar between the status page's skills and the equipment (and the
+  wheel over the skills), and the game's left and right arrows beside the skill window's KNOWN SKILLS.
+  `install{ controls = false }` leaves them out for a mod that makes its own and turns pages with
+  `rq.knownskills.set_page`.
+- **The save** stays the game's own, 18 rows a character. The rows past them are kept in the
+  loader's [data beside the save](save-data.md) and come back after the save and after a load. A
+  smaller `most` than a character holds keeps the rows that do not fit there until a row is free.
+  Without the mod, the first save drops them; Skill Again gives the points back.
+
+Agents see the controls `scrollbar-known-pages` (`status` screen), `button-known-prev` and
+`button-known-next` (`skill-shop`), and `knownPage` and `knownPages` in `status` and `skillShop`.
+Known Skill Pages installs it with a Config setting for `most`.
+
 ## Tabs on a quest's map
 
 ```lua
@@ -388,6 +419,7 @@ local pick = rq.ui.ask("What now?", { { id = "trade", text = "Trade a Jewel" }, 
 Morurun Items and Gem Lady Trade ask this way.
 
 See [`rq.gamebutton`](../reference/api/rq.gamebutton.md), [`rq.skilllist`](../reference/api/rq.skilllist.md),
+[`rq.knownskills`](../reference/api/rq.knownskills.md),
 [`rq.statuspage`](../reference/api/rq.statuspage.md), [`rq.castle`](../reference/api/rq.castle.md),
 [`rq.config`](../reference/api/rq.config.md),
 [`rq.ui`](../reference/api/rq.ui.md) and [`rq.uikit`](../reference/api/rq.uikit.md) for every field.

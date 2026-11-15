@@ -48,6 +48,7 @@ end)
 | [`rq.input`](rq.input.md) | Reads the mouse and keyboard, and drives them for the game. |
 | [`rq.item`](rq.item.md) | Defines, gives and changes items. |
 | [`rq.items`](rq.items.md) | Lists the item instances the player owns. |
+| [`rq.knownskills`](rq.knownskills.md) | More known skills than the game's 17, shown 17 at a time on the status page and in the skill window. |
 | [`rq.loot`](rq.loot.md) | Chest loot: what the pools roll, and the items the player will find, known in advance. |
 | [`rq.mod`](rq.mod.md) | Finds out about other mods, and reaches what they share. |
 | [`rq.monster`](rq.monster.md) | The game's list of monsters: read a monster's data, change it each time the game builds it, and change each enemy a fight builds. A mod's own monsters, enemy groups and models. |

@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.53.0.
+Loader version 2.54.0.
 
 ## Namespaces
 
@@ -27,6 +27,7 @@ Loader version 2.53.0.
 | [`rq.input`](api/rq.input.md) | Reads the mouse and keyboard, and drives them for the game. |
 | [`rq.item`](api/rq.item.md) | Defines, gives and changes items. |
 | [`rq.items`](api/rq.items.md) | Lists the item instances the player owns. |
+| [`rq.knownskills`](api/rq.knownskills.md) | More known skills than the game's 17, shown 17 at a time on the status page and in the skill window. |
 | [`rq.loot`](api/rq.loot.md) | Chest loot: what the pools roll, and the items the player will find, known in advance. |
 | [`rq.mod`](api/rq.mod.md) | Finds out about other mods, and reaches what they share. |
 | [`rq.monster`](api/rq.monster.md) | The game's list of monsters: read a monster's data, change it each time the game builds it, and change each enemy a fight builds. A mod's own monsters, enemy groups and models. |

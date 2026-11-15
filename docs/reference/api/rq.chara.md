@@ -159,7 +159,7 @@ Returns a character's rank in a skill (`ＣＳ有無／ランク`).
 rq.chara.slots(iic) -> rq.CharaSlot[]
 ```
 
-`since 0.2.0` `changed 2.45.0`
+`since 0.2.0` `changed 2.45.0` `changed 2.54.0`
 
 Lists the rows of a character's skill list that hold a skill.
 
@@ -174,6 +174,8 @@ The game's screens show 6 hotbar positions, so a `slots` value above 6 adds rows
 | `slots` | [`rq.CharaSlot`](../types/rq.CharaSlot.md) `[]` | The rows in order; empty when there is no character. |
 
 > Changed in 2.45.0: Each row has the purchase record (`cost`) and the level (`n`).
+
+> Changed in 2.54.0: The rows past 20 that `rq.knownskills.install` adds.
 
 ### rq.chara.set_slot
 
@@ -1119,14 +1121,14 @@ See also: [`rq.chara.price`](rq.chara.md#rqcharaprice)
 rq.chara.skill_room(iic) -> integer
 ```
 
-`since 2.45.0`
+`since 2.45.0` `changed 2.54.0`
 
 Returns how many more skills a character can learn, as the skill window counts its free rows.
 
-It is the game's check before a new skill (`キャラスキル_空き確認`) as a number: 17 rows, less
-the rows the game keeps free for the character's story skills (`キャラ_スキル枠キープ数`), less
-the skills the character has. A new skill from `rq.chara.learn` needs one; one more use or rank
-needs none. `rq.chara.grant` does not check it.
+It is the game's check before a new skill (`キャラスキル_空き確認`) as a number: 17 rows
+(`rq.knownskills.most()` with `rq.knownskills`), less the rows the game keeps free for the
+character's story skills (`キャラ_スキル枠キープ数`), less the skills the character has. A new skill
+from `rq.chara.learn` needs one; one more use or rank needs none. `rq.chara.grant` does not check it.
 
 Raises an error for a slot with no character.
 
@@ -1141,6 +1143,8 @@ if rq.chara.skill_room(iic) < 2 then rq.ui.notice("Erase a skill first.") end
 | Returns | Type | Description |
 | --- | --- | --- |
 | `rows` | `integer` | The free rows, 0 or more. |
+
+> Changed in 2.54.0: Counts to `rq.knownskills.most()` once `rq.knownskills.install` made the rows longer.
 
 See also: [`rq.chara.learn`](rq.chara.md#rqcharalearn)
 
