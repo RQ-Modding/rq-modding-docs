@@ -248,6 +248,11 @@ rq.chara.on_forget(function(ctx)
 end)
 ```
 
+`rq.chara.forget` runs the callbacks too, with `caller` `"lua"`, so a mod can tell its own
+erasures from the window's. Skill Removal Payback answers only ERASE and the erasures made through
+its own `erase` (`rq.mod.get("skill-removal-payback")`), which Loadouts calls for the skills a load
+erases.
+
 A purchase made before loader 2.45.0 has no record (its `cost` is 0): its steps above
 `base_skills` at today's `price` are the best guess, as Skill Removal Payback and Loadouts do.
 Set `loader` to `2.45.0` in `mod.json` for these.
