@@ -67,7 +67,8 @@ When a mod asks for it, or at low priority.
 - **A browser for the game's files.** Came with 2.43.0: [RQ Browser](guide/file-browser.md) shows the
   game's CGs, Flash files, music, sounds, 3D textures and the names of `rq.ids` with their pictures,
   gives the Lua line that replaces or plays each, and saves them. Later: a Flash file's motion
-  played, the pictures and music the installed mods put in place, and the game's text.
+  played, the pictures and music the installed mods put in place, the game's text, and Escape to
+  close a dropdown.
 - **3D models in Blender (ongoing).** Worked on over time, each step with a guide
   for people new to 3D: the game's models and animations shown in the browser and exported to glTF for
   Blender; a mod's own textures on the game's models; a mod's own models and animations, read from the
