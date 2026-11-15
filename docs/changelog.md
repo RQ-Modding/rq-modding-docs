@@ -5,6 +5,13 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.52.1
+
+A fix in RQ Browser found by Moru: changing the kind in the Names tab sometimes closed the program. No `rq.*` call changes; the version is raised for the program that ships with this loader, as in 2.43.0.
+- Names: the list drew the frame of a change with the kind it had before but the rows of the new one, so a kind longer than the last (Party states, 5, to Skills, 486) read past the end of the shorter one, and the program closed on the text it found there (an access violation in `msvcrt.dll`). Whether it closed depended on what lay in memory past the list, hence "sometimes". The rows now follow the kind they were made for, and the list reads its kind after the dropdown and the search.
+- Names: another kind starts at its first row, not where the last one was scrolled to.
+- The arrow keys, Page Up, Page Down, Home and End do not move a list while a dropdown is open over it (they moved the row under the Names tab's kind list).
+
 ## 2.52.0
 
 The price of a change that erases skills, with what any mod gives back (`notes/plans/plan-new-mods.md` in the workspace, section 18): Loadouts counted only Skill Removal Payback's refunds before a load, through a call between the two mods. In Lua (`src/lua/skills.lua`).
