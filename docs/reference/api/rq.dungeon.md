@@ -89,16 +89,21 @@ map. For "the player walks the map", use `rq.dungeon.exploring`.
 rq.dungeon.exploring() -> boolean
 ```
 
-`since 0.2.0`
+`since 0.2.0` `changed 2.56.0`
 
 Returns whether the player walks the map.
 
 False when the map is hidden or suspended (a join dialog), and during a fight, a character profile,
-Config, the result and appraisal screens, and a scene or choice on the map.
+Config, the result and appraisal screens (from the fade-in of their background, which shows the
+map, also at the end of a quest with no map), and a scene or choice on the map.
+
+there, as at the end of a quest with fights and no map (Incident at the Church).
 
 | Returns | Type | Description |
 | --- | --- | --- |
 | `exploring` | `boolean` | true while the player can walk. |
+
+> Changed in 2.56.0: False while the result screen's background fades in. It read true for a moment
 
 ### rq.dungeon.info
 

@@ -258,8 +258,9 @@ Loot Preview's Item Previews tab is made this way.
 
 The map panel's Quest Storage button opens the game's own window of the quest's items.
 [`rq.ui.quest_storage()`](../reference/api/rq.ui.md#rquiquest_storage) (2.47.0) gives it while it
-shows: its `mode` (`"view"` from the panel's button, `"give-up"` from Give Up, `"failure"` at a
-failed quest's end), whether the game's question is over it (`dialog`), and each tile with an item:
+shows: its `mode` (`"view"` from the panel's button, `"give-up"` from Give Up; `"failure"` is the
+game's call at a failed quest's end, which never shows a window, as the quest's end has already
+deleted the items), whether the game's question is over it (`dialog`), and each tile with an item:
 its place in the window, the instance and its box (100 × 100). A mod draws on the tiles from
 `rq.on_frame`; the game gets no mouse over a kit widget, and a click on a tile does nothing in the
 game anyway. [`rq.uikit.icon_button`](../reference/api/rq.uikit.md#rquikiticon_button) is a picture
@@ -383,6 +384,10 @@ local pick = rq.ui.ask("What now?", { { id = "trade", text = "Trade a Jewel" }, 
   get a row of their own. `@` and `$`, where the game's own texts break, are drawn as `＠` and `＄`;
   pass `game = true` for a text that comes from the game, such as `h.args[2]` of its question.
   The dialog does not scroll: the rows and the lines of text together are at most 20.
+- **A long menu** (since 2.56.0): the game's menu opens with its top at y 360 and grows down, so
+  past about 12 rows its last rows ran off the screen, where a player cannot click them. A menu too
+  tall for the room under its place now goes up just enough to fit, for `rq.ui.choose`,
+  `rq.scene.choice` and these dialogs alike; a menu that fits keeps the game's place.
 - **A row's `comment`** (in `ask`, `rq.ui.choose` and `rq.scene.choice`) is shown in the game's
   comment window while the mouse is on the row. Since 2.45.1 the loader cuts its lines between
   words, at most 28 half-width letters (14 Japanese) each, the width the game's menu takes; `\n`

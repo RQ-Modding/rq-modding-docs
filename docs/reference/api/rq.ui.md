@@ -28,7 +28,7 @@ Reads what is on the screen and saves screenshots.
 rq.ui.get() -> table|nil
 ```
 
-`since 0.20.0` `changed 0.21.0` `changed 2.11.0` `changed 2.12.0` `changed 2.19.0` `changed 2.20.0` `changed 2.20.1` `changed 2.22.1` `changed 2.28.0` `changed 2.31.0` `changed 2.41.0` `changed 2.47.0`
+`since 0.20.0` `changed 0.21.0` `changed 2.11.0` `changed 2.12.0` `changed 2.19.0` `changed 2.20.0` `changed 2.20.1` `changed 2.22.1` `changed 2.28.0` `changed 2.31.0` `changed 2.41.0` `changed 2.47.0` `changed 2.56.0`
 
 Returns what is on the screen.
 
@@ -73,6 +73,13 @@ The Quest Storage window over a quest's map is the screen `quest-storage`: `clos
 `no` for Give Up, and its tiles `item-1` to `item-15` in the window's order, with the item
 instance as the value (see `rq.ui.quest_storage`).
 
+`busy` says what the game runs under the screen, when it runs one of these two: `"event"` while one
+of a quest's own events runs (its messages, its scenes, its fight, and the map read between them,
+`dungeon` with ABANDON, as before a goal's first line), and `"fight-end"` while the game waits for a
+click after a fight before it goes on (the map shows under it, and a placed enemy is counted and
+removed only after it). The inner one when both run. It is absent otherwise: an idle map has none.
+A quest of kind `"menu"` (Advance Worlds) runs as an event too, so its menu has `busy = "event"`.
+
 It builds the whole list, so do not call it on every `rq.on_frame`.
 
 every screen that shows it; Rance Castle is the screen `castle`, with its rooms as `room-<area>`
@@ -86,6 +93,7 @@ chosen (they were, and gave no hover).
 ```lua
 local s = rq.ui.get()
 if s and s.screen == "camp" then rq.log(#s.controls, "controls") end
+if s and s.screen == "dungeon" and not s.busy then rq.log("the map is the player's") end
 ```
 
 | Returns | Type | Description |
@@ -113,6 +121,8 @@ if s and s.screen == "camp" then rq.log(#s.controls, "controls") end
 > Changed in 2.41.0: The appraisal after a quest's success is the screen `appraisal`, with `finish` and
 
 > Changed in 2.47.0: The Quest Storage window's tiles, `item-1` to `item-15` (they were not listed).
+
+> Changed in 2.56.0: `busy`: a quest's event (`"event"`) or the wait after a fight (`"fight-end"`).
 
 See also: [`rq.ui.aim`](rq.ui.md#rquiaim)
 
@@ -192,7 +202,7 @@ Returns how the last `rq.ui.shot` ended, once.
 rq.ui.choose(items, fn, opts) -> boolean
 ```
 
-`since 2.7.0` `changed 2.50.0`
+`since 2.7.0` `changed 2.50.0` `changed 2.56.0`
 
 Opens the game's own choice menu outside a scene, on the hub or any of the game's screens, and
 calls `fn` with the row the player picks.
@@ -201,8 +211,9 @@ The menu opens at the next update, and `fn` runs when it closes. It is modal: th
 under it waits until the player picks, as under the vault's sort menu. It waits to open while the
 System menu or Config is open, while a scene plays, while another choice menu shows, and while the
 game saves (its "Auto-Saving" message holds 700 ms, and the game draws frames under it). The
-menu does not scroll, so it takes at most 20 rows. With fewer than 3 rows it draws the game's tall
-buttons.
+menu does not scroll, so it takes at most 20 rows. It opens at the game's place (its top at y 360),
+and a menu too tall to fit under it goes up just enough to fit on the screen. With fewer than 3 rows
+it draws the game's tall buttons.
 
 Under the menu, the HUD still draws (a mod's page stays on the screen, under the menu), but
 `rq.uikit` widgets take no input and `rq.hud.capture_mouse` does nothing, so the menu gets the
@@ -212,6 +223,8 @@ use `rq.scene.choice`; for its look as a widget on a page, `rq.uikit.options`.
 
 Raises an error without a function, with a row without text, with no row to pick, or with more
 than 20 rows.
+
+rows its last rows were off the screen.
 
 ```lua
 rq.ui.choose({ "Sell all", { id = "keep", text = "Keep the rare ones" }, "-", "Sort first" },
@@ -232,6 +245,8 @@ rq.ui.choose({ "Sell all", { id = "keep", text = "Keep the rare ones" }, "-", "S
 | `opened` | `boolean` | true when the menu will open; false when one is already waiting or open, and then `fn` is not called. |
 
 > Changed in 2.50.0: Waits for the game's save to end.
+
+> Changed in 2.56.0: A menu too tall for the room under y 360 goes up to fit. Before, past about 12
 
 See also: [`rq.ui.choosing`](rq.ui.md#rquichoosing), [`rq.uikit.options`](rq.uikit.md#rquikitoptions)
 
@@ -359,7 +374,7 @@ rq.ui.notice("The vault cannot take " .. name .. ".")
 rq.ui.ask(text, rows, opts) -> any|nil
 ```
 
-`since 2.19.0` `changed 2.28.0` `changed 2.44.0`
+`since 2.19.0` `changed 2.28.0` `changed 2.44.0` `changed 2.56.0`
 
 Asks the player a question with any choices in the game's own dialog, and waits for the answer.
 
@@ -377,7 +392,8 @@ the row keeps the window open, as in the game's own dialogs; the player then pic
 question is turned off, whichever row they picked (a cancel turns nothing off).
 
 The window does not scroll: the rows to pick and the lines of text together are at most 20 (two
-separators count as one), for example 9 lines and 11 rows, or 20 rows and no text. With
+separators count as one), for example 9 lines and 11 rows, or 20 rows and no text. A window too
+tall for the room under its place goes up just enough to fit on the screen (since 2.56.0). With
 `opts.remember`, the "don't ask again" row and its note count as 2 more, and the separator over
 them as one more separator.
 
@@ -409,6 +425,8 @@ local copy = rq.ui.ask("Copy the other save?", { { id = "yes", text = "Yes" }, {
 > Changed in 2.28.0: Shown over Config; `remember`, `remember_label` and `remember_answer`.
 
 > Changed in 2.44.0: `remember_checked`.
+
+> Changed in 2.56.0: A window too tall for the room under its place goes up to fit.
 
 See also: [`rq.ui.choose`](rq.ui.md#rquichoose)
 

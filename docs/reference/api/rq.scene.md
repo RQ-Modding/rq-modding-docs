@@ -709,9 +709,14 @@ A mod's own face passes `opts.name` to `say` instead.
 rq.scene.choice(items, opts) -> integer
 ```
 
-`since 0.18.0`
+`since 0.18.0` `changed 2.56.0`
 
 Shows a list of choices and waits until the player picks one.
+
+A list too tall for the room under its `y` goes up just enough to fit on the screen; one that fits
+keeps its place.
+
+could be off the screen.
 
 ```lua
 local pick = s.choice({ "Yes", "-", { id = 42, text = "No" } })
@@ -725,6 +730,8 @@ local pick = s.choice({ "Yes", "-", { id = 42, text = "No" } })
 | Returns | Type | Description |
 | --- | --- | --- |
 | `id` | `integer` | The picked row's id. |
+
+> Changed in 2.56.0: A list too tall for the room under its `y` goes up to fit. Before, its last rows
 
 ### rq.scene.item
 
