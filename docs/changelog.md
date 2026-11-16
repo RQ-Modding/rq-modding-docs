@@ -5,6 +5,14 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.55.1
+
+RQ Browser becomes Rance Browser 1.0.0, a program in its own repository (`notes/plans/plan-browser-repo.md` in the workspace), from the testers' request that it open other Rance games for the wiki, Rance VI first. No `rq.*` call changes; the version is raised for the program that ships with this loader, as in 2.43.0 and 2.52.1. From now on a new browser version in the package is named in the loader version that carries it, and a browser change alone raises no loader version.
+- The package's `xsystem4\rq-browser.exe` is now `xsystem4\rance-browser.exe`, **Rance Browser 1.0.0** (its title says "RQ MOD 2.55.1" beside its version). It reads an `rq-browser.json` beside it when it has no `rance-browser.json`, so the game folder it remembered stays.
+- For Rance Quest Magnum nothing else changes: the same tabs, counts, names and Lua lines. The CG details show the format and size in the grid too, and a CG picked from the Names tab is brought into view in the grid.
+- The browser opens other System 4 games: Rance VI - Collapse of Zeth (tested; its CGs in labelled groups, its battle effects with their masks, music with its loops, sounds, the `.alk` pictures and the dungeon textures) and others marked "not tested". The Names tab and the Lua lines show for Rance Quest Magnum only.
+- The source left this repository: `tools/rq-browser` and `third_party/cimgui` are now `subprojects/rance-browser`, a git submodule of `RQ-Modding/rance-browser` (GPL-2.0-or-later, with Dear ImGui and cimgui). `meson.build` builds it as a subproject with the loader's own `data/ids` and `dist/lua/rq.lua` (meson options `rq_ids_dir` and `rq_lua`), so the build still fails when a Lua line names a call `rq.lua` lacks. The browser shares the engine's libsys4. Clone with `--recurse-submodules`, or run `git submodule update --init --recursive` in a clone made before.
+
 ## 2.55.0
 
 The calls Dynamic Immature needs (`notes/plans/plan-dynamic-immature.md` in the workspace), from a tester's request to remove the Immature trait: a Special item that gives its wearer Immature (skill 373) when equipped, one that takes its penalty away, each refused with its reason. In Lua over `rq.ain` (`src/lua/item.lua`, `skills.lua`), but for `only` in C (`src/modloader_scene.c`).

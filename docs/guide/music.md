@@ -24,7 +24,7 @@ rq.music.replace(rq.ids.music.INDOOR_CRAWL_R8, "music/indoor.ogg")
 ```
 
 `rq.ids.music` names the tracks; the Music table under Game data lists them all, with their
-numbers. [RQ Browser](./file-browser) plays each track with its loop and gives its `replace` line.
+numbers. [Rance Browser](./file-browser) plays each track with its loop and gives its `replace` line.
 `name` is what the extras' music room shows for the track.
 
 The file plays from the next time the game starts the track. To hear it at once while you test:

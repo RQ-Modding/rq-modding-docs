@@ -64,11 +64,12 @@ When a mod asks for it, or at low priority.
 - **Animations from your own art.** A tool that builds the game's animation files (`.aff`) from a PNG
   sequence and checks a Flash file against what the engine can play. Unpacking the game's own came in
   2.25.0: `rqmod-ctl flashdump` saves a file's pictures.
-- **A browser for the game's files.** Came with 2.43.0: [RQ Browser](guide/file-browser.md) shows the
-  game's CGs, Flash files, music, sounds, 3D textures and the names of `rq.ids` with their pictures,
-  gives the Lua line that replaces or plays each, and saves them. Later: a Flash file's motion
-  played, the pictures and music the installed mods put in place, the game's text, and Escape to
-  close a dropdown.
+- **A browser for the game's files.** Came with 2.43.0: [Rance Browser](guide/file-browser.md) (RQ
+  Browser until 2.55.1, now in its own repository) shows the game's CGs, Flash files, music, sounds,
+  3D textures and the names of `rq.ids` with their pictures, gives the Lua line that replaces or
+  plays each, and saves them. Since 2.55.1 it also opens Rance VI and other System 4 games for the
+  wiki. Later: a Flash file's motion played, the pictures and music the installed mods put in place,
+  the game's text, and Escape to close a dropdown.
 - **3D models in Blender (ongoing).** Worked on over time, each step with a guide
   for people new to 3D: the game's models and animations shown in the browser and exported to glTF for
   Blender; a mod's own textures on the game's models; a mod's own models and animations, read from the

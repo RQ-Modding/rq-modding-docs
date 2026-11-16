@@ -1,30 +1,35 @@
 # Looking through the game's files
 
-RQ Browser (`rq-browser.exe`, with loader 2.43.0) is a window over the game's own files: its
-pictures, Flash files, music, sounds and 3D textures, and the names `rq.ids` gives. Find what you
-want to change, read its number, copy the Lua line that replaces or plays it, and save the file to
-look at or draw over.
+Rance Browser (`rance-browser.exe`) is a window over the game's own files: its pictures, Flash
+files, music, sounds and 3D textures, and the names `rq.ids` gives. Find what you want to change,
+read its number, copy the Lua line that replaces or plays it, and save the file to look at or draw
+over.
+
+It came with loader 2.43.0 as RQ Browser (`rq-browser.exe`). Since 2.55.1 it is Rance Browser, a
+program with [a repository of its own](https://github.com/RQ-Modding/rance-browser) that RQ MOD's
+package carries; its version (1.0.0 in loader 2.55.1) shows in its title bar.
 
 ![The CGs tab: Rance's face, CG 2000, with its details and the Lua line that replaces it](/browser/cgs.png)
 
 ## Opening it
 
-`rq-browser.exe` is in the game's `xsystem4` folder, beside `xsystem4.exe`. Double-click it: it
+`rance-browser.exe` is in the game's `xsystem4` folder, beside `xsystem4.exe`. Double-click it: it
 opens the game folder above it. Run from somewhere else, it asks for the game folder once and
-remembers it in `rq-browser.json` beside it. To name a folder:
+remembers it in `rance-browser.json` beside it (an `rq-browser.json` left by RQ Browser is read when
+there is no other). To name a folder:
 
 ```
-rq-browser.exe --game "D:\Games\Rance Quest Magnum"
+rance-browser.exe --game "D:\Games\Rance Quest Magnum"
 ```
 
 It only reads the game's archives and never changes the game's files, so the game may run at the
-same time. The one file it writes there is its own `rq-browser.json`, beside it.
+same time. The one file it writes there is its own `rance-browser.json`, beside it.
 
 On a screen that Windows scales (125 %, 150 %), the text and the panels grow with the scale and stay
 sharp. For another size, start it with `--scale`, from 1 to 4:
 
 ```
-rq-browser.exe --scale 1.25
+rance-browser.exe --scale 1.25
 ```
 
 ## The tabs
@@ -85,13 +90,21 @@ you made.
 ## From a script
 
 ```
-rq-browser.exe --check [--out report.json]
-rq-browser.exe --shot cgs shot.png [--select 2000]
-rq-browser.exe --help
+rance-browser.exe --check [--out report.json]
+rance-browser.exe --shot cgs shot.png [--select 2000] [--grid]
+rance-browser.exe --help
 ```
 
 `--check` opens every archive, decodes some of each kind, reads every track's loop and every
 sound, and prints a report in JSON; it ends with 0 when all went well. `--shot` saves one tab
 (`cgs`, `flash`, `music`, `sounds`, `textures` or `names`) as a PNG, with `--select` choosing the
-number, row or kind shown, `--size WxH` the picture's size and `--scale` the layout's (1 unless
-given).
+number, row or kind shown, `--grid` the pictures' grid, `--size WxH` the picture's size and `--scale`
+the layout's (1 unless given).
+
+## Other games
+
+Rance Browser also opens other AliceSoft games on the same engine (System 4), for players and wiki
+writers: **Open another game...** at the bottom picks one. Rance VI - Collapse of Zeth is tested;
+the others open marked "not tested". There the Names tab and the Lua lines are gone, since RQ MOD's
+calls work in Rance Quest Magnum only, and other tabs appear when a game has those files (Rance VI's
+dungeon textures, for one). Its README lists the games and what each shows.
