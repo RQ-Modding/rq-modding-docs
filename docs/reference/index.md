@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.56.1.
+Loader version 2.57.0.
 
 ## Namespaces
 
@@ -266,6 +266,7 @@ Loader version 2.56.1.
 | [`rq.UiTabsStyle`](types/rq.UiTabsStyle.md) | A tabs style of the hub theme. |
 | [`rq.UiTheme`](types/rq.UiTheme.md) | A look for the kit: pieces, text styles, colors and sounds. |
 | [`rq.UiTip`](types/rq.UiTip.md) | A widget's tip: what `rq.uikit.comment` shows, and where. |
+| [`rq.UnequipCtx`](types/rq.UnequipCtx.md) | What `rq.item.on_unequip` gets. |
 | [`rq.Unit`](types/rq.Unit.md) | A recruited character, from `rq.units()`. |
 | [`rq.VanillaSave`](types/rq.VanillaSave.md) | What `rq.saves.vanilla` returns. |
 

@@ -183,13 +183,13 @@ The game's screens show 6 hotbar positions, so a `slots` value above 6 adds rows
 rq.chara.set_slot(iic, slot, skillId)
 ```
 
-`since 0.2.0`
+`since 0.2.0` `changed 2.57.0`
 
 Writes the skill number of a skill-list row (`ＣＳ番号`).
 
 Only the number changes; the uses and the battle-log line stay. See `rq.chara.set_flavor`.
 
-Raises an error for a slot with no character or a skill number outside 0 to 1000.
+Raises an error for a slot with no character, a row outside 1 to the list's last row (20, more with `rq.knownskills`) or a skill number outside 0 to 1000.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -197,24 +197,28 @@ Raises an error for a slot with no character or a skill number outside 0 to 1000
 | `slot` | `integer` | The skill-list row. |
 | `skillId` | `integer` | The skill number; 0 empties the number. |
 
+> Changed in 2.57.0: A row out of the list is an error; before, a negative row closed the game with a fatal VM error.
+
 ### rq.chara.set_flavor
 
 ```lua
 rq.chara.set_flavor(iic, slot)
 ```
 
-`since 0.2.0`
+`since 0.2.0` `changed 2.57.0`
 
 Copies the battle-log line (`Ｓ表示文`) of a row's current skill to the character.
 
 The game's own slot swaps skip this, so call it after `rq.chara.set_slot`.
 
-Raises an error for a slot with no character or a row under 1.
+Raises an error for a slot with no character or a row outside 1 to the list's last row (20, more with `rq.knownskills`).
 
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `iic` | `integer` | The character's roster slot. |
 | `slot` | `integer` | The skill-list row. |
+
+> Changed in 2.57.0: A row out of the list is an error; before, a negative row closed the game with a fatal VM error.
 
 ### rq.chara.weapon_detail
 
@@ -297,13 +301,13 @@ Raises an error for an index outside the list, or for `points` when the game has
 rq.chara.set_uses(iic, slot, uses, max)
 ```
 
-`since 0.2.0`
+`since 0.2.0` `changed 2.57.0`
 
 Sets the uses left and the most uses of a skill-list row.
 
 The most uses is written first; the game caps it at 99.
 
-Raises an error for a slot with no character.
+Raises an error for a slot with no character or a row outside 1 to the list's last row (20, more with `rq.knownskills`).
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -312,17 +316,19 @@ Raises an error for a slot with no character.
 | `uses` | `integer` | Uses left. |
 | `max` | `integer` | Most uses. |
 
+> Changed in 2.57.0: A row out of the list is an error; before, a negative row closed the game with a fatal VM error.
+
 ### rq.chara.set_bar
 
 ```lua
 rq.chara.set_bar(iic, slot, pos)
 ```
 
-`since 0.2.0`
+`since 0.2.0` `changed 2.57.0`
 
 Puts a skill-list row on the hotbar, or takes it off (`ＣＳ実装中`).
 
-Raises an error for a slot with no character.
+Raises an error for a slot with no character or a row outside 1 to the list's last row (20, more with `rq.knownskills`).
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -330,22 +336,26 @@ Raises an error for a slot with no character.
 | `slot` | `integer` | The skill-list row. |
 | `pos` | `integer` | The hotbar position, 1 to 6; 0 takes it off. |
 
+> Changed in 2.57.0: A row out of the list is an error; before, a negative row closed the game with a fatal VM error.
+
 ### rq.chara.clear_slot
 
 ```lua
 rq.chara.clear_slot(iic, slot)
 ```
 
-`since 0.2.0`
+`since 0.2.0` `changed 2.57.0`
 
 Empties a skill-list row (`ＣＳ初期化`).
 
-Raises an error for a slot with no character.
+Raises an error for a slot with no character or a row outside 1 to the list's last row (20, more with `rq.knownskills`).
 
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `iic` | `integer` | The character's roster slot. |
 | `slot` | `integer` | The skill-list row. |
+
+> Changed in 2.57.0: A row out of the list is an error; before, a negative row closed the game with a fatal VM error.
 
 ### rq.chara.max_uses
 

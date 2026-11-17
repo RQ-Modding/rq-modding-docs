@@ -5,6 +5,15 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.57.0
+
+The leftovers of the Test Lab's catch-up (`notes/plans/plan-catch-up-leftovers.md` in the workspace, from `plan-lab-catch-up.md` section 6), as recommended there and taken by Moru.
+- `rq.item.on_unequip`: a callback each time an item comes off a character, with `rq.UnequipCtx` (the item's instance, number and id, the character, the slot, whether it came off through the game's equip call, the item put in its place, whether the game deleted it as it came off). It hooks `Ｃアイテム外す`, the one place the game takes an item off: REMOVE in the vault and on the status page, a drag, a swap, `rq.item.equip`, `rq.item.remove`, `sell` and `donate` on a worn item, and the game's own removals (a character removed, a Morurun absorbing a Special item, a quest's event). Through the equip call it runs once that call has ended, before `rq.item.on_equip` for the item put in its place. `rq.item.on_equip`'s doc points to it.
+- `rq.knownskills`: Page Up and Page Down turn the known skills' page on the status page and in the skill window, with the controls (`install`'s `controls`); held, they turn again after 400 ms and then every 150 ms. The game reads Page Up there only in a message's wait (the backlog) and both only in Config's sliders.
+- A gamepad does nothing yet, and the install guide and the README say so: Rance Quest reads the pad through `IbisInputEngine`'s joystick calls, which the engine leaves unimplemented, as upstream xsystem4 does. Pad support is planned later on its own.
+- `rq.chara.clear_slot`, `set_slot`, `set_flavor`, `set_uses` and `set_bar` raise an error for a row outside 1 to the list's last row (20, more with `rq.knownskills`). The game checks a row only against its top (21), so a negative row was a fatal VM error that closed the game ("Out of bounds page index"), as the Lab's `badnumbers` found with `clear_slot(20, -1)` in the general run.
+- The Lab: the new `unequip` checks `rq.item.on_unequip` (a swap through `rq.item.equip`, the same item again, `rq.item.remove` on a worn item, `Ｃアイテム外す` called as the game's events call it, a Lab item that vanishes, the status page's REMOVE); `known-skills` turns the pages by Page Up and Page Down on the status page and in the skill window; `badnumbers` gets through every call again. The general run at 2.56.1 (122 scenarios, 6424 checks) found the `clear_slot` crash and three stale or flaky checks in the Lab, fixed there.
+
 ## 2.56.1
 
 The fixes for what the Test Lab's catch-up found in its section D (`notes/plans/plan-lab-catch-up.md` in the workspace, section 8, F6 to F9), as recommended there and taken by Moru.

@@ -393,6 +393,29 @@ end)
 
 `ctx.old` is the item the slot held before (0 for none); taking an item off does not call it.
 
+### An item that works while it is worn
+
+[`rq.item.on_unequip`](../reference/api/rq.item.md#rqitemon_unequip) (2.57.0) runs each time an
+item comes off a character, by any way: REMOVE in the vault or on the status page, a drag, a swap
+for another item, `rq.item.equip`, `rq.item.remove`, `sell` and `donate` on a worn item, and the
+game's own removals (a character removed, a Morurun absorbing a Special item, a quest's event). With
+`on_equip`, an item can give something only while it is worn and take it back here:
+
+```lua
+rq.item.on_equip(function(ctx)
+  if ctx.no == RING then rq.chara.grant(ctx.iic, SKILL, 0) rq.chara.recalc(ctx.iic) end
+end)
+rq.item.on_unequip(function(ctx)
+  if ctx.no == RING then rq.chara.forget(ctx.iic, SKILL) rq.chara.recalc(ctx.iic) end
+end)
+```
+
+`ctx` names the item (`ii`, `no`, `id`), the character and the slot. `ctx.equip` is true when it
+came off through the game's equip call, and then the callback runs once that call has ended, before
+`on_equip` for the item put in its place (`ctx.by`, 0 for none); putting the same instance on again
+calls neither. `ctx.vanished` is true for an item the game deleted as it came off (`vanishes = true`),
+whose number and id were read before it went.
+
 ## Appraisal and the shop
 
 An item found on a quest is often unidentified: `rq.item.get(ii).identified` is false (2.47.0),

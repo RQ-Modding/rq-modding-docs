@@ -576,6 +576,7 @@ See also: [`rq.item.find`](rq.item.md#rqitemfind)
 | [`rq.item.on_create`](#rqitemon_create) | Calls `fn` after any item instance is created (`Ｉ生成`), game or mod. |
 | [`rq.item.on_can_equip`](#rqitemon_can_equip) | Calls `fn` where the game decides whether a character can equip an item, to change the answer. |
 | [`rq.item.on_equip`](#rqitemon_equip) | Calls `fn` each time an item is put on a character. |
+| [`rq.item.on_unequip`](#rqitemon_unequip) | Calls `fn` each time an item comes off a character. |
 
 ### rq.item.on_create
 
@@ -672,7 +673,7 @@ It runs in `キャラ_装備設定`, the one call the game equips through: the v
 screen's drag, the status page, buying onto a character in the shop, `rq.item.give` with `to`
 and `rq.item.equip`. It runs once the slot holds the item, after the game has worked out the
 stats again and, for a Special item, done its own effects (Skill Again, a Morurun). Putting the
-same instance on again does not call it. An item taken off does not call it.
+same instance on again does not call it. An item taken off calls `rq.item.on_unequip` instead.
 
 This is the place for an item that does something once, when equipped: give a skill, then
 `rq.chara.recalc`. With `vanishes = true` in `rq.item.define`, the game deletes the item when it
@@ -699,4 +700,49 @@ end)
 | --- | --- | --- |
 | `remove` | `fun()` | Removes this callback. |
 
-See also: [`rq.item.on_can_equip`](rq.item.md#rqitemon_can_equip)
+See also: [`rq.item.on_can_equip`](rq.item.md#rqitemon_can_equip), [`rq.item.on_unequip`](rq.item.md#rqitemon_unequip)
+
+### rq.item.on_unequip
+
+```lua
+rq.item.on_unequip(fn) -> fun()
+```
+
+`since 2.57.0`
+
+Calls `fn` each time an item comes off a character.
+
+It runs for every way an item leaves a character's slot: the vault's and the status page's REMOVE,
+a drag to another place, a swap for another item (`by`), `rq.item.equip`, `rq.item.remove`,
+`sell` and `donate` on a worn item, and the game's own (a character removed from the roster, a Morurun absorbing a Special item, a
+quest's event that takes an item off). They all go through `Ｃアイテム外す`. Through the game's
+equip call (`equip` true) it runs once that call has ended, before `rq.item.on_equip` for the item
+put in its place; otherwise it runs as the item comes off. Putting the same instance on again does
+not call it.
+
+This is the place for what an item gives only while it is worn: take it back here. The stats are
+worked out again after the equip call; for the game's own removals, call `rq.chara.recalc`.
+
+A callback's error is logged once per mod.
+
+```lua
+local SKILL = 373 -- a skill the ring gives while it is worn
+local RING = rq.item.define({ id = "mymod:ring", name = "Ring", type = "special", icon = 6331,
+  price = 500, info = "Worn: the wearer knows the skill." })
+rq.item.on_equip(function(ctx)
+  if ctx.no == RING then rq.chara.grant(ctx.iic, SKILL, 0) rq.chara.recalc(ctx.iic) end
+end)
+rq.item.on_unequip(function(ctx)
+  if ctx.no == RING then rq.chara.forget(ctx.iic, SKILL) rq.chara.recalc(ctx.iic) end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` | `fun(ctx:` [`rq.UnequipCtx`](../types/rq.UnequipCtx.md) `)` | Gets the item and the character. Its return value is not used. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |
+
+See also: [`rq.item.on_equip`](rq.item.md#rqitemon_equip)

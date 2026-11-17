@@ -198,7 +198,8 @@ the character's skill list, and both the status page and the skill window show t
   The status page opens on page 1, and so does another character.
 - **The controls.** A slim scroll bar between the status page's skills and the equipment (and the
   wheel over the skills), and the game's left and right arrows beside the skill window's KNOWN SKILLS.
-  `install{ controls = false }` leaves them out for a mod that makes its own and turns pages with
+  Page Up and Page Down turn the page on both screens (2.57.0); held, they turn again after 400 ms
+  and then every 150 ms. `install{ controls = false }` leaves them all out for a mod that makes its own and turns pages with
   `rq.knownskills.set_page`.
 - **The save** stays the game's own, 18 rows a character. The rows past them are kept in the
   loader's [data beside the save](save-data.md) and come back after the save and after a load. A

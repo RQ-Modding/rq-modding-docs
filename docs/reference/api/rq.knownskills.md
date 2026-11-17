@@ -1,6 +1,6 @@
 # rq.knownskills
 
-`since 2.54.0`
+`since 2.54.0` `changed 2.57.0`
 
 More known skills than the game's 17, shown 17 at a time on the status page and in the skill window.
 
@@ -27,8 +27,10 @@ rows, and Skill Again gives the skill points back.
 
 The page controls are drawn for the mod that calls `install`: a scroll bar 14 pixels wide between
 the known skills and the equipment on the status page (the wheel over the skills turns it too) and
-the game's two arrows beside KNOWN SKILLS in the skill window. `install{ controls = false }` leaves
-them out, for a mod with its own; it then turns pages with `set_page`.
+the game's two arrows beside KNOWN SKILLS in the skill window. Page Up and Page Down turn the page
+on both screens (held, they turn again after 400 ms and then every 150 ms); the game reads neither
+there. `install{ controls = false }` leaves all of them out, for a mod with its own; it then turns
+pages with `set_page`.
 
 ```lua
 rq.knownskills.install({ most = 34 })
@@ -67,7 +69,7 @@ or game code that is not as expected.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `opts` *(optional)* | `{most?: integer, controls?: boolean}` | `most`: the most known skills, 17 to 102 (17 is the game's own, 17 more for each page). Default 34. `controls = false` leaves out the scroll bar and the arrows. Default true. |
+| `opts` *(optional)* | `{most?: integer, controls?: boolean}` | `most`: the most known skills, 17 to 102 (17 is the game's own, 17 more for each page). Default 34. `controls = false` leaves out the scroll bar, the arrows and the keys. Default true. |
 
 | Returns | Type | Description |
 | --- | --- | --- |

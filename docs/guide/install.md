@@ -49,6 +49,12 @@ writes the original game's save in `Documents\AliceSoft`.
 Mods that add characters or items write them into the save like the game does, so keep a copy of the
 save folder before you try a mod that adds content.
 
+## A gamepad
+
+A gamepad does nothing in RQ MOD yet: Rance Quest reads the pad through a part of the engine that is
+not written yet, so the game sees no pad. A tool that maps the pad to keys and the mouse (Steam Input,
+for one) can stand in until then.
+
 ## When something goes wrong
 
 Everything is written to the `logs` folder next to `mods`:
