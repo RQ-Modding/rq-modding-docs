@@ -5,6 +5,12 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.59.1
+
+A fix the Lab found with World 3 No Level Cap 1.0.0 (`notes/plans/plan-world3-no-cap.md` in the workspace).
+- `rq.ui.get`'s `status.noLimit` is the ∞ the game draws (the status card's `m_bInfinity`, from the game's no-cap check by the character's number). The character's data overwrote it with a cap of 2147483647, which the game never stores (its caps stop at 999, 9999 in World 3), so it was false for every character, Rance too. The `units` rows whose card is shown already read the card. `rq.ui.get`'s doc says where `level`, `levelLimit` and `noLimit` are, and where `noLimit` stays false (the `party` ranks' cards show no cap; rows whose card is not shown read the data).
+- The Lab: the new `world3-no-cap` checks World 3 No Level Cap, with `noLimit` on the status page and the shown `units` cards in World 3 and World 1.
+
 ## 2.59.0
 
 The status page's MODS list (`notes/plans/plan-status-mods-list.md` in the workspace), as Moru designed it: the title row by the X has room for two mod buttons, and a third had no place.

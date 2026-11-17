@@ -28,7 +28,7 @@ Reads what is on the screen and saves screenshots.
 rq.ui.get() -> table|nil
 ```
 
-`since 0.20.0` `changed 0.21.0` `changed 2.11.0` `changed 2.12.0` `changed 2.19.0` `changed 2.20.0` `changed 2.20.1` `changed 2.22.1` `changed 2.28.0` `changed 2.31.0` `changed 2.41.0` `changed 2.47.0` `changed 2.56.0`
+`since 0.20.0` `changed 0.21.0` `changed 2.11.0` `changed 2.12.0` `changed 2.19.0` `changed 2.20.0` `changed 2.20.1` `changed 2.22.1` `changed 2.28.0` `changed 2.31.0` `changed 2.41.0` `changed 2.47.0` `changed 2.56.0` `changed 2.59.1`
 
 Returns what is on the screen.
 
@@ -80,6 +80,14 @@ click after a fight before it goes on (the map shows under it, and a placed enem
 removed only after it). The inner one when both run. It is absent otherwise: an idle map has none.
 A quest of kind `"menu"` (Advance Worlds) runs as an event too, so its menu has `busy = "event"`.
 
+A character's `level` and `levelLimit` (the level cap) are on `status`, on each of the Party
+screen's `party` ranks and on each row of `units` and `storeUnits`. `noLimit` is true where the
+game draws ∞ for the cap, on `status` and on a `units` row whose card is shown (Rance, and any
+character a mod's hook on `キャラ_レベル上限なし` answers true for), and `levelLimit` is then
+absent. The `party` ranks' cards show no cap, and a `units` or `storeUnits` row whose card is not
+shown reads the save's data: there `noLimit` stays false and `levelLimit` is the cap the save
+holds.
+
 It builds the whole list, so do not call it on every `rq.on_frame`.
 
 every screen that shows it; Rance Castle is the screen `castle`, with its rooms as `room-<area>`
@@ -123,6 +131,8 @@ if s and s.screen == "dungeon" and not s.busy then rq.log("the map is the player
 > Changed in 2.47.0: The Quest Storage window's tiles, `item-1` to `item-15` (they were not listed).
 
 > Changed in 2.56.0: `busy`: a quest's event (`"event"`) or the wait after a fight (`"fight-end"`).
+
+> Changed in 2.59.1: `status.noLimit` is the ∞ the game draws (it was always false, Rance's too).
 
 See also: [`rq.ui.aim`](rq.ui.md#rquiaim)
 

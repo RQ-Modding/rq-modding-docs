@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.59.0.
+Loader version 2.59.1.
 
 ## Namespaces
 
