@@ -6,8 +6,8 @@ by the game itself, instead of a HUD button over the screen. The places so far:
 - the **SYSTEM menu**: one MODS row for every mod, with each mod's entries in a list;
 - **Rance Castle**: a room of the mod's own;
 - the **skill window** (2.17.0): buttons under the Potential Skills list;
-- a character's **status page** (2.20.0): icon buttons in its title row, and (2.58.0) marks that
-  are not buttons at its top left;
+- a character's **status page** (2.20.0): icon buttons in its title row, (2.59.0) one MODS button
+  with a list when there are more than two, and (2.58.0) marks that are not buttons at its top left;
 - a quest's **map** (2.32.0): tabs against the map panel, under the area map;
 - Config's **Mods tab** (1.8.0): a page of the mod's own, and since 2.35.0 a page of settings built
   from a list.
@@ -134,8 +134,8 @@ rq.gamebutton.add({
 
 A character's status page has one free place: its title row, between the name and the X. The
 buttons go there, right to left from the X, at x 472 and 436 (y 61), in load order. The widest
-name in the game ends at x 435, so they never cover a name. There is room for two; a third is not
-placed (the log says so).
+name in the game ends at x 435, so they never cover a name. There is room for two; with a third,
+the buttons become one MODS button with a list ([below](#more-than-two-the-mods-list)).
 
 - **`icon`** is a CG number, such as one from `rq.image.add`. The cell is 32 × 29: a smaller icon
   is centered, a larger one shrunk to fit. The button is the icon on the page's own background, as
@@ -154,6 +154,70 @@ placed (the log says so).
 
 Agents see each button as the control `<mod id>.<id>` of the `status` screen. Morurun Items' MORU
 RUN button is made this way.
+
+### More than two: the MODS list
+
+Since 2.59.0, when more than two of these buttons are shown on a draw of the card, the title row has
+one button instead: **MODS**, over both cells, in the look of the page's SKILL SCREEN button. Its
+click opens a list under it, one row per entry in load order: the map tabs' grey bar with the
+entry's icon and, when the entry gives one, a `text` beside it. The row works as the button would:
+
+- **Under the mouse** (or the keys' cursor) it lights up, and after the comment window's usual
+  moment its tip shows right of the list, with the label as its title.
+- **A click** closes the list and runs `on_click`, with the page still there. It runs from the
+  frame's update, as a HUD widget's click, not from inside the page's own loop. A row with `enabled`
+  false is darkened; its click plays the deny sound and the list stays.
+- **Closing.** MODS again, a click anywhere off the list, the right button or Esc close only the
+  list (the click does nothing else on the page); so do another character and the page closing.
+- **The keys.** Up from the Special slot reaches MODS as it reached the buttons; Enter opens the list
+  with the cursor on its first row; Up and Down move, Enter clicks. While the list is open the page
+  takes no mouse and no keys.
+- MODS is decided on every draw, from the entries shown on that draw: after a fight, Loadouts hides
+  its button, so three mods can become two and the buttons come back. Up to two, nothing changes.
+
+An entry chooses how it takes part with `list`:
+
+```lua
+-- Always in the list, even alone; a text is enough, no icon needed.
+rq.gamebutton.add({
+  group = "status",
+  id = "journal",
+  label = "Journal",
+  list = true,
+  text = function(chara) return "Journal of " .. rq.chara.get(chara).name end,
+  on_click = function() rq.log("journal") end,
+})
+
+-- Never in it: while MODS shows, this entry has no button.
+local quick = rq.gamebutton.add({
+  group = "status",
+  id = "quick",
+  label = "Quick",
+  icon = 11158,
+  list = false,
+  on_state = function(state, chara)
+    -- "button", "row", "aside" (MODS shows and this entry has no button) or "hidden"
+    rq.log("quick is", state)
+  end,
+  on_click = function() rq.log("quick") end,
+})
+```
+
+- **`list = nil`** (the default): in the list whenever there is one.
+- **`list = true`**: the list shows whenever this entry is shown, even with no other entry. The entry
+  needs an icon or a text, one of the two.
+- **`list = false`**: never in the list. The two cells are under MODS, so while the list shows this
+  entry has no button: its state is `"aside"`, and the mod shows the way in another way (a key, a HUD
+  button of its own somewhere else) or does without it. If every entry shown has `list = false`, there
+  is no list, and the first two keep the cells.
+- **`text`**: the words beside the icon in the row, in the game's font; a function gets the
+  character and the mode. A row with no text is the icon alone.
+- **`on_state(state, chara, mode)`** runs after a draw when the entry's place changed, and with
+  `"hidden"` when the page closes; the handle's `state()` asks at any time.
+
+Agents see MODS as the control `status-mods`, and while the list is open each row as the button
+`button-<mod id>-<id>` (`button-loadouts-open`, say). `rq.gamebutton.groups()` gives the status
+group's `list` (shown, open, the rows) and each entry's `state` and `row`.
 
 ### A mark at the top left
 

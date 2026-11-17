@@ -5,6 +5,16 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.59.0
+
+The status page's MODS list (`notes/plans/plan-status-mods-list.md` in the workspace), as Moru designed it: the title row by the X has room for two mod buttons, and a third had no place.
+- `rq.gamebutton`'s `"status"` group: when more than two title entries are shown on a draw of the card and one of them may go in a list, or a shown entry has `list = true`, the title row has one button instead of the cells, **MODS**, over both cells (the look of the page's SKILL SCREEN button, x 436, y 62, 68 × 27). Its click, or Enter on it, opens a list under it: one row per entry, in the order they were added, each the map tabs' grey bar with the entry's icon and its `text`, as wide as the widest row, the tip right of the list under the mouse, darkened while `enabled` is false. A row's click closes the list and runs the entry's `on_click` (from the frame's update, with the page there); a darkened row plays the deny sound. A click off the list, the right button or Esc only close the list; so do another character and the page closing. While it is open the page takes no mouse and no keys: the arrows move between the rows, Enter clicks one. MODS comes and goes with the entries shown on each draw. Up to two entries, nothing changes.
+- New fields on a `"status"` title entry: `list` (nil, in the list whenever there is one; false, never: no button while MODS shows; true, the list shows for it even alone), `text` (a string or a function of the character and the mode: the words beside the icon in its row; with `list = true` an entry may have a text and no icon), and `on_state(state, chara, mode)`, called when the entry's place changes. The handle's `state()` gives it: `"button"`, `"row"`, `"aside"` or `"hidden"` (`rq.GameButtonState`). `set` takes `text`.
+- `rq.gamebutton.groups()`: the `"status"` group's `list` (`rq.GameButtonList`: shown, open, MODS's button and place, the rows' width and entries), and each entry's `state`, `list`, `row` and `text`; a row's `x` and `y` are its place in the list.
+- Agents: MODS is the control `status-mods`; while the list is open each row is the kit's button `button-<mod id>-<id>`.
+- `rq.knownskills`' bar and Page Up / Page Down on the status page wait while the list is open over them.
+- The Lab: the new `status-mods` checks the rule (MODS for a third entry and for `list = true`, back to cells for two), the rows, the tip, a greyed row, a row's click, the closings, the keys, `on_state` and `state`; `statuspage` shows its second entry only when a cell is free for it.
+
 ## 2.58.0
 
 What Rocky Chunk Indicator 1.0.0 needs (`notes/plans/plan-rocky-chunk-indicator.md` in the workspace), from a player's suggestion on the Discord: a mark on the status page for a character who already had a Rocky Chunk's effect, and a question before another chunk goes on such a character.

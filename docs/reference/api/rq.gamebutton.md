@@ -1,6 +1,6 @@
 # rq.gamebutton
 
-`since 2.16.0` `changed 2.17.0` `changed 2.20.0` `changed 2.32.0` `changed 2.58.0`
+`since 2.16.0` `changed 2.17.0` `changed 2.20.0` `changed 2.32.0` `changed 2.58.0` `changed 2.59.0`
 
 Buttons of mods in the game's own menus, made by the game itself.
 
@@ -24,7 +24,7 @@ as the control `<mod id>.<id>` of the `skill-shop` screen.
 `"status"` (2.20.0): icon buttons in a character's status page's title row, the only free room on
 the page. The cells are right to left from the X: x 472 and 436, y 61, 32 × 29 each, in the order
 entries were added; the widest name in the game ends at x 435. Entries with `shown` false give their
-cell to the next; a third shown entry is not placed (`placed` false, and the log says so). The
+cell to the next; a third shown entry brings the MODS list (below). The
 button is the icon on the page's own background, as the game's CG buttons: the yellow frame under
 the mouse, the icon moved 1 pixel right and down while pressed, the whole cell darkened while
 greyed. `shown`, `enabled` and a function `tip` are asked on every draw of the card (open, another
@@ -32,6 +32,28 @@ character, a change, `rq.statuspage.refresh`). The arrow keys reach the buttons:
 slot (or its REMOVE) goes to the first button not greyed; from a button Left and Right go to the
 other, Down to the Special slot, Up to SKILL SCREEN. Agents see each one as the control
 `<mod id>.<id>` of the `status` screen. See `rq.statuspage` for the page itself.
+
+**MODS** (2.59.0): when more than two title entries are shown on a draw of the card and one of them
+may go in a list (`list` not false), or when a shown entry has `list = true`, the title row has one
+button instead of the cells: **MODS**, over both cells (x 436, y 62, 68 × 27), the look of the
+page's SKILL SCREEN button. Its click (or Enter on it) opens a list under it: one row per entry
+that may go in it, in the order they were added, 30 high from y 91, right edges at x 504, as wide
+as the widest row (68 to 320), up to 16 rows (more are left out, and the log says so). A row is the
+map tabs' grey bar with the entry's icon at its left and its `text` beside it, the yellow frame
+under the mouse or the keys, darkened while `enabled` is false. Under the mouse a row shows its tip
+right of the list, with the label as its title. A click on a row closes the list and runs its
+`on_click`, with the page still there (from the frame's update, as a kit widget's click, not from
+the page's own loop); a darkened row plays the deny sound and the list stays. A click off the list
+(MODS too), the right button or Esc only close the list; so do another character, the page
+closing and a draw where the list is no longer wanted. While the list is open the page takes no
+mouse and no keys: the arrows move between the rows and Enter clicks one. An entry with
+`list = false` has no button while MODS shows; its `on_state` and the handle's `state` say so
+(`"aside"`), and it shows its button another way or does something else. Whether MODS shows is
+decided on every draw of the card, from the entries shown on that draw: it may come and go between
+characters and between the ways the page opens. Up from the Special slot reaches MODS, Down from it
+the Special slot, Up SKILL SCREEN; its tip lists the rows' labels. Agents see MODS as the control
+`status-mods` of the `status` screen, and while the list is open each row as the kit's button
+`button-<mod id>-<id>` (as `rq.uikit.icon_button` names it; the cells' own controls are gone then).
 
 With `spot = "left"` (2.58.0), a `"status"` entry is an icon, not a button: it says something about
 the character shown, as a mark. The left spot is the page's top left, at the left end of the LV row
@@ -76,6 +98,14 @@ rq.gamebutton.add({ group = "skill-window", id = "plan", label = "Plan Skills",
 rq.gamebutton.add({ group = "status", id = "notes", label = "Notes", icon = 11158,
   tip = function(chara) return "Notes on " .. rq.chara.get(chara).name end,
   on_click = function() rq.log("notes for", rq.statuspage.chara()) end })
+-- Always in the MODS list, as a row of words (no icon needed).
+rq.gamebutton.add({ group = "status", id = "journal", label = "Journal", list = true,
+  text = function(chara) return "Journal of " .. rq.chara.get(chara).name end,
+  on_click = function() rq.log("journal") end })
+-- Never in it: while MODS shows, this mod has no button and says so in its own way.
+rq.gamebutton.add({ group = "status", id = "quick", label = "Quick", icon = 11158, list = false,
+  on_state = function(state) rq.log("quick is", state) end,
+  on_click = function() rq.log("quick") end })
 local open = false
 rq.gamebutton.add({ group = "map", id = "bag", label = "My Bag", icon = 11329,
   tip = "What is in my bag.", enabled = function() return rq.dungeon.exploring() end,
@@ -95,14 +125,16 @@ rq.gamebutton.add({ group = "map", id = "bag", label = "My Bag", icon = 11329,
 rq.gamebutton.add(spec) -> rq.GameButtonHandle
 ```
 
-`since 2.16.0` `changed 2.20.0` `changed 2.32.0` `changed 2.58.0`
+`since 2.16.0` `changed 2.20.0` `changed 2.32.0` `changed 2.58.0` `changed 2.59.0`
 
 Adds an entry to a game menu.
 
 Raises an error for a spec that is not a table, an unknown group, no id or label, no `on_click`
 (or one on a `"left"` entry), an `enabled`, `tip` or `shown` of the wrong type, a `"status"` or
-`"map"` entry with no `icon`, a `spot` other than `"title"` or `"left"` or outside `"status"`, or an
-id the mod already has.
+`"map"` entry with no `icon` (a `"status"` entry with `list = true` may have a `text` instead), a
+`spot` other than `"title"` or `"left"` or outside `"status"`, a `list` or `text` outside
+`"status"`'s title spot or of the wrong type, an `on_state` outside `"status"` or not a function,
+or an id the mod already has.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -117,6 +149,8 @@ id the mod already has.
 > Changed in 2.32.0: The group `"map"`, with `icon` and `shown`.
 
 > Changed in 2.58.0: `spot` in `"status"`, and `icon` as a function there.
+
+> Changed in 2.59.0: `list`, `text` and `on_state` in `"status"`.
 
 ### rq.gamebutton.groups
 

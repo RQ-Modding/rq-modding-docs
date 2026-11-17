@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.58.0.
+Loader version 2.59.0.
 
 ## Namespaces
 
@@ -131,6 +131,7 @@ Loader version 2.58.0.
 | [`rq.GameButtonGroup`](types/rq.GameButtonGroup.md) | A group, from `rq.gamebutton.groups`. |
 | [`rq.GameButtonHandle`](types/rq.GameButtonHandle.md) | An entry, from `rq.gamebutton.add`. |
 | [`rq.GameButtonInfo`](types/rq.GameButtonInfo.md) | An entry, as `rq.gamebutton.groups` lists it. |
+| [`rq.GameButtonList`](types/rq.GameButtonList.md) | The status page's MODS button and its list, as `rq.gamebutton.groups` gives them. |
 | [`rq.GameButtonSpec`](types/rq.GameButtonSpec.md) | An entry for `rq.gamebutton.add`. |
 | [`rq.GifInfo`](types/rq.GifInfo.md) | What `rq.image.gif_info` returns. |
 | [`rq.GifOpts`](types/rq.GifOpts.md) | Options for `rq.image.add_gif`. |
@@ -276,4 +277,5 @@ Loader version 2.58.0.
 | Alias | Type |
 | --- | --- |
 | `rq.ImageFit` | `"stretch"\|"contain"\|"cover"\|"none"` |
+| `rq.GameButtonState` | `"button"\|"row"\|"aside"\|"hidden"` |
 | `rq.StatusPageMode` | `"party"\|"party-edit"\|"party-store"\|"battle-result"` |
