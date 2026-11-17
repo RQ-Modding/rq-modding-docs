@@ -363,6 +363,26 @@ the text in its notice where the player tries: dropped on a greyed character in 
 place of "Unable to equip.", or picked on the status page, where an item only a mod refuses stays
 bright so that it can be picked and explained. Without a text, the game's own behavior stays.
 
+`on_can_equip` cannot ask the player anything: the game runs the same check for the vault's
+filters, the equip list's rows and the list of who can wear an item.
+[`rq.item.on_try_equip`](../reference/api/rq.item.md#rqitemon_try_equip) (2.58.0) runs only when
+the player puts an item on a character (a drag in the vault, the storage screen or from the shop's
+rack, a pick on the status page), before the game's own questions and only where the game would go
+on. Return false to stop it; `rq.ui.confirm` may ask first. Rocky Chunk Indicator asks before a
+second chunk goes on a character who already had its effect:
+
+```lua
+rq.item.on_try_equip(function(ctx)
+  if ctx.no == 310 and consumed(ctx.iic) then
+    return rq.ui.confirm(rq.chara.get(ctx.iic).name .. " has already consumed the power of Rocky Chunk.\n"
+      .. "Equip it anyway?", { cursor = "no", remember = "spent" }) == true
+  end
+end)
+```
+
+`ctx.from` says where (`"vault"`, `"storage"`, `"shop"` or `"status"`) and `ctx.old` what the slot
+holds now. Equips a mod makes (`rq.item.equip`, `give`, `buy`) do not call it.
+
 ### An item that works when equipped
 
 [`rq.item.on_equip`](../reference/api/rq.item.md#rqitemon_equip) (2.55.0) runs each time an item

@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.57.0.
+Loader version 2.58.0.
 
 ## Namespaces
 
@@ -242,6 +242,7 @@ Loader version 2.57.0.
 | [`rq.TransferContext`](types/rq.TransferContext.md) | What `rq.world.on_transfer` and `on_transfer_after` callbacks get. |
 | [`rq.TrapCtx`](types/rq.TrapCtx.md) | What an `rq.dungeon.on_trap` callback gets. |
 | [`rq.TrapWeights`](types/rq.TrapWeights.md) | The weights of the trap kinds, from `rq.dungeon.traps()`: each 0 to 10. |
+| [`rq.TryEquipCtx`](types/rq.TryEquipCtx.md) | What `rq.item.on_try_equip` gets. |
 | [`rq.UiAskRow`](types/rq.UiAskRow.md) | One row of `rq.ui.ask`. |
 | [`rq.UiBarOpts`](types/rq.UiBarOpts.md) | What `rq.uikit.bar` takes. |
 | [`rq.UiBox`](types/rq.UiBox.md) | A row or column for `rq.uikit.row` and `col`. |

@@ -6,7 +6,8 @@ by the game itself, instead of a HUD button over the screen. The places so far:
 - the **SYSTEM menu**: one MODS row for every mod, with each mod's entries in a list;
 - **Rance Castle**: a room of the mod's own;
 - the **skill window** (2.17.0): buttons under the Potential Skills list;
-- a character's **status page** (2.20.0): icon buttons in its title row;
+- a character's **status page** (2.20.0): icon buttons in its title row, and (2.58.0) marks that
+  are not buttons at its top left;
 - a quest's **map** (2.32.0): tabs against the map panel, under the area map;
 - Config's **Mods tab** (1.8.0): a page of the mod's own, and since 2.35.0 a page of settings built
   from a list.
@@ -153,6 +154,39 @@ placed (the log says so).
 
 Agents see each button as the control `<mod id>.<id>` of the `status` screen. Morurun Items' MORU
 RUN button is made this way.
+
+### A mark at the top left
+
+Since 2.58.0 a `"status"` entry with `spot = "left"` is a mark, not a button: an icon that says
+something about the character shown. Rocky Chunk Indicator's chunk is one, faded until the
+character had the chunk's effect:
+
+```lua
+local FULL = rq.image.compose("rocky-chunk-indicator:full",
+  { { cg = 6247, w = 26, h = 26 } }, { w = 26, h = 26 })
+local FADED = rq.image.compose("rocky-chunk-indicator:faded",
+  { { cg = 6247, w = 26, h = 26, alpha = 90 } }, { w = 26, h = 26 })
+
+rq.gamebutton.add({
+  group = "status",
+  spot = "left",
+  id = "mark",
+  label = "Rocky Chunk",
+  icon = function(chara) return consumed(chara) and FULL or FADED end,
+  tip = function(chara) return consumed(chara) and "Already consumed." or "Not consumed yet." end,
+})
+```
+
+- **Where.** The left end of the LV row, under the class icon: two cells, x 20 and 56 (y 90),
+  32 × 26 each, in load order, apart from the title row's two. A third shown mark is not placed.
+- **Not a button.** No `on_click` (an error with one): no press, no sound, and the keys pass it
+  by. Under the mouse it lights up as the title buttons do, and the tip shows with the label as
+  its title, after the comment window's usual moment. For an agent it is a control of the `status` screen
+  with `enabled` false, so `rq.ui.get`'s `hover` never names it: put the mouse on its place to
+  read the tip.
+- **`icon` as a function** (in either spot) is asked with the character on every draw, as `shown`,
+  `enabled` and `tip` are: one entry can show a different picture for each character.
+  `enabled` false darkens a mark.
 
 ### The page itself: `rq.statuspage`
 

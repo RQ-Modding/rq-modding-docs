@@ -577,6 +577,7 @@ See also: [`rq.item.find`](rq.item.md#rqitemfind)
 | [`rq.item.on_can_equip`](#rqitemon_can_equip) | Calls `fn` where the game decides whether a character can equip an item, to change the answer. |
 | [`rq.item.on_equip`](#rqitemon_equip) | Calls `fn` each time an item is put on a character. |
 | [`rq.item.on_unequip`](#rqitemon_unequip) | Calls `fn` each time an item comes off a character. |
+| [`rq.item.on_try_equip`](#rqitemon_try_equip) | Calls `fn` when the player puts an item on a character, before anything happens, so a mod can ask first or stop it. |
 
 ### rq.item.on_create
 
@@ -746,3 +747,47 @@ end)
 | `remove` | `fun()` | Removes this callback. |
 
 See also: [`rq.item.on_equip`](rq.item.md#rqitemon_equip)
+
+### rq.item.on_try_equip
+
+```lua
+rq.item.on_try_equip(fn) -> fun()
+```
+
+`since 2.58.0`
+
+Calls `fn` when the player puts an item on a character, before anything happens, so a mod can ask
+first or stop it.
+
+It runs for the player's own equips on the game's screens: a drag onto a character's row in the
+vault's or the storage screen's equip list, a drag from the shop's rack onto one (a purchase), and a
+pick in the status page's item list. It runs before the game's own questions (taking the old item
+off, "Purchase X?"), and only where the game would go on: a grey row, a refusal (the game's or
+`rq.item.on_can_equip`'s, with its text), `rq.shop.on_can_buy` and not enough money stop the
+attempt first, and then it does not run. Equips a mod makes (`rq.item.equip`, `rq.item.give` with
+`to`, `rq.item.buy`) do not call it.
+
+`fn` returns false to stop the attempt: nothing changes, the dragged tile goes back, the status page
+stays as it was. Any other answer goes on, and the next callback is asked. `fn` may ask the player:
+`rq.ui.confirm` waits for the answer there.
+
+A callback's error is logged once per mod, and the attempt goes on.
+
+```lua
+local ROCKY_CHUNK = 310
+rq.item.on_try_equip(function(ctx)
+  if ctx.no == ROCKY_CHUNK and rq.ain.call("ＣＦＡ", ctx.iic, 36, -1) == 7 then
+    return rq.ui.confirm("Rock On's points are already there.\nEquip it anyway?", { cursor = "no" }) == true
+  end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fn` *(optional)* | `fun(ctx:` [`rq.TryEquipCtx`](../types/rq.TryEquipCtx.md) `): boolean` | Returns false to stop the attempt. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `remove` | `fun()` | Removes this callback. |
+
+See also: [`rq.item.on_can_equip`](rq.item.md#rqitemon_can_equip), [`rq.item.on_equip`](rq.item.md#rqitemon_equip)

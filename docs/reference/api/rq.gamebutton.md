@@ -1,6 +1,6 @@
 # rq.gamebutton
 
-`since 2.16.0` `changed 2.17.0` `changed 2.20.0` `changed 2.32.0`
+`since 2.16.0` `changed 2.17.0` `changed 2.20.0` `changed 2.32.0` `changed 2.58.0`
 
 Buttons of mods in the game's own menus, made by the game itself.
 
@@ -33,6 +33,15 @@ slot (or its REMOVE) goes to the first button not greyed; from a button Left and
 other, Down to the Special slot, Up to SKILL SCREEN. Agents see each one as the control
 `<mod id>.<id>` of the `status` screen. See `rq.statuspage` for the page itself.
 
+With `spot = "left"` (2.58.0), a `"status"` entry is an icon, not a button: it says something about
+the character shown, as a mark. The left spot is the page's top left, at the left end of the LV row
+under the class icon: two cells, x 20 and 56, y 90, 32 × 26 each, in the order those entries were
+added, apart from the title row's two (a third shown left entry is not placed, and the log says so).
+An icon has no `on_click`: no press, no sound, and the keys pass it by. Under the mouse it lights up
+as the title buttons do, and its tip shows with the label as its title; `enabled` false darkens
+it; `shown` false gives its cell to the next left entry. A mark that changes with the character
+(faded or full, say) gives `icon` as a function.
+
 `"map"` (2.32.0): tabs on a quest's map, on the 3D view's right edge against the map panel, under
 the area map (AREA DISPLAY) and above the Magnum gauge, the only free room there. The tabs are
 40 × 44 at x 768, from y 129, 47 apart, in the order entries were added; entries with `shown`
@@ -54,6 +63,14 @@ Quest Storage screen shows over the panel, which stays drawn under it).
 ```lua
 rq.gamebutton.add({ id = "settings", label = "My Mod settings", tip = "Opens My Mod's page",
   on_click = function() rq.log("open my page here") end })
+-- A mark on the status page: full for a character in the mod's list, faded for the others.
+local FULL = rq.image.compose("my-mod:mark", { { cg = 6247, w = 26, h = 26 } }, { w = 26, h = 26 })
+local FADED = rq.image.compose("my-mod:mark-faded", { { cg = 6247, w = 26, h = 26, alpha = 90 } },
+  { w = 26, h = 26 })
+local marked = {}
+rq.gamebutton.add({ group = "status", spot = "left", id = "mark", label = "My Mark",
+  icon = function(chara) return marked[chara] and FULL or FADED end,
+  tip = function(chara) return marked[chara] and "Marked." or "Not marked yet." end })
 rq.gamebutton.add({ group = "skill-window", id = "plan", label = "Plan Skills",
   on_click = function() rq.log("the skill window is still open") end })
 rq.gamebutton.add({ group = "status", id = "notes", label = "Notes", icon = 11158,
@@ -78,13 +95,14 @@ rq.gamebutton.add({ group = "map", id = "bag", label = "My Bag", icon = 11329,
 rq.gamebutton.add(spec) -> rq.GameButtonHandle
 ```
 
-`since 2.16.0` `changed 2.20.0` `changed 2.32.0`
+`since 2.16.0` `changed 2.20.0` `changed 2.32.0` `changed 2.58.0`
 
 Adds an entry to a game menu.
 
-Raises an error for a spec that is not a table, an unknown group, no id or label, no `on_click`,
-an `enabled`, `tip` or `shown` of the wrong type, a `"status"` or `"map"` entry with no `icon`, or
-an id the mod already has.
+Raises an error for a spec that is not a table, an unknown group, no id or label, no `on_click`
+(or one on a `"left"` entry), an `enabled`, `tip` or `shown` of the wrong type, a `"status"` or
+`"map"` entry with no `icon`, a `spot` other than `"title"` or `"left"` or outside `"status"`, or an
+id the mod already has.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -97,6 +115,8 @@ an id the mod already has.
 > Changed in 2.20.0: The group `"status"`, with `icon` and `shown`.
 
 > Changed in 2.32.0: The group `"map"`, with `icon` and `shown`.
+
+> Changed in 2.58.0: `spot` in `"status"`, and `icon` as a function there.
 
 ### rq.gamebutton.groups
 
