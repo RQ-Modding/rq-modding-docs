@@ -75,9 +75,10 @@ rq.status.define("mymod:weaken", {
 ```
 
 The battle forecast (with Battle Forecast in the party) counts it: the damage word under the skill
-changes. Your callbacks also run for the forecast, every time the player points at a target, with
-`ctx.forecast` true; one that counts hits or rolls dice should do nothing then. To add your own
-part to the forecast line:
+changes. Your callbacks also run for the forecast, every time the player points a skill at an
+enemy, with `ctx.forecast` true; one that counts hits or rolls dice should do nothing then. To add
+your own part to the forecast line (the game shows one only for a skill aimed at an enemy; for a
+support skill it builds nothing, `ctx.text` is "", and your text is the whole line):
 
 ```lua
 rq.battle.on_forecast(function(ctx)

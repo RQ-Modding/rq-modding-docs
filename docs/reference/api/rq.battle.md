@@ -1274,17 +1274,22 @@ See also: [`rq.battle.on_turn`](rq.battle.md#rqbattleon_turn), [`rq.battle.on_us
 rq.battle.on_forecast(fn) -> fun()
 ```
 
-`since 2.26.0`
+`since 2.26.0` `changed 2.56.1`
 
 Calls `fn` each time the game builds a battle forecast line, to add text to it.
 
 With Battle Forecast (488) in the party, the game shows the line when the player points a skill
-at a target: the hit chance, the stun chance and a damage word for an attack, the capture rate
-for a capture. The line is built again on every hover, so `fn` must be quick and roll no dice.
-The strings of every callback are added in load order. The damage word already counts mod states
-and the `rq.combat` callbacks, which run with `ctx.forecast` true.
+at an enemy: the hit chance, the stun chance and a damage word for an attack, the capture rate
+for a capture. A skill aimed at an ally (a heal, a support skill on the party) gets no line and
+no call, whatever `fn` would return. For a support skill aimed at an enemy the game builds
+nothing (`ctx.text` is ""), and `fn` is still called: its text is the whole line. The line is
+built again on every hover, so `fn` must be quick and roll no dice. The strings of every callback
+are added in load order. The damage word already counts mod states and the `rq.combat`
+callbacks, which run with `ctx.forecast` true.
 
 Raises an error, logged, for a return that is not a string or nil.
+
+`text` "".
 
 ```lua
 rq.battle.on_forecast(function(ctx)
@@ -1299,6 +1304,8 @@ end)
 | Returns | Type | Description |
 | --- | --- | --- |
 | `remove` | `fun()` | Removes this callback. |
+
+> Changed in 2.56.1: The doc: the line only for a skill aimed at an enemy, and a support skill's
 
 See also: [`rq.combat.on_physical`](rq.combat.md#rqcombaton_physical)
 

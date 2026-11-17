@@ -125,7 +125,10 @@ does not run there.
 `rq.combat.on_heal` runs for every heal a skill gives in a fight: a support skill's heal
 (`kind = "skill"`), a revive (`"revive"`), and HP absorb from a hit (`"absorb"`). Write
 `ctx.amount` to change it. The HP, the number on the screen and the log's " recovered N HP." follow
-the new amount. A curse that halves healing, and a state with no healing at all:
+the new amount. A skill on the whole party (Recovery Rain) gives one heal to each ally in the
+fight, a downed one too, and none to an empty place of the party (since 2.56.1: before, the game
+healed each empty place as character 0, `ctx.target` 0). A curse that halves healing, and a state
+with no healing at all:
 
 ```lua
 rq.combat.on_heal(function(ctx)

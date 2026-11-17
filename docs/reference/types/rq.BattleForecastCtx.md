@@ -11,7 +11,7 @@ What `rq.battle.on_forecast` gets for one forecast line.
 | `attacker` | `integer` | The attacker's roster slot. |
 | `defender` | `integer` | The target's roster slot. |
 | `skill` | `integer` | The skill number. |
-| `text` | `string` | The game's line so far, such as "Battle Forecast:  Accuracy 85%  Stun 10%　△Medium damage"; "" for a skill the game makes no forecast for. |
+| `text` | `string` | The game's line so far, such as "Battle Forecast:  Accuracy 85%  Stun 10%　△Medium damage"; "" for a skill the game makes no forecast for, as a support skill (Am Powder on an enemy). |
 
 ## Used by
 

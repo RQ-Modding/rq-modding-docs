@@ -401,7 +401,7 @@ See also: [`rq.counter.on_guard_counter`](rq.counter.md#rqcounteron_guard_counte
 rq.combat.on_heal(fn) -> fun()
 ```
 
-`since 2.37.0`
+`since 2.37.0` `changed 2.56.1`
 
 Calls `fn` when a skill gives HP in a fight, to change how much.
 
@@ -413,8 +413,14 @@ number shown and the number in the log's " recovered N HP." follow the last amou
 gives at least 1 HP. A heal the game makes 0 (a downed target, Medicine on Suzume, skill 366) is
 not reported.
 
+A skill on the whole party (Recovery Rain) gives one heal to each ally in the fight, a downed one
+too; the party's empty places get none.
+
 Regeneration at a turn start is not a skill: give or take it with `rq.battle.on_turn`'s
 `ctx:heal`. Outside fights the game's heals are `rq.chara.heal` and `rq.party.heal`.
+
+the five places, not the place, so an empty place was healed too: a callback with `target` 0 and
+a line with no name in the log. The loader makes it check the place.
 
 ```lua
 rq.combat.on_heal(function(ctx)
@@ -429,6 +435,8 @@ end)
 | Returns | Type | Description |
 | --- | --- | --- |
 | `remove` | `fun()` | Removes this callback. |
+
+> Changed in 2.56.1: The game's whole-party support (`戦闘味方_全体補助`) checked its user at each of
 
 See also: [`rq.battle.on_turn`](rq.battle.md#rqbattleon_turn)
 

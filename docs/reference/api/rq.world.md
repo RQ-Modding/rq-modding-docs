@@ -22,17 +22,21 @@ gold and the items in the vault and the storage stay.
 rq.world.current() -> integer|nil
 ```
 
-`since 2.23.0`
+`since 2.23.0` `changed 2.56.1`
 
 Returns the world being played.
 
 ```lua
 if rq.world.current() == 3 then rq.log("last world") end
 ```
+title, and this answered 1 there. A save counts as loaded from the game's load (the autosave or
+the suspend save) or a new game's first quest until the title shows again.
 
 | Returns | Type | Description |
 | --- | --- | --- |
-| `world` | `integer\|nil` | 1 to 3, or nil before a save is loaded. |
+| `world` | `integer\|nil` | 1 to 3, or nil before a save is loaded (at the title too). |
+
+> Changed in 2.56.1: nil at the title: the game sets the world to 1 when it starts, before the
 
 ## Events
 

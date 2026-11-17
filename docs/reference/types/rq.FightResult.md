@@ -6,7 +6,7 @@ How a fight from `rq.battle.start` ended, its second value.
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `code` | `integer` | The game's end (`rq.battle.on_end`'s `result`): 1 won, 2 lost, 3 a draw (the enemies gone with no ally standing), 4 the actions ran out and the enemies left, 5 the party fled (Escape), 6 fled by skill 217. |
+| `code` | `integer` | The game's end (`rq.battle.on_end`'s `result`): 1 won, 2 lost, 3 a draw (the enemies gone with no ally standing: the game's log says "Draw", as for 4; before 2.56.1 it froze the game), 4 the actions ran out and the enemies left, 5 the party fled (Escape), 6 fled by skill 217. |
 | `how` | `"won"\|"lost"\|"draw"\|"time"\|"fled"\|"other"` | The end in a word. |
 | `exp` | `integer` | The fight's EXP the result screen showed, after every `rq.battle.on_reward` callback; 0 when the fight paid nothing. |
 | `gold` | `integer` | The gold paid, after every `rq.battle.on_reward` callback; 0 when the fight paid nothing. |

@@ -331,7 +331,7 @@ end)
 - **Where the values are kept.** In [`rq.store.global`](../reference/api/rq.store.md) by default, the
   same for every profile; `keep = "profile"` keeps them in `rq.store`, the profile's, and
   `keep = "save"` in [`rq.savedata`](save-data.md), the save's, with the rows greyed until a save is
-  loaded. The key is the row's `key`, so a mod that drew its own page keeps its players' settings
+  loaded (at the title too since 2.56.1, where `rq.world.current()` is nil). The key is the row's `key`, so a mod that drew its own page keeps its players' settings
   when it switches, as Morurun Items, Kaoru Quincy QoL, Custom TADA Mode and Game Speed did.
 - **The object.** `settings.get(key)` gives the value; a stored value the row cannot take (a number
   past `max` after the mod lowered it) reads as the default. `set(key, value)` changes it as the page
