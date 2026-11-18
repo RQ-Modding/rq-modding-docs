@@ -54,6 +54,13 @@ writes the original game's save in `Documents\AliceSoft`.
 Mods that add characters or items write them into the save like the game does, so keep a copy of the
 save folder before you try a mod that adds content.
 
+## The network box
+
+If the game shows "Failed to send data to server (getserverversion)", click OK and play on: RQ MOD
+does not connect to the game's online server, and nothing is lost. To stop the box, untick **Connect
+to network** in Config, **Other 2**. It is off in a new install; a save copied from the original
+game may have it on.
+
 ## A gamepad
 
 A gamepad does nothing in RQ MOD yet: Rance Quest reads the pad through a part of the engine that is
