@@ -22,8 +22,9 @@ local r = rq.combat.rules(448) -- Fortune
 ```
 
 - `crit` and `stun` are true, false or `"sometimes"`. "sometimes" is the game's exceptions: a skill
-  whose crit chance the game sets to 0 (a multiplier above 150, or Assassinate) still crits with
-  skill 549 or party item 91.
+  whose crit chance the game sets to 0 (a multiplier above 150, or Assassinate) can still crit: the
+  game adds 50 for an attacker with Low Blow (549) against a man or race 4, on half the rolls, and 30
+  for an enemy while character 91 (Kojika) is in the party.
 - `poison` is `"own"` (with `poison_rate`), `"coat"` (only through the weapon or Poison Effect, as
   most physical attacks), `"sometimes"` or false.
 - `accuracy` is `"ignores"` for the skills that never miss, else `"rolls"`.

@@ -66,7 +66,8 @@ the game keeps only in its combat code (the loader knows them), and the rules mo
 `rq.combat.set_rules`. For a skill's hover text, as Better Explained writes it.
 
 The game's own exceptions show as "sometimes": a skill whose crit chance the game zeroes can
-still crit with skill 549 or item 91. A rule a mod changes through a callback (`on_crit`,
+still crit for an attacker with Low Blow (549) against a man or race 4, and for an enemy while
+character 91 (Kojika) is in the party. A rule a mod changes through a callback (`on_crit`,
 `on_stun`, `on_poison`) does not show here unless that mod also calls `set_rules`.
 
 Raises an error when `skill` is not a whole number.
