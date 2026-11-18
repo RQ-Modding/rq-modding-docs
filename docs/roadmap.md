@@ -5,8 +5,9 @@ moves to the [Changelog](changelog.md).
 
 ## Planned
 
-- **Mods to download.** Each mod in its own repository with its own release zip, and the RQ MOD
-  site, which lists the checked mods with their downloads. The first release (2.59.2) ships no mod.
+- **The RQ MOD site.** A site that lists the checked mods with their downloads. Until then, each
+  RQ Modding mod is in its own repository in the [RQ-Modding organization](https://github.com/RQ-Modding),
+  with its release zip on the repository's Releases page. The engine's release ships no mod.
 - **More names.** `rq.ids` (1.15.0) names characters, classes, items, quests, skills and states.
   1.16.0 adds monsters, races, character types, elements, item kinds and skill targets, 2.4.0
   music tracks, and 2.24.0 map kinds. Still to come: map layouts (many layouts carry several areas'
