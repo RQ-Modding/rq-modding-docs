@@ -5,13 +5,8 @@ moves to the [Changelog](changelog.md).
 
 ## Planned
 
-- **The first public release.** The engine's release zip on GitHub, with a short install note and
-  the API reference as one HTML page for reading offline; the mod template as a template repository
-  to start a mod from (`mod.json` with its schema, `init.lua`, editor settings for `rq.lua`, a
-  README, a changelog, a license, and a workflow that zips a release); and this site online. The
-  release ships no mod.
-- **Mods to download.** After the first release: each mod in its own repository with its own
-  release zip, and the RQ MOD site, which lists the checked mods with their downloads.
+- **Mods to download.** Each mod in its own repository with its own release zip, and the RQ MOD
+  site, which lists the checked mods with their downloads. The first release (2.59.2) ships no mod.
 - **More names.** `rq.ids` (1.15.0) names characters, classes, items, quests, skills and states.
   1.16.0 adds monsters, races, character types, elements, item kinds and skill targets, 2.4.0
   music tracks, and 2.24.0 map kinds. Still to come: map layouts (many layouts carry several areas'
