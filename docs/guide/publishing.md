@@ -33,5 +33,22 @@ Test with a copy of your save, and with the other mods you expect players to run
 use (a skill's text, damage, a shop's stock), test it with those mods too, since load order decides
 who runs last.
 
-A template repository for new mods, with a release workflow that zips the folder, is planned (see the
-[Roadmap](../roadmap.md)).
+## Start from the template
+
+The [mod template](https://github.com/RQ-Modding/rq-mod-template) is a repository to start a mod
+from. **Use this template** on GitHub makes a repository of your own with `mod.json` (with its
+schema, so the editor completes and checks it), `init.lua`, editor settings for `rq.lua`, a README
+for players, `TESTING.md` for testers, a changelog and the MIT license. Its README lists what to
+fill in.
+
+It has a release workflow too. Raise `version` in `mod.json`, add its section to `CHANGELOG.md`,
+commit, then push a tag with the same version:
+
+```sh
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+The workflow checks the tag against `mod.json`, zips the folder as above (`<id>-1.0.0.zip`, holding
+`<id>/mod.json`, `<id>/init.lua`, ...) and publishes it as a GitHub release, with that version's
+section of the changelog as its notes.

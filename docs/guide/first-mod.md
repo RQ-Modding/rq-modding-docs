@@ -33,6 +33,12 @@ mods/
 [API reference](../reference/index.md) says when it was added (`since`). The newest call this mod
 uses is `rq.config.settings`, added in 2.35.0. All fields are on the [mod.json](manifest.md) page.
 
+::: tip The template
+The [mod template](https://github.com/RQ-Modding/rq-mod-template) has these two files and the rest a
+mod needs when you share it: a README, a license, editor settings and a workflow that publishes a
+release. [Sharing a mod](publishing.md#start-from-the-template) tells how to use it.
+:::
+
 ## 2. Text on the screen
 
 `init.lua` runs once, when the game starts. Put this in it:
@@ -171,4 +177,6 @@ name. [Logs and debugging](debugging.md) has more.
 
 - [mod.json](manifest.md): load order, dependencies and conflicts.
 - [What a mod can reach](sandbox.md): files, `require` and what Lua libraries are there.
+- [Sharing a mod](publishing.md): what to check before you share it, and the template's release
+  workflow.
 - [API reference](../reference/index.md): every `rq.*` call.
