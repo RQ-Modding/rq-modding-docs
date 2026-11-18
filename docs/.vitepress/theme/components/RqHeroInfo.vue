@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // Replaces the hero's name/text/tagline block so the name can use RqBrand.
-// Text comes from the page's hero frontmatter, as with the default hero.
+// Text comes from the page's hero frontmatter, as with the default hero; `badge` (the project's
+// stage, "Public Beta") is a badge under the heading.
 import { computed } from 'vue'
 import { useData } from 'vitepress'
 import RqBrand from './RqBrand.vue'
@@ -14,5 +15,6 @@ const hero = computed(() => frontmatter.value.hero ?? {})
     <RqBrand size="hero" />
     <span v-if="hero.text" class="text" v-html="hero.text"></span>
   </h1>
+  <p v-if="hero.badge" class="rq-hero-badge"><Badge type="warning" :text="hero.badge" /></p>
   <p v-if="hero.tagline" class="tagline" v-html="hero.tagline"></p>
 </template>

@@ -10,6 +10,9 @@ const engine: { version: string; commit: string } = JSON.parse(
 )
 
 const ORG = 'https://github.com/RQ-Modding'
+const DISCORD = 'https://discord.gg/maCKqfTGne'
+const COMMUNITY = 'https://discord.gg/RANCE'
+const MORU_X = 'https://x.com/Moru_zerinho6'
 
 // Headings get the anchor GitHub gives them ("rq.shop.stock" -> "rqshopstock"), so the generated
 // pages link the same way on GitHub and on the site.
@@ -138,7 +141,11 @@ export default defineConfig({
     },
     outline: { level: [2, 3], label: 'On this page' },
     search: { provider: 'local' },
-    socialLinks: [{ icon: 'github', link: ORG }],
+    socialLinks: [
+      { icon: 'discord', link: DISCORD, ariaLabel: 'RQ MOD on Discord' },
+      { icon: 'x', link: MORU_X, ariaLabel: 'Moru on X' },
+      { icon: 'github', link: ORG, ariaLabel: 'RQ Modding on GitHub' },
+    ],
     editLink: {
       // The reference and the changelog come from the engine; send their edits there.
       // This function runs in the browser, so it cannot use the constants above.
@@ -154,7 +161,7 @@ export default defineConfig({
       text: 'Edit this page on GitHub',
     },
     footer: {
-      message: `API reference generated from RQ MOD ${engine.version}${engine.commit ? ` (${engine.commit})` : ''}. RQ MOD is built on xsystem4.`,
+      message: `RQ MOD is a public beta. API reference generated from RQ MOD ${engine.version}${engine.commit ? ` (${engine.commit})` : ''}. RQ MOD is built on xsystem4.<br>Community: <a href="${DISCORD}">RQ MOD on Discord</a> · <a href="${COMMUNITY}">Rance &amp; Alicesoft Western Community</a> · <a href="${MORU_X}">Moru on X</a>`,
       copyright: 'Docs text under <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>. Code examples are public domain (<a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>).',
     },
   },

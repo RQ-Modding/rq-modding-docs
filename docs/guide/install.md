@@ -27,7 +27,9 @@ are, so you can still start the game without mods.
 
 4. Start the game with `xsystem4\xsystem4.exe`.
 
-The window title shows "RQ MOD" and the loader version, and the main menu shows the version too.
+The window title shows "RQ MOD" and the loader version, and the main menu shows the version too,
+with a Discord icon beside it: click it to open the RQ MOD server in your browser (the game asks
+first).
 
 ## Add and remove mods
 

@@ -5,6 +5,15 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.59.2
+
+The first public release, as a public beta: the tools that help make new content are not done yet.
+- "Public Beta" follows the version in the window title and in the main menu's banner (the stage is `RQ_STAGE` in `include/modloader.h`); the release's name has it too.
+- A link to the official RQ MOD Discord server on the main menu: a small Discord icon right of the version banner, the engine's own, with or without mods, shown while the title waits for a choice, as the banner is. Its tip names the server. A click asks in the game's dialog whether to open the invite in the browser: Yes opens it, No leaves the title as it was. Agents see it as the kit's button `button-rqmod-discord`.
+- The community links (the RQ MOD Discord server, the Rance & Alicesoft Western Community Discord server, Moru on X) in the README, `RQ-MOD-README.txt`, the release's notes and the docs.
+- The release zip: the API reference offline (`xsystem4\api.html`), `RQ-MOD-README.txt` at the top of the zip with the steps, and every linked library's license (`CREDITS.md` names them). No FFmpeg: Rance Quest Magnum plays no movie, and the engine's movie player is pl_mpeg's.
+- The Lab: the new `title-link` checks the link's place, the dialog's text and No, twice; Yes, which opens the browser, is not pressed there.
+
 ## 2.59.1
 
 A fix the Lab found with World 3 No Level Cap 1.0.0.
