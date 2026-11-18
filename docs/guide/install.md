@@ -18,9 +18,11 @@ are, so you can still start the game without mods.
    │   └── rq.lua            definitions for mod authors' editors
    ├── mods/                 put mods here, one folder each
    ├── xsystem4/
+   │   ├── api.html          the API reference, offline
    │   ├── config.json
    │   └── xsystem4.exe      start the game with this
-   └── RanceQuest.exe
+   ├── RanceQuest.exe
+   └── RQ-MOD-README.txt     these steps, in short
    ```
 
 4. Start the game with `xsystem4\xsystem4.exe`.
@@ -38,6 +40,9 @@ The window title shows "RQ MOD" and the loader version, and the main menu shows 
   settings add a page to the Mods tab in the game's Config screen.
 
 Mods load when the game starts, so restart the game after you add or remove one.
+
+Mods are shared by their authors. Some can be found in the [RQ-Modding organization's
+repositories](https://github.com/RQ-Modding) on GitHub until the RQ MOD site lists the checked mods.
 
 ## Saves
 

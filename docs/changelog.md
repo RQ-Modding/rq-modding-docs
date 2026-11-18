@@ -7,13 +7,13 @@ A patch version fixes or adjusts behavior, a minor version adds calls or fields,
 
 ## 2.59.1
 
-A fix the Lab found with World 3 No Level Cap 1.0.0 (`notes/plans/plan-world3-no-cap.md` in the workspace).
+A fix the Lab found with World 3 No Level Cap 1.0.0.
 - `rq.ui.get`'s `status.noLimit` is the ∞ the game draws (the status card's `m_bInfinity`, from the game's no-cap check by the character's number). The character's data overwrote it with a cap of 2147483647, which the game never stores (its caps stop at 999, 9999 in World 3), so it was false for every character, Rance too. The `units` rows whose card is shown already read the card. `rq.ui.get`'s doc says where `level`, `levelLimit` and `noLimit` are, and where `noLimit` stays false (the `party` ranks' cards show no cap; rows whose card is not shown read the data).
 - The Lab: the new `world3-no-cap` checks World 3 No Level Cap, with `noLimit` on the status page and the shown `units` cards in World 3 and World 1.
 
 ## 2.59.0
 
-The status page's MODS list (`notes/plans/plan-status-mods-list.md` in the workspace), as Moru designed it: the title row by the X has room for two mod buttons, and a third had no place.
+The status page's MODS list, as Moru designed it: the title row by the X has room for two mod buttons, and a third had no place.
 - `rq.gamebutton`'s `"status"` group: when more than two title entries are shown on a draw of the card and one of them may go in a list, or a shown entry has `list = true`, the title row has one button instead of the cells, **MODS**, over both cells (the look of the page's SKILL SCREEN button, x 436, y 62, 68 × 27). Its click, or Enter on it, opens a list under it: one row per entry, in the order they were added, each the map tabs' grey bar with the entry's icon and its `text`, as wide as the widest row, the tip right of the list under the mouse, darkened while `enabled` is false. A row's click closes the list and runs the entry's `on_click` (from the frame's update, with the page there); a darkened row plays the deny sound. A click off the list, the right button or Esc only close the list; so do another character and the page closing. While it is open the page takes no mouse and no keys: the arrows move between the rows, Enter clicks one. MODS comes and goes with the entries shown on each draw. Up to two entries, nothing changes.
 - New fields on a `"status"` title entry: `list` (nil, in the list whenever there is one; false, never: no button while MODS shows; true, the list shows for it even alone), `text` (a string or a function of the character and the mode: the words beside the icon in its row; with `list = true` an entry may have a text and no icon), and `on_state(state, chara, mode)`, called when the entry's place changes. The handle's `state()` gives it: `"button"`, `"row"`, `"aside"` or `"hidden"` (`rq.GameButtonState`). `set` takes `text`.
 - `rq.gamebutton.groups()`: the `"status"` group's `list` (`rq.GameButtonList`: shown, open, MODS's button and place, the rows' width and entries), and each entry's `state`, `list`, `row` and `text`; a row's `x` and `y` are its place in the list.
@@ -23,7 +23,7 @@ The status page's MODS list (`notes/plans/plan-status-mods-list.md` in the works
 
 ## 2.58.0
 
-What Rocky Chunk Indicator 1.0.0 needs (`notes/plans/plan-rocky-chunk-indicator.md` in the workspace), from a player's suggestion on the Discord: a mark on the status page for a character who already had a Rocky Chunk's effect, and a question before another chunk goes on such a character.
+What Rocky Chunk Indicator 1.0.0 needs, from a player's suggestion on the Discord: a mark on the status page for a character who already had a Rocky Chunk's effect, and a question before another chunk goes on such a character.
 - `rq.gamebutton`'s `"status"` group has a second spot, `spot = "left"`: icons that are not buttons, at the page's top left (the left end of the LV row, under the class icon), two cells at x 20 and 56, y 90, 32 × 26, apart from the title row's two by the X, which Morurun Items and Loadouts fill. They are made as the title cells are (buttons of the page's own group, their faces composed from the page's background), so they hide with the page and under the game's windows. A left entry has no `on_click` (an error with one): no press, no sound, and the keys pass it by; under the mouse it lights up as the title buttons do and its tip shows with the label as its title, `enabled` false darkens it, `shown` false gives its cell to the next. `spot = "title"` is the default.
 - `rq.gamebutton`'s `"status"` entries take `icon` as a function, `icon(chara, mode)`, asked on every draw of the card as `shown`, `enabled` and `tip` are, so an icon can change with the character shown; an answer that is not a CG number leaves the entry out of that draw. `rq.gamebutton.groups()` gives a `"status"` entry's `spot` and the `icon` it shows.
 - `rq.item.on_try_equip`: a callback when the player puts an item on a character on the game's screens (a drag onto a character's row in the vault's or the storage screen's equip list, a drag from the shop's rack onto one, a pick in the status page's item list), before the game's own questions, with `rq.TryEquipCtx` (the item, the character, the slot, the item it would replace, `from`). It returns false to stop the attempt, and may ask the player with `rq.ui.confirm` first. It does not run where a grey row, a refusal (the game's or a mod's), `rq.shop.on_can_buy` or not enough money stops the attempt, nor for equips a mod makes. `rq.item.on_can_equip` cannot ask, since the game also runs it for the filters, the equip list's rows and the list of who can wear an item.
@@ -31,16 +31,16 @@ What Rocky Chunk Indicator 1.0.0 needs (`notes/plans/plan-rocky-chunk-indicator.
 
 ## 2.57.0
 
-The leftovers of the Test Lab's catch-up (`notes/plans/plan-catch-up-leftovers.md` in the workspace, from `plan-lab-catch-up.md` section 6), as recommended there and taken by Moru.
+The leftovers of the Test Lab's catch-up, as Moru chose them.
 - `rq.item.on_unequip`: a callback each time an item comes off a character, with `rq.UnequipCtx` (the item's instance, number and id, the character, the slot, whether it came off through the game's equip call, the item put in its place, whether the game deleted it as it came off). It hooks `Ｃアイテム外す`, the one place the game takes an item off: REMOVE in the vault and on the status page, a drag, a swap, `rq.item.equip`, `rq.item.remove`, `sell` and `donate` on a worn item, and the game's own removals (a character removed, a Morurun absorbing a Special item, a quest's event). Through the equip call it runs once that call has ended, before `rq.item.on_equip` for the item put in its place. `rq.item.on_equip`'s doc points to it.
 - `rq.knownskills`: Page Up and Page Down turn the known skills' page on the status page and in the skill window, with the controls (`install`'s `controls`); held, they turn again after 400 ms and then every 150 ms. The game reads Page Up there only in a message's wait (the backlog) and both only in Config's sliders.
-- A gamepad does nothing yet, and the install guide and the README say so: Rance Quest reads the pad through `IbisInputEngine`'s joystick calls, which the engine leaves unimplemented, as upstream xsystem4 does. Pad support is planned later on its own.
+- A gamepad does nothing yet, and the install guide says so: Rance Quest reads the pad through `IbisInputEngine`'s joystick calls, which the engine leaves unimplemented, as upstream xsystem4 does. Pad support is planned later on its own.
 - `rq.chara.clear_slot`, `set_slot`, `set_flavor`, `set_uses` and `set_bar` raise an error for a row outside 1 to the list's last row (20, more with `rq.knownskills`). The game checks a row only against its top (21), so a negative row was a fatal VM error that closed the game ("Out of bounds page index"), as the Lab's `badnumbers` found with `clear_slot(20, -1)` in the general run.
 - The Lab: the new `unequip` checks `rq.item.on_unequip` (a swap through `rq.item.equip`, the same item again, `rq.item.remove` on a worn item, `Ｃアイテム外す` called as the game's events call it, a Lab item that vanishes, the status page's REMOVE); `known-skills` turns the pages by Page Up and Page Down on the status page and in the skill window; `badnumbers` gets through every call again. The general run at 2.56.1 (122 scenarios, 6424 checks) found the `clear_slot` crash and three stale or flaky checks in the Lab, fixed there.
 
 ## 2.56.1
 
-The fixes for what the Test Lab's catch-up found in its section D (`notes/plans/plan-lab-catch-up.md` in the workspace, section 8, F6 to F9), as recommended there and taken by Moru.
+More fixes for what the Test Lab's catch-up found, as Moru chose them.
 - A draw no longer freezes the game. A fight whose last enemy falls in an action that leaves no ally standing ends with the game's result 3, and `戦闘後処理(re)`, the game's work after a fight, ends with a loop that writes the result to the user log and leaves for 1, 2, 4, 5 and 6 only: for 3 it spun for good. The game itself never draws (no skill downs its own user), but a mod can, as the Lab's `fight-start` did by downing Rance in `rq.battle.on_hit` as his hit took the last enemy. The loader's wrapper on `戦闘後処理` (`src/modloader_events.c`) now hands it a 4 for a 3, whose line says "Draw"; nothing else there reads the value, the callers keep their own, and `rq.battle.on_end`'s `result` and `rq.FightResult`'s `code` stay 3 (`how` `"draw"`).
 - A skill on the whole party (Recovery Rain) no longer heals the party's empty places. The game's `戦闘味方_全体補助` asked at each of the five places whether its user stood (`戦闘番号_存在確認(nNo)`), not whether a character stood there, so an empty place got the skill too: `rq.combat.on_heal` with `target` 0 and a line with no name in the battle log ("   recovered 224 HP."). The loader changes the call's argument to the place (`nTargetNo`) when `src/lua/combat.lua` loads (`priv.patch_call_local`, `src/modloader.c`), as the game's own `戦闘味方_全体加護` checks it. A downed ally still counts: the check is the place's character, not its HP. The familiar's whole-party skills go through the same function.
 - `rq.world.current()` is nil at the title. The game sets its world to 1 when it starts (`Ｔ初期化`, before the title), so this answered 1 there, and what reads it as "a save is loaded" took the title for one: `rq.config.settings`' `"save"` pages were not greyed and took changes that the next load dropped, and `rq.game.mode` answered `"classic"`. The loader now knows a save is loaded from the game's load (`Ｔロード直後処理`: the autosave and the suspend save) or a quest's start (`Ｔクエスト`, a new game's prologue first) until the title shows again (`タイトル画面`), in `src/lua/gamedata.lua`.
@@ -49,7 +49,7 @@ The fixes for what the Test Lab's catch-up found in its section D (`notes/plans/
 
 ## 2.56.0
 
-The fixes for what the Test Lab's catch-up found (`notes/plans/plan-lab-catch-up.md` in the workspace, section 8), made before its section C at Moru's word, with Binoculars 1.2.3 and Pluepet Rare Contract 1.0.1 (which needs 2.56.0 for its long page).
+The fixes for what the Test Lab's catch-up found, made at Moru's word, with Binoculars 1.2.3 and Pluepet Rare Contract 1.0.1 (which needs 2.56.0 for its long page).
 - `rq.ui.get` and `rqmod-ctl ui`: `busy`, what the game runs under the screen. `"event"` while one of a quest's own events runs (`クエスト処理` on the VM's stack: its messages, scenes and fight, with the map read between them, as before a goal's first line), `"fight-end"` while the game waits for a click after a fight (`戦闘後処理`: the result screen over the map, before a placed enemy is counted and removed); the inner one when both run, absent otherwise. Found by `rare-contract` (A3: the Lab took the map before Pastel's scene for the event's end) and earlier by `map-objects` (phase N). The Lab's `t.clear_quest` and `t.to_map` read it.
 - `rq.dungeon.exploring()` is false through the game's result flow (`Ｒ８リザルト画面`, wrapped in C). Its background (`T_ResultBack`) builds the map again, and `T_MapParts@create` cleared the result screen's mark, so the map read as walked during the background's 500 ms fade-in: at the end of a quest with fights and no map (Incident at the Church, quest 46), Binoculars 1.2.2 took a pair worn there as gone in and broke it (A4).
 - A choice menu too tall for the room under its place goes up just enough to fit on the screen, and the place in the menu's data is put back after (a hook on `T_Select@createBase` in `src/lua/dialog.lua`). It covers `rq.ui.choose`, `rq.scene.choice`, `rq.ui.ask` and the game's own menus; a menu that fits keeps the game's place (its top at y 360), and a centred one is left alone. Pluepet Rare Contract's 19 rows ran past the bottom and its "More..." could not be clicked (A3).
@@ -59,7 +59,7 @@ The fixes for what the Test Lab's catch-up found (`notes/plans/plan-lab-catch-up
 
 ## 2.55.1
 
-RQ Browser becomes Rance Browser 1.0.0, a program in its own repository (`notes/plans/plan-browser-repo.md` in the workspace), from the testers' request that it open other Rance games for the wiki, Rance VI first. No `rq.*` call changes; the version is raised for the program that ships with this loader, as in 2.43.0 and 2.52.1. From now on a new browser version in the package is named in the loader version that carries it, and a browser change alone raises no loader version.
+RQ Browser becomes Rance Browser 1.0.0, a program in its own repository, from the testers' request that it open other Rance games for the wiki, Rance VI first. No `rq.*` call changes; the version is raised for the program that ships with this loader, as in 2.43.0 and 2.52.1. From now on a new browser version in the package is named in the loader version that carries it, and a browser change alone raises no loader version.
 - The package's `xsystem4\rq-browser.exe` is now `xsystem4\rance-browser.exe`, **Rance Browser 1.0.0** (its title says "RQ MOD 2.55.1" beside its version). It reads an `rq-browser.json` beside it when it has no `rance-browser.json`, so the game folder it remembered stays.
 - For Rance Quest Magnum nothing else changes: the same tabs, counts, names and Lua lines. The CG details show the format and size in the grid too, and a CG picked from the Names tab is brought into view in the grid.
 - The browser opens other System 4 games: Rance VI - Collapse of Zeth (tested; its CGs in labelled groups, its battle effects with their masks, music with its loops, sounds, the `.alk` pictures and the dungeon textures) and others marked "not tested". The Names tab and the Lua lines show for Rance Quest Magnum only.
@@ -67,7 +67,7 @@ RQ Browser becomes Rance Browser 1.0.0, a program in its own repository (`notes/
 
 ## 2.55.0
 
-The calls Dynamic Immature needs (`notes/plans/plan-dynamic-immature.md` in the workspace), from a tester's request to remove the Immature trait: a Special item that gives its wearer Immature (skill 373) when equipped, one that takes its penalty away, each refused with its reason. In Lua over `rq.ain` (`src/lua/item.lua`, `skills.lua`), but for `only` in C (`src/modloader_scene.c`).
+The calls Dynamic Immature needs, from a tester's request to remove the Immature trait: a Special item that gives its wearer Immature (skill 373) when equipped, one that takes its penalty away, each refused with its reason. In Lua over `rq.ain` (`src/lua/item.lua`, `skills.lua`), but for `only` in C (`src/modloader_scene.c`).
 - `rq.item.on_equip(fn)`: a callback each time an item is put on a character, after the game's `キャラ_装備設定` returns true (the vault's and the storage screen's drag, the status page, the shop's buy onto a character, `rq.item.give` with `to`, `rq.item.equip`): the stats are worked out again and a Special item's own effects done. `rq.EquipCtx`: `ii`, `no`, `id`, `iic`, `chara`, `slot` (`"special"`, `"weapon"`, `"armor"`, `"item"`), `kind` and `old` (the instance it replaced, deleted by then when it vanishes). The same instance put on again does not call it.
 - `rq.item.on_can_equip`: a refusal's text, `return false, "why"`. The text of the last callback that refused with one counts, unless a later one returns true. A drop on a greyed character in the vault's equip list (`T_EquitItem::setItem` on `g_sEquipDrag.m_sEquip`) shows it in the game's notice instead of "Unable to equip.". The status page's list greys what `アイテム_装備可能` refuses and a grey row cannot be picked, so for that list (`T_StoreItem@getItemActive` on `rq.ain.stack`) an item only a mod refuses with a text stays bright; picking it (`T_Status@equipItem` through `キャラ_装備変更`) shows the text and equips nothing. With no text, the game's behavior is as before.
 - `rq.chara.on_has_skill(skill, fn)`: a callback on the game's check for a skill, `ＣＳ番号取得(iic, skill, fg)`, which `ＣＳ有無`, `ＣＳ有無／スタメン` and `ＣＳ総数取得／スタメン` ask through: false answers "no" for that one check (the function is skipped and returns 0), the skill row stays. `rq.HasSkillCtx`: `iic`, `chara`, `skill`, `mode` (`"held"`, `"set"`, `"unset"` for fg 0, 1, 2), `row` (the game's answer) and `caller`, the first function on `rq.ain.stack` past those helpers (`Ｃ再計算` for the stats). The skill table is empty while mods load, so only the range 1 to 1000 is checked.
@@ -76,7 +76,7 @@ The calls Dynamic Immature needs (`notes/plans/plan-dynamic-immature.md` in the 
 
 ## 2.54.0
 
-More known skills than the game's 17, in pages (`notes/plans/plan-known-skill-pages.md` in the workspace), from a tester's request: a character with Better Elemental Knowledge's Brawling Knowledges or Arrows, the passives and a Boost runs out of rows, and the skill window has no room for the skill that would free some. In Lua over `rq.ain` (`src/lua/knownskills.lua`), with Known Skill Pages 1.0.0 as the mod that installs it.
+More known skills than the game's 17, in pages, from a tester's request: a character with Better Elemental Knowledge's Brawling Knowledges or Arrows, the passives and a Boost runs out of rows, and the skill window has no room for the skill that would free some. In Lua over `rq.ain` (`src/lua/knownskills.lua`), with Known Skill Pages 1.0.0 as the mod that installs it.
 - `rq.knownskills.install{ most, controls }`: every character's skill rows (`Ｃ[iic].スキル`, 21) grow to `most` + 4, and new skills take rows 1 to `most` + 1 (the game's 1 to 18). `most` is 17 to 102, default 34. The game's code is changed where it counts the rows: the 21 of `sＣ`'s constructor (mods load before the game runs, so the boot's characters are made with the longer rows), the 16 row accessors and the 18 loops over the rows, the cap in `ＣＳ空き番号取得`, the hotbar's last row in `ＣＳ空き実装番号取得`, the battle's loop in `Ｔ戦闘前初期化／キャラ` and the 18 of the free-row check `キャラスキル_空き確認`. Every place is counted first, and nothing changes unless all are as expected.
 - The save stays the game's: before `セーブデータ_保存` the rows past 18 go into the loader's key in `rq.savedata` and the arrays back to 21 (rows 19 and 20 empty); after it, and after `セーブデータ_読み込み`, they grow and the rows come back. A save made with no mod calling `install` drops that key.
 - Pages: while the game builds the known list (`キャラスキル_保有一覧`, the status page's card and the skill window's), `キャラ_スキル数`, `キャラ_スキル番号` and `キャラ_スキル保有` answer the page's 17 and the item effect skill, and the game sorts them as before. The empty item slot (569) is left out, as the game's `キャラ_スキル番号` leaves it out. `rq.knownskills.most`, `page`, `page_count` and `set_page` (which draws the status page or the skill window again).
@@ -88,7 +88,7 @@ More known skills than the game's 17, in pages (`notes/plans/plan-known-skill-pa
 
 ## 2.53.0
 
-A mod's skill that takes the place of others (`notes/plans/plan-better-elemental-knowledge.md` in the workspace): Better Elemental Knowledge folds the five Brawling Knowledges, or Aegis's three elemental Arrows, into one skill row, and its row's purchase record has to count what was paid for the ones it replaced, so that Skill Removal Payback gives all of it back. In Lua (`src/lua/skills.lua`).
+A mod's skill that takes the place of others: Better Elemental Knowledge folds the five Brawling Knowledges, or Aegis's three elemental Arrows, into one skill row, and its row's purchase record has to count what was paid for the ones it replaced, so that Skill Removal Payback gives all of it back. In Lua (`src/lua/skills.lua`).
 - `rq.chara.set_cost(iic, skill, cost)`: writes the purchase record of a skill the character holds (`rq.ForgetCtx.cost`, `rq.chara.slots`' `cost`); false when the character does not have it.
 
 ## 2.52.1
@@ -100,14 +100,14 @@ A fix in RQ Browser found by Moru: changing the kind in the Names tab sometimes 
 
 ## 2.52.0
 
-The price of a change that erases skills, with what any mod gives back (`notes/plans/plan-new-mods.md` in the workspace, section 18): Loadouts counted only Skill Removal Payback's refunds before a load, through a call between the two mods. In Lua (`src/lua/skills.lua`).
+The price of a change that erases skills, with what any mod gives back: Loadouts counted only Skill Removal Payback's refunds before a load, through a call between the two mods. In Lua (`src/lua/skills.lua`).
 - `rq.chara.forget_points(iic, skill, opts)`: the skill points the `rq.chara.on_forget` callbacks would give back for erasing a skill, without erasing it. Each callback runs with the ctx the erasure would have and `preview` true. `opts.player` as in `forget`; `opts.n`, `cost` and `kept` describe the row as it would be after a plan's steps (a skill not there yet, or one raised first). The `on_forget` wrapper keeps each callback until its remover runs, and returns the remover as before.
 - `rq.ForgetCtx.n`: the skill's level in its row (most uses, rank, or 1), as `rq.chara.slots`' `n`.
 - `rq.ForgetCtx.preview`: true when `forget_points` asks; false for an erasure. A callback should only count then.
 
 ## 2.51.0
 
-An erasure a mod makes for the player (`notes/plans/plan-new-mods.md` in the workspace, section 17): Loadouts' erasures got Skill Removal Payback's points back through a call between the two mods; now any mod that erases for the player says so to `rq.chara.forget`, and any mod that pays back an ERASE sees it.
+An erasure a mod makes for the player: Loadouts' erasures got Skill Removal Payback's points back through a call between the two mods; now any mod that erases for the player says so to `rq.chara.forget`, and any mod that pays back an ERASE sees it.
 - `rq.chara.forget(iic, skill, opts)`: `opts.player = true` marks the erasure as the player's own, as the skill window's ERASE. The callbacks see it in `ctx.player`. Without it, a removal is the mod's own (onoha-qol's head start) as before.
 - `rq.chara.forget` returns a third value, the skill points the `on_forget` callbacks gave back (already added to the character): counted in C in `roster_forget` while the call runs.
 - `rq.ForgetCtx.player`: true for the skill window's ERASE (`caller` "キャラスキル_消去") and for `rq.chara.forget` with `player`; false for the game's other removals and a plain `forget`. `rq.ForgetCtx.mod`: the id of the mod that called `rq.chara.forget` (`rq.mod.id`), nil for the game's removals. In Lua (`src/lua/skills.lua`): `forget` marks its erasure while it runs, and the `on_forget` wrapper reads the mark for `caller` "lua", for that skill of that character only.
@@ -116,7 +116,7 @@ An erasure a mod makes for the player (`notes/plans/plan-new-mods.md` in the wor
 
 ## 2.50.0
 
-The calls Pluepet Rare Contract needs (`notes/plans/plan-rare-contract.md` in the workspace), from a tester's request: Pluepet tracks down a lost Rare Item for 50,000 Gold, the player chooses it in a scene over Frostbuy, and it comes to Rance's Room after three successful exploration quests, shown as the game shows an item from an event, with an autosave after. In Lua over `rq.ain` (`src/lua/item.lua`, `scene.lua`, `savedata.lua`).
+The calls Pluepet Rare Contract needs, from a tester's request: Pluepet tracks down a lost Rare Item for 50,000 Gold, the player chooses it in a scene over Frostbuy, and it comes to Rance's Room after three successful exploration quests, shown as the game shows an item from an event, with an autosave after. In Lua over `rq.ain` (`src/lua/item.lua`, `scene.lua`, `savedata.lua`).
 - `rq.shop.on_can_buy(fn)`: a callback that can refuse a Frostbuy purchase before the game checks the money and asks "Purchase ...?". A before hook on `T_EquitItem@setItem`, the one place the game buys (the rack's drag onto the vault, index 999, or onto a character's row), for an item whose place is the shop's (6); a refusal skips the method, which returns false, so the drag puts the tile back, and its text shows in the game's notice. `rq.CanBuyCtx`: `ii`, `no`, `id`, `name`, `price`, `to` (`"vault"` or `"character"`).
 - `rq.item.buy` runs the `on_can_buy` callbacks after its own checks of the item, and returns false and the refusal's text (shown in the notice when asking).
 - `rq.ItemDef.keep`: the vault's DISCARD, SELL and DONATE refuse the item, as the game does for Chaos the Darksword (item 100): an after hook on `アイテム_破棄可能`, which all three ask, for an item number defined with `keep`.
@@ -128,7 +128,7 @@ The calls Pluepet Rare Contract needs (`notes/plans/plan-rare-contract.md` in th
 
 ## 2.49.0
 
-The calls Frostbuy Bulk Buy needs (`notes/plans/plan-bulk-buy.md` in the workspace), from a tester's request: tick several items at Frostbuy, buy several copies of an item the shop restocks, and pay once. In Lua over `rq.ain` (`src/lua/item.lua`, `uikit.lua`, `uikit_vault.lua`), but for one C call.
+The calls Frostbuy Bulk Buy needs, from a tester's request: tick several items at Frostbuy, buy several copies of an item the shop restocks, and pay once. In Lua over `rq.ain` (`src/lua/item.lua`, `uikit.lua`, `uikit_vault.lua`), but for one C call.
 - `rq.item.buy` runs the `rq.shop.on_buy` callbacks, as the shop's drag does (`T_Shop@buyItem`); a purchase a mod made was counted by no one before (Return Bonsai's price, Binoculars', Aten Gnu QoL's restock). The C side's `shop_buy` became `run_buy(ii)`, given to item.lua as a private `bought`.
 - `rq.shop.restocks(no)`: whether the next visit puts another copy on sale once the one on sale is bought, by `Ｔアイテム屋`'s rules: a restock count (`◆アイテム補充数[no]`) other than 0, Forbidden Talent (304) from the third world on, Forbidden Talent - Weak (305) once quest 20 is cleared. The items sold only while the player owns none, once or never, and a mod's items, are false.
 - `rq.shop.restock(no)`: what the next visit would do for that item, now: `rq.shop.stock(no)` when it restocks and none is on sale (the game's `入荷品` raises the count, so a weapon or armor comes a level higher). Returns the instance or 0.
@@ -149,7 +149,7 @@ The calls behind two reports from Moru's friends, for Loadouts 1.1.0 and Skill R
 
 ## 2.47.0
 
-The calls Return Bonsai and Aten Gnu QoL need (`notes/plans/plan-new-mods.md` in the workspace, phase R, step 3): the game's Quest Storage window's tiles, a free appraisal, locked cells in the item window, a picture as a button, an item stocked while the shop shows, and the moment the game sends a character home after a fight. In Lua over `rq.ain` (`src/lua/item.lua`, `basics.lua`, `uikit_hub.lua`, `uikit_windows.lua`), with the tiles listed in C.
+The calls Return Bonsai and Aten Gnu QoL need: the game's Quest Storage window's tiles, a free appraisal, locked cells in the item window, a picture as a button, an item stocked while the shop shows, and the moment the game sends a character home after a fight. In Lua over `rq.ain` (`src/lua/item.lua`, `basics.lua`, `uikit_hub.lua`, `uikit_windows.lua`), with the tiles listed in C.
 - `rq.ui.quest_storage()`: the Quest Storage window (`g_sStoreQuest`, `T_StoreQuest`) while it shows: its `mode` (`"view"` from the map panel, `"give-up"`, `"failure"`), its z, whether the game's question shows over it (`g_sSelect`), and each tile with an item: its place (1 to 15), the instance, its box (100 × 100 from x 482, y 204, 106 apart) and `identified`.
 - `rq.ui.quest_storage_refresh()`: builds the window again from the quest storage's items, as `T_StoreQuest::execErase` does after an erase (the list, `createIcon`, `setZ`, `setButtonActive`, `setShow`), for a mod that moved items in or out.
 - `rq.ui.get`: the window's tiles are the controls `item-1` to `item-15` of the `quest-storage` screen, with the instance as the value.
@@ -162,7 +162,7 @@ The calls Return Bonsai and Aten Gnu QoL need (`notes/plans/plan-new-mods.md` in
 
 ## 2.46.0
 
-The calls Athena QoL and Rebecca Copley QoL need (`notes/plans/plan-new-mods.md` in the workspace, phase R, step 2): who can equip an item, a hit's damage limit and element, Athena's Studies, the game's Weakness Search shown from a mod, and the game's reset of a character's skills. In Lua over `rq.ain` (`src/lua/combat_more.lua`, `item.lua`, `skills.lua`).
+The calls Athena QoL and Rebecca Copley QoL need: who can equip an item, a hit's damage limit and element, Athena's Studies, the game's Weakness Search shown from a mod, and the game's reset of a character's skills. In Lua over `rq.ain` (`src/lua/combat_more.lua`, `item.lua`, `skills.lua`).
 - `rq.item.on_can_equip(fn)`: at `アイテム_装備可能`, the one check behind the vault, the status page, the shop, the storage screen's filters and `rq.item.buy` with a `chara`. `rq.CanEquipCtx` has the game's answer (`allowed`) and its reasons in its order (`reason`, `reasons`: "level", then "chara" or "class"; the game stops at the level, the loader works out the rest), the item's level and the character's. `fn` returns true, false or nil.
 - `rq.combat.on_cap(fn)`: the damage limit of each physical hit and spell, and of the forecast. The game's raise by Damage Maximum (289) in `最終ダメージ計算` is taken out of the game's code (its 289 there patched to 0) and done by the loader at `Ｓダメージ上限`, with the same `倍率計算関数`, before the callbacks: `rq.CapCtx` has the skill's limit (`base`), Damage Maximum's percent (`damage_max`) and the limit so far. `fn` returns a limit, 0 for none. The halving over the limit and the quartering over twice it stay the game's.
 - `rq.combat.on_element(fn)`: a physical hit's element, in `物理属性計算`, after the game's weapon, skill and arrows (Fire, Ice and Electric Arrows, and skill 145's five). `rq.ElementCtx` has the element, the weapon's, the defender's weakness, `known`, `guarded` (`FA[77]`), `basic` and `forecast`. A changed element is written to `◆攻撃属性` at the game's second reading of `Ｃ弱点把握`, so the weakness bonus, the log's "(Attribute weakness)", the effect and the knowledges follow it.
@@ -179,7 +179,7 @@ A fix found by Moru in Loadouts' menus: the comments of the game's choice menu w
 
 ## 2.45.0
 
-Skill buying, for Skill Removal Payback and Loadouts (`notes/plans/plan-new-mods.md` in the workspace, phase R, step 1). In Lua over `rq.ain` (`src/lua/skills.lua`), with two private calls in C.
+Skill buying, for Skill Removal Payback and Loadouts. In Lua over `rq.ain` (`src/lua/skills.lua`), with two private calls in C.
 - The purchase record: the game keeps a cost field in each skill row (`Ｃ[iic].スキル[row].コスト`, in the save) but only ever writes 0 there, so `rq.chara.on_forget`'s `cost` was always 0. Now the loader adds the points of each purchase there, after the skill window's buy (`キャラスキル_新規追加`) and upgrade (`キャラスキル_更新`) and each step of `rq.chara.learn`. A row with no record and more than its starting level (bought before this loader) gets its older steps priced by `rq.chara.price` at its next upgrade. -1 marks a skill a mod gave: `rq.chara.grant` and `edit`'s `learn` on a row with no record, `rq.chara.learn` with `pay = false`. The game never reads the field. `on_forget`'s and `rq.chara.forget`'s `cost` are this record.
 - `rq.chara.on_learn(fn)`: each purchase, once per step (`rq.LearnCtx`: the row, the points, the record after it, `new`, the level `n`, `by` "game" or "learn").
 - `rq.chara.base_skills(iic)`: the skills a character starts with, as Morurun's reset gives them back: the game's `Ｃ生成／キャラデータ(iic, 0, "スキル")` and `Ｃスキルドレイン`'s additions by flag, run on the character itself and put back.
@@ -193,7 +193,7 @@ Skill buying, for Skill Removal Payback and Loadouts (`notes/plans/plan-new-mods
 
 ## 2.44.0
 
-The calls the first batch of the mods' review needed (`notes/plans/plan-mod-review.md` in the workspace, phase Q): the combat rules as data, recommended ranges on settings rows, a "don't ask again" row ticked from the start, and an item picker for one kind of item with drag and drop.
+The calls the first batch of the mods' review needed: the combat rules as data, recommended ranges on settings rows, a "don't ask again" row ticked from the start, and an item picker for one kind of item with drag and drop.
 - `rq.combat.rules(skill)`: what a skill can do in a fight (`rq.CombatRules`): `crit` and `stun` (true, false or "sometimes"), `poison` ("own" with `poison_rate`, "coat", "sometimes" or false), `accuracy` ("ignores" or "rolls") and `set_by`. Worked out at each call from the skill's data as it is then (`rq.skill.get`: action kind, multiplier, function), the game's rules by skill number, which it keeps only in its combat code (now the loader's: the crit's 0 for skill 120, the stun's skip of 120, 448 and 152, the stuns in the special skills' own code, the poison rates in `毒計算`), and what mods set. The game's exceptions are "sometimes": a crit chance the game zeroes (a multiplier over 150, skill 120) that skill 549 or party item 91 still raises.
 - `rq.combat.set_rules(skill, rules)`: changes a skill's `crit`, `stun` or `poison` rule in the fight and in `rules` together; "sometimes" changes only `rules`, "game" puts the game's rule back. In the fight: `crit = true` holds the skill's multiplier at 150 while `クリティカル計算` runs (and opens the game's check of skill 120 the first time a mod asks for it), so the game's own chance and rules roll; `crit = false` skips the function. `stun = true` or `false` decides `rq.combat.on_stun`'s `blocked` for the skill ("skill"). `poison = N` is the skill's own chance (the weapon's or the coat's when higher; a target the game shields is not poisoned); `false` none. The callbacks run after a rule and see its chance.
 - `rq.config.settings`' rows: `recommend` ({min, max}) on a stepper or a slider draws that range lighter on a slider's track, says "Recommended: a to b" after the control (under the row when the line has no room), and asks with the game's Yes / No when the player leaves it, with the value, the range and `warn`; Yes keeps the value, No puts the range's nearest end, and moving further on the same side does not ask again (`Settings.set` and Reset never ask). A slider shows its value beside the track (`format`, `value = false` to hide it) and writes it when the knob is let go.
@@ -207,7 +207,7 @@ The calls the first batch of the mods' review needed (`notes/plans/plan-mod-revi
 
 ## 2.43.0
 
-RQ Browser (`rq-browser.exe`), a window to look through the game's files and copy the Lua line that replaces or plays each one (`notes/plans/plan-file-browser.md` in the workspace, phase P1 of the priority order). No `rq.*` call changes; the version is raised for the program that ships with this loader.
+RQ Browser (`rq-browser.exe`), a window to look through the game's files and copy the Lua line that replaces or plays each one. No `rq.*` call changes; the version is raised for the program that ships with this loader.
 - Where: `xsystem4\rq-browser.exe`, beside the engine. It opens the game folder above it, else asks for one and remembers it (`rq-browser.json` beside it); `--game DIR` names one. It reads the game's archives and never changes the game's files; the one file it writes is its own `rq-browser.json`.
 - Six tabs, each with a search, its details and Save:
   - CGs: the 2,315 CGs in `RanceQuestCG.afa` by folder (English labels, the Japanese folder names in the details), as a list with thumbnails or a grid, a view with zoom (the wheel, sharp pixels from 200 %), drag and a checkerboard under see-through pixels; the `rq.image.replace` line; Save as PNG, and the shown ones as PNG into a folder.
@@ -225,7 +225,7 @@ RQ Browser (`rq-browser.exe`), a window to look through the game's files and cop
 
 ## 2.42.0
 
-Maps for a mod's own quests (`notes/plans/plan-new-dungeons.md` in the workspace, phase O3 of the priority order). In Lua over `rq.ain` (`src/lua/quests.lua`). The script's hook (before `クエスト処理／基本`) answers moments 8 and 9 of a mod's quest with a map, and a hook before the dispatcher `クエスト処理` answers moment 7: `ＱＭ登録` asks for it from inside moment 8, while the first hook runs, and a hook's callbacks do not run for a nested call of the same function; the hook that ends a quest on the map of a mod that is gone (before `Ｔマップ割り込み`) is placed at the loader's start.
+Maps for a mod's own quests. In Lua over `rq.ain` (`src/lua/quests.lua`). The script's hook (before `クエスト処理／基本`) answers moments 8 and 9 of a mod's quest with a map, and a hook before the dispatcher `クエスト処理` answers moment 7: `ＱＭ登録` asks for it from inside moment 8, while the first hook runs, and a hook's callbacks do not run for a nested call of the same function; the hook that ends a quest on the map of a mod that is gone (before `Ｔマップ割り込み`) is placed at the loader's start.
 - `rq.quests.define`'s `map` (`rq.QuestMap`): areas 1 to 16 on the game's 4 by 4 grid (`rq.QuestArea`). The quest is the game's kind 0, with the list's map mark; `fights` is refused with it.
   - The map's settings, which an area may give again: `tileset` (a map kind: the rooms' look, the fight background and the music), `name` (the map panel's), `gold`, `loot` (the chests' content: `"C"`, `"B"`, `"A"`, with `+` an item bonus, `"A++"` a superior item, or the game's number; the appraisal fee follows), `music` (by default the track the game's quests on that tileset use most), `background` and `groups` (the game's numbers or a mod's ids, needed). The map's only: `traps` (the four kinds' weights), `bonuses` (the goals of the achievements, placed enemies and level-ups bonuses), `start` (the lowest area by default) and `chatter`.
   - Each area: `exits` (letters N, S, E, W), `room` (a stock room by number: 1, 2, 101, 102, 201 to 204, 301, 302, and 401 to 409 on the Malgrid tilesets) or `fixed` (one of the 87 fixed maps the game's quests load), or neither for the game's draw by the exits; `enemies`, `chests`, `traps` and `feats` placed by the game on drawn spots (a counted chest is the game's draw: a red chest half the time, nothing otherwise); `objects` (`rq.QuestObject`) placed on the area's first entry in a run: the game's kinds of `rq.dungeon.place`, a chest's `item` (a number or a mod's item id), and `"custom"` objects with `id`, `look`, `keep` and `run` (registered as `rq.dungeon.on_object`), at a free spot (`"any"`), the room's wide spot (`"wide"`) or a cell; `setup(ctx)` at each entry, after the area is set up (`rq.QuestAreaCtx`: `id`, `quest`, `area`, `row`, `col`, `first`).
@@ -242,7 +242,7 @@ Maps for a mod's own quests (`notes/plans/plan-new-dungeons.md` in the workspace
 
 ## 2.41.0
 
-Quests of a mod's own with no map (`notes/plans/plan-new-quests.md` in the workspace, phase O2 of the priority order). In Lua over `rq.ain` (`src/lua/quests.lua`). The hooks that number, hide and reset the mods' quests (after `Ｑ起動時登録` and `ワールド切り替え処理`) are placed at the loader's start; the script's hook by the first `define`.
+Quests of a mod's own with no map. In Lua over `rq.ain` (`src/lua/quests.lua`). The hooks that number, hide and reset the mods' quests (after `Ｑ起動時登録` and `ワールド切り替え処理`) are placed at the loader's start; the script's hook by the first `define`.
 - `rq.quests.define(def)`: a quest of a mod's own (`rq.QuestDef`): the name, the text (up to 5 lines), the place, `fights` (the list's battle mark, the game's kind 2; without it kind 3, no mark), `main` (the main tab, else a side quest), the difficulty with the world's addition, the fame of the first clear (written as `Ｑ初期セット` writes it, only while the quest has no fame and no clear), the conditions and a condition of the mod's own as `rq.quests.edit` takes them, how it opens (`open`, `after` a quest's clear) and `run(q)`, its script.
   - The number: the first free one from 303 to 500 the first time a save has the quest (the game resets only 1 to 301), marked with `rq:` and the id in `Ｑ[n].チェック`, which only the developers' scenario test reads. The mark is in the save, so the number stays with it; no `rq.savedata`. Past 198 quests in one save, a quest is left out with a log line.
   - The data is written after each `Ｑ起動時登録` (a new game, a load, a world transfer), the kit 0.
@@ -260,7 +260,7 @@ Quests of a mod's own with no map (`notes/plans/plan-new-quests.md` in the works
 
 ## 2.40.0
 
-New monsters and enemy groups (`notes/plans/plan-new-monsters.md` in the workspace, phase O1 of the priority order). In Lua over `rq.ain` (`src/lua/monster.lua`, `src/lua/basics.lua`), and the model table in C (`src/hll/MonsterInfo.c`). The hooks that build a monster or a group whose mod is gone are placed at the loader's start; the others by the first call that needs them.
+New monsters and enemy groups. In Lua over `rq.ain` (`src/lua/monster.lua`, `src/lua/basics.lua`), and the model table in C (`src/hll/MonsterInfo.c`). The hooks that build a monster or a group whose mod is gone are placed at the loader's start; the others by the first call that needs them.
 - `rq.monster.define(def)`: a monster of a mod's own on a game monster's data (`base`), with any field of `rq.monster.edit`. Its number is 1000 + an FNV-1a hash of its id modulo 9000, as an item's. The game builds it through its base's block (look, motions, the world's rules), so it fights in `rq.battle.start`, in a mod's group and as a familiar. An edit of the base does not reach it; an edit of its own number or id does. Its kills and whether its weak point is known are kept in the loader's part of `rq.savedata`, by its id, through the game's own accessors (`■Ｍ／撃破数`, `■Ｍ／弱点把握`).
 - `capture` on `define`: the game's capture skills (166, 451, 531) catch the monster under the game's rules and give the mod's item, with the scene's CG and text; without `capture` the monster escapes, as one the game has no item for.
 - `drops` on `define` and `edit`: up to 8 items with a chance, rolled after a won fight with no item yet, each enemy defeated in rank order, before every mod's `rq.battle.on_end`; the first that rolls is the fight's one item, in the place of the game's later drops.
@@ -271,7 +271,7 @@ New monsters and enemy groups (`notes/plans/plan-new-monsters.md` in the workspa
 
 ## 2.39.0
 
-Quests and map objects (`notes/plans/plan-quests-map-objects.md` in the workspace, phase N of the priority order). In Lua over `rq.ain` (`src/lua/quests.lua`); the hooks of `edit` and `on_trap` are placed by their first call, those of a mod's objects at the loader's start.
+Quests and map objects. In Lua over `rq.ain` (`src/lua/quests.lua`); the hooks of `edit` and `on_trap` are placed by their first call, those of a mod's objects at the loader's start.
 - `rq.quests.get(no)`: a quest's data as the quest list shows it (`rq.QuestData`): the name, the text as lines, the place, the special condition's text, the state, the kind ("quest", "fights" for a quest of fights only, "menu"), the difficulty with the world's addition, the fame the next clear gives, the tries and clears, up to three `conditions` as tables (`rq.QuestCondition`: `party_max`, `member`, `own`, `member_level`, `item`, `special`, each with the list's `text` and `met`), `can_take` and the mods whose patch is on it.
 - `rq.quests.edit(no, patch)`: the name, text, place, difficulty and conditions, put back on top each time the game writes its quest data (`Ｑ起動時登録`: a game's start, each load, a world transfer) and its special conditions (`Ｑ特殊な条件の処理`, each time the quest menu opens), never in the save. One patch per mod and quest, `nil` removes it and brings the game's data back, patches in load order. A mod's own condition, `condition = { text, ok }`: while `ok(no)` is not met, the quest has the game's special condition with that text, so the quest list greys Take and shows it.
 - `rq.quests.run()` and `set_run(fields)`: the quest being played (`rq.QuestRun`): the progress, fights, placed enemies beaten, the run's EXP, the fame a clear gives, the appraisal fee, the gold base, the EXP bonus, the three bonuses (`feats`, `level_ups`, `enemies`, each `count` and `max`), the party changes ("normal", "none", "free"), AREA DISPLAY and the warps closed. `set_run` writes the fame, the EXP bonus (0 to 50), the bonuses (a `max` turns one on, `false` off), the party changes, AREA DISPLAY and the warps; the quest panel is drawn again and a bonus reaching its maximum shows the game's flash.
@@ -282,7 +282,7 @@ Quests and map objects (`notes/plans/plan-quests-map-objects.md` in the workspac
 
 ## 2.38.0
 
-What enemies and the familiar choose (`notes/plans/plan-enemy-choices.md` in the workspace, phase M of the priority order). In Lua over `rq.ain` (`src/lua/choices.lua`); the hooks are placed by the first `on_choose`.
+What enemies and the familiar choose. In Lua over `rq.ain` (`src/lua/choices.lua`); the hooks are placed by the first `on_choose`.
 - `rq.battle.on_choose(fn)`: on each turn of an enemy or the familiar, after the game drew the skill (`戦闘敵_行動選択`, `戦闘従魔_行動選択`) and rolled its target (`Ｔ戦闘_対象選択`, called by the loader with the same arguments), before it acts. The ctx (`rq.ChooseCtx`) has `iic`, `unit`, `side` ("enemy", "familiar"), `rank`, `turn`, a writable `skill` and `target`, `rolled` and `standby` (the game's Standby rule for a front-row skill from the back row), `charged` (a charged skill released: the target only), `skills` (`rq.ChooseSkill`: the list with its chances as they are now) and `ctx:targets(skill)`.
   - A new skill must act (not an ability), not be Escape (211) or "Relax, relax" (217), and goes through the Standby rule; one the actor does not have is put at the end of its list for the fight (chance 0, the first skill's motion, the skill's own log text). A new skill with the target left gets the game's roll for it, unless a mod set a target that still fits.
   - A new target must be standing, on the side the skill's target kind names, not a hidden ally, and in the front row for melee while one stands there (`ctx:targets`); an attack on the actor's own side is refused. A target a mod set (written by a callback, also the unit the game rolled) takes every hit of a multi-hit skill while it stands.
@@ -292,7 +292,7 @@ What enemies and the familiar choose (`notes/plans/plan-enemy-choices.md` in the
 
 ## 2.37.0
 
-The combat formulas and the last hooks the mods placed on the game's code (`notes/plans/plan-combat-hooks.md` in the workspace, phase L of the priority order). In Lua over `rq.ain` (`src/lua/combat.lua`); the hooks are placed by the first call that needs them.
+The combat formulas and the last hooks the mods placed on the game's code. In Lua over `rq.ain` (`src/lua/combat.lua`); the hooks are placed by the first call that needs them.
 - `rq.combat.on_stun(fn)`: each hit's stun chance in `衝撃計算`, for the battle forecast too (`ctx.forecast`). `fn` returns the chance (0 to 100, true is 100, false is 0) or nil; each callback sees the chance the one before left. It also runs where the game never stuns: the skills 120, Fortune (448) and 152 (`blocked = "skill"`), and a target stunned the turn before (`"repeat"`), with `ctx.base`, the formula's chance, so a mod can let them stun. The forecast and the log's " (Stun rate = N)" show the last chance.
 - `rq.combat.on_poison(fn)`: the poison chance of each hit on a target with no status (`毒計算`). Most hits have 0 in the game; when the last chance is above 0 and the game made no roll, the loader rolls it with the game's roll. The log's first line shows " (Poison = N)" as for the game's own poison.
 - `rq.combat.on_counter(fn)`: after each hit that leaves the one hit standing (`ダメージ後計算`), whether or not it learned Counter (259), a yellow skill of any class. The ctx has `rate`, `base` (the Counter skill's chance), `damage`, `guarded`, `counter` and `blocked` ("familiar", "area", "stunned", "guard"). A counter is the game's Counter Attack (116) with " (counter)" in the log; after 10 counters in a row the loader grants no more. `rq.counter.on_guard_counter` still decides first.
@@ -308,7 +308,7 @@ The combat formulas and the last hooks the mods placed on the game's code (`note
 
 ## 2.36.0
 
-Monsters, modes and fights from a mod (`notes/plans/plan-monsters-modes.md` in the workspace, phase K of the priority order).
+Monsters, modes and fights from a mod.
 - `rq.monster.get(no)`: a monster's data from the game's list (`rq.Monster`: the name, model, boss flag, race, type, level, HP, the stats, the weak element and the five resistances with `rq.chara.get`'s names, up to five `skills` with `id`, `text`, `motion` and `chance`, and the `lines` the fight shows), with every mod's edits, before the world's rules. It builds the monster in slot 9, which the game never uses, skips the game's build function so no random number is drawn, and empties the slot. nil for a number the list does not have.
 - `rq.monster.edit(no, patch)`: changes a monster each time the game builds it (fights, the familiar, the game's name lookups, `get`). The patch replaces the list's numbers before the world's tiers, race 60 and a boss fight's `strong` scale them; `skills` goes by position (`false` empties one), `lines` by kind. One patch per mod and monster, `nil` removes it, patches in load order.
 - `rq.monster.on_create(fn)`: each enemy a fight builds (ranks 1 to 5) and the party's familiar (`familiar` true), after the game's build and before the fight opens. The ctx has the slot, number, rank, world, the fight's kind, group and strength rate and `base` (the data as `get` gives it); `name`, `level`, `hp` and the stats are writable and written to the slot once after the last callback. Returns a remover.
@@ -319,7 +319,7 @@ Monsters, modes and fights from a mod (`notes/plans/plan-monsters-modes.md` in t
 
 ## 2.35.0
 
-Comfort for creators (`notes/plans/plan-creator-comfort.md` in the workspace, phase J of the priority order): a settings page from a list, no install calls, and the party's places and heals.
+Comfort for creators: a settings page from a list, no install calls, and the party's places and heals.
 - `rq.config.settings{ rows, ... }`: a page in Config's Mods tab built from a list of rows, with no `draw`. The kinds are `checkbox`, `stepper`, `slider`, `choice` and `input`, which keep a value under `key`, and `label` and `space`. Each row may have a `label` (the labels line up in one column), `default`, `note` (dim lines under it), `tip`, `disabled` (a value or a function asked on every update) and its widget's options. A Reset button puts the rows back to their defaults (`reset = false` leaves it out), and `draw` adds more after the rows. The values are kept for the mod in `rq.store.global` (default), `rq.store` (`keep = "profile"`) or `rq.savedata` (`keep = "save"`, the rows greyed until a save is loaded), under each row's key, so a mod that drew its own page keeps its players' settings. It returns an object: `get(key)` (a stored value the row cannot take reads as the default), `set(key, value)`, `on_change(fn(key, value, old))` (returns a remover) and `reset()`. A wrong row, key or default raises an error at the call.
 - No install calls. `rq.chest`, `rq.orb`, `rq.skill`, `rq.chara`'s skill and buy-list calls, `rq.combat`, `rq.counter`, `rq.shop` and `rq.battle`'s select and flame calls place their hooks the first time one of them is called (the log names the mod and the call), and raise that call's error when a hook cannot be placed. The calls that do it: `chest.on_attempt`, `on_result`; every `orb` call; `skill.on_describe`, `get`, `define`, `patch`, `sort_as`; `chara.on_recalc`, `on_offer`, `grant`, `rank`, `slots`, `set_slot`, `set_flavor`, `weapon_detail`, `apply_mod`, `offers`, `set_offer`, `max_uses`, `set_uses`, `set_bar`, `clear_slot`; `combat.on_physical`, `on_accuracy`, `on_crit`; `counter.on_guard_counter`; `shop.on_stock`, `in_stock`, `stock`; `battle.on_select_key`, `in_ally_select`, `actor`, `skill_usable`, `set_flame`, `set_mark`. The `install` calls stay and do no harm. Before, a call made without its install often failed in silence: `rq.orb`'s reads gave 0, `rq.skill.define` and `patch` were never applied, `rq.chara`'s skill calls read 0 and wrote nothing, `shop.in_stock` said false and `battle.skill_usable` said true. `rq.loot.install`, `rq.skilllist.install` and `rq.battle.install_states` stay a mod's choice, since they change what the player sees or the game's rules.
 - `rq.party.roster(state?)` (every recruited character with `iic`, `state`, `hp`, `hp_max`, `status`), `rq.party.state(iic)`, `rq.party.set_state(iic, state)` (the first army, used in this quest, the second army) and `rq.party.heal{ skills, half, all }`, and `rq.chara.heal(iic, { skills, half })`: the game's own heals, which leave a downed character as it is.
@@ -330,7 +330,7 @@ Comfort for creators (`notes/plans/plan-creator-comfort.md` in the workspace, ph
 
 ## 2.34.0
 
-Fight rewards and save data (`notes/plans/plan-rewards-savedata.md` in the workspace, phase I of the priority order). The rewards are Lua over `rq.ain` (`src/lua/basics.lua`); the save data is kept in C beside `rq.store` and written with the game's own save files.
+Fight rewards and save data. The rewards are Lua over `rq.ain` (`src/lua/basics.lua`); the save data is kept in C beside `rq.store` and written with the game's own save files.
 - `rq.battle.on_reward(fn)`: once per fight that pays (results 1 and 4), after the game has summed the gold and EXP and before the result screen shows them. `ctx.gold`, `ctx.exp` (the fight's EXP after the fight's bonuses; writing it scales every ally's EXP at once), each ally's `exp` in `ctx.allies` (with `down` and `capped`, who get none) and `ctx.reserve` (each reserve character's share; until written it follows the game's rule, the smallest ally EXP over 20) can be changed, and the result screen shows them, the party gets them and the gold is paid. Also `result`, `group`, `rank`, `kills`, `bags`, `base`, `enemies`. The quest's EXP total, its level-up bonus and the cheat check's gold count follow; the reserve's share is held during the game's sum and given after the callbacks with the game's free level for a full bar, still reported by `rq.chara.on_level_up` with `battle` and `free`.
 - `rq.battle.bags()` and `rq.battle.set_bag(iic, carries)`: the enemies' gold bags (the game gives each a bag at 50%; the bags picked set the gold). `set_bag` in `rq.battle.on_start` is kept and written over the game's roll, which comes after it; during the fight it changes a bag before the enemy falls.
 - `rq.savedata`: `get`, `set`, `delete`, `keys`, as `rq.store`, for data that follows the game's save. Kept in memory, written beside the save when the game writes it (`RanceQuestMagnum_030.rqmod.json`, `_930` for the suspend save), read back when the game loads it, emptied at the title, deleted with the save and copied into the game's daily backup. Values are numbers (a whole number comes back an integer), strings, booleans and tables of them. The data of a mod that is not loaded is kept.
@@ -341,7 +341,7 @@ Fight rewards and save data (`notes/plans/plan-rewards-savedata.md` in the works
 
 ## 2.33.0
 
-The basics a new creator tries first (`notes/plans/plan-creator-basics.md` in the workspace, phase H of the priority order). Built in Lua over `rq.ain` (`src/lua/basics.lua`, `timers.lua`), so a mod no longer calls the game's functions for these.
+The basics a new creator tries first. Built in Lua over `rq.ain` (`src/lua/basics.lua`, `timers.lua`), so a mod no longer calls the game's functions for these.
 - `rq.game`: the money (`gold`, `set_gold`, `add_gold`, kept from 0 to 999,999,999) and charisma (`charisma` gives the rank, the points and the points the rank needs; `add_charisma` goes up one rank at most, as the result screen does; `set_charisma`). Each change redraws the system bar.
 - `rq.encounters`: random fights on a quest's map. `info` (the area's groups, the steps that fill the bar, the steps walked, whether fights can happen and which mods hold them off), `hold(true|false)` (one hold per mod; while any holds, no random fight starts, the bar is hidden and the steps do not fill it; an enemy standing on the map still fights), `set_steps` (1 to 999, until the game picks them again), `on_steps` (change the steps each time the game picks them, after a fight and an area change) and `on_encounter` (see a fight from the map, random or placed, and cancel it by returning false: the game's own "no fight" path).
 - `rq.chara.add_exp(iic, n)`: EXP as a fight gives it, with the game's level-up for each full bar (stats, skill points, the EXP left carried over); nothing at the level cap or for Athena 2.0, and no level at 0 HP (the game's level-up wants HP), the bar kept full for later. `rq.chara.level_up(iic, n)`: free levels, as the story and training give them. `rq.chara.on_level_up(fn)`: after every level, the game's or a mod's, with `from`, `level`, `battle` (in a fight's result) and `free` (the game's other level-up, which sets the EXP back to 0: the story, training, the reserve's share of a fight).
@@ -350,7 +350,7 @@ The basics a new creator tries first (`notes/plans/plan-creator-basics.md` in th
 
 ## 2.32.0
 
-The map panel and the game's windows (`notes/plans/plan-map-panel-windows.md` in the workspace, phase F of the priority order).
+The map panel and the game's windows.
 - `rq.gamebutton`'s group `"map"`: tabs on a quest's map, on the 3D view's right edge against the map panel, under the area map and above the Magnum gauge. Up to four, 40 × 44 at x 768 from y 129, 47 apart; a fifth shown entry is not placed and the log says so. Each tab is a button of the panel itself (`T_MapParts`, ids 700101 to 700104), the game's plain grey bar (CG 11009) with the entry's `icon`, so it hides with the panel in a dialog, a fight or an event, and the panel makes it again for each area. `shown` and `enabled` are asked every 200 ms while the map shows, `tip` (a text or a function) is the game's comment window left of the tab, and in the map's key mode (Space) the arrow keys reach the tabs (Left from AREA DISPLAY, Up and Down between them, Right back, Enter). Agents see each tab as `<mod id>.<id>` with its `button` while the map takes input, and `rq.gamebutton.groups` lists the group as `map`.
 - `rq.uikit.item_window(items, opts)`: the game's Quest Storage window (CG 11335) holding item tiles (`rq.uikit.item_icon`, the item card as tip), at the game's place (473, 165). Rows of five, 1 to 5 (`rows`; default 3, or 4 with more than 15 items), cut from the game's CG; with more items than fit, page arrows and the page's number in the band. A `title` in the band, an `empty` text, a `cell` callback to draw marks on a tile, and entries with `judged`, `tip` and `disabled`. Modal as a page; it closes by its close button, a right click or Esc. Returns open and the index clicked. In `src/lua/uikit_windows.lua`.
 - `rq.uikit.section(text, opts)`: a heading in the quest panel's look (CG 11014: the ★, the band, the gold stripes), the text in the game's font in the heading's gold, sized down to fit, with an optional box under it (`box`, a height). Returns the box's place.
@@ -361,13 +361,13 @@ The map panel and the game's windows (`notes/plans/plan-map-panel-windows.md` in
 
 ## 2.31.0
 
-The Lab and its scripts (`notes/plans/plan-lab-scripts.md` in the workspace, phase D of the priority order).
+The Lab and its scripts.
 - `rq.ui.get` and `rqmod-ctl ui` list the Party screen's 2nd Army box while it is open: its cards as `store-N` (N from 0 after the box's scroll), the STATUS of the card under the mouse as `store-status-N`, its close as `store-close`, all in section `party-store`, and the places a dragged character is dropped on, `store-drop` (the box) and `grid-drop` (the grid). `storeUnits` lists the whole 2nd Army as `units` lists the roster, and `storeState` has `topIndex`, `listCount` and `shown`. Agents found the box only by coordinates.
 - The stall watch: when `rq.on_frame` has not started for 10 s while the game still pumps its events (its update does not run, or a callback has not returned), the log gets one line with how long, the callback that runs and the mod that registered it, and the AIN call stack; and one line when it runs again. A pause (`rqmod-ctl pause`) does not count. `rqmod-ctl where` writes the same numbers at the top of its file.
 
 ## 2.30.0
 
-Phase C of the priority order (`notes/plans/plan-morurun-camera.md` in the workspace).
+The dungeon's camera, set again for each map.
 - `rq.dungeon.camera` can be called again, as from `rq.dungeon.on_map` for a range per map. It found its places by the game's numbers (35, 60, 80), which its first call replaced, so a second call changed nothing in the clamp, the fog or the slider, and put the wheel's step in a second time (the wheel then zoomed by the step times itself). The first call now records where it wrote, and a later call writes the new numbers there. A field left out takes its default again.
 - `rq.dungeon.camera`'s new field `far`: where the 3D view is cut (the game's 200, in `CMapMode@Clear`, which each map's `Create` runs). Past a `max` of about 120 the cut at 200 shows black at the top of an outdoor map, and past about 170 it loses the far rows of ground; at 400 the ground stays whole at 180. More than 5 (the near cut), or an error.
 - The reference says that the game keeps one zoom distance for every map and clamps it to the range when a map opens, what the cut does, and that the sky backdrop under outdoor maps is a plane of fixed size whose edge can show.
@@ -375,7 +375,7 @@ Phase C of the priority order (`notes/plans/plan-morurun-camera.md` in the works
 
 ## 2.29.0
 
-The text field (`notes/plans/plan-text-field.md` in the workspace, phase B of the priority order).
+The text field.
 - `rq.uikit.input(text, opts)`: a text field in the kit's number-field look (`opts`: `w`, `max` 1 to 255 bytes, `label`, `placeholder`, `focus`, `disabled`, place, `id`, `tip`, `nav`). A click or Enter under the keys' cursor types into it; `focus = true` types from the update it first shows. Enter keeps the text, a click outside keeps it, Esc puts back the old one; it returns the text, `changed` and how a typing ended (`"enter"`, `"esc"`, `"away"`). One field types at a time, number fields included. While it types, every key is hidden from the game, the arrows are the caret's, and Esc does not close Config or `rq.uikit.page`. Listed as `input-<id>` with the text as `value` and `selected` while it types. In `src/lua/uikit.lua`.
 - `rq.hud.text_begin` has a caret: typed text goes in at it, Backspace and Delete erase on each side, Left, Right, Home and End move it, and Ctrl+V pastes the system clipboard (without its line breaks and the characters the game's font cannot draw). Held, Backspace, Delete and the arrows repeat (250 ms, then every 50 ms). The keys are read from the keys' state each update, so `rq.input.set_key`, `rqmod-ctl key` and `hold` work them; Backspace was a key handler that agents never reached. Control characters are dropped. `rq.hud.text_value` returns the caret as a third value (bytes before it).
 - `rq.input.type(text)`: types text into the text input that is on, at its caret; returns how many characters went in, or false while none is on. `rqmod-ctl type` does the same while a text input is on (any UTF-8 text; before, only letters, digits and space, as key pulses, which make no typed text).
@@ -386,16 +386,16 @@ The text field (`notes/plans/plan-text-field.md` in the workspace, phase B of th
 
 ## 2.28.0
 
-Dialogs and Config (`notes/plans/plan-dialogs-config.md` in the workspace, phase A of the priority order).
+Dialogs and Config.
 - `rq.ui.confirm`, `notice` and `ask` show over Config, on any of its tabs, with a mod's page between Config and the dialog, so a button on a mod's Config page can ask with the game's own dialog. They opened under Config, out of sight. While Config runs (`T_Config::run`), the game's menu (`T_Select::create`, z 9991) and its comment window (`T_Comment::create`, 9801) are raised to z 16000 and 16100, above Config (15000 to 15010) and under the game's debug overlays (18000 up), and the HUD splits at the menu's z there. In `src/lua/dialog.lua`; the constants are a local's start value, which `rq.ain.patch_int` does not reach, so the kit has a helper of its own in `src/modloader.c` (not part of `rq`). The game never opens its own dialog in Config.
 - `rq.ui.get` lists a dialog over Config as the screen `select`, with Config under it.
 - `rq.ui.ask` takes `remember`, `remember_label` and `remember_answer`: the game's "don't ask again" row under the rows, as `rq.ui.confirm` has it, with the same keys (1 to 99 the game's switch, a text the mod's own question). `remember_answer` is the id of the row the call returns while the question is off; default the first row. The row and its note count 2 rows and a separator in the window's 20.
-- `rq.ui.get` on `quests`: while a quest is chosen, the list's rows (`quest-N`) are not `enabled`. The game reads none of them then (`T_Quest::checkInput` skips them while the list is locked) until Cancel lets the quest go, and it stays chosen after its question is answered No. Agents took it for a hover lost after a dialog (`notes/lua-api-gaps.md`).
+- `rq.ui.get` on `quests`: while a quest is chosen, the list's rows (`quest-N`) are not `enabled`. The game reads none of them then (`T_Quest::checkInput` skips them while the list is locked) until Cancel lets the quest go, and it stays chosen after its question is answered No. Agents took it for a hover lost after a dialog.
 - Keep Donations 1.2.0: Set asks with `rq.ui.confirm` over Config, in place of its own Yes and No buttons. Gem Lady Trade 1.3.0: its question has the "don't ask again" row of the game's switch 11, "Take Quest".
 
 ## 2.27.0
 
-Music, the rest (`notes/plans/plan-music-rest.md` in the workspace, priority #7 of the API work). Lua in `src/lua/music.lua`; `rq.ain.stack` and the volume in C.
+Music, the rest. Lua in `src/lua/music.lua`; `rq.ain.stack` and the volume in C.
 - `rq.music.on_play`'s `ctx.kind` tells more moments, read from who called the game's music: `"boss"` (a boss fight, `ボス戦闘処理`; it was `"fight"`), `"town"` (`システム曲_再生`), `"castle"`, `"opening"` (`ＯＰ曲_再生`), `"result"`, `"jingle"` (a girl monster joins) and `"scene"` (a game scene or a mod's `rq.scene.play`); these were `"other"`. `"other"` is left for the extras, the system bar, a save's load, the title and a mod's `rq.music.play`.
 - New ctx fields: `scene` (the game's scene function that asks for the track, such as `"ランス／城汎用"`), `boss` (the boss's monster number), `enemies` (the fight's monster numbers), `area` and `map_kind` (on a quest's map) and `world`. The last five are read when a callback reads them.
 - `rq.music.page(opts)`: a page in Config's Mods tab for a pack, with a switch for each track the mod replaced and each moment it names (`opts.moments`), a play button per track, and all on and all off. A track switched off plays the game's file, at once when it plays now. The switches are kept for every save profile. `rq.music.enabled(key)` reads a switch; `rq.uikit.music_list(opts)` draws the same rows on a mod's own page.
@@ -409,7 +409,7 @@ Music, the rest (`notes/plans/plan-music-rest.md` in the workspace, priority #7 
 
 ## 2.26.0
 
-Mod states, the rest (`notes/plans/plan-mod-states-rest.md` in the workspace, priority #5 of the API work). Lua in `src/lua/status.lua` and `src/lua/battle.lua`, over the game's own functions, except the forecast flag.
+Mod states, the rest. Lua in `src/lua/status.lua` and `src/lua/battle.lua`, over the game's own functions, except the forecast flag.
 - The game's dispels take mod states: `cured_by` has a new class, `"dispel"`. A hit that does damage with a skill of function 89 (quietly), Pop Pulse (491), Divine Erosion Wave (519), Guna Beam (515, half the time; where the target had a ▲, the state goes when the ▲ goes) or a Gunner's basic attack with Erasure Arrows (257), and Electroshock (183) on a target with no protection, take the states with `"dispel"`; the hit's log line gets `" (<name> canceled)"`, as for the game's ▲.
 - `"all"` reaches two more of the game's cures: skill 475 at the start of the bearer's turn, when the game's own roll cured nothing (the first such state that rolls 50%, in the order they came), and Am Powder (498) when it heals no HP and cures no ▼ (the oldest such state, with `" X recovered from <name>."` in the log).
 - `cured_by` defaults to `{ "dispel" }` for a good state; it was `{}`. `{}` still keeps a state from the game, so a good state that must not be dispelled says `cured_by = {}`.
@@ -426,7 +426,7 @@ Mod states, the rest (`notes/plans/plan-mod-states-rest.md` in the workspace, pr
 
 ## 2.25.0
 
-Pictures past the fight cards (`notes/plans/plan-more-pictures.md` in the workspace, priority #4 of the API work).
+Pictures past the fight cards.
 - Moving pictures: a GIF or an animated WebP given to `rq.image.add` or `replace`, or as a character's `face` or `portrait`, is a moving picture. Its first frame is the CG; the game shows the frames wherever it shows the CG whole: a scene's background, standing picture, face and event CG, and the faces on character cards (the town's party bar, the Party screen, the status page, fights, where `rq.battle.set_face` wins). Where the game copies part of the CG or draws on it, and in `compose`, `rq.hud` and `rq.sprite`'s `cg`, it is the still. Every frame is fitted as the still is. `opts.fps` and `opts.clock` set the speed, as in `rq.sprite`. The file is read when it is set, so a bad one raises the error there. Up to 64 moving pictures, 1024 frames each and 64 million pixels in all. A sprite draws the frame in place of its CG while it shows that CG whole: the engine clears the mark when the game draws on the sprite, and `T_Sprite::stretchCg` (the card faces) is wrapped to set it. Parts draw the frame in place of their CG at the same size. The game is drawn again only while a moving picture was on screen in the last quarter second. In `src/modloader_image.c`, `src/modloader_sprite.c`, `src/sprite.c` and `src/parts/render.c`.
 - `rq.image.info` gives a moving picture's `frames`, `ms` (one loop) and `drawn` (the game drew it in the last quarter second).
 - `rq.image.flash_bitmap(file, id, path[, opts])`: a still picture from the mod's folder on one bitmap of a game Flash file (a cut-in, a battle effect, a mark), fitted to the bitmap's size so the file's placement and motion stay. nil for `path` gives the game's bitmap back. New loads of the file show it. `rq.image.flash_bitmaps(file)` lists a file's bitmaps with their sizes and whether a mod's picture is on them. In `src/modloader_image.c` and `src/parts/flash.c`.
@@ -436,14 +436,14 @@ Pictures past the fight cards (`notes/plans/plan-more-pictures.md` in the worksp
 
 ## 2.24.1
 
-The mod behind a tail call (`notes/plans/plan-mod-tail-calls.md` in the workspace, priority #3 of the API work).
+The mod behind a tail call.
 - A tail call into another file's Lua function (`return rq.ui.confirm(...)`) is a plain call: the caller's frame stays on the stack. So `rq.mod.id`, and everything that names entries by the calling mod, finds the mod through it: `rq.ui.confirm`'s `remember` (it was filed under `_`), `rq.gamebutton`, `rq.castle.room`, `rq.music`'s paths, `rq.status`, and the mod id in the error lines of `rq.dungeon` and the game-data calls. `error(msg, 2)` in an `rq.*` function now names the mod's line, and `rq.traceback` shows the mod's frame where it said `(...tail calls...)`. A tail call within one file stays a tail call, so a loop or recursion written that way runs as before; a chain of tail calls across files grows the stack as plain recursion does. It is a change in Lua's VM (`OP_TAILCALL` in `third_party/lua/lvm.c`, listed in `third_party/lua/RQ-PATCHES.md`); Lua 5.4.7's own test suite passes on it.
 - One lookup for the calling mod: the `rq.log` tag, debug keys, image keys, `rq.item.edit`, `rq.roster`, `rq.sprite` owners and the read flags of mod text use the mod's `id` from `mod.json`, as `rq.mod.id` does. They used the name of its folder, which differs only when a player renames the folder: then debug keys were not removed when the mod reloaded, and the log named the folder. A renamed mod's text shows as unread once. The lookup keeps its answers by file, so it costs no more than before. In `src/modloader.c` and `src/modloader_sandbox.c`.
 - The reference: `rq.mod.id`, `rq.ui.confirm` and `rq.log`.
 
 ## 2.24.0
 
-Which dungeon and which area (`notes/plans/plan-dungeon-areas.md` in the workspace, priority #2 of the API work). The calls are Lua, in `src/lua/dungeon.lua`, over the game's own globals and functions.
+Which dungeon and which area. The calls are Lua, in `src/lua/dungeon.lua`, over the game's own globals and functions.
 - `rq.dungeon.on_area(fn)`: runs once each time the party enters an area of a quest (at the start, through a portal, by the quest's script), after the game's `ＱＭ登録`. Not when the game builds the map screen again, as `on_map` does after a save and for the result screen.
 - The area's data: `area` (1 to 16, a cell of the quest's 4 by 4 area map), `row`, `col`, `name`, `kind` (the map kind, `◆ＭＡＰ基礎型`), `first` (not visited yet in this run) and `stratum` (the Malgrid Dungeon's stratum: 1 to 10 on its quests, the Xth Stratum's own count on quest 147). On `on_area`'s and `on_map`'s `ctx`; `quest`, `area`, `row`, `col`, `kind` and `stratum` in `rq.dungeon.info()`.
 - `rq.dungeon.areas()`: the quest's area map as the game draws it, with the areas found, the routes, the party's area and the goal, and whether the game hides the map on this quest.
@@ -452,38 +452,38 @@ Which dungeon and which area (`notes/plans/plan-dungeon-areas.md` in the workspa
 
 ## 2.23.0
 
-Game data that Gem Lady Trade, Morurun Items and Keep Donations read and wrote through `rq.ain` (`notes/plans/plan-game-data.md` in the workspace, priority #1 of the API work). The calls in Lua are in `src/lua/gamedata.lua`, over the game's own functions.
+Game data that Gem Lady Trade, Morurun Items and Keep Donations read and wrote through `rq.ain`. The calls in Lua are in `src/lua/gamedata.lua`, over the game's own functions.
 - `rq.items()` rows have `no` (the item number), `place` (the game's `存在`: 7 the vault, 11 the storage, 8 quest storage, 20 and up worn) and `lock` (locked in the vault). Fix: the list runs to the game's last used item slot; it stopped at 1024 rows, so a large vault lost rows with no sign. In `src/modloader_query.c`.
 - `rq.item.find(no, opts)` and `rq.item.count(no, opts)`: an item number's instances by place (`"vault"`, `"storage"`, `"quest"`, `"worn"` or a number, one or a list, in that order) and by the vault lock. With no `opts`, `count` is the game's own count (worn, the vault and the storage). In `src/modloader_item.c`.
 - `rq.world.current()`, `rq.world.on_transfer(fn)` and `on_transfer_after(fn)`: the world, and the game's world transfer before and after its reset (`ワールド切り替え処理`), with the world and the one before. The reference lists what the reset changes.
 - `rq.shop.donations()` and `rq.shop.set_donations(count, goal)`: the donations count and Frostbuy's reward goal, with her rules in the reference.
 - `rq.quests.on_take(fn)`: the quest list's Take, before the game's question and its autosave; the callback may wait on a dialog and returns nil (the game's way), true (taken, no question) or false (not taken). `rq.quests.can_take(no)`: the game's `クエスト_有効`, which lights Take. `rq.quests.refresh()`: the list drawn again with the chosen quest's buttons, as after the favorite button.
-- `rq.quests.set_state(no, 1)` on a quest already available or cleared writes the state: the game's `Ｑ状態` takes 1 only from 0, so the call did nothing there (`notes/lua-api-gaps.md`).
+- `rq.quests.set_state(no, 1)` on a quest already available or cleared writes the state: the game's `Ｑ状態` takes 1 only from 0, so the call did nothing there.
 - `rq.chara.absorbed(iic)` and `rq.chara.set_absorbed(iic, slot, no)`: the five items a Morurun absorbed (`ＣＦＡ` 17 to 21), changed with the game's rules on what can be absorbed, then the character recalculated.
 - The reference: `rq.item.get`'s `place` lists 11, the storage.
 
 ## 2.22.1
 
-- `rq.uikit.item_icon`: no REMOVE, and D does nothing, on an item that cannot be taken off (`rq.item.get(ii).locked`, the game's `外せません`), as the status page leaves it out. It was shown, and pressed, on every item. Found by the Lab's `uikit-items` (`notes/plans/plan-lab-coverage.md` in the workspace, T6). In `src/lua/uikit_vault.lua`.
+- `rq.uikit.item_icon`: no REMOVE, and D does nothing, on an item that cannot be taken off (`rq.item.get(ii).locked`, the game's `外せません`), as the status page leaves it out. It was shown, and pressed, on every item. Found by the Lab's `uikit-items`. In `src/lua/uikit_vault.lua`.
 - `rq.ui.get`: Trivia, CG mode, Music mode and the castle's Gal monsters' and Poster rooms are the screen `other`, with the footer only, as 2.20.1 meant. They run inside the town's or the castle's loop, so they were reported as `hub` or `castle`, with that screen's tabs under them. In a fight only `system` of the footer is listed, as the game shows it. Found by the Lab's `ui-screens` (T8). In `src/modloader_ui.c`.
 - `rq.battle.start` away from a quest's map (the town, Rance Castle, the Party screen, Quests): the screen it started from is drawn again after the fight, with its footer. The fight's black layer stayed over it and the footer was gone, so the town was black until a tab was opened. During such a fight `rq.ui.get` says `battle`; it named the screen under it, so the Lab could not play a fight started on the Party screen. The fight's own Party screen (Switch) is still `party-edit`, over the fight: it is told from the town's by its z. Found by the Lab's `statuspage` (its level-up fight from the town). In `src/modloader_state.c` and `src/modloader_ui.c`.
 - `rq.skilllist`: another character in the open skill window (its scroll bar, or the wheel over it) starts on page 1, as opening the window does. It kept the page shown, so page 2 of one character became page 2 of the next. Found by the Lab's `skill-window` (T17). In `src/lua/skilllist.lua`.
 - `rq.castle.room`'s `chara` is a character number (`rq.ids.chara`), as the reference says: the loader gave the number to `Ｃ顔ＣＧ`, which takes a roster slot, so Lia's 54 showed Shitomone Chappie's face. The face is now the character's, and none while they are not in the roster. Found by the Lab's `castle-room` (T10). In `src/lua/castle.lua`.
-- The reference says that `rq.mod.id` cannot see a mod through a tail call: after `return rq.ui.confirm(...)` a remembered question is filed under `_` (`notes/lua-api-gaps.md`, found by `ui-dialogs`, T14).
+- The reference says that `rq.mod.id` cannot see a mod through a tail call: after `return rq.ui.confirm(...)` a remembered question is filed under `_` (found by the Lab's `ui-dialogs`).
 
 ## 2.22.0
 
-A number field, and constants of the game's code a mod can change while the game runs (`notes/plans/plan-ui-kit-leftovers.md` in the workspace, section 17), for the Config pages of Custom TADA Mode 1.1.0, Kaoru Quincy QoL 1.2.0 and Keep Donations 1.1.0:
+A number field, and constants of the game's code a mod can change while the game runs, for the Config pages of Custom TADA Mode 1.1.0, Kaoru Quincy QoL 1.2.0 and Keep Donations 1.1.0:
 - `rq.uikit.stepper(value, opts)`: a whole number in a framed box between - and +. Shift for `big` steps, held buttons repeat (400 ms, then 80 ms), the wheel, Page Up and Page Down under the keys' cursor. A click on the number, or Enter, types into it from the digit keys (so `rqmod-ctl type` can), Enter keeps, Esc puts back. Listed as `stepper-<id>`, `selected` while it types. In `src/lua/uikit.lua`.
 - `rq.uikit.typing()`: the field typing now, or nil.
 - `rq.uikit.page`: Esc that ends a field's typing does not close the page (`src/lua/uikit_hub.lua`).
 - `rq.ain.patch_int_after` also returns the places it changed; `rq.ain.set_code_int(place, value)` writes one again and `rq.ain.code_int(place)` reads it (`src/modloader.c`). A place is found again after a later install wraps the function (at its code address) or moves and grows its body (by the opcodes around it).
 
-Found in the Lab: the game's Yes/No dialog (`rq.ui.confirm`) opens under Config, out of sight, so a Config page asks on the page itself (in `notes/lua-api-gaps.md`).
+Found in the Lab: the game's Yes/No dialog (`rq.ui.confirm`) opens under Config, out of sight, so a Config page asks on the page itself.
 
 ## 2.21.0
 
-The game's item tile and item card in the kit (`notes/plans/plan-ui-kit-leftovers.md` in the workspace, section 16), in `src/lua/uikit_vault.lua`:
+The game's item tile and item card in the kit, in `src/lua/uikit_vault.lua`:
 - `rq.uikit.item_icon(item, opts)`: an item's tile as the status page's equip slots draw it (`T_ItemIcon`): the icon, 100 by 100 or `size`, with its rank badge, and the game's yellow frame under the mouse, the keys' cursor and while `current`. Its tip is the item card, left of the tile, after 500 ms from the mouse and at once from the keys. `remove` adds the status page's REMOVE button (or D from the keys). nil is an empty slot. `judged = false` gives the UNIDENTIFIED card.
 - `rq.uikit.item_card(item, opts)` and `item_card_size()`: the game's item card (`T_ItemComment`, CG 10402 with the item's row; CG 10403 over it for an item not identified), on the top layer, kept on the screen as the game keeps it.
 - `item_row` draws its parts with the card's code.
@@ -497,14 +497,14 @@ Fixes to the item row (`item_row`, the vault, the storage and the shop), found b
 
 ## 2.20.1
 
-`rq.ui.get` on every screen (`notes/plans/plan-ui-kit-leftovers.md` in the workspace, section 15), in `modloader_ui.c`:
+`rq.ui.get` on every screen, in `modloader_ui.c`:
 - The footer (`system`, `vault`, `trivia`, the party cards and the money line) is listed on every screen whose own loop takes its clicks, not only the town, Frostbuy and the Party screen: Quests, Rance Castle, the status page, the vault, a quest's map, a fight, and an unnamed screen that shows it.
 - Rance Castle is the screen `castle` (it was `other`, with bare sprites): its rooms are `room-<area>`, with the room's name as the label and its floor (with ` new` for the NEW mark) as the value, greyed as the game greys them; a mod's room (`rq.castle.room`) is listed the same way. Its town tabs are `frostbuy`, `party` and `quests`. `rq.sprite`'s `keep = "screen"` sees `castle` too.
 - Quests lists the town tabs (`rance-castle`, `frostbuy`, `party`).
 - Fixed: the SYSTEM menu opened over Quests or the status page was reported as the screen under it; it is `system-menu`.
 ## 2.20.0
 
-The status page for mods (`notes/plans/plan-ui-kit-leftovers.md` in the workspace, section 14). Lua over the game's own page (`src/lua/statuspage.lua`, `src/lua/gamebutton.lua`, `src/lua/item.lua`); the C changes are the fix below and a switch only the loader's own Lua gets.
+The status page for mods. Lua over the game's own page (`src/lua/statuspage.lua`, `src/lua/gamebutton.lua`, `src/lua/item.lua`); the C changes are the fix below and a switch only the loader's own Lua gets.
 - `rq.gamebutton`'s group `"status"`: icon buttons in a character's status page's title row, the only free room on the page, right to left from the X (x 472 and 436, y 61, 32 × 29), up to two. `icon` is the CG drawn on the page's own background, with the game's hover frame, pressed and greyed looks. `shown`, `enabled` and `tip` may be functions of the character, asked on every draw of the card. A click runs `on_click` with the page open; the arrow keys reach them from the Special slot; `tip` shows the game's comment window with the label as its title. Agents see them as `<mod id>.<id>` on the `status` screen.
 - `rq.statuspage`: `chara()`, `mode()`, `refresh()` (the card drawn again, no sound, the item list beside it rebuilt), and `on_open`, `on_chara`, `on_update`, `on_close`.
 - `rq.item.info(no)`: an item number's row data with no instance in the game, read as the game's own lookups by number read it. `rq.item.on_create` listeners do not see its temporary instance.
@@ -512,7 +512,7 @@ The status page for mods (`notes/plans/plan-ui-kit-leftovers.md` in the workspac
 
 ## 2.19.0
 
-The game's dialogs as calls (`notes/plans/plan-ui-kit-leftovers.md` in the workspace, section 13), in `src/lua/dialog.lua`:
+The game's dialogs as calls, in `src/lua/dialog.lua`:
 - `rq.ui.confirm(text, opts)`: the game's Yes / No, which waits for the answer. `remember` adds the game's "don't ask again" row: 1 to 99 is the game's own switch, a text the mod's own question, kept in `rqmod-global.json`, listed on a Confirmations page in Config's Mods tab and turned back on by Config's Resetting.
 - `rq.ui.notice(text, opts)`: the game's OK.
 - `rq.ui.ask(text, rows, opts)`: the game's dialog with any choices, which waits for the answer.
@@ -522,7 +522,7 @@ The game's dialogs as calls (`notes/plans/plan-ui-kit-leftovers.md` in the works
 
 ## 2.18.0
 
-The rest of Potential Skill Pages in Lua (`notes/plans/plan-ui-kit-leftovers.md` in the workspace, section 12): `rq.skilllist` is Lua over the game's own code (`src/lua/skilllist.lua`), and the engine's 1170 lines of C for it (`modloader_skilllist.c`, its bytecode patches and replaced bodies) are gone.
+The rest of Potential Skill Pages in Lua: `rq.skilllist` is Lua over the game's own code (`src/lua/skilllist.lua`), and the engine's 1170 lines of C for it (`modloader_skilllist.c`, its bytecode patches and replaced bodies) are gone.
 - `rq.ain.set_global_len(name, ..., size)`: makes an array global longer or shorter, as the game's `Realloc` does.
 - `rq.skilllist`: the game's three buy-list arrays are made 145 long (rows 1 to 144, were 143 in the engine's copy) whenever the game fills them, `スキルポン` stops at row 145, and while the window builds its list the game's own count and row reads answer the page's 36. The game's buy and its cost read the arrays as they are. Rows 61 to 144 are emptied when the window closes, so a save holds what the game's own 60 rows would. Callbacks have no limit (were 16).
 - `rq.skilllist.install()` with buttons: Previous Page and Next Page are now the calling mod's `"skill-window"` entries (`<mod id>.skilllist-prev` / `-next`), placed in the order entries were added; `on_buttons` gets their ids (200101 to 200104, were 200037 and 200038). Their look is the same.
@@ -531,14 +531,14 @@ The rest of Potential Skill Pages in Lua (`notes/plans/plan-ui-kit-leftovers.md`
 
 ## 2.17.0
 
-Phase 5 of what the hub UI kit left (`notes/plans/plan-ui-kit-leftovers.md` in the workspace, section 11), its second part: the skill window. Lua over the game's own buttons; the only C change is an option of `rq.skilllist.install`.
+Phase 5 of what the hub UI kit left, its second part: the skill window. Lua over the game's own buttons; the only C change is an option of `rq.skilllist.install`.
 - `rq.gamebutton`'s group `"skill-window"`: buttons under the Potential Skills list, in the castle buttons' look (CG 11153, the label in the game's font), two to a row under the list's picture (x 531 and 745, y 660 and 692), up to four. They are the game's own buttons in the list's button group, made again with each build of the list; `enabled` greys one as the game does. A click runs `on_click` with the window open. The arrow keys reach them from a column's last skill, and `tip` shows the game's skill comment. Agents see them as `<mod id>.<id>` on the `skill-shop` screen. `groups()` lists the group with each entry's `placed`, `button`, `x` and `y`.
 - `rq.skilllist.install(opts)`: `buttons = false` leaves out the engine's Previous Page and Next Page. They stay for mods made before, now at y 660 (were 652), under the list's picture instead of over its last rows.
 - `rq.skilllist.page()`: the page shown. `rq.skilllist.refresh()`: builds the list again for the character shown, as the game does after a buy.
 
 ## 2.16.0
 
-Phase 5 of what the hub UI kit left (`notes/plans/plan-ui-kit-leftovers.md` in the workspace, section 10): buttons of mods in the game's own menus, made by the game itself. All of it is Lua over one new C call.
+Phase 5 of what the hub UI kit left: buttons of mods in the game's own menus, made by the game itself. All of it is Lua over one new C call.
 - `rq.castle.room(spec)`: a mod's room in Rance Castle. It is one of the game's own castle areas (30 to 50, which the game leaves free), made each time the castle opens, as the Gal monsters and Poster rooms are: the game draws its button, name, face and NEW mark and moves the keys to it. It goes on its floor (default B2F), or the nearest floor with a free cell that time; the game's rooms never move. A click runs `on_enter`; the castle stays open. The handle has `area`, `floor`, `where`, `set` and `remove`. `rq.castle.rooms()` lists them. `rq.castle()` and `rq.castle.get()` are as before.
 - `rq.gamebutton.add(spec)`: an entry in the SYSTEM menu. While any entry exists the menu has one more row, MODS, under Save (or Suspend Save), in the menu's painted look (its own letters and the game's key icon, through `rq.image.compose`); the keys reach it, and it is greyed while no entry is enabled. Picking it lists the enabled entries in the game's choice menu, with their `tip`. The handle has `id`, `set` and `remove`. `rq.gamebutton.groups()` lists them.
 - `rq.ain.method(path, name, ...)`: calls a method of the game on the struct a global reaches, with plain arguments as `rq.ain.call`.
@@ -546,21 +546,21 @@ Phase 5 of what the hub UI kit left (`notes/plans/plan-ui-kit-leftovers.md` in t
 
 ## 2.15.0
 
-Phase 4 of what the hub UI kit left (`notes/plans/plan-ui-kit-leftovers.md` in the workspace), its last part: the game's skill tile. All of it is Lua.
+Phase 4 of what the hub UI kit left, its last part: the game's skill tile. All of it is Lua.
 - `rq.uikit.skill_button(skill, opts)`: a skill's tile as the status page draws it, to the pixel: the CG of its panel color, the name fitted in the game's font, a mark for each rank above 1 (`rank`, or the character's with `chara`), the uses in the level digits (`count`, or the character's), `long` (the 167-wide tile), `disabled` (greyed as the game greys a skill), the hovered look and the game's frames. Its tip is the game's comment for the skill. With `skill` nil and `slot`, the empty slot with its number.
 - `rq.uikit.number`: `tint`.
 - `rq.ui.get` and `rqmod-ctl ui`: a tile is listed with the type "skill" and the skill number as `value`; an empty slot with the type "slot", which is never the `hover` and never makes a game control `covered`.
 
 ## 2.14.0
 
-Phase 4 of what the hub UI kit left (`notes/plans/plan-ui-kit-leftovers.md` in the workspace), its second part: the game's gauges and digit fonts. All of it is Lua.
+Phase 4 of what the hub UI kit left, its second part: the game's gauges and digit fonts. All of it is Lua.
 - `rq.uikit.bar(value, max, opts)`: the game's bars (`T_Bar`), a CG cut to `value / max`, to the pixel: `style` for the game's own (HP on the cards, the mini cards and monsters, EXP, charisma, quests, the upright Magnum gauge), or any `cg`, or a `color`; `dir = "up"`; `anim`, the value moving in a straight line as the game's bars do. Only the bar; the frames are parts of each screen's background. It takes no click; `tip` works on it.
 - `rq.uikit.number`: the game's digit fonts by name (`"hp"`, `"level"`, `"level_max"`, `"status"`, `"small"`, `"world"`, `"gallery"`, with `"gold"`) or any CG cut in 10 cells; `hyphen` for an 11th cell, "-". It returns its place. A negative number with a digit font draws as 0, as the game's (before, the gold digits left out the minus).
 - `rq.ui.get` and `rqmod-ctl ui`: a bar is listed with the type "bar" and the value it shows. A bar or a comment window is never the `hover`, and never makes a game control `covered`.
 
 ## 2.13.0
 
-Phase 4 of what the hub UI kit left (`notes/plans/plan-ui-kit-leftovers.md` in the workspace), its first part: the game's comment window. All of it is Lua but one field.
+Phase 4 of what the hub UI kit left, its first part: the game's comment window. All of it is Lua but one field.
 - `rq.uikit.comment(text, opts)`: the game's comment window (`T_Comment`), its look and layout to the pixel: the paper window with three borders and a shadow, a `header`, the text wrapped at 520 pixels as the game wraps it, red `sub` lines, and the game's red `style`. At the mouse, or at `x`, `y`, kept on the screen as the game's. On the top layer; it takes no clicks and covers no game control. `rq.uikit.comment_size` gives its size.
 - `tip` and `tip_wait` on every widget that takes a click: the comment window after the mouse or the keys' cursor stays on the widget 500 ms, with the game's sound; at the mouse, or at the widget's edge from the keys. `tips` on `tabs`, `choice` and `sort`, `tip` on `list` and `quest_list` rows.
 - `rq.uikit.options`: a row's `comment` is the game's comment window right of the menu, at the row, after 500 ms, as the game's menu shows it (before, a plain box at once). The hub theme's `options.comment` style is gone.
@@ -569,7 +569,7 @@ Phase 4 of what the hub UI kit left (`notes/plans/plan-ui-kit-leftovers.md` in t
 
 ## 2.12.0
 
-Phase 3 of what the hub UI kit left (`notes/plans/plan-ui-kit-leftovers.md` in the workspace): the keyboard, as the game's own screens use it. All of it is Lua but one field.
+Phase 3 of what the hub UI kit left: the keyboard, as the game's own screens use it. All of it is Lua but one field.
 - The kit's keys cursor: the arrow keys move one cursor between the widgets that take a click, and Enter clicks the one under it. The mouse and the keys share it, as the game's selection: the mouse over a widget puts the cursor there, and the mouse is never moved. An arrow goes to the nearest widget that way, and wraps when there is none. In a list (`list`, `quest_list`, `options`, `item_list`) Up and Down go through its rows, also those out of sight, and the list scrolls to follow. A focused slider moves by Page Down (up) and Page Up (down), 5% or its `step`, as Config's sliders.
 - `rq.uikit.keys(opts)`: the kit takes the arrows, Enter, Page Up and Page Down on this update and hides them from the game. `edge(dir)` is called when an arrow finds nothing that way, and the cursor then does not wrap. `rq.uikit.page` calls it; elsewhere the kit's widgets stay for the mouse. `rq.uikit.focused()` and `rq.uikit.focus(id)` read and set the cursor.
 - `nav` on every widget: where its arrows go, by id (a table or a function of the arrow), or false to leave it out of the cursor.
@@ -581,7 +581,7 @@ Phase 3 of what the hub UI kit left (`notes/plans/plan-ui-kit-leftovers.md` in t
 
 ## 2.11.0
 
-Phase 2 of what the hub UI kit left (`notes/plans/plan-ui-kit-leftovers.md` in the workspace): a layer over the HUD, the game's faint shadows, and agents that click as a player does.
+Phase 2 of what the hub UI kit left: a layer over the HUD, the game's faint shadows, and agents that click as a player does.
 - `rq.hud.top(fn)`: what `fn` draws goes on a top layer, drawn after every other HUD draw of the update, from every mod. Inside it the clip starts at the whole screen; the clip from outside comes back after it, also on an error. Drawing only: clicks are still decided in call order. `rq.uikit.top(fn)` is the same for widgets.
 - `rq.uikit.item_list`: the dragged icon is drawn once, by the list it came from, on the top layer, so a widget drawn after the lists or a clip no longer covers or cuts it. `rq.uikit.options`: a row's comment box is on the top layer too.
 - `shadow.a` in the game-font text style (`rq.hud.text`, `text_width`, `rq.image.compose` text layers): the shadow's opacity, 0 to 255, times the text's. The hub theme's sort labels have the game's white shadow at 64.
@@ -589,7 +589,7 @@ Phase 2 of what the hub UI kit left (`notes/plans/plan-ui-kit-leftovers.md` in t
 
 ## 2.10.0
 
-Phase 1 of what the hub UI kit left (`notes/plans/plan-ui-kit-leftovers.md` in the workspace): the lists and the shop, as the game does them. All of it is Lua over the game's own calls.
+Phase 1 of what the hub UI kit left: the lists and the shop, as the game does them. All of it is Lua over the game's own calls.
 - `rq.item.buy(ii, opts)`: buys an item from the shop's stock as the shop's drag does, with the game's "Purchase ...?" question, its "Not enough money." notice, the money and the shop's spent total. `chara` buys onto a character and equips it, as the drag onto a party member does. `ask = false` buys at once.
 - `rq.item.sell` and `donate` take an item a character wears: it comes off first, after the game's question, with the game's "cannot be removed" notice for one that cannot; one that vanishes when taken off is refused.
 - `rq.uikit.scrollbar`: the arrows and the track move on the press, as the game's; held, they wait 250 ms and move again on every update. The track stops at the mouse. (Before, they moved once, on the release.)
@@ -613,7 +613,7 @@ What phase 4 of the hub UI kit left for later: a mod can lock, sell, donate and 
 
 ## 2.8.0
 
-The vault's lists and filters, phase 4 of the hub UI kit (`notes/plans/plan-ui-kit-hub.md` in the workspace). The widgets are drawn from the game's own CGs, and the data, the filters and the sorts are the game's own calls.
+The vault's lists and filters, phase 4 of the hub UI kit. The widgets are drawn from the game's own CGs, and the data, the filters and the sorts are the game's own calls.
 - `rq.uikit.item_data(ii)`: an item instance's row data from the game (name, level line, stats line, icon, rank, kind, lock, price, place, the classes that may equip it). `rq.uikit.item_refresh(ii)` makes lists read it again at once.
 - `rq.uikit.item_row(row, opts)`: a vault item row, as the game draws it, with the stats line wrapped and colored as the game's (its `|` and backquote marks, white numbers), the vault or storage background, and the LOCK / UNDO LOCK, SELL and DONATE buttons. A row can be an instance or a table of your own.
 - `rq.uikit.item_list(rows, index, opts)`: the vault's list of 6 rows with the game's scroll bar.
@@ -625,7 +625,7 @@ The vault's lists and filters, phase 4 of the hub UI kit (`notes/plans/plan-ui-k
 
 ## 2.7.0
 
-The options list, phase 3 of the hub UI kit (`notes/plans/plan-ui-kit-hub.md` in the workspace).
+The options list, phase 3 of the hub UI kit.
 - `rq.ui.choose(items, fn, opts)`: opens the game's own choice menu outside a scene, on the hub or any of the game's screens, and calls `fn` with the picked row's id (0 when cancelled). Rows as in `rq.scene.choice`, with any value as an id; `message` rows on top, a Return row (`back`), `cursor`, `x`, `y`. It opens at the next update and waits for the System menu, Config, a scene, or another choice menu.
 - `rq.ui.choosing()`: true while the game's choice menu shows (the game's own, `rq.scene.choice` or `rq.ui.choose`).
 - `rq.uikit.options(items, opts)`: the choice menu's look as a widget inside a page, not modal: the green base, the grey rows (tall with fewer than 3), separators, a text panel, comments and a Return row. The hub theme has its pieces (`options`).
@@ -634,7 +634,7 @@ The options list, phase 3 of the hub UI kit (`notes/plans/plan-ui-kit-hub.md` in
 
 ## 2.6.0
 
-The hub's widgets in `rq.uikit`, phase 2 of the hub UI kit (`notes/plans/plan-ui-kit-hub.md` in the workspace). They are drawn from the game's own CGs and write in its own font.
+The hub's widgets in `rq.uikit`, phase 2 of the hub UI kit. They are drawn from the game's own CGs and write in its own font.
 - `rq.uikit.themes.hub`: Config's theme with the hub's pieces added. Hub widgets take their pieces from the theme in use, else from it, so a copy of it can change some.
 - `rq.uikit.button` takes `opts.style`: "large" (Rance Castle's rooms), "choice" and "choice_tall" (the choice menu's), "short" (the footer's Vault and Trivia). A long text gets smaller and tighter until it fits, as the game's `FitText2` does. With the hub theme in use, a button without a style is "large".
 - `rq.uikit.tabs` takes `opts.style = "town"`: the hub's town tabs, the current one orange.
@@ -645,7 +645,7 @@ The hub's widgets in `rq.uikit`, phase 2 of the hub UI kit (`notes/plans/plan-ui
 
 ## 2.5.0
 
-The game's own font for mod text, the first piece of the UI kit for the hub (`notes/plans/plan-ui-kit-hub.md` in the workspace).
+The game's own font for mod text, the first piece of the UI kit for the hub.
 - `rq.hud.text` takes `font = "game"`: the game draws the text in its own font (`face` 256, 257 or 258), letter by letter with the spacing its English text uses, as on its buttons, lists and the castle. `outline` and `shadow` give its edges, `space` and `spacing` its letter spacing, and `valign = "center"` centers it as the game centers button labels. Each different text is drawn once and kept; up to 512 different texts draw on one update. `rq.hud.text_width` takes the same style and then also gives the height.
 - `rq.image.compose` text layers take `font = "game"` with the same fields.
 - `rq.hud.clip_push(x, y, w, h)` narrows the clip to a box inside the one before, and `rq.hud.clip_pop()` goes back. `rq.hud.clip(x, y, w, h)` is the box they start from. `rq.uikit.list` uses them, so a list stays inside a clip of your own (before, its clip replaced yours).
