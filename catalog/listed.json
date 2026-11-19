@@ -1,6 +1,7 @@
 {
   "$comment": "The mods the site lists, each at the release that was checked. Kept by hand; scripts/catalog.py reads it with GitHub and writes docs/public/mods.json. See catalog/README.md.",
   "engine": "RQ-Modding/RQ-Mod",
+  "manager": "RQ-Modding/rq-manager",
   "mods": [
     { "repo": "RQ-Modding/aten-gnu-qol", "version": "1.0.0", "tags": ["characters"], "save": "stays" },
     { "repo": "RQ-Modding/athena-qol", "version": "1.0.1", "tags": ["characters", "skills"], "save": "stays" },

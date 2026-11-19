@@ -23,11 +23,11 @@ and RQ Manager reads. Its format is `docs/public/schemas/catalog.schema.json`.
 The name, author, `loader`, dependencies and conflicts come from `mod.json` at the tag, the
 description and license from the repository.
 
-At the top of `listed.json`, `engine` names RQ MOD's repository, and `manager` RQ Manager's (added
-with its first release; until then `mods.json` has no `manager` entry and the Download page does not
-name it). The script takes each one's latest release and checks its zip: RQ MOD's holds
-`xsystem4/xsystem4.exe`, RQ Manager's `rq-manager.exe`. A newer release of either needs only
-`npm run catalog`.
+At the top of `listed.json`, `engine` names RQ MOD's repository, and `manager` RQ Manager's (since
+its first release, 1.0.0; without it `mods.json` has no `manager` entry and the Download page does
+not name the Manager). The script takes each one's latest release and checks its zip: RQ MOD's holds
+`xsystem4/xsystem4.exe`, RQ Manager's `RQ Manager/rq-manager.exe`. A newer release of either needs
+only `npm run catalog`.
 
 ## Listing a mod, or a newer version
 

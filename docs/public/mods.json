@@ -2,6 +2,18 @@
   "$schema": "https://rq-modding.github.io/rq-modding-docs/schemas/catalog.schema.json",
   "format": 1,
   "generated": "2026-11-19",
+  "manager": {
+    "version": "1.0.0",
+    "tag": "v1.0.0",
+    "published": "2026-11-19",
+    "notes": "https://github.com/RQ-Modding/rq-manager/releases/tag/v1.0.0",
+    "zip": {
+      "name": "rq-manager-1.0.0-windows.zip",
+      "url": "https://github.com/RQ-Modding/rq-manager/releases/download/v1.0.0/rq-manager-1.0.0-windows.zip",
+      "size": 2093589,
+      "sha256": "c3746e8572550aa9ea0fecd3af86b04b1813108ab12f9c9d5fadbbf5990a861e"
+    }
+  },
   "engine": {
     "version": "2.59.2",
     "stage": "Public Beta",

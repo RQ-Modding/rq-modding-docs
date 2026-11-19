@@ -57,8 +57,8 @@ When a mod asks for it, or at low priority.
 - **Animations from your own art.** A tool that builds the game's animation files (`.aff`) from a PNG
   sequence and checks a Flash file against what the engine can play. Unpacking the game's own came in
   2.25.0: `rqmod-ctl flashdump` saves a file's pictures.
-- **A program that installs RQ MOD and its mods.** [RQ Manager](guide/manager.md) installs and
-  updates RQ MOD and the listed mods, turns mods off and on, removes them and puts the last version
+- **A program that installs RQ MOD and its mods.** Came on 2026-11-19, in its own repository:
+  [RQ Manager](guide/manager.md) 1.0.0 installs and updates RQ MOD and the listed mods, turns mods off and on, removes them and puts the last version
   back, from the same list as the [Mods](mods.md) page. Later: "update available" in the game itself.
 - **A browser for the game's files.** Came with 2.43.0: [Rance Browser](guide/file-browser.md) (RQ
   Browser until 2.55.1, now in its own repository) shows the game's CGs, Flash files, music, sounds,
