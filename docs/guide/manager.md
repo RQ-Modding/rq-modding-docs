@@ -14,10 +14,10 @@ It is a public beta, like RQ MOD, and runs on Windows.
 ## Get it
 
 1. Download `rq-manager-*.zip` from the [Download](../download.md) page.
-2. Unzip it anywhere. The game folder (the one with `RanceQuest.exe`) is a good place: put there, the
-   Manager finds the game at once. Anywhere else, it asks for the folder the first time and remembers
-   it.
-3. Start `rq-manager.exe`. There is nothing to install.
+2. Unzip it into the game folder (the one with `RanceQuest.exe`). It makes a folder `RQ Manager`
+   there, and the Manager finds the game at once. Unzipped anywhere else, it asks for the game folder
+   the first time and remembers it.
+3. Start `rq-manager.exe` in the folder `RQ Manager`. There is nothing to install.
 
 When a newer RQ Manager is out, a bar at the top of its window offers it. One click, and it starts
 again as the new version.
@@ -101,7 +101,7 @@ In the game folder, beside `mods`:
 | `rq-manager.log` | What it did. Attach it to a bug report |
 
 Its own settings (the game folders it was used on) are in `%LOCALAPPDATA%\RQ Manager`. To stop using
-the Manager, delete `rq-manager.exe` and that folder; the game folder's `rq-manager` can go too
+the Manager, delete its folder `RQ Manager` and that folder; the game folder's `rq-manager` can go too
 (keep `off` if a mod you want is in it, and `save-copies` if you want the copies).
 
 ## When something goes wrong

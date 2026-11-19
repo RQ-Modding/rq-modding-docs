@@ -9,7 +9,7 @@ are, so you can still start the game without mods.
 
 1. Install Rance Quest Magnum.
 2. Download RQ Manager from the [Download](../download.md) page and unzip it into the game folder.
-3. Start `rq-manager.exe` and click **Install RQ MOD**, then **Play**.
+3. Start `RQ Manager\rq-manager.exe` and click **Install RQ MOD**, then **Play**.
 
 Its Mods page installs, updates, turns off and removes mods, and puts the last version back. The
 steps by hand follow, and the rest of this page holds for both.

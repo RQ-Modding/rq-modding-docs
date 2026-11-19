@@ -13,7 +13,7 @@ it, and writes mods.json only when nothing is wrong. Its rules:
   - the version in listed.json is the version of mod.json at the tag (v<version> by default);
   - the release has exactly one .zip (or the one listed.json names as "asset"), its SHA-256 is the
     one GitHub gives, and it holds <id>/mod.json and <id>/init.lua with nothing outside <id>/
-    (RQ MOD's holds xsystem4/xsystem4.exe, RQ Manager's rq-manager.exe);
+    (RQ MOD's holds xsystem4/xsystem4.exe, RQ Manager's "RQ Manager/rq-manager.exe");
     the mod.json inside is the one at the tag;
   - no two mods share an id; every dependency is listed; a mod's loader is not newer than
     RQ MOD's latest release (a player could not run it);
@@ -201,8 +201,8 @@ def build(listed, gh, fetch=download):
                 data = fetch(asset["browser_download_url"])
                 mfile = checked_file(asset, data, "manager", problems)
                 with zipfile.ZipFile(io.BytesIO(data)) as z:
-                    if "rq-manager.exe" not in z.namelist():
-                        problems.append(f"manager: {asset['name']} has no rq-manager.exe")
+                    if "RQ Manager/rq-manager.exe" not in z.namelist():
+                        problems.append(f"manager: {asset['name']} has no RQ Manager/rq-manager.exe")
                 manager = {"version": mv, "tag": rel["tag_name"], "published": day(rel.get("published_at")),
                            "notes": rel["html_url"], "zip": mfile}
 

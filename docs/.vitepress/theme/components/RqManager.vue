@@ -12,8 +12,8 @@ const manager = catalog.manager
   <template v-if="manager">
     <p>
       The easy way: <strong>RQ Manager</strong> installs RQ MOD and the mods you pick, keeps them up to
-      date, turns mods off and on, and puts the last version back. Unzip it anywhere (the game folder
-      is a good place) and start <code>rq-manager.exe</code>.
+      date, turns mods off and on, and puts the last version back. Unzip it into the game folder and
+      start <code>rq-manager.exe</code> in the new folder <code>RQ Manager</code>.
     </p>
     <section class="rq-release" aria-label="RQ Manager's latest release">
       <div class="rq-release__head">
