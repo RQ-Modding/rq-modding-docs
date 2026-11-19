@@ -3,6 +3,17 @@
 RQ MOD runs Rance Quest Magnum on its own engine, which loads mods. The game's own files stay as they
 are, so you can still start the game without mods.
 
+## With RQ Manager
+
+[RQ Manager](manager.md) does the steps of this page for you:
+
+1. Install Rance Quest Magnum.
+2. Download RQ Manager from the [Download](../download.md) page and unzip it into the game folder.
+3. Start `rq-manager.exe` and click **Install RQ MOD**, then **Play**.
+
+Its Mods page installs, updates, turns off and removes mods, and puts the last version back. The
+steps by hand follow, and the rest of this page holds for both.
+
 ## Install RQ MOD
 
 1. Install Rance Quest Magnum.
@@ -33,6 +44,8 @@ with a Discord icon beside it: click it to open the RQ MOD server in your browse
 first).
 
 ## Add and remove mods
+
+[RQ Manager](manager.md) does this from its Mods page. By hand:
 
 - **Add:** extract the mod's folder into `mods`. The folder holds at least a `mod.json` and an
   `init.lua`. Do not put an extra folder level in between (`mods/camera-zoom/mod.json`, not

@@ -42,6 +42,7 @@ const guide: DefaultTheme.SidebarItem[] = [
       { text: 'Download', link: '/download' },
       { text: 'Mods', link: '/mods' },
       { text: 'Install', link: '/guide/install' },
+      { text: 'RQ Manager', link: '/guide/manager' },
     ],
   },
   {
