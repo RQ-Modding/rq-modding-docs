@@ -5,20 +5,20 @@ hero:
   name: RQ MOD
   text: Lua mods for Rance Quest Magnum
   badge: Public Beta
-  tagline: Change the HUD, skills, items, characters, fights and quests at runtime, with no decompiling or recompiling of the game.
+  tagline: Download it, pick some mods, or make your own. Mods change the HUD, skills, items, characters, fights and quests at runtime, with no decompiling or recompiling of the game.
   image:
     src: /rq-mod.png
     alt: RQ MOD icon
   actions:
     - theme: brand
+      text: Download
+      link: /download
+    - theme: alt
+      text: Mods
+      link: /mods
+    - theme: alt
       text: Make your first mod
       link: /guide/first-mod
-    - theme: alt
-      text: Install
-      link: /guide/install
-    - theme: alt
-      text: API reference
-      link: /reference/
 
 # Drawn by the theme (RqFeatures), not the default feature cards.
 rqFeatures:

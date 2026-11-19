@@ -1,0 +1,1001 @@
+{
+  "$schema": "https://rq-modding.github.io/rq-modding-docs/schemas/catalog.schema.json",
+  "format": 1,
+  "generated": "2026-11-19",
+  "engine": {
+    "version": "2.59.2",
+    "stage": "Public Beta",
+    "tag": "v2.59.2",
+    "published": "2026-11-18",
+    "notes": "https://github.com/RQ-Modding/RQ-Mod/releases/tag/v2.59.2",
+    "zip": {
+      "name": "RQ-MOD-2.59.2-windows.zip",
+      "url": "https://github.com/RQ-Modding/RQ-Mod/releases/download/v2.59.2/RQ-MOD-2.59.2-windows.zip",
+      "size": 29706379,
+      "sha256": "daaf4f13977084fcb0f21cc18cc924ca604ea6f3b39dd7ecebebbccb114db8d1"
+    }
+  },
+  "mods": [
+    {
+      "id": "aten-gnu-qol",
+      "name": "Aten Gnu QoL",
+      "author": "Moru Zerinho6",
+      "description": "Aten stays in the party, as long as she has something to read.",
+      "tags": [
+        "characters"
+      ],
+      "save": "stays",
+      "version": "1.0.0",
+      "loader": "2.47.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/aten-gnu-qol",
+      "tag": "v1.0.0",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "aten-gnu-qol-1.0.0.zip",
+        "url": "https://github.com/RQ-Modding/aten-gnu-qol/releases/download/v1.0.0/aten-gnu-qol-1.0.0.zip",
+        "size": 25678,
+        "sha256": "95e657c0bd2d731f228b2e1b960c71af1d49d9426b658ac39ce0a6d62b8759cb"
+      }
+    },
+    {
+      "id": "athena-qol",
+      "name": "Athena QoL",
+      "author": "Moru Zerinho6",
+      "description": "Athena 2.0 grows up a little: more skill slots, any bow, Studies that keep pace with the world, and two skills of her own to buy.",
+      "tags": [
+        "characters",
+        "skills"
+      ],
+      "save": "stays",
+      "version": "1.0.1",
+      "loader": "2.46.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/athena-qol",
+      "tag": "v1.0.1",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "athena-qol-1.0.1.zip",
+        "url": "https://github.com/RQ-Modding/athena-qol/releases/download/v1.0.1/athena-qol-1.0.1.zip",
+        "size": 9766,
+        "sha256": "422deed32fdbf873e124534ade9d801119c084b5ef91b745437706c61727d6b9"
+      }
+    },
+    {
+      "id": "better-elemental-knowledge",
+      "name": "Better Elemental Knowledge",
+      "author": "Moru Zerinho6",
+      "description": "One skill row for a whole set of elemental skills, so Brawlers and Aegis keep room for others.",
+      "tags": [
+        "skills"
+      ],
+      "save": "stays",
+      "version": "1.0.0",
+      "loader": "2.53.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/better-elemental-knowledge",
+      "tag": "v1.0.0",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "better-elemental-knowledge-1.0.0.zip",
+        "url": "https://github.com/RQ-Modding/better-elemental-knowledge/releases/download/v1.0.0/better-elemental-knowledge-1.0.0.zip",
+        "size": 7835,
+        "sha256": "47837124693ba022047a1cee95edfb09aab08217c162305567d1c69373a81068"
+      }
+    },
+    {
+      "id": "better-explained",
+      "name": "Better Explained",
+      "author": "Moru Zerinho6",
+      "description": "Adds a short line to a skill's hover text that says whether the skill can land a critical hit, stun or poison, and whether it ignores accuracy.",
+      "tags": [
+        "skills",
+        "interface"
+      ],
+      "save": "none",
+      "version": "1.1.0",
+      "loader": "2.44.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/better-explained",
+      "tag": "v1.1.0",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "better-explained-1.1.0.zip",
+        "url": "https://github.com/RQ-Modding/better-explained/releases/download/v1.1.0/better-explained-1.1.0.zip",
+        "size": 5762,
+        "sha256": "cb16585fc2e39905354df1cdfa2ffbe307473c752335681973aba1c698e00532"
+      }
+    },
+    {
+      "id": "binoculars",
+      "name": "Binoculars",
+      "author": "Moru Zerinho6",
+      "description": "A new item, Binoculars, that lets you zoom the camera in and out in a dungeon, even on a first visit, when the game normally locks it.",
+      "tags": [
+        "items",
+        "dungeons"
+      ],
+      "save": "stays",
+      "version": "1.2.4",
+      "loader": "2.39.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/binoculars",
+      "tag": "v1.2.4",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "binoculars-1.2.4.zip",
+        "url": "https://github.com/RQ-Modding/binoculars/releases/download/v1.2.4/binoculars-1.2.4.zip",
+        "size": 20739,
+        "sha256": "140ebf82ee1fcf6e732afc3091fdc2d7669d49aceb7c54201a68302153e4b453"
+      }
+    },
+    {
+      "id": "camera-zoom",
+      "name": "Camera Zoom",
+      "author": "Moru Zerinho6",
+      "description": "A wider camera zoom range in dungeons you have already cleared, wider still outdoors.",
+      "tags": [
+        "dungeons",
+        "interface"
+      ],
+      "save": "none",
+      "version": "1.2.0",
+      "loader": "2.44.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/camera-zoom",
+      "tag": "v1.2.0",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "camera-zoom-1.2.0.zip",
+        "url": "https://github.com/RQ-Modding/camera-zoom/releases/download/v1.2.0/camera-zoom-1.2.0.zip",
+        "size": 7624,
+        "sha256": "34e21c43c99f49c174f1edde8a419436452e807b1517797355987f9c6e8e5cd2"
+      }
+    },
+    {
+      "id": "chest-safe-luck",
+      "name": "Chest Safe Luck",
+      "author": "Moru Zerinho6",
+      "description": "A red chest that explodes makes the next red chest easier to open.",
+      "tags": [
+        "dungeons"
+      ],
+      "save": "none",
+      "version": "1.0.0",
+      "loader": "0.2.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/chest-safe-luck",
+      "tag": "v1.0.0",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "chest-safe-luck-1.0.0.zip",
+        "url": "https://github.com/RQ-Modding/chest-safe-luck/releases/download/v1.0.0/chest-safe-luck-1.0.0.zip",
+        "size": 3918,
+        "sha256": "ce2b0af5740d020a503c010fd060c34ff16ee396e6b594819d61985f0efb056c"
+      }
+    },
+    {
+      "id": "copandon-dot-qol",
+      "name": "Copandon Dot QoL",
+      "author": "Moru Zerinho6",
+      "description": "Copandon Dot's Fortune can land a critical hit and stun.",
+      "tags": [
+        "characters",
+        "battle"
+      ],
+      "save": "none",
+      "version": "1.1.0",
+      "loader": "2.44.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/copandon-dot-qol",
+      "tag": "v1.1.0",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "copandon-dot-qol-1.1.0.zip",
+        "url": "https://github.com/RQ-Modding/copandon-dot-qol/releases/download/v1.1.0/copandon-dot-qol-1.1.0.zip",
+        "size": 4331,
+        "sha256": "da7ea0a5e5523291c94832142ee3be007882d6ebe6fcf4d58a99889ed9c40300"
+      }
+    },
+    {
+      "id": "counter-after-guard",
+      "name": "Counter After Guard",
+      "author": "Moru Zerinho6",
+      "description": "Counter can strike back after an Ally Guard.",
+      "tags": [
+        "battle"
+      ],
+      "save": "none",
+      "version": "1.0.0",
+      "loader": "0.2.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/counter-after-guard",
+      "tag": "v1.0.0",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "counter-after-guard-1.0.0.zip",
+        "url": "https://github.com/RQ-Modding/counter-after-guard/releases/download/v1.0.0/counter-after-guard-1.0.0.zip",
+        "size": 4070,
+        "sha256": "56267b45e7510b7f1469cf0895be02e7d63a0dc51d7adb7882034431d484203b"
+      }
+    },
+    {
+      "id": "custom-tada-mode",
+      "name": "Custom TADA Mode",
+      "author": "Moru Zerinho6",
+      "description": "Sets how many times TADA mode multiplies rewards: battle gold, battle EXP and familiar growth, each with its own number.",
+      "tags": [
+        "modes"
+      ],
+      "save": "none",
+      "version": "1.2.0",
+      "loader": "2.36.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/custom-tada-mode",
+      "tag": "v1.2.0",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "custom-tada-mode-1.2.0.zip",
+        "url": "https://github.com/RQ-Modding/custom-tada-mode/releases/download/v1.2.0/custom-tada-mode-1.2.0.zip",
+        "size": 7816,
+        "sha256": "289e23e096eb036f7a822e85da03ce3fbd5fcae3e5d5f7846662de9a4bd33031"
+      }
+    },
+    {
+      "id": "dynamic-immature",
+      "name": "Dynamic Immature",
+      "author": "Moru Zerinho6",
+      "description": "Two Special items that give a character the white skill Immature, or take its penalty away.",
+      "tags": [
+        "items",
+        "skills"
+      ],
+      "save": "stays",
+      "version": "1.0.0",
+      "loader": "2.55.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/dynamic-immature",
+      "tag": "v1.0.0",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "dynamic-immature-1.0.0.zip",
+        "url": "https://github.com/RQ-Modding/dynamic-immature/releases/download/v1.0.0/dynamic-immature-1.0.0.zip",
+        "size": 17319,
+        "sha256": "520f057b6346d623c618bbad05c344d51a8f284c7cb98786f4e377dcf26426ab"
+      }
+    },
+    {
+      "id": "frostbuy-bulk-buy",
+      "name": "Frostbuy Bulk Buy",
+      "author": "Moru Zerinho6",
+      "description": "Buy many items at Frostbuy at once: tick them, say how many, and pay once.",
+      "tags": [
+        "shops"
+      ],
+      "save": "none",
+      "version": "1.0.1",
+      "loader": "2.50.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/frostbuy-bulk-buy",
+      "tag": "v1.0.1",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "frostbuy-bulk-buy-1.0.1.zip",
+        "url": "https://github.com/RQ-Modding/frostbuy-bulk-buy/releases/download/v1.0.1/frostbuy-bulk-buy-1.0.1.zip",
+        "size": 11623,
+        "sha256": "5a0c743e2156588106ae211edf56c9f97d58b45dae9a73c8479d5203b1781bb5"
+      }
+    },
+    {
+      "id": "game-speed",
+      "name": "Game Speed",
+      "author": "Moru Zerinho6",
+      "description": "Runs the game faster, with its own speed for each part of the game.",
+      "tags": [
+        "modes"
+      ],
+      "save": "none",
+      "version": "1.2.3",
+      "loader": "2.35.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/game-speed",
+      "tag": "v1.2.3",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "game-speed-1.2.3.zip",
+        "url": "https://github.com/RQ-Modding/game-speed/releases/download/v1.2.3/game-speed-1.2.3.zip",
+        "size": 6955,
+        "sha256": "4fafe0044721ce859b9ef371ae96c6b6bd6e38fcac1471e3cb21d581f13bcd52"
+      }
+    },
+    {
+      "id": "gem-lady-trade",
+      "name": "Gem Lady Trade",
+      "author": "Moru Zerinho6",
+      "description": "Once you have cleared Gem Lady in this world, trade a Jewel for a Forbidden Talent from the quest list, without playing the quest again.",
+      "tags": [
+        "quests"
+      ],
+      "save": "stays",
+      "version": "1.3.0",
+      "loader": "2.28.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/gem-lady-trade",
+      "tag": "v1.3.0",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "gem-lady-trade-1.3.0.zip",
+        "url": "https://github.com/RQ-Modding/gem-lady-trade/releases/download/v1.3.0/gem-lady-trade-1.3.0.zip",
+        "size": 6773,
+        "sha256": "d05cd6390c1e8ee226d9831c0aa426640fc3f8e8895bcf584c75d54c49e2fff0"
+      }
+    },
+    {
+      "id": "kaoru-quincy-qol",
+      "name": "Kaoru Quincy QoL",
+      "author": "Moru Zerinho6",
+      "description": "Five skills from Rance 6 that only Kaoru Quincy can learn, in her skill shop.",
+      "tags": [
+        "characters",
+        "skills"
+      ],
+      "save": "stays",
+      "version": "1.3.1",
+      "loader": "2.35.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/kaoru-quincy-qol",
+      "tag": "v1.3.1",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "kaoru-quincy-qol-1.3.1.zip",
+        "url": "https://github.com/RQ-Modding/kaoru-quincy-qol/releases/download/v1.3.1/kaoru-quincy-qol-1.3.1.zip",
+        "size": 38022,
+        "sha256": "6a818a2fb7322d724152c1832ee0ca29506b8e0d44fb654ea3581847e4fa8d04"
+      }
+    },
+    {
+      "id": "keep-donations",
+      "name": "Keep Donations",
+      "author": "Moru Zerinho6",
+      "description": "Keep your donations when you move to a new world.",
+      "tags": [
+        "shops"
+      ],
+      "save": "stays",
+      "version": "1.2.0",
+      "loader": "2.28.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/keep-donations",
+      "tag": "v1.2.0",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "keep-donations-1.2.0.zip",
+        "url": "https://github.com/RQ-Modding/keep-donations/releases/download/v1.2.0/keep-donations-1.2.0.zip",
+        "size": 6697,
+        "sha256": "c72d52951fbd4faa339c88add689506c384cde91544b1c0bc94f1dd2d8fe7a30"
+      }
+    },
+    {
+      "id": "known-skill-pages",
+      "name": "Known Skill Pages",
+      "author": "Moru Zerinho6",
+      "description": "More known skills than 17, shown 17 at a time on the status page and in the skill window.",
+      "tags": [
+        "skills",
+        "interface"
+      ],
+      "save": "stays",
+      "version": "1.0.0",
+      "loader": "2.54.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/known-skill-pages",
+      "tag": "v1.0.0",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "known-skill-pages-1.0.0.zip",
+        "url": "https://github.com/RQ-Modding/known-skill-pages/releases/download/v1.0.0/known-skill-pages-1.0.0.zip",
+        "size": 6361,
+        "sha256": "4049f83229a2bb4841dcdab9148193d743c3d31fa8e0c3efbeac51bfc03fdcce"
+      }
+    },
+    {
+      "id": "loadouts",
+      "name": "Loadouts",
+      "author": "Moru Zerinho6",
+      "description": "Three named skill builds per character.",
+      "tags": [
+        "skills",
+        "interface"
+      ],
+      "save": "none",
+      "version": "1.3.0",
+      "loader": "2.52.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/loadouts",
+      "tag": "v1.3.0",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "loadouts-1.3.0.zip",
+        "url": "https://github.com/RQ-Modding/loadouts/releases/download/v1.3.0/loadouts-1.3.0.zip",
+        "size": 20161,
+        "sha256": "c452aaa2ede7cd9e5d3948881fcd33f1cccfc1df8cda51491da8e8c5b726a5ce"
+      }
+    },
+    {
+      "id": "loot-preview",
+      "name": "Loot Preview",
+      "author": "Moru Zerinho6",
+      "description": "Shows what the chests of the dungeon room hold before you open them.",
+      "tags": [
+        "dungeons",
+        "interface"
+      ],
+      "save": "none",
+      "version": "1.2.0",
+      "loader": "2.32.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/loot-preview",
+      "tag": "v1.2.0",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "loot-preview-1.2.0.zip",
+        "url": "https://github.com/RQ-Modding/loot-preview/releases/download/v1.2.0/loot-preview-1.2.0.zip",
+        "size": 5733,
+        "sha256": "c70faebe90b700fbd9d150befe3abfecae3be8ad5388ce052554301d0f32d577"
+      }
+    },
+    {
+      "id": "moru-mode",
+      "name": "Moru Mode",
+      "author": "Moru Zerinho6",
+      "description": "A mode of its own beside TADA mode: it speeds up what TADA mode leaves alone.",
+      "tags": [
+        "modes"
+      ],
+      "save": "none",
+      "version": "1.0.0",
+      "loader": "2.36.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/moru-mode",
+      "tag": "v1.0.0",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "moru-mode-1.0.0.zip",
+        "url": "https://github.com/RQ-Modding/moru-mode/releases/download/v1.0.0/moru-mode-1.0.0.zip",
+        "size": 8345,
+        "sha256": "c2c0659d1c648762fe16474db82a2569ba12407f4fe86fd5358a86b35c044e49"
+      }
+    },
+    {
+      "id": "morurun-items",
+      "name": "Morurun Items",
+      "author": "Moru Zerinho6",
+      "description": "Change the special items the Morurun absorbed into a character, from the character's status page, without playing Alice's Mansion and without resetting the character.",
+      "tags": [
+        "items",
+        "characters"
+      ],
+      "save": "stays",
+      "version": "1.4.0",
+      "loader": "2.44.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/morurun-items",
+      "tag": "v1.4.0",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "morurun-items-1.4.0.zip",
+        "url": "https://github.com/RQ-Modding/morurun-items/releases/download/v1.4.0/morurun-items-1.4.0.zip",
+        "size": 14297,
+        "sha256": "cd3f5d41f46158a8d44a5298a73bb2771dafb14b865176ab7a090f070c722019"
+      }
+    },
+    {
+      "id": "nozomi-okita-qol",
+      "name": "Nozomi Okita QoL",
+      "author": "Moru Zerinho6",
+      "description": "The Poison Mask now stops Nozomi Okita's Cough-Cough Disease.",
+      "tags": [
+        "characters"
+      ],
+      "save": "none",
+      "version": "1.0.4",
+      "loader": "2.37.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/nozomi-okita-qol",
+      "tag": "v1.0.4",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "nozomi-okita-qol-1.0.4.zip",
+        "url": "https://github.com/RQ-Modding/nozomi-okita-qol/releases/download/v1.0.4/nozomi-okita-qol-1.0.4.zip",
+        "size": 3906,
+        "sha256": "2cd93ad3af571b87e283a990d070dad69514846db9156c359f8972127dfc29ad"
+      }
+    },
+    {
+      "id": "onoha-qol",
+      "name": "Onoha QoL",
+      "author": "Moru Zerinho6",
+      "description": "For Onoha Mespos: more evasion, and a skill that lets her familiar act sooner and more often.",
+      "tags": [
+        "characters",
+        "battle"
+      ],
+      "save": "stays",
+      "version": "1.0.3",
+      "loader": "2.37.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/onoha-qol",
+      "tag": "v1.0.3",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "onoha-qol-1.0.3.zip",
+        "url": "https://github.com/RQ-Modding/onoha-qol/releases/download/v1.0.3/onoha-qol-1.0.3.zip",
+        "size": 5340,
+        "sha256": "0296bacd9d528ca9eec21c81571d59e8c1cf893dbbf1bfe7669d2a0efe700a83"
+      }
+    },
+    {
+      "id": "pluepet-rare-contract",
+      "name": "Pluepet Rare Contract",
+      "author": "Moru Zerinho6",
+      "description": "Lost a Rare Item? The Pluepet Company finds it again, for a price.",
+      "tags": [
+        "items",
+        "shops"
+      ],
+      "save": "stays",
+      "version": "1.1.0",
+      "loader": "2.56.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/pluepet-rare-contract",
+      "tag": "v1.1.0",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "pluepet-rare-contract-1.1.0.zip",
+        "url": "https://github.com/RQ-Modding/pluepet-rare-contract/releases/download/v1.1.0/pluepet-rare-contract-1.1.0.zip",
+        "size": 26201,
+        "sha256": "df166aacb529178cc142cc23fa62869972ec21dd3239c717325e1b314c332a1a"
+      }
+    },
+    {
+      "id": "potential-skill-pages",
+      "name": "Potential Skill Pages",
+      "author": "Moru Zerinho6",
+      "description": "Pages for the Potential Skills list, so you can buy skills past the first 36.",
+      "tags": [
+        "skills",
+        "interface"
+      ],
+      "save": "none",
+      "version": "1.1.0",
+      "loader": "2.17.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/potential-skill-pages",
+      "tag": "v1.1.0",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "potential-skill-pages-1.1.0.zip",
+        "url": "https://github.com/RQ-Modding/potential-skill-pages/releases/download/v1.1.0/potential-skill-pages-1.1.0.zip",
+        "size": 5416,
+        "sha256": "4f02ee834c68d609bc19939e9418646964ca42b13218fbaf86f7a67618f630ed"
+      }
+    },
+    {
+      "id": "rebecca-copley-qol",
+      "name": "Rebecca Copley QoL",
+      "author": "Moru Zerinho6",
+      "description": "Rebecca knows how to make herself useful from the back row.",
+      "tags": [
+        "characters"
+      ],
+      "save": "stays",
+      "version": "1.0.0",
+      "loader": "2.46.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/rebecca-copley-qol",
+      "tag": "v1.0.0",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "rebecca-copley-qol-1.0.0.zip",
+        "url": "https://github.com/RQ-Modding/rebecca-copley-qol/releases/download/v1.0.0/rebecca-copley-qol-1.0.0.zip",
+        "size": 4741,
+        "sha256": "ff391a183e62e06d2fcb9c8380743b56aa538106fc8d0153e5083a285da4aa68"
+      }
+    },
+    {
+      "id": "recovery-orb-upgrade",
+      "name": "Recovery Orb Upgrade",
+      "author": "Moru Zerinho6",
+      "description": "The blue Recovery Spring in dungeons heals your whole team, not only the party on the field, and brings back fallen members at 30% HP.",
+      "tags": [
+        "dungeons"
+      ],
+      "save": "none",
+      "version": "1.0.0",
+      "loader": "0.2.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/recovery-orb-upgrade",
+      "tag": "v1.0.0",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "recovery-orb-upgrade-1.0.0.zip",
+        "url": "https://github.com/RQ-Modding/recovery-orb-upgrade/releases/download/v1.0.0/recovery-orb-upgrade-1.0.0.zip",
+        "size": 4096,
+        "sha256": "2dfebb97bfcbde96b785cb60bec4237a402080013a3cf5384f40837682870e9e"
+      }
+    },
+    {
+      "id": "return-bonsai",
+      "name": "Return Bonsai",
+      "author": "Moru Zerinho6",
+      "description": "A legendary held item that keeps a quest's best finds, even when the quest fails.",
+      "tags": [
+        "items",
+        "quests"
+      ],
+      "save": "stays",
+      "version": "1.2.1",
+      "loader": "2.47.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/return-bonsai",
+      "tag": "v1.2.1",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "return-bonsai-1.2.1.zip",
+        "url": "https://github.com/RQ-Modding/return-bonsai/releases/download/v1.2.1/return-bonsai-1.2.1.zip",
+        "size": 214661,
+        "sha256": "d88365bace6089242477a9e8720813c20263da98034641beba38ba966251c746"
+      }
+    },
+    {
+      "id": "rocky-chunk-indicator",
+      "name": "Rocky Chunk Indicator",
+      "author": "Moru Zerinho6",
+      "description": "Shows on each character's status page whether they already had a Rocky Chunk's effect, and asks before another chunk goes on a character who did.",
+      "tags": [
+        "items",
+        "interface"
+      ],
+      "save": "none",
+      "version": "1.0.0",
+      "loader": "2.58.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/rocky-chunk-indicator",
+      "tag": "v1.0.0",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "rocky-chunk-indicator-1.0.0.zip",
+        "url": "https://github.com/RQ-Modding/rocky-chunk-indicator/releases/download/v1.0.0/rocky-chunk-indicator-1.0.0.zip",
+        "size": 6790,
+        "sha256": "264ab88f2e34515027d1cddba5dd49e2f62efa5a8ce5a106560c889f59d42f23"
+      }
+    },
+    {
+      "id": "save-profiles",
+      "name": "Save Profiles",
+      "author": "Moru Zerinho6",
+      "description": "A Save Manager on the title screen: keep several saves side by side, and bring in your save from the original game.",
+      "tags": [
+        "saves"
+      ],
+      "save": "stays",
+      "version": "1.2.0",
+      "loader": "2.44.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/save-profiles",
+      "tag": "v1.2.0",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "save-profiles-1.2.0.zip",
+        "url": "https://github.com/RQ-Modding/save-profiles/releases/download/v1.2.0/save-profiles-1.2.0.zip",
+        "size": 12079,
+        "sha256": "60939fabd42ab641a9ca78c9b8c0f9602442d4d9fb9fcb5fc9b6443c07600b2f"
+      }
+    },
+    {
+      "id": "skill-again-in-shop",
+      "name": "Skill Again in Shop",
+      "author": "Moru Zerinho6",
+      "description": "Skill Again is always for sale in Frostbuy.",
+      "tags": [
+        "shops",
+        "skills"
+      ],
+      "save": "none",
+      "version": "1.0.1",
+      "loader": "1.15.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/skill-again-in-shop",
+      "tag": "v1.0.1",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "skill-again-in-shop-1.0.1.zip",
+        "url": "https://github.com/RQ-Modding/skill-again-in-shop/releases/download/v1.0.1/skill-again-in-shop-1.0.1.zip",
+        "size": 3796,
+        "sha256": "85580db80e579f7a18b1394d0afdaab957082c34c65e80c2525fbf9270e9ed85"
+      }
+    },
+    {
+      "id": "skill-removal-payback",
+      "name": "Skill Removal Payback",
+      "author": "Moru Zerinho6",
+      "description": "ERASE in a character's skill window gives back the skill points the skill cost, so trying out a build no longer wastes points.",
+      "tags": [
+        "skills"
+      ],
+      "save": "none",
+      "version": "1.3.0",
+      "loader": "2.52.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/skill-removal-payback",
+      "tag": "v1.3.0",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "skill-removal-payback-1.3.0.zip",
+        "url": "https://github.com/RQ-Modding/skill-removal-payback/releases/download/v1.3.0/skill-removal-payback-1.3.0.zip",
+        "size": 9207,
+        "sha256": "f3faa7c03c7a6c69890bda8337a512775decbf41b144e80d42e96f509e516b88"
+      }
+    },
+    {
+      "id": "skip-network-popup",
+      "name": "Skip Network Popup",
+      "author": "Moru Zerinho6",
+      "description": "Stops the \"data transfer failed\" popups that block the game under RQ MOD.",
+      "tags": [
+        "fixes"
+      ],
+      "save": "none",
+      "version": "1.0.1",
+      "loader": "1.0.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/skip-network-popup",
+      "tag": "v1.0.1",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "skip-network-popup-1.0.1.zip",
+        "url": "https://github.com/RQ-Modding/skip-network-popup/releases/download/v1.0.1/skip-network-popup-1.0.1.zip",
+        "size": 3901,
+        "sha256": "3dbe3ad44d839d09fa3ec2ce9b00113dc88632157913bc188a1de66af7ee5fbc"
+      }
+    },
+    {
+      "id": "space-standby",
+      "name": "Space Standby",
+      "author": "Moru Zerinho6",
+      "description": "In a fight, Space uses Standby for the character who is choosing a skill.",
+      "tags": [
+        "battle",
+        "interface"
+      ],
+      "save": "none",
+      "version": "1.0.1",
+      "loader": "1.15.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/space-standby",
+      "tag": "v1.0.1",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "space-standby-1.0.1.zip",
+        "url": "https://github.com/RQ-Modding/space-standby/releases/download/v1.0.1/space-standby-1.0.1.zip",
+        "size": 4040,
+        "sha256": "90adb31d394970933f806eea0a77c82c9ae7f29e574a88b7dcee5d906d7aa918"
+      }
+    },
+    {
+      "id": "spellblade-knowledge",
+      "name": "Spellblade Knowledge",
+      "author": "Moru Zerinho6",
+      "description": "A knowledge skill for the magic swordswomen: Elenoa Ran, Wichita Skate, Rizna Lanfbit and Kisara Copley add magic to their weapon attacks.",
+      "tags": [
+        "characters",
+        "skills"
+      ],
+      "save": "stays",
+      "version": "1.2.3",
+      "loader": "1.16.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/spellblade-knowledge",
+      "tag": "v1.2.3",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "spellblade-knowledge-1.2.3.zip",
+        "url": "https://github.com/RQ-Modding/spellblade-knowledge/releases/download/v1.2.3/spellblade-knowledge-1.2.3.zip",
+        "size": 8283,
+        "sha256": "70ba51b027b4330ab781308dd078b9ff65dcada9d8b9c35c4cc214171998eb70"
+      }
+    },
+    {
+      "id": "states-at-once",
+      "name": "States at Once",
+      "author": "Moru Zerinho6",
+      "description": "In a fight, a character can be poisoned and stunned at once, and have both ▲ and ▼ of one stat.",
+      "tags": [
+        "battle"
+      ],
+      "save": "none",
+      "version": "1.0.0",
+      "loader": "0.31.0",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/states-at-once",
+      "tag": "v1.0.0",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "states-at-once-1.0.0.zip",
+        "url": "https://github.com/RQ-Modding/states-at-once/releases/download/v1.0.0/states-at-once-1.0.0.zip",
+        "size": 3681,
+        "sha256": "6603714e23aa88ea5b3586f33c1ed8a4631158e117da8933ba9027774366b4a1"
+      }
+    },
+    {
+      "id": "world3-no-cap",
+      "name": "World 3 No Level Cap",
+      "author": "Moru Zerinho6",
+      "description": "In World 3, no recruited character has a level cap, as Rance has none.",
+      "tags": [
+        "characters"
+      ],
+      "save": "none",
+      "version": "1.0.0",
+      "loader": "2.56.1",
+      "dependencies": [],
+      "loadAfter": [],
+      "loadBefore": [],
+      "conflicts": [],
+      "license": "MIT",
+      "repo": "https://github.com/RQ-Modding/world3-no-cap",
+      "tag": "v1.0.0",
+      "published": "2026-11-18",
+      "zip": {
+        "name": "world3-no-cap-1.0.0.zip",
+        "url": "https://github.com/RQ-Modding/world3-no-cap/releases/download/v1.0.0/world3-no-cap-1.0.0.zip",
+        "size": 6159,
+        "sha256": "1d2aaaed01f0fe15b275b6544990e648572e879378184c52d65c4fff7a3915dd"
+      }
+    }
+  ]
+}

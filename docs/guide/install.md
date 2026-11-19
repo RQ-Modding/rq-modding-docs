@@ -6,7 +6,8 @@ are, so you can still start the game without mods.
 ## Install RQ MOD
 
 1. Install Rance Quest Magnum.
-2. Download the latest `RQ-MOD-*.zip` from the [Releases page](https://github.com/RQ-Modding/RQ-Mod/releases).
+2. Download the latest `RQ-MOD-*.zip` from the [Download](../download.md) page (older versions are on
+   the [Releases page](https://github.com/RQ-Modding/RQ-Mod/releases)).
 3. Extract it into the game folder, so it looks like this:
 
    ```text
@@ -43,8 +44,8 @@ first).
 
 Mods load when the game starts, so restart the game after you add or remove one.
 
-Mods are shared by their authors. Some can be found in the [RQ-Modding organization's
-repositories](https://github.com/RQ-Modding) on GitHub until the RQ MOD site lists the checked mods.
+The [Mods](../mods.md) page lists the mods we checked, each with its download and whether it leaves
+anything in your save. Other mods are shared by their authors.
 
 ## Saves
 

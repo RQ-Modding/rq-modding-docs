@@ -19,6 +19,6 @@ needed.
 CC0: https://creativecommons.org/publicdomain/zero/1.0/
 Legal code: https://creativecommons.org/publicdomain/zero/1.0/legalcode
 
-The site's build scripts (scripts/, docs/.vitepress/) and the JSON schema
-(docs/public/schemas/mod.schema.json) are released under the MIT License, the same as the
-RQ Modding mods. The RQ MOD engine itself is GPL-2.0 and is not covered by this file.
+The site's build scripts (scripts/, docs/.vitepress/), the JSON schemas (docs/public/schemas/)
+and the list of listed mods (catalog/) are released under the MIT License, the same as the
+RQ Modding mods. In docs/public/mods.json, each mod's name and description are its author's. The RQ MOD engine itself is GPL-2.0 and is not covered by this file.

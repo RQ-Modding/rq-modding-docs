@@ -954,6 +954,411 @@ html.dark .rq-cfg {
   color: #f2f5f5;
 }
 
+/* ---------- Download and Mods pages ---------- */
+
+/* A page that sets pageClass: rq-wide gets the full width (the Mods page's grid). */
+.rq-wide .VPDoc:not(.has-sidebar) .container,
+.rq-wide .VPDoc:not(.has-sidebar) .content,
+.rq-wide .VPDoc .content-container {
+  max-width: 1152px;
+}
+
+/* Buttons placed in a page (VPButton, .rq-btn) are not links to underline. */
+.vp-doc .VPButton,
+.vp-doc a.rq-btn {
+  text-decoration: none;
+}
+
+/* The release box */
+.rq-release {
+  margin: 24px 0;
+  padding: 18px 20px;
+  display: grid;
+  gap: 14px;
+}
+
+.rq-release__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 16px;
+}
+
+.vp-doc .rq-release p {
+  margin: 0;
+}
+
+.vp-doc .rq-release__name {
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.rq-release__name .VPBadge {
+  vertical-align: middle;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.vp-doc .rq-release__date,
+.vp-doc .rq-release__file {
+  font-size: 14px;
+  color: var(--vp-c-text-2);
+}
+
+.rq-release__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.vp-doc .rq-release__file {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.vp-doc .rq-release__sha code {
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+html:not(.dark) .rq-release {
+  border: 3px solid transparent;
+  border-radius: 6px;
+  background: var(--rq-grain-soft) padding-box, linear-gradient(180deg, #fbf6e4, #efe5c6) padding-box,
+    linear-gradient(180deg, #8fbf72, #3d7a3c 45%, #1f4a24) border-box;
+  background-size: 160px, auto, auto;
+  box-shadow: 0 0 0 1px #16341a, 0 3px 0 rgba(60, 50, 20, 0.25);
+}
+
+html:not(.dark) .rq-release__name {
+  font-family: var(--rq-font-serif);
+  color: #23401f;
+}
+
+html.dark .rq-release {
+  font-family: var(--rq-font-ui);
+  background-image: var(--rq-grain), linear-gradient(180deg, #1c2c30, #172629);
+  background-size: 160px, auto;
+  border: 2px solid #a8bcbc;
+  box-shadow: 0 0 0 1px #0d1a1c, inset 0 0 0 1px #0d1a1c;
+}
+
+/* The Mods page: search, sort and tags */
+.rq-mods {
+  margin-top: 24px;
+}
+
+.rq-mods__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+}
+
+.rq-mods__search {
+  flex: 1 1 280px;
+}
+
+.rq-mods__search input,
+.rq-mods__sort select {
+  width: 100%;
+  padding: 7px 12px;
+  font-size: 15px;
+  color: var(--vp-c-text-1);
+  background: var(--vp-c-bg-elv);
+  border: 1px solid var(--vp-c-border);
+  border-radius: 4px;
+}
+
+.rq-mods__sort {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--vp-c-text-2);
+}
+
+.rq-mods__sort select {
+  width: auto;
+  appearance: auto;
+}
+
+.rq-mods__search input:focus-visible,
+.rq-mods__sort select:focus-visible,
+.rq-tag:focus-visible,
+.rq-chip:focus-visible,
+.rq-btn:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 2px;
+}
+
+.rq-mods__tags {
+  margin: 14px 0 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.rq-tag,
+.rq-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 11px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 22px;
+  border: 1px solid var(--vp-c-border);
+  border-radius: 999px;
+  color: var(--vp-c-text-1);
+  background: var(--vp-c-bg-elv);
+  cursor: pointer;
+}
+
+.rq-tag:hover,
+.rq-chip:hover {
+  border-color: var(--vp-c-brand-1);
+}
+
+.rq-tag__count {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--vp-c-text-3);
+}
+
+.rq-tag[aria-pressed='true'] {
+  color: #fbf6e2;
+  border-color: #16341a;
+  background: linear-gradient(180deg, #5f9a52, #2f6a30);
+}
+
+.rq-tag[aria-pressed='true'] .rq-tag__count {
+  color: #e4efd6;
+}
+
+html.dark .rq-mods__search input,
+html.dark .rq-mods__sort select,
+html.dark .rq-tag,
+html.dark .rq-chip {
+  border-radius: 0;
+  background: #172629;
+  border-color: #a8bcbc;
+  font-family: var(--rq-font-ui);
+}
+
+html.dark .rq-tag[aria-pressed='true'] {
+  color: #0b2a33;
+  border-color: #14343a;
+  background: linear-gradient(180deg, #e2fffd 0%, #8ae6ee 45%, #45b3c6 100%);
+  box-shadow: 0 0 8px rgba(140, 240, 255, 0.4);
+}
+
+html.dark .rq-tag[aria-pressed='true'] .rq-tag__count {
+  color: #14434d;
+}
+
+.vp-doc .rq-mods__count,
+.vp-doc .rq-mods__none {
+  margin: 10px 0 14px;
+  font-size: 14px;
+  color: var(--vp-c-text-2);
+}
+
+/* The Mods page: the cards */
+.rq-mods__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: 18px;
+}
+
+/* Cards of a row share its height, with the buttons at the bottom. */
+.rq-mod {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  scroll-margin-top: calc(var(--vp-nav-height) + 16px);
+}
+
+.rq-mod__title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 14px;
+}
+
+.vp-doc .rq-mod__name {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 18px;
+  line-height: 1.3;
+  letter-spacing: 0;
+}
+
+.rq-mod__version {
+  flex: none;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.rq-mod__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 14px 14px;
+}
+
+.vp-doc .rq-mod__desc {
+  margin: 0 0 10px;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.vp-doc .rq-mod__tags {
+  margin: 0 0 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.rq-chip {
+  padding: 0 9px;
+  font-size: 12px;
+  line-height: 20px;
+}
+
+.vp-doc .rq-mod__facts {
+  margin: 0 0 12px;
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 3px 12px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.rq-mod__facts > div {
+  display: contents;
+}
+
+.rq-mod__facts dt {
+  font-weight: 700;
+  color: var(--vp-c-text-2);
+}
+
+.vp-doc .rq-mod__facts dd {
+  margin: 0;
+}
+
+.vp-doc .rq-mod__actions {
+  margin: auto 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.rq-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 22px;
+  white-space: nowrap;
+}
+
+.rq-btn__size {
+  font-size: 12px;
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+.rq-btn:hover {
+  filter: brightness(1.08);
+}
+
+html:not(.dark) .rq-mod {
+  border: 3px solid transparent;
+  border-radius: 6px;
+  background: var(--rq-grain-soft) padding-box, linear-gradient(180deg, #fbf6e4, #efe5c6) padding-box,
+    linear-gradient(180deg, #8fbf72, #3d7a3c 45%, #1f4a24) border-box;
+  background-size: 160px, auto, auto;
+  box-shadow: 0 0 0 1px #16341a, 0 3px 0 rgba(60, 50, 20, 0.25);
+}
+
+html:not(.dark) .rq-mod__title {
+  color: #f8f2dc;
+  text-shadow: 0 1px 0 #13300f;
+  background-image: var(--rq-grain), linear-gradient(180deg, #5f9a52 0%, #3f7a3a 50%, #2b5e2c 100%);
+  background-size: 160px, auto;
+  box-shadow: inset 0 1px 0 #b5df95, inset 0 -1px 0 #183a1a;
+}
+
+html:not(.dark) .vp-doc .rq-mod__name {
+  font-family: var(--rq-font-serif-sc);
+  color: #f8f2dc;
+}
+
+html:not(.dark) .rq-mod__body {
+  color: #3f3826;
+}
+
+html:not(.dark) .vp-doc a.rq-btn {
+  color: #2a3a1c;
+  border: 1px solid #6f8f58;
+  border-radius: 4px;
+  background-image: linear-gradient(180deg, #fbf6e4, #e6dab4);
+  box-shadow: inset 0 1px 0 #fff, 0 2px 0 #9a8c5c;
+}
+
+html:not(.dark) .vp-doc a.rq-btn--brand {
+  color: #fbf6e2;
+  text-shadow: 0 1px 0 #13300f;
+  border-color: #16341a;
+  background-image: linear-gradient(180deg, #5f9a52, #2f6a30);
+  box-shadow: inset 0 1px 0 #b5df95, 0 2px 0 #16341a;
+}
+
+html.dark .rq-mod {
+  font-family: var(--rq-font-ui);
+  background-image: var(--rq-grain), linear-gradient(180deg, #1c2c30, #172629);
+  background-size: 160px, auto;
+  border: 2px solid #a8bcbc;
+  box-shadow: 0 0 0 1px #0d1a1c, inset 0 0 0 1px #0d1a1c;
+}
+
+html.dark .rq-mod__title {
+  background-image: var(--rq-grain), linear-gradient(180deg, #3a3a3a, #262626);
+  background-size: 160px, auto;
+  border-bottom: 2px solid #0d1a1c;
+}
+
+html.dark .vp-doc .rq-mod__name,
+html.dark .rq-mod__version {
+  color: #ffffff;
+  font-weight: 800;
+}
+
+html.dark .vp-doc a.rq-btn {
+  color: #ffffff;
+  border: 2px solid #262626;
+  text-shadow: 0 1px 0 #1d1d1d;
+  background-image: linear-gradient(180deg, #a3a3a3 0%, #7c7c7c 45%, #5c5c5c 100%);
+  box-shadow: inset 0 1px 0 #e2e2e2;
+}
+
+html.dark .vp-doc a.rq-btn--brand {
+  color: #0b2a33;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+  border-color: #14343a;
+  background-image: linear-gradient(180deg, #e2fffd 0%, #8ae6ee 45%, #45b3c6 100%);
+  box-shadow: inset 0 0 0 1px #dffcff;
+}
+
 /* ---------- Footer ---------- */
 
 html:not(.dark) .VPFooter {

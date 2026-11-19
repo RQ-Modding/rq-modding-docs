@@ -15,6 +15,8 @@ the [guides](docs/guide/) or the [API reference](docs/reference/index.md).
 | `docs/reference/` | Generated from the engine's `dist/lua/rq.lua` (LuaLS annotations) by its `tools/apidoc/rqdoc.py` | In the engine, then run `npm run sync` |
 | `docs/changelog.md` | A copy of the engine's `CHANGELOG.md` | In the engine, then run `npm run sync` |
 | `docs/public/schemas/mod.schema.json` | Written here, from the engine's manifest reader | Here, when `mod.json` gains a field |
+| `catalog/listed.json` | The mods the Mods page lists, each at its checked version ([catalog/README.md](catalog/README.md)) | Here |
+| `docs/public/mods.json` | Written by `scripts/catalog.py` from `listed.json` and GitHub; the Download and Mods pages and RQ Manager read it | Run `npm run catalog` |
 
 Never edit `docs/reference/` or `docs/changelog.md` by hand: the next sync overwrites them, and CI
 fails when they differ from the engine.
@@ -26,20 +28,23 @@ Needs Node.js 20 or newer and Python 3.
 ```sh
 npm install
 npm run sync      # regenerate the reference from ../RQ_modding_xsystem4 (or: python scripts/sync.py --engine PATH)
+npm run catalog   # rewrite docs/public/mods.json from catalog/listed.json and GitHub (needs a GitHub token)
 npm run dev       # live preview at http://localhost:5173
 npm run build     # the static site, in docs/.vitepress/dist
 ```
 
 `python scripts/sync.py --check` exits 1 when the committed reference is older than the engine.
+`python scripts/catalog.py --check` exits 1 when `mods.json` does not match `catalog/listed.json` or
+its schema.
 
 ## Deploy
 
-`.github/workflows/deploy.yml` checks the reference against the engine's `main`, builds the site and
-publishes it to GitHub Pages on every push to `main`.
+`.github/workflows/deploy.yml` checks the reference against the engine's `main` and the catalog
+against its list, builds the site and publishes it to GitHub Pages on every push to `main`.
 
 ## License
 
 The documentation text is [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/): share
 and adapt it with credit, under the same license. The code examples are public domain
 ([CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/)): copy them into a mod under any
-license. The build scripts and the `mod.json` schema are MIT. See [LICENSE](LICENSE).
+license. The build scripts and the schemas are MIT. See [LICENSE](LICENSE).

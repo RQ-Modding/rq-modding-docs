@@ -52,3 +52,23 @@ git push origin v1.0.0
 The workflow checks the tag against `mod.json`, zips the folder as above (`<id>-1.0.0.zip`, holding
 `<id>/mod.json`, `<id>/init.lua`, ...) and publishes it as a GitHub release, with that version's
 section of the changelog as its notes.
+
+## Getting your mod listed
+
+The [Mods](../mods.md) page lists the mods we checked, each at the version we checked. To ask for
+yours, open a [List a mod](https://github.com/RQ-Modding/rq-modding-docs/issues/new?template=list-a-mod.yml)
+issue in the docs' repository, with:
+
+- a public repository with a license that lets players share it;
+- a GitHub release whose one zip holds the mod's folder (`<id>/mod.json`, `<id>/init.lua`, ...), as
+  the template's release workflow makes it;
+- a `loader` in `mod.json` no newer than RQ MOD's latest release, and every dependency already on
+  the Mods page;
+- a one-line description of the repository, which the page shows;
+- a README that says what the mod changes and, under **Saves**, what stays in a save after it is
+  removed.
+
+Before a mod is listed, we read its code (a mod can change the save and the game's code), start the
+game with it, and check that its zip is the one GitHub published. The page shows that release. Each
+newer release gets the same check before the page moves to it, so open the issue again (or comment
+on it) when you release a version you want listed.

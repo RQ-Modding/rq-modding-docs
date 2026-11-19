@@ -1,0 +1,71 @@
+name: List a mod
+description: Ask for a mod, or a new version of one, on the site's Mods page.
+title: "List a mod: "
+labels: ["list a mod"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The Mods page lists the mods we checked, each at the version we checked. What we check is in
+        the guide "Sharing a mod", under "Getting your mod listed":
+        https://rq-modding.github.io/rq-modding-docs/guide/publishing#getting-your-mod-listed
+  - type: input
+    id: repo
+    attributes:
+      label: Repository
+      description: The mod's public GitHub repository.
+      placeholder: https://github.com/you/your-mod
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: The version to list. Its GitHub release must have one zip holding the mod's folder.
+      placeholder: 1.0.0
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What it does
+      description: A few lines for us. The page shows the repository's own description.
+    validations:
+      required: true
+  - type: checkboxes
+    id: tags
+    attributes:
+      label: Tags
+      description: Where players would look for it. Pick one or more.
+      options:
+        - label: Characters
+        - label: Skills
+        - label: Items
+        - label: Battle
+        - label: Dungeons
+        - label: Quests
+        - label: Shops
+        - label: Interface
+        - label: Modes and speed
+        - label: Saves
+        - label: Fixes
+  - type: dropdown
+    id: save
+    attributes:
+      label: The save after the mod is removed
+      options:
+        - Nothing of the mod stays; the game's save is as the game expects it
+        - Things stay in the save (items, skills, values), or removing it changes the save
+    validations:
+      required: true
+  - type: checkboxes
+    id: ready
+    attributes:
+      label: Before you ask
+      options:
+        - label: The repository has a license that lets players share the mod.
+          required: true
+        - label: The README says what the mod changes, and under "Saves" what stays in a save.
+          required: true
+        - label: I played with the mod in the game at this version.
+          required: true

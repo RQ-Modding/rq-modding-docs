@@ -29,6 +29,9 @@ jobs:
           python-version: '3.12'
       - name: Reference matches the engine
         run: python -I -X utf8 scripts/sync.py --engine engine --check
+      # The Download and Mods pages come from mods.json; fail when it does not match its list.
+      - name: Catalog matches its list
+        run: python -I -X utf8 scripts/catalog.py --check
 
       - uses: actions/setup-node@v4
         with:

@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "sync": "python -I -X utf8 scripts/sync.py",
+    "catalog": "python -I -X utf8 scripts/catalog.py",
     "dev": "vitepress dev docs",
     "build": "vitepress build docs",
     "preview": "vitepress preview docs"

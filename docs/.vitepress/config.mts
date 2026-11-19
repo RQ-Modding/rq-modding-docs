@@ -38,7 +38,11 @@ function pages(dir: string, prefix: string): DefaultTheme.SidebarItem[] {
 const guide: DefaultTheme.SidebarItem[] = [
   {
     text: 'Players',
-    items: [{ text: 'Install', link: '/guide/install' }],
+    items: [
+      { text: 'Download', link: '/download' },
+      { text: 'Mods', link: '/mods' },
+      { text: 'Install', link: '/guide/install' },
+    ],
   },
   {
     text: 'Making mods',
@@ -127,6 +131,8 @@ export default defineConfig({
     // The theme draws the title itself (RqBrand), styled per theme.
     siteTitle: false,
     nav: [
+      { text: 'Download', link: '/download' },
+      { text: 'Mods', link: '/mods' },
       { text: 'Guide', link: '/guide/first-mod', activeMatch: '/guide/' },
       { text: 'API reference', link: '/reference/', activeMatch: '/reference/' },
       { text: 'Game data', link: '/data/', activeMatch: '/data/' },
