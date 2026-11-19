@@ -1,0 +1,467 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rq-modding.github.io/rq-modding-docs/schemas/scene.schema.json",
+  "title": "RQ MOD scene file",
+  "description": "A scene of a Rance Quest Magnum mod as data: its lines, pictures, sounds, choices and branches. RQ MOD plays it with rq.scene.file. Each step is an object whose first key names it, such as { \"say\": 2000, \"text\": \"Hello.\" }.",
+  "type": "object",
+  "required": ["format", "steps"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "format": {
+      "const": 1,
+      "description": "The file's format. RQ MOD plays every format it knows and refuses a newer one."
+    },
+    "once": {
+      "$ref": "#/$defs/flag",
+      "description": "An event flag: the scene plays once per save, and the flag is set before it plays."
+    },
+    "cast": {
+      "type": "object",
+      "description": "Names for faces, used by say and think in place of a number: each a face and its name plate. A character's other looks are more names.",
+      "propertyNames": { "$ref": "#/$defs/name" },
+      "additionalProperties": { "$ref": "#/$defs/castEntry" }
+    },
+    "steps": { "$ref": "#/$defs/steps", "description": "The scene, played in order." }
+  },
+  "$defs": {
+    "name": {
+      "type": "string",
+      "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+      "description": "A name: letters, digits and _, not starting with a digit."
+    },
+    "flag": {
+      "type": "string",
+      "minLength": 1,
+      "description": "An event flag's name, such as \"mymod:met_mira\". The game's own scene names work too."
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^(?![/\\\\])(?!.*\\.\\.)[^:]*\\.(png|PNG|jpg|JPG|jpeg|JPEG|webp|WEBP|gif|GIF)$",
+      "description": "A picture in the mod's folder, such as \"faces/mira.png\". A GIF or an animated WebP moves."
+    },
+    "picture": {
+      "anyOf": [
+        { "type": "integer", "minimum": 0, "description": "A CG number of the game, or one from rq.image.add." },
+        { "$ref": "#/$defs/path" }
+      ]
+    },
+    "face": {
+      "anyOf": [
+        { "type": "integer", "minimum": 0, "description": "A face CG number (the game's start at 2000)." },
+        { "$ref": "#/$defs/name", "description": "A name of the file's cast." },
+        { "$ref": "#/$defs/path" }
+      ]
+    },
+    "castEntry": {
+      "type": "object",
+      "required": ["face"],
+      "additionalProperties": false,
+      "properties": {
+        "face": {
+          "anyOf": [
+            { "type": "integer", "minimum": 0 },
+            { "$ref": "#/$defs/path" }
+          ],
+          "description": "The face: a CG number or a picture in the mod's folder."
+        },
+        "name": { "type": "string", "description": "The name plate. Default: the game's name for that face; none for a picture of the mod." }
+      }
+    },
+    "text": {
+      "anyOf": [
+        { "type": "string" },
+        { "type": "array", "minItems": 1, "items": { "type": "string" } }
+      ],
+      "description": "One page, or a list of pages, each waiting for a click. \\n breaks a line. {name} shows the variable name; {{ and }} are braces."
+    },
+    "effect": { "type": "integer", "minimum": 0, "description": "The game's transition number. Default 1." },
+    "time": { "type": "integer", "minimum": 0, "description": "The transition's time, in milliseconds." },
+    "on": { "const": true, "description": "The step has no value of its own: true." },
+    "value": {
+      "type": ["string", "number", "boolean", "null"],
+      "description": "A plain value."
+    },
+    "args": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/value" },
+      "description": "The values passed, in order."
+    },
+    "quest": {
+      "anyOf": [
+        { "type": "integer", "minimum": 1 },
+        { "type": "string", "minLength": 1 }
+      ],
+      "description": "A quest: its number, or a mod's quest id such as \"mymod:bathhouse\"."
+    },
+    "chara": {
+      "anyOf": [
+        { "type": "integer", "minimum": 1 },
+        { "type": "string", "minLength": 1 }
+      ],
+      "description": "A character: its number, its rq.ids name such as \"KAORU_QUINCY\", or a mod's character id."
+    },
+    "item": {
+      "anyOf": [
+        { "type": "integer", "minimum": 1 },
+        { "type": "string", "minLength": 1 }
+      ],
+      "description": "An item: its number, its rq.ids name, or a mod's item id such as \"mymod:lens\"."
+    },
+    "steps": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/step" }
+    },
+    "line": {
+      "type": "object",
+      "properties": {
+        "text": { "$ref": "#/$defs/text" },
+        "name": { "type": "string", "description": "The name plate. Default: the cast's, or the game's for that face." },
+        "hide_face": { "type": "boolean", "description": "true shows the name plate with no face. Default false." },
+        "page": { "type": "boolean", "description": "The game's E frame. Default false." },
+        "wait": { "type": "boolean", "description": "false shows the last page without waiting, as for a question above a choice. Default true." }
+      }
+    },
+    "condition": {
+      "description": "true or false: a flag, a variable, the mod's function, or one of the game's checks.",
+      "oneOf": [
+        {
+          "type": "object", "required": ["seen"], "additionalProperties": false,
+          "properties": { "seen": { "$ref": "#/$defs/flag", "description": "The flag is set." } }
+        },
+        {
+          "type": "object", "required": ["var"], "additionalProperties": false,
+          "minProperties": 2,
+          "properties": {
+            "var": { "$ref": "#/$defs/name" },
+            "is": { "$ref": "#/$defs/value", "description": "The variable is this value." },
+            "at_least": { "type": "number" },
+            "at_most": { "type": "number" }
+          }
+        },
+        {
+          "type": "object", "required": ["call"], "additionalProperties": false,
+          "properties": {
+            "call": { "$ref": "#/$defs/name", "description": "The mod's function (rq.scene.functions); true when it returns true." },
+            "args": { "$ref": "#/$defs/args" }
+          }
+        },
+        {
+          "type": "object", "required": ["not"], "additionalProperties": false,
+          "properties": { "not": { "$ref": "#/$defs/condition" } }
+        },
+        {
+          "type": "object", "required": ["all"], "additionalProperties": false,
+          "properties": { "all": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/condition" } } }
+        },
+        {
+          "type": "object", "required": ["any"], "additionalProperties": false,
+          "properties": { "any": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/condition" } } }
+        },
+        {
+          "type": "object", "required": ["cleared"], "additionalProperties": false,
+          "properties": { "cleared": { "$ref": "#/$defs/quest", "description": "The quest was cleared at least once." } }
+        },
+        {
+          "type": "object", "required": ["recruited"], "additionalProperties": false,
+          "properties": { "recruited": { "$ref": "#/$defs/chara", "description": "The character is recruited." } }
+        },
+        {
+          "type": "object", "required": ["in_party"], "additionalProperties": false,
+          "properties": { "in_party": { "$ref": "#/$defs/chara", "description": "The character is in the party." } }
+        },
+        {
+          "type": "object", "required": ["has_item"], "additionalProperties": false,
+          "properties": { "has_item": { "$ref": "#/$defs/item", "description": "The player owns at least one." } }
+        },
+        {
+          "type": "object", "required": ["gold"], "additionalProperties": false,
+          "properties": { "gold": { "type": "integer", "minimum": 0, "description": "The player has at least this much gold." } }
+        },
+        {
+          "type": "object", "required": ["chance"], "additionalProperties": false,
+          "properties": { "chance": { "type": "integer", "minimum": 0, "maximum": 100, "description": "True this percent of the time." } }
+        }
+      ]
+    },
+    "row": {
+      "anyOf": [
+        { "const": "-", "description": "A separator." },
+        { "type": "string", "description": "A row that only sets the choice's into: its place in the list." },
+        {
+          "type": "object",
+          "required": ["text"],
+          "additionalProperties": false,
+          "properties": {
+            "text": { "type": "string" },
+            "id": { "type": "integer", "description": "What into gets for this row. Default: its place in the list." },
+            "comment": { "type": "string", "description": "The game's comment box for the row." },
+            "r": { "type": "integer", "minimum": 0, "maximum": 255 },
+            "g": { "type": "integer", "minimum": 0, "maximum": 255 },
+            "b": { "type": "integer", "minimum": 0, "maximum": 255 },
+            "sound": { "type": "integer", "minimum": 0 },
+            "if": { "$ref": "#/$defs/condition", "description": "The row shows only when this holds." },
+            "steps": { "$ref": "#/$defs/steps", "description": "Played when the row is picked; then the scene goes on after the choice." },
+            "goto": { "$ref": "#/$defs/name", "description": "A label to go to when the row is picked." },
+            "end": { "$ref": "#/$defs/value", "description": "Ends the scene with this value when the row is picked." }
+          },
+          "not": {
+            "anyOf": [
+              { "required": ["steps", "goto"] },
+              { "required": ["steps", "end"] },
+              { "required": ["goto", "end"] }
+            ]
+          }
+        }
+      ]
+    },
+    "step": {
+      "description": "One step: an object whose first key names it.",
+      "oneOf": [
+        { "$ref": "#/$defs/step_say" },
+        { "$ref": "#/$defs/step_think" },
+        { "$ref": "#/$defs/step_narrate" },
+        { "$ref": "#/$defs/step_clear_text" },
+        { "$ref": "#/$defs/step_speed" },
+        { "$ref": "#/$defs/step_picture" },
+        { "$ref": "#/$defs/step_background_in" },
+        { "$ref": "#/$defs/step_background_out" },
+        { "$ref": "#/$defs/step_set" },
+        { "$ref": "#/$defs/step_screen" },
+        { "$ref": "#/$defs/step_flash" },
+        { "$ref": "#/$defs/step_shake" },
+        { "$ref": "#/$defs/step_music" },
+        { "$ref": "#/$defs/step_sound" },
+        { "$ref": "#/$defs/step_jingle" },
+        { "$ref": "#/$defs/step_bare" },
+        { "$ref": "#/$defs/step_choice" },
+        { "$ref": "#/$defs/step_if" },
+        { "$ref": "#/$defs/step_flag" },
+        { "$ref": "#/$defs/step_call" },
+        { "$ref": "#/$defs/step_label" },
+        { "$ref": "#/$defs/step_goto" },
+        { "$ref": "#/$defs/step_end" },
+        { "$ref": "#/$defs/step_cmd" },
+        { "$ref": "#/$defs/step_note" }
+      ]
+    },
+    "step_say": {
+      "description": "A character's line (rq.scene.say).",
+      "type": "object", "required": ["say", "text"], "additionalProperties": false,
+      "properties": {
+        "say": { "$ref": "#/$defs/face" },
+        "text": true, "name": true, "hide_face": true, "page": true, "wait": true
+      },
+      "allOf": [{ "$ref": "#/$defs/line" }]
+    },
+    "step_think": {
+      "description": "A character's thought (rq.scene.think).",
+      "type": "object", "required": ["think", "text"], "additionalProperties": false,
+      "properties": {
+        "think": { "$ref": "#/$defs/face" },
+        "text": true, "name": true, "hide_face": true, "page": true, "wait": true
+      },
+      "allOf": [{ "$ref": "#/$defs/line" }]
+    },
+    "step_narrate": {
+      "description": "Narration (rq.scene.narrate).",
+      "type": "object", "required": ["narrate"], "additionalProperties": false,
+      "properties": {
+        "narrate": { "$ref": "#/$defs/text" },
+        "paper": { "type": "boolean", "description": "The paper frame. Default false." },
+        "page": { "type": "boolean", "description": "The game's E frame. Default false." },
+        "wait": { "type": "boolean", "description": "false shows the last page without waiting. Default true." }
+      }
+    },
+    "step_clear_text": {
+      "description": "Clears the message frame.",
+      "type": "object", "required": ["clear_text"], "additionalProperties": false,
+      "properties": { "clear_text": { "$ref": "#/$defs/on" } }
+    },
+    "step_speed": {
+      "description": "How fast text appears: ms per character, 0 at once, -1 the player's setting.",
+      "type": "object", "required": ["speed"], "additionalProperties": false,
+      "properties": { "speed": { "type": "integer", "minimum": -1 } }
+    },
+    "step_picture": {
+      "description": "A picture on one of the scene's layers: background, wallpaper, mask_wallpaper, portrait (a standing picture), mini (a small event picture) or cg (an event CG over the screen).",
+      "type": "object", "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "background": { "$ref": "#/$defs/picture" },
+        "wallpaper": { "$ref": "#/$defs/picture" },
+        "mask_wallpaper": { "$ref": "#/$defs/picture" },
+        "portrait": { "$ref": "#/$defs/picture" },
+        "mini": { "$ref": "#/$defs/picture" },
+        "cg": { "$ref": "#/$defs/picture" },
+        "effect": { "$ref": "#/$defs/effect" },
+        "time": { "$ref": "#/$defs/time" }
+      },
+      "oneOf": [
+        { "required": ["background"] },
+        { "required": ["wallpaper"] },
+        { "required": ["mask_wallpaper"] },
+        { "required": ["portrait"] },
+        { "required": ["mini"] },
+        { "required": ["cg"] }
+      ]
+    },
+    "step_background_in": {
+      "description": "Brings a background in.",
+      "type": "object", "required": ["background_in"], "additionalProperties": false,
+      "properties": { "background_in": { "$ref": "#/$defs/picture" }, "time": { "$ref": "#/$defs/time" } }
+    },
+    "step_background_out": {
+      "description": "Takes the background out.",
+      "type": "object", "required": ["background_out"], "additionalProperties": false,
+      "properties": { "background_out": { "$ref": "#/$defs/on" }, "time": { "$ref": "#/$defs/time" } }
+    },
+    "step_set": {
+      "description": "Several layers at once; with cg or effect, in one transition. A layer left out is emptied.",
+      "type": "object", "required": ["set"], "additionalProperties": false,
+      "properties": {
+        "set": {
+          "type": "object", "additionalProperties": false, "minProperties": 1,
+          "properties": {
+            "wallpaper": { "$ref": "#/$defs/picture" },
+            "background": { "$ref": "#/$defs/picture" },
+            "portrait": { "$ref": "#/$defs/picture" },
+            "mini": { "$ref": "#/$defs/picture" },
+            "cg": { "$ref": "#/$defs/picture" }
+          }
+        },
+        "effect": { "$ref": "#/$defs/effect" }
+      }
+    },
+    "step_screen": {
+      "description": "The screen to black or white, or the scene's pictures cleared (clear).",
+      "type": "object", "additionalProperties": false, "minProperties": 1,
+      "properties": {
+        "black": { "$ref": "#/$defs/on" },
+        "white": { "$ref": "#/$defs/on" },
+        "clear": { "$ref": "#/$defs/on" },
+        "effect": { "$ref": "#/$defs/effect" },
+        "time": { "$ref": "#/$defs/time" }
+      },
+      "oneOf": [
+        { "required": ["black"] },
+        { "required": ["white"] },
+        { "required": ["clear"], "not": { "anyOf": [{ "required": ["effect"] }, { "required": ["time"] }] } }
+      ]
+    },
+    "step_flash": {
+      "description": "Flashes the screen.",
+      "type": "object", "required": ["flash"], "additionalProperties": false,
+      "properties": { "flash": { "$ref": "#/$defs/on" }, "time": { "$ref": "#/$defs/time" } }
+    },
+    "step_shake": {
+      "description": "Shakes the screen (shake), the face in the frame (shake_face) or the standing picture (shake_portrait).",
+      "type": "object", "additionalProperties": false, "minProperties": 1,
+      "properties": {
+        "shake": { "$ref": "#/$defs/on" },
+        "shake_face": { "$ref": "#/$defs/on" },
+        "shake_portrait": { "$ref": "#/$defs/on" },
+        "mode": { "type": "integer", "minimum": 0, "description": "The game's shake mode. Default 1." }
+      },
+      "oneOf": [
+        { "required": ["shake"] },
+        { "required": ["shake_face"] },
+        { "required": ["shake_portrait"] }
+      ]
+    },
+    "step_music": {
+      "description": "Plays a music track of the game.",
+      "type": "object", "required": ["music"], "additionalProperties": false,
+      "properties": {
+        "music": { "type": "integer", "minimum": 0 },
+        "effect": { "type": "integer", "description": "The fade type; -1 the game's. Default -1." },
+        "time": { "type": "integer", "description": "The fade's time; -1 the game's. Default -1." }
+      }
+    },
+    "step_sound": {
+      "description": "Plays a sound effect of the game.",
+      "type": "object", "required": ["sound"], "additionalProperties": false,
+      "properties": { "sound": { "type": "integer", "minimum": 0 } }
+    },
+    "step_jingle": {
+      "description": "Plays a jingle.",
+      "type": "object", "required": ["jingle"], "additionalProperties": false,
+      "properties": {
+        "jingle": { "type": "integer", "minimum": 0 },
+        "wait": { "type": "boolean", "description": "true waits for its end. Default false." }
+      }
+    },
+    "step_bare": {
+      "description": "wait_click: waits for a click.",
+      "type": "object", "required": ["wait_click"], "additionalProperties": false,
+      "properties": { "wait_click": { "$ref": "#/$defs/on" } }
+    },
+    "step_choice": {
+      "description": "The game's choice menu. Each row may hold its own steps, a goto or an end.",
+      "type": "object", "required": ["choice"], "additionalProperties": false,
+      "properties": {
+        "choice": {
+          "anyOf": [
+            { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/row" } },
+            {
+              "type": "object", "required": ["call"], "additionalProperties": false,
+              "description": "Rows from the mod's function, as rq.scene.choice takes them.",
+              "properties": { "call": { "$ref": "#/$defs/name" }, "args": { "$ref": "#/$defs/args" } }
+            }
+          ]
+        },
+        "into": { "$ref": "#/$defs/name", "description": "A variable that gets the picked row's id." },
+        "x": { "type": "integer", "description": "Where the list goes. Default: the game's." },
+        "y": { "type": "integer", "description": "Where the list goes. Default 360." }
+      }
+    },
+    "step_if": {
+      "description": "Plays then when the condition holds, else otherwise.",
+      "type": "object", "required": ["if", "then"], "additionalProperties": false,
+      "properties": {
+        "if": { "$ref": "#/$defs/condition" },
+        "then": { "$ref": "#/$defs/steps" },
+        "else": { "$ref": "#/$defs/steps" }
+      }
+    },
+    "step_flag": {
+      "description": "Sets an event flag; \"set\": false clears it.",
+      "type": "object", "required": ["flag"], "additionalProperties": false,
+      "properties": { "flag": { "$ref": "#/$defs/flag" }, "set": { "type": "boolean" } }
+    },
+    "step_call": {
+      "description": "Calls the mod's function (rq.scene.functions); into keeps what it returns.",
+      "type": "object", "required": ["call"], "additionalProperties": false,
+      "properties": {
+        "call": { "$ref": "#/$defs/name" },
+        "args": { "$ref": "#/$defs/args" },
+        "into": { "$ref": "#/$defs/name" }
+      }
+    },
+    "step_label": {
+      "description": "A place goto can go to. Labels are the file's, one name each, in any list.",
+      "type": "object", "required": ["label"], "additionalProperties": false,
+      "properties": { "label": { "$ref": "#/$defs/name" } }
+    },
+    "step_goto": {
+      "description": "Goes on from a label.",
+      "type": "object", "required": ["goto"], "additionalProperties": false,
+      "properties": { "goto": { "$ref": "#/$defs/name" } }
+    },
+    "step_end": {
+      "description": "Ends the scene; the play call returns the value (a quest's run: \"clear\", \"fail\", \"abandon\", \"escape\").",
+      "type": "object", "required": ["end"], "additionalProperties": false,
+      "properties": { "end": { "$ref": "#/$defs/value" } }
+    },
+    "step_cmd": {
+      "description": "Any game command by its name, as rq.scene.cmd.",
+      "type": "object", "required": ["cmd"], "additionalProperties": false,
+      "properties": { "cmd": { "type": "string", "minLength": 1 }, "args": { "$ref": "#/$defs/args" } }
+    },
+    "step_note": {
+      "description": "A note for the people who read the file. It does nothing.",
+      "type": "object", "required": ["note"], "additionalProperties": false,
+      "properties": { "note": { "type": "string" } }
+    }
+  }
+}

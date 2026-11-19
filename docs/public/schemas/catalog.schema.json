@@ -27,7 +27,7 @@
         "tag": { "type": "string" },
         "published": { "$ref": "#/$defs/date" },
         "notes": { "type": "string", "format": "uri", "description": "The release's page." },
-        "zip": { "$ref": "#/$defs/file", "description": "Holds rq-manager.exe at its root." }
+        "zip": { "$ref": "#/$defs/file", "description": "Holds RQ Manager/rq-manager.exe." }
       }
     },
     "engine": {
