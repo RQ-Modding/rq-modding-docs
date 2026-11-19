@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://rq-modding.github.io/rq-modding-docs/schemas/catalog.schema.json",
   "title": "RQ MOD mods catalog",
-  "description": "mods.json: RQ MOD's latest release and the checked mods, each at the release that was checked. Written by the docs' scripts/catalog.py; read by the site's Download and Mods pages and by RQ Manager.",
+  "description": "mods.json: RQ MOD's latest release, RQ Manager's, and the checked mods, each at the release that was checked. Written by the docs' scripts/catalog.py; read by the site's Download and Mods pages and by RQ Manager.",
   "type": "object",
   "required": ["format", "generated", "engine", "mods"],
   "additionalProperties": false,
@@ -16,6 +16,19 @@
       "type": "string",
       "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
       "description": "The day the file was written (UTC)."
+    },
+    "manager": {
+      "type": "object",
+      "description": "RQ Manager's latest release on GitHub. Optional: absent before its first release. RQ Manager reads it even from a catalog of a newer format, to update itself.",
+      "required": ["version", "tag", "published", "notes", "zip"],
+      "additionalProperties": false,
+      "properties": {
+        "version": { "$ref": "#/$defs/semver" },
+        "tag": { "type": "string" },
+        "published": { "$ref": "#/$defs/date" },
+        "notes": { "type": "string", "format": "uri", "description": "The release's page." },
+        "zip": { "$ref": "#/$defs/file", "description": "Holds rq-manager.exe at its root." }
+      }
     },
     "engine": {
       "type": "object",

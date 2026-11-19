@@ -32,6 +32,14 @@ export interface CatalogMod {
 export interface Catalog {
   format: number
   generated: string
+  // RQ Manager's latest release; absent before its first one.
+  manager?: {
+    version: string
+    tag: string
+    published: string
+    notes: string
+    zip: CatalogFile
+  }
   engine: {
     version: string
     stage: string

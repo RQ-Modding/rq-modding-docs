@@ -10,6 +10,8 @@ outline: false
 RQ MOD runs Rance Quest Magnum on its own engine, which loads mods. The game's own files stay as
 they are, so you can still start the game without mods.
 
+<RqManager />
+
 <RqDownload />
 
 ## What you need

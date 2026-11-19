@@ -5,13 +5,15 @@
   python -I -X utf8 scripts/catalog.py --check [--listed PATH] [--out PATH]
 
 listed.json names each listed mod's repository and the version that was checked, with its tags and
-its save note. For RQ MOD's latest release and for each mod, the script asks GitHub for the release,
+its save note, and the repositories of RQ MOD and (once it has a release) RQ Manager. For RQ MOD's
+and RQ Manager's latest releases and for each mod, the script asks GitHub for the release,
 the mod.json at its tag and the repository's description and license, downloads every zip and checks
 it, and writes mods.json only when nothing is wrong. Its rules:
 
   - the version in listed.json is the version of mod.json at the tag (v<version> by default);
   - the release has exactly one .zip (or the one listed.json names as "asset"), its SHA-256 is the
-    one GitHub gives, and it holds <id>/mod.json and <id>/init.lua with nothing outside <id>/;
+    one GitHub gives, and it holds <id>/mod.json and <id>/init.lua with nothing outside <id>/
+    (RQ MOD's holds xsystem4/xsystem4.exe, RQ Manager's rq-manager.exe);
     the mod.json inside is the one at the tag;
   - no two mods share an id; every dependency is listed; a mod's loader is not newer than
     RQ MOD's latest release (a player could not run it);
@@ -183,6 +185,27 @@ def build(listed, gh, fetch=download):
                   "published": day(rel.get("published_at")), "notes": rel["html_url"], "zip": zfile}
     engine_v = semver(version)
 
+    # RQ Manager's latest release, once listed.json names its repository.
+    manager = None
+    mgr_repo = listed.get("manager")
+    if mgr_repo:
+        rel = gh.get(f"repos/{mgr_repo}/releases/latest")
+        if not rel:
+            problems.append(f"manager: {mgr_repo} has no release")
+        else:
+            mv = rel["tag_name"].lstrip("v")
+            if not re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+", mv):
+                problems.append(f"manager: tag {rel['tag_name']} is not v<major>.<minor>.<patch>")
+            asset = pick_zip(rel, None, "manager", problems)
+            if asset:
+                data = fetch(asset["browser_download_url"])
+                mfile = checked_file(asset, data, "manager", problems)
+                with zipfile.ZipFile(io.BytesIO(data)) as z:
+                    if "rq-manager.exe" not in z.namelist():
+                        problems.append(f"manager: {asset['name']} has no rq-manager.exe")
+                manager = {"version": mv, "tag": rel["tag_name"], "published": day(rel.get("published_at")),
+                           "notes": rel["html_url"], "zip": mfile}
+
     schema = load_json(SCHEMA)
     tags_ok = set(schema["$defs"]["mod"]["properties"]["tags"]["items"]["enum"])
     saves_ok = set(schema["$defs"]["mod"]["properties"]["save"]["enum"])
@@ -295,13 +318,16 @@ def build(listed, gh, fetch=download):
 
     if problems:
         raise Problems(problems)
-    return {
+    catalog = {
         "$schema": SCHEMA_URL,
         "format": 1,
         "generated": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d"),
-        "engine": engine,
-        "mods": mods,
     }
+    if manager:
+        catalog["manager"] = manager
+    catalog["engine"] = engine
+    catalog["mods"] = mods
+    return catalog
 
 
 def write(catalog, out):
@@ -366,6 +392,10 @@ def check(listed, catalog):
     validate(catalog, schema, schema, "mods.json", problems)
     if problems:
         return problems
+    if listed.get("manager") and not catalog.get("manager"):
+        problems.append("manager: listed, not in mods.json (run npm run catalog)")
+    if catalog.get("manager") and not listed.get("manager"):
+        problems.append("manager: in mods.json, not listed")
     by_repo = {m["repo"].lower().replace("https://github.com/", ""): m for m in catalog["mods"]}
     seen = set()
     for entry in listed.get("mods", []):
@@ -425,7 +455,8 @@ def main(argv):
             print("catalog: " + p)
         return 1
     write(catalog, args.out)
-    print(f"catalog: RQ MOD {catalog['engine']['version']} and {len(catalog['mods'])} mods written to "
+    mgr = f", RQ Manager {catalog['manager']['version']}" if catalog.get("manager") else ""
+    print(f"catalog: RQ MOD {catalog['engine']['version']}{mgr} and {len(catalog['mods'])} mods written to "
           f"{os.path.relpath(args.out, ROOT)} ({gh.calls} GitHub calls)")
     return 0
 
