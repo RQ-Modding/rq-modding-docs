@@ -14,6 +14,7 @@ What a scene editor needs from the game to play the step it shows, with the valu
 - `rqmod-ctl scenefunctions MOD`: `ok`, then the names the mod gave `rq.scene.functions`, one per line, in order; `err no mod MOD` for a mod that is not loaded. Like `playscene`, it answers `err paused` while the game is held by `pause`.
 - `rqmod-ctl playscene` with a mod that is not loaded answers `err no mod MOD`, without the place in the loader's Lua it had before.
 - The scene file's checker is a chunk of its own, `src/lua/scene_check.lua`: plain Lua with no call into the game, which a program that writes scene files can run to check them by the loader's own rules (the functions, the game's names and the pictures' files are checked only when it is given them). Nothing in a file's checks changed.
+- Rance Browser 1.0.1: its readers (the game folder, the pictures, the music and sounds, the names, the thumbnails, the player) are a library of their own, `rance_core`, for the coming scene editor to share. Nothing changes in its window.
 - The Lab: `scene-files` starts files at a step's place (the top, an `if`'s `then` and `else`, a choice's row with no menu shown, a place with no step) and refuses a `from` that is neither; `check-playscene.py` checks a place as FROM, the values (typed, with a space, after FROM, a bad name), `status` (idle, at the first step, in a branch, a path with a space, idle after the end) and `scenefunctions` (the names in order, one taken away, an unknown mod, the usage, paused).
 
 ## 2.60.0
