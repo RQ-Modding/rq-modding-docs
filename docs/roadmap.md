@@ -69,6 +69,8 @@ When a mod asks for it, or at low priority.
 - **Scenes as files, and a scene editor.** Scenes written as JSON files, played by a mod or from
   outside the game (`rqmod-ctl playscene`), came in 2.60.0 ([Scenes](guide/scenes.md#a-scene-as-a-file)).
   Next: a scene editor, a program of its own shipped with RQ MOD, to write, check and preview them.
+  2.61.0 added what its preview needs from the game: a start at any step, the file's values, and
+  which step plays.
   Maybe later: a tab in Rance Browser to look through the game's own dialogue events.
 - **3D models in Blender (ongoing).** Worked on over time, each step with a guide
   for people new to 3D: the game's models and animations shown in the browser and exported to glTF for

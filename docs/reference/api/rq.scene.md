@@ -221,7 +221,7 @@ Returns whether a mod scene plays, or `rq.scene.start` waits to play one.
 rq.scene.file(path, opts) -> rq.SceneFile
 ```
 
-`since 2.60.0`
+`since 2.60.0` `changed 2.61.0`
 
 Returns a scene file of the mod: a scene written as JSON, for `rq.scene.play`, `once` and `start`.
 
@@ -246,8 +246,17 @@ key of the mod (`<mod id>:scene:<path>`), so each takes one of the 256 mod image
 A scene file can also be called in a scene that plays already, `rq.scene.file(path)(s)`: its steps
 play there, and it returns its `end` value; a file with problems raises an error.
 
-The preview, `rqmod-ctl playscene MOD FILE [LABEL]`, plays a file of a mod from outside the game,
-read anew, through `rq.scene.start`; `rqmod-ctl playscene stop` ends it before its next step.
+`opts.from` starts the file elsewhere than at its first step: at a label, or at a step's place as
+the problems name it (`steps[4]`, `steps[2].choice[0].steps[1]`, `steps[3].then[0]`). From a step
+inside an `if`'s branch or a choice's row, the rest of that list plays, then the steps after the
+`if` or the choice, as if the branch had been taken.
+
+The preview, `rqmod-ctl playscene MOD FILE [FROM] [name=value ...]`, plays a file of a mod from
+outside the game, read anew, through `rq.scene.start`, from FROM (a label or a step's place) with
+the values given (`vars`: a whole number, a number with a decimal point, true, false, else the
+text); `rqmod-ctl playscene stop` ends it before its next step, `rqmod-ctl playscene status` says
+which step of which file plays, and `rqmod-ctl scenefunctions MOD` lists the names the mod gave
+`rq.scene.functions`.
 
 Raises an error for a path that is not a text, a bad `opts`, or a call from outside a mod.
 
@@ -269,6 +278,8 @@ end })
 | Returns | Type | Description |
 | --- | --- | --- |
 | `file` | [`rq.SceneFile`](../types/rq.SceneFile.md) | The scene file, for `play`, `once`, `start`, or a call in a scene. |
+
+> Changed in 2.61.0: `from` takes a step's place as well as a label.
 
 See also: [`rq.scene.check`](rq.scene.md#rqscenecheck), [`rq.scene.functions`](rq.scene.md#rqscenefunctions)
 

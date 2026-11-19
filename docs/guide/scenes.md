@@ -215,7 +215,10 @@ scene and is logged with the step's place.
 `goto` jumps to a `label` anywhere in the file, also inside an `if` or a row's steps: after the
 nested steps end, the scene goes on after the step that holds them. A loop is a `goto` back to a
 label; one that would show nothing at all (no line, choice or wait) is stopped after 10000 steps.
-`rq.scene.file`'s `from` starts the file at a label.
+`rq.scene.file`'s `from` starts the file at a label, or at any step by its place as the problems
+name it (`steps[4]`, `steps[3].then[0]`, `steps[2].choice[0].steps[1]`, from 0; since 2.61.0). From
+a step inside an `if`'s branch or a choice's row, the rest of that list plays, then the steps after
+the `if` or the choice, as if the branch had been taken.
 
 ### A quest's run
 
@@ -266,12 +269,26 @@ once, each function named by `rq.scene.functions`, each game name, and each pict
 
 ### Playing a file from outside
 
-`rqmod-ctl playscene MOD FILE [LABEL]` plays a mod's scene file in the running game, read anew,
-from LABEL when given, as `rq.scene.start` would. It answers `ok`, `err busy` while a mod scene plays
-or waits to, or the file's problems, one per line. `rqmod-ctl playscene stop` ends it before its next
-step. The scene editor's Play button and agents use it; the file's functions run for real, so play
-on a save you can lose.
+`rqmod-ctl playscene MOD FILE [FROM] [name=value ...]` plays a mod's scene file in the running
+game, read anew, as `rq.scene.start` would: from FROM when given (a label or a step's place), with
+the file's values (`vars`) given as `name=value`, each a whole number, a number with a decimal
+point, `true`, `false`, or else the text as written (since 2.61.0). It answers `ok`, `err busy`
+while a mod scene plays or waits to, or the file's problems, one per line. `rqmod-ctl playscene stop`
+ends it before its next step. The scene editor's Play button and agents use it; the file's functions
+run for real, so play on a save you can lose.
 
 ```powershell
 .\xsystem4\rqmod-ctl.exe playscene mymod scenes/delivery.json
+.\xsystem4\rqmod-ctl.exe playscene mymod scenes/delivery.json "steps[2].choice[0].steps[1]" alone=true "item=Iron Sword"
 ```
+
+`rqmod-ctl playscene status` says what plays (since 2.61.0): `idle`, `waiting MOD FILE` while the
+file waits for the game to let it in, or a line per file that plays, the outermost first, as
+`playing MOD FILE PLACE`, PLACE the step that plays or waits for a click or a pick:
+
+```
+playing mymod scenes/delivery.json steps[2].choice[0].steps[1]
+```
+
+`rqmod-ctl scenefunctions MOD` gives `ok`, then the names the mod gave `rq.scene.functions`, one per
+line (since 2.61.0).

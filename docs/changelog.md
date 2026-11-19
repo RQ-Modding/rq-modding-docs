@@ -5,6 +5,17 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.61.0
+
+What a scene editor needs from the game to play the step it shows, with the values it shows.
+- `rq.scene.file`'s `from` takes a step's place as well as a label: the place as the problems name it, `steps[4]`, `steps[3].then[0]`, `steps[3].else[1]` or `steps[2].choice[0].steps[1]` (from 0). From a step inside an `if`'s branch or a choice's row, the rest of that list plays, then the steps after the `if` or the choice, as if the branch had been taken; the menu of that choice is not shown. A place with no step is a problem of the file (`no step at steps[9] to start at`), and the file does not play.
+- `rqmod-ctl playscene MOD FILE [FROM] [name=value ...]`: FROM is a label or a step's place, and each `name=value` is one of the file's values (`vars`): a whole number, a number with a decimal point, `true`, `false`, or else the text as written. A value with a space is passed quoted, as a FILE with a space is.
+- `rqmod-ctl playscene status`: `idle`; `waiting MOD FILE` while a file the preview started waits for the game to let it in; or one line per file that plays, the outermost first (a file can play another), `playing MOD FILE PLACE`, PLACE the step that plays or waits for a click or a pick. It is the same for a file a mod plays.
+- `rqmod-ctl scenefunctions MOD`: `ok`, then the names the mod gave `rq.scene.functions`, one per line, in order; `err no mod MOD` for a mod that is not loaded. Like `playscene`, it answers `err paused` while the game is held by `pause`.
+- `rqmod-ctl playscene` with a mod that is not loaded answers `err no mod MOD`, without the place in the loader's Lua it had before.
+- The scene file's checker is a chunk of its own, `src/lua/scene_check.lua`: plain Lua with no call into the game, which a program that writes scene files can run to check them by the loader's own rules (the functions, the game's names and the pictures' files are checked only when it is given them). Nothing in a file's checks changed.
+- The Lab: `scene-files` starts files at a step's place (the top, an `if`'s `then` and `else`, a choice's row with no menu shown, a place with no step) and refuses a `from` that is neither; `check-playscene.py` checks a place as FROM, the values (typed, with a space, after FROM, a bad name), `status` (idle, at the first step, in a branch, a path with a space, idle after the end) and `scenefunctions` (the names in order, one taken away, an unknown mod, the usage, paused).
+
 ## 2.60.0
 
 Scenes from files: a mod's dialogue as data, the first of the tools that help make new content.
