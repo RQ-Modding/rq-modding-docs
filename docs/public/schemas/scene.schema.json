@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://rq-modding.github.io/rq-modding-docs/schemas/scene.schema.json",
   "title": "RQ MOD scene file",
-  "description": "A scene of a Rance Quest Magnum mod as data: its lines, pictures, sounds, choices and branches. RQ MOD plays it with rq.scene.file. Each step is an object whose first key names it, such as { \"say\": 2000, \"text\": \"Hello.\" }.",
+  "description": "A scene of a Rance Quest Magnum mod as data: its lines, pictures, sounds, choices and branches. RQ MOD plays it with rq.scene.file. Each step is an object named by its one step key, such as { \"say\": 2000, \"text\": \"Hello.\" }.",
   "type": "object",
   "required": ["format", "steps"],
   "additionalProperties": false,
@@ -216,7 +216,7 @@
       ]
     },
     "step": {
-      "description": "One step: an object whose first key names it.",
+      "description": "One step: an object named by its one step key (the step's name), with the step's options beside it.",
       "oneOf": [
         { "$ref": "#/$defs/step_say" },
         { "$ref": "#/$defs/step_think" },
@@ -237,6 +237,7 @@
         { "$ref": "#/$defs/step_choice" },
         { "$ref": "#/$defs/step_if" },
         { "$ref": "#/$defs/step_flag" },
+        { "$ref": "#/$defs/step_unflag" },
         { "$ref": "#/$defs/step_call" },
         { "$ref": "#/$defs/step_label" },
         { "$ref": "#/$defs/step_goto" },
@@ -425,9 +426,14 @@
       }
     },
     "step_flag": {
-      "description": "Sets an event flag; \"set\": false clears it.",
+      "description": "Sets an event flag, as rq.scene.seen(flag, true).",
       "type": "object", "required": ["flag"], "additionalProperties": false,
-      "properties": { "flag": { "$ref": "#/$defs/flag" }, "set": { "type": "boolean" } }
+      "properties": { "flag": { "$ref": "#/$defs/flag" } }
+    },
+    "step_unflag": {
+      "description": "Clears an event flag, as rq.scene.seen(flag, false).",
+      "type": "object", "required": ["unflag"], "additionalProperties": false,
+      "properties": { "unflag": { "$ref": "#/$defs/flag" } }
     },
     "step_call": {
       "description": "Calls the mod's function (rq.scene.functions); into keeps what it returns.",

@@ -63,6 +63,7 @@ const guide: DefaultTheme.SidebarItem[] = [
       { text: 'Combat rules', link: '/guide/combat' },
       { text: 'Quests and maps', link: '/guide/quests-maps' },
       { text: 'Quests of your own', link: '/guide/new-quests' },
+      { text: 'Scenes', link: '/guide/scenes' },
       { text: "Buttons in the game's menus", link: '/guide/game-menus' },
       { text: 'Editor setup', link: '/guide/editor-setup' },
       { text: 'Logs and debugging', link: '/guide/debugging' },

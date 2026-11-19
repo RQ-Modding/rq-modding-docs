@@ -47,6 +47,9 @@ rq.quests.define({
 | `"abandon"` | Given up: the quest storage's items are lost. |
 | `"escape"` | Given up with the items kept, as with the escape device. |
 
+The story can also live in a scene file, with the quest's end written in it: see
+[A quest's run](scenes.md#a-quests-run) in the Scenes guide.
+
 An error in `run` is written to the log and gives the quest up. `q` holds the quest's `id`, its
 number `no`, its `tries` (this one included) and `clears`, and `first` while it was never cleared.
 

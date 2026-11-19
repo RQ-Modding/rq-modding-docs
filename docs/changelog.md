@@ -5,6 +5,17 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.60.0
+
+Scenes from files: a mod's dialogue as data, the first of the tools that help make new content.
+- `rq.scene.file(path, opts)`: a scene written as a JSON file in the mod's folder (by convention `scenes/<name>.json`), played by `rq.scene.play`, `once` and `start`, or called in a scene that plays already. The format is `schemas/scene.schema.json` on the docs site, so a file whose `$schema` points at it is checked and completed in VS Code, and other programs can write it. A file has `format` (1), `steps`, and optionally `once` (an event flag: once per save) and `cast` (names for faces, with their name plates). Each step is an object named by its one step key: `say`, `think` and `narrate` (one page or a list of pages, `\n` for a line break, a face as a CG number, a cast name or a picture path), the pictures (`background`, `wallpaper`, `portrait`, `mini`, `cg`, `set` and the others, with `effect` and `time`), the screen (`black`, `white`, `clear`, `flash`, the shakes), `music`, `sound`, `jingle`, `wait_click`, `choice` (rows with their own steps, a `goto` or an `end`, shown when their `if` holds, or rows from a function; the pick kept with `into`), `if` with `then` and `else`, `flag` and `unflag`, `call`, `label` and `goto`, `end` (its value is what `play` returns, so a quest's `run` can end as the file says), `cmd` and `note`. The conditions: an event flag, a variable, a function, `not`, `all`, `any`, and the game's checks `cleared`, `recruited`, `in_party`, `has_item`, `gold` and `chance` (by number, by the names `rq.ids` gives, or by a mod's own id). `{name}` in a line takes a variable, set by `into` or by `opts.vars`; `opts.from` starts at a label.
+- The file is read and checked each time it plays, so an edit shows at the next play. A file with problems does not play: each is logged with its place, as `scenes/delivery.json: steps[4].then[1]: ...`. It plays as its mod wherever it plays from (the read flags of its lines, its pictures, its log lines). A loop of steps that shows nothing is stopped after 10000 steps in one frame.
+- `rq.scene.check(path)`: a file's problems without playing it.
+- `rq.scene.functions(fns)`: the functions a mod's files may call, by name; each gets `ctx` (`vars`, `path`, `step`, `mod`), the scene and the step's `args`.
+- `rq.scene.start` takes a scene file.
+- `rqmod-ctl playscene MOD FILE [LABEL]`: plays a mod's scene file from outside the game, read anew, through `rq.scene.start`; it answers `ok`, `err busy` while a mod scene plays or waits to, or the file's problems, one per line. `rqmod-ctl playscene stop` ends the file's scene before its next step. A FILE with a space is passed quoted.
+- The Lab: the new `scene-files` plays four example files (a meeting with the game's faces, a choice that ends a quest, a fortune teller's loop, a delivery with rows from a function), every condition against the Lab's save, the checks of eleven broken files and more, the read flags, `once`, an edit between two plays, a start at a label, a file in a Lua scene, a quest's run ended by a file, and the title during a file's scene; `check-playscene.py` checks the preview through `rqmod-ctl`.
+
 ## 2.59.2
 
 The first public release, as a public beta: the tools that help make new content are not done yet.

@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.59.2.
+Loader version 2.60.0.
 
 ## Namespaces
 
@@ -212,6 +212,9 @@ Loader version 2.59.2.
 | [`rq.SaveProfile`](types/rq.SaveProfile.md) | A save profile, from `rq.saves.list`. |
 | [`rq.SaveSummary`](types/rq.SaveSummary.md) | What a profile's save holds, read from its file. |
 | [`rq.SceneChoice`](types/rq.SceneChoice.md) | One row of `rq.scene.choice`. |
+| [`rq.SceneCtx`](types/rq.SceneCtx.md) | What a scene file's function gets first (`rq.scene.functions`). |
+| [`rq.SceneFile`](types/rq.SceneFile.md) | A scene file from `rq.scene.file`. Pass it to `rq.scene.play`, `once` or `start`, or call it with a scene's `s` in a scene that plays already. |
+| [`rq.SceneFileOpts`](types/rq.SceneFileOpts.md) | How `rq.scene.file` starts a file. |
 | [`rq.SceneRow`](types/rq.SceneRow.md) | One row of `rq.sprite.scene`. |
 | [`rq.SceneTextOpts`](types/rq.SceneTextOpts.md) | How `rq.scene.say`, `think` and `narrate` show a line. |
 | [`rq.Settings`](types/rq.Settings.md) | A settings page's values, from `rq.config.settings`. |

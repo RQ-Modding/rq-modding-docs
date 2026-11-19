@@ -66,6 +66,10 @@ When a mod asks for it, or at low priority.
   plays each, and saves them. Since 2.55.1 it also opens Rance VI and other System 4 games for the
   wiki. Later: a Flash file's motion played, the pictures and music the installed mods put in place,
   the game's text, and Escape to close a dropdown.
+- **Scenes as files, and a scene editor.** Scenes written as JSON files, played by a mod or from
+  outside the game (`rqmod-ctl playscene`), came in 2.60.0 ([Scenes](guide/scenes.md#a-scene-as-a-file)).
+  Next: a scene editor, a program of its own shipped with RQ MOD, to write, check and preview them.
+  Maybe later: a tab in Rance Browser to look through the game's own dialogue events.
 - **3D models in Blender (ongoing).** Worked on over time, each step with a guide
   for people new to 3D: the game's models and animations shown in the browser and exported to glTF for
   Blender; a mod's own textures on the game's models; a mod's own models and animations, read from the

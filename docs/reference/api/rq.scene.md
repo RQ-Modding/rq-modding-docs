@@ -1,6 +1,6 @@
 # rq.scene
 
-`since 0.18.0` `changed 1.3.1` `changed 1.13.0`
+`since 0.18.0` `changed 1.3.1` `changed 1.13.0` `changed 2.60.0`
 
 Plays scenes with the game's own commands, so a mod can do anything a game scene does.
 
@@ -20,6 +20,9 @@ or rewrite any line of the game (`h.args[3]`), as a translation would.
 When the player goes to the title during a scene (Config has Return to title), every Lua call that
 waits in the game ends with the error "rq: the game went to the title", and `rq.on_reset("title")`
 follows.
+
+A scene can also be a JSON file in the mod's folder, played by the same calls: see
+`rq.scene.file`.
 
 ```lua
 rq.quests.on_event(function(ev)
@@ -54,6 +57,9 @@ end)
 | [`rq.scene.once`](#rqsceneonce) | Plays a scene once per save. |
 | [`rq.scene.start`](#rqscenestart) | Plays a scene at the next frame, in a coroutine of its own, and returns at once. |
 | [`rq.scene.active`](#rqsceneactive) | Returns whether a mod scene plays, or `rq.scene.start` waits to play one. |
+| [`rq.scene.file`](#rqscenefile) | Returns a scene file of the mod: a scene written as JSON, for `rq.scene.play`, `once` and `start`. |
+| [`rq.scene.check`](#rqscenecheck) | Reads and checks a scene file of the mod without playing it, and returns its problems. |
+| [`rq.scene.functions`](#rqscenefunctions) | Names the functions the mod's scene files may call, by name. |
 | [`rq.scene.seen`](#rqsceneseen) | Reads or sets one of the game's event flags. |
 | [`rq.scene.say`](#rqscenesay) | Shows a character's line and waits for a click. |
 | [`rq.scene.think`](#rqscenethink) | Shows a character's thought and waits for a click. |
@@ -100,7 +106,7 @@ end)
 rq.scene.play(fn, ...) -> any
 ```
 
-`since 0.18.0` `changed 2.50.0`
+`since 0.18.0` `changed 2.50.0` `changed 2.60.0`
 
 Opens a scene, runs `fn(s, ...)`, then clears the text and closes it.
 
@@ -113,16 +119,21 @@ message window, so the scene hides it and shows it again at its end.
 
 Raises the error "rq: the game went to the title" again when the player went to the title.
 
+`fn` can be a scene file (`rq.scene.file`): it is read and checked first, and a file with problems
+logs them and opens no scene. Its `once` flag, when it has one, is checked and set before it opens.
+
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `fn` | `fun(s:` [`rq.scene`](rq.scene.md) `, ...): any` | The scene. |
-| `...` | `any` | Passed on to `fn`. |
+| `fn` | `(fun(s:` [`rq.scene`](rq.scene.md) `, ...): any)\|` [`rq.SceneFile`](../types/rq.SceneFile.md) | The scene, or a scene file. |
+| `...` | `any` | Passed on to `fn` (not to a file). |
 
 | Returns | Type | Description |
 | --- | --- | --- |
-|  | `any` | ... What `fn` returns. |
+|  | `any` | ... What `fn` returns; for a file, the value of the `end` step that ended it, else nothing. |
 
 > Changed in 2.50.0: Hides the vault's and the shop's item window while it plays.
+
+> Changed in 2.60.0: Plays a scene file, and returns its `end` value.
 
 ### rq.scene.once
 
@@ -130,7 +141,7 @@ Raises the error "rq: the game went to the title" again when the player went to 
 rq.scene.once(id, fn, ...) -> boolean
 ```
 
-`since 0.18.0`
+`since 0.18.0` `changed 2.60.0`
 
 Plays a scene once per save.
 
@@ -139,12 +150,14 @@ It marks `id` seen with `rq.scene.seen` before it plays.
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `id` | `string` | The event flag that remembers the scene. |
-| `fn` | `fun(s:` [`rq.scene`](rq.scene.md) `, ...)` | The scene. |
+| `fn` | `(fun(s:` [`rq.scene`](rq.scene.md) `, ...))\|` [`rq.SceneFile`](../types/rq.SceneFile.md) | The scene, or a scene file. |
 | `...` | `any` | Passed on to `fn`. |
 
 | Returns | Type | Description |
 | --- | --- | --- |
 | `played` | `boolean` | false when it was already seen. |
+
+> Changed in 2.60.0: Takes a scene file (`rq.scene.file`).
 
 ### rq.scene.start
 
@@ -152,7 +165,7 @@ It marks `id` seen with `rq.scene.seen` before it plays.
 rq.scene.start(fn, ...) -> boolean
 ```
 
-`since 1.14.0` `changed 2.50.0`
+`since 1.14.0` `changed 2.50.0` `changed 2.60.0`
 
 Plays a scene at the next frame, in a coroutine of its own, and returns at once.
 
@@ -163,7 +176,7 @@ the game draws frames under it). The scene draws over the current screen, takes 
 leaves the screen as it was, the vault's and Frostbuy's item window too (`rq.scene.play`). An
 error that ends it is logged.
 
-Raises an error when `fn` is not a function.
+Raises an error when `fn` is not a function or a scene file.
 
 ```lua
 rq.on_frame(function()
@@ -175,14 +188,16 @@ end)
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `fn` | `fun(s:` [`rq.scene`](rq.scene.md) `, ...)` | The scene. |
-| `...` | `any` | Passed on to `fn`. |
+| `fn` | `(fun(s:` [`rq.scene`](rq.scene.md) `, ...))\|` [`rq.SceneFile`](../types/rq.SceneFile.md) | The scene, or a scene file. |
+| `...` | `any` | Passed on to `fn` (not to a file). |
 
 | Returns | Type | Description |
 | --- | --- | --- |
 | `started` | `boolean` | false when a mod scene plays or waits to. |
 
 > Changed in 2.50.0: Waits for the game's save to end, and hides the vault's and the shop's item window.
+
+> Changed in 2.60.0: Takes a scene file (`rq.scene.file`).
 
 See also: [`rq.scene.active`](rq.scene.md#rqsceneactive)
 
@@ -199,6 +214,130 @@ Returns whether a mod scene plays, or `rq.scene.start` waits to play one.
 | Returns | Type | Description |
 | --- | --- | --- |
 | `active` | `boolean` | true during `play`, `once` and `start`. |
+
+### rq.scene.file
+
+```lua
+rq.scene.file(path, opts) -> rq.SceneFile
+```
+
+`since 2.60.0`
+
+Returns a scene file of the mod: a scene written as JSON, for `rq.scene.play`, `once` and `start`.
+
+The file is a path in the mod's folder, by convention `scenes/<name>.json`. Its format is the docs
+site's `schemas/scene.schema.json` (point the file's `$schema` at it, and VS Code checks and
+completes it): `format` (1), `steps`, and optionally `once` (an event flag: the scene plays once per
+save) and `cast` (names for faces, with their name plates). Each step is an object named by its one
+step key, with its options beside it, such as `{ "say": "pluepet", "text": "\"Hello!\"" }`: lines
+(`say`, `think`, `narrate`, with a list of pages), pictures, music and sounds, the screen's effects,
+`choice`, `if`, `flag`, `unflag`, `call` (a function the mod names with `rq.scene.functions`),
+`label`, `goto`, `end` and `cmd`. `{name}` in a line takes a variable: one set by `into` (a
+choice's pick, a call's result) or given in `opts.vars`.
+
+Nothing is read here: the file is read and checked each time it plays, so an edit shows at the next
+play. A file with problems does not play; they are logged, each with its place
+(`scenes/delivery.json: steps[4].then[1]: ...`). `rq.scene.check` gives them without playing.
+
+The file plays as the mod that called this, wherever it plays from: the read flags of its lines,
+its pictures and its log lines are the mod's. A picture path is added with `rq.image.add` under a
+key of the mod (`<mod id>:scene:<path>`), so each takes one of the 256 mod images.
+
+A scene file can also be called in a scene that plays already, `rq.scene.file(path)(s)`: its steps
+play there, and it returns its `end` value; a file with problems raises an error.
+
+The preview, `rqmod-ctl playscene MOD FILE [LABEL]`, plays a file of a mod from outside the game,
+read anew, through `rq.scene.start`; `rqmod-ctl playscene stop` ends it before its next step.
+
+Raises an error for a path that is not a text, a bad `opts`, or a call from outside a mod.
+
+```lua
+-- scenes/delivery.json:
+-- { "format": 1, "cast": { "pluepet": { "face": 2816 } }, "steps": [
+--   { "say": "pluepet", "text": "\"Here is your {item}!\"" },
+--   { "end": "clear" } ] }
+rq.quests.define({ id = "mymod:delivery", name = "A Delivery", open = true, run = function()
+  return rq.scene.play(rq.scene.file("scenes/delivery.json", { vars = { item = "Lens" } }))
+end })
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `path` | `string` | A path in the mod's folder. |
+| `opts` *(optional)* | [`rq.SceneFileOpts`](../types/rq.SceneFileOpts.md) | The starting variables and label. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `file` | [`rq.SceneFile`](../types/rq.SceneFile.md) | The scene file, for `play`, `once`, `start`, or a call in a scene. |
+
+See also: [`rq.scene.check`](rq.scene.md#rqscenecheck), [`rq.scene.functions`](rq.scene.md#rqscenefunctions)
+
+### rq.scene.check
+
+```lua
+rq.scene.check(path) -> string[]
+```
+
+`since 2.60.0`
+
+Reads and checks a scene file of the mod without playing it, and returns its problems.
+
+It checks what playing it checks: the JSON, each step's name and options, the cast, each `goto`'s
+label, each label once, each function named by `rq.scene.functions`, each game name (a character,
+an item, a quest) as `rq.ids` or a mod's id gives it, and each picture's file. A mod's quest by its
+id is checked only while a save is loaded, since a quest has its number only in a save.
+
+Raises an error for a path that is not a text, or a call from outside a mod.
+
+```lua
+for _, p in ipairs(rq.scene.check("scenes/delivery.json")) do rq.log(p) end
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `path` | `string` | A path in the mod's folder. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `problems` | `string[]` | Each as "path: place: what"; empty for a file that plays. |
+
+See also: [`rq.scene.file`](rq.scene.md#rqscenefile)
+
+### rq.scene.functions
+
+```lua
+rq.scene.functions(fns)
+```
+
+`since 2.60.0`
+
+Names the functions the mod's scene files may call, by name.
+
+A file's `call` step, a `call` condition and a choice's rows from `{ "call": name }` call them, also
+from the preview. Each gets `ctx` (`rq.SceneCtx`), the scene `s` (so it can play steps of its own,
+such as `s.item`) and the step's `args`, JSON's null as nil. What it returns goes to the step's
+`into`, decides the condition (anything but nil and false holds), or is the list of rows, as
+`rq.scene.choice` takes them.
+
+Calling it again adds names and replaces those it names again; `false` in place of a function takes
+a name away. An error in a function ends the scene, logged with the step's place.
+
+Raises an error for a key that is not a name (letters, digits and _, not starting with a digit), a
+value that is not a function or false, or a call from outside a mod.
+
+```lua
+rq.scene.functions({
+  owned = function(ctx, s, no) return rq.item.count(no) > 0 end,
+  lost_items = function(ctx) return { { id = 11, text = "Boots" }, { id = 12, text = "Gloves" } } end,
+  remember = function(ctx, s, name) rq.store.set("last_pick", ctx.vars[name]) end,
+})
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `fns` | `table<string, (fun(ctx:` [`rq.SceneCtx`](../types/rq.SceneCtx.md) `, s:` [`rq.scene`](rq.scene.md) `, ...): any)\|false>` | The functions by name. |
+
+See also: [`rq.scene.file`](rq.scene.md#rqscenefile)
 
 ### rq.scene.seen
 
