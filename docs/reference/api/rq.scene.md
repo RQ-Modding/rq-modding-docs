@@ -222,7 +222,7 @@ Returns whether a mod scene plays, or `rq.scene.start` waits to play one.
 rq.scene.file(path, opts) -> rq.SceneFile
 ```
 
-`since 2.60.0` `changed 2.61.0` `changed 2.62.0`
+`since 2.60.0` `changed 2.61.0` `changed 2.62.0` `changed 2.62.1`
 
 Returns a scene file of the mod: a scene written as JSON, for `rq.scene.play`, `once` and `start`.
 
@@ -256,7 +256,8 @@ inside an `if`'s branch or a choice's row, the rest of that list plays, then the
 The preview, `rqmod-ctl playscene MOD FILE [FROM] [name=value ...]`, plays a file of a mod from
 outside the game, read anew, through `rq.scene.start`, from FROM (a label or a step's place) with
 the values given (`vars`: a whole number, a number with a decimal point, true, false, else the
-text); `rqmod-ctl playscene stop` ends it before its next step, `rqmod-ctl playscene status` says
+text; a value in single quotes is the text inside them, so `n='5'` gives the text "5");
+`rqmod-ctl playscene stop` ends it before its next step, `rqmod-ctl playscene status` says
 which step of which file plays, and `rqmod-ctl scenefunctions MOD` lists the names the mod gave
 `rq.scene.functions`.
 
@@ -284,6 +285,8 @@ end })
 > Changed in 2.61.0: `from` takes a step's place as well as a label.
 
 > Changed in 2.62.0: The `world_map` step.
+
+> Changed in 2.62.1: `rqmod-ctl playscene` takes a value in single quotes as a text.
 
 See also: [`rq.scene.check`](rq.scene.md#rqscenecheck), [`rq.scene.functions`](rq.scene.md#rqscenefunctions)
 

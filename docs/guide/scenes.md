@@ -273,7 +273,8 @@ once, each function named by `rq.scene.functions`, each game name, and each pict
 `rqmod-ctl playscene MOD FILE [FROM] [name=value ...]` plays a mod's scene file in the running
 game, read anew, as `rq.scene.start` would: from FROM when given (a label or a step's place), with
 the file's values (`vars`) given as `name=value`, each a whole number, a number with a decimal
-point, `true`, `false`, or else the text as written (since 2.61.0). It answers `ok`, `err busy`
+point, `true`, `false`, or else the text as written (since 2.61.0); a value in single quotes is the
+text inside them, so `n='5'` gives the text "5" where `n=5` gives the number (since 2.62.1). It answers `ok`, `err busy`
 while a mod scene plays or waits to, or the file's problems, one per line. `rqmod-ctl playscene stop`
 ends it before its next step. The scene editor's Play button and agents use it; the file's functions
 run for real, so play on a save you can lose.
@@ -281,7 +282,11 @@ run for real, so play on a save you can lose.
 ```powershell
 .\xsystem4\rqmod-ctl.exe playscene mymod scenes/delivery.json
 .\xsystem4\rqmod-ctl.exe playscene mymod scenes/delivery.json "steps[2].choice[0].steps[1]" alone=true "item=Iron Sword"
+.\xsystem4\rqmod-ctl.exe playscene mymod scenes/delivery.json "code='0042'"
 ```
+
+While another program talks to the game (the scene editor, another `rqmod-ctl`), `rqmod-ctl` waits
+its turn, up to 10 seconds (since 2.62.1).
 
 `rqmod-ctl playscene status` says what plays (since 2.61.0): `idle`, `waiting MOD FILE` while the
 file waits for the game to let it in, or a line per file that plays, the outermost first, as

@@ -5,6 +5,13 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.62.1
+
+For a scene editor and an agent that talk to the game at the same time.
+- `rqmod-ctl` waits its turn when the game's pipe is busy with another program (the game answers one at a time), up to 10 s, instead of failing at once with "cannot open"; after 10 s it says the pipe stayed busy. A game that is not running is still told at once.
+- `rqmod-ctl playscene`: a value in single quotes is the text inside them, as written: `n='5'` gives the text "5", where `n=5` gives the number, and `"who='Lady Magic'"` the text with its space. A text that itself starts and ends with a single quote takes one more pair. Other values are typed as before.
+- The Lab: `check-playscene.py` checks a text in single quotes against the number, and `rqmod-ctl` waiting while the pipe is held busy.
+
 ## 2.62.0
 
 The game's world map in a scene, as almost every quest of the game starts.
