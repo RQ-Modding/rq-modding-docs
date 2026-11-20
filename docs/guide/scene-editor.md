@@ -62,6 +62,11 @@ here**, under the stage, plays the scene on from the selected step without the g
 Space shows the next page, a choice waits for a click on a row, an `if` asks which way it goes,
 music and sounds play. A mod's function is passed by and named under the stage. Escape stops it.
 
+A line makes the game's little sounds as its letters come in, as in the game: each face of the
+game has its own pair, and a picture of the mod's gets the game's default pair. They sound only
+inside quotes (`"`, `“ ”`, `( )` and the Japanese ones), so a line written without quotes is
+silent, and narration makes none.
+
 ## Faces, pictures, music and sounds
 
 ![Pick... on a line's speaker: the file's cast first, then the game's faces by character](/scene-editor/picker.png)

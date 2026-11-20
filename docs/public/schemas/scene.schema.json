@@ -372,7 +372,7 @@
       ]
     },
     "step_music": {
-      "description": "Plays a music track of the game.",
+      "description": "Plays a music track of the game, until the scene ends: then the track that played before the scene comes back.",
       "type": "object", "required": ["music"], "additionalProperties": false,
       "properties": {
         "music": { "type": "integer", "minimum": 0 },

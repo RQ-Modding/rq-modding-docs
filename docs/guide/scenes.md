@@ -94,7 +94,7 @@ beside it. One step per object.
 | `set` | `{ "set": { "wallpaper": 5510, "background": 5280 } }` | Several layers at once (`wallpaper`, `background`, `portrait`, `mini`, `cg`), with an `effect`. |
 | `black`, `white`, `clear` | `{ "black": true, "time": 800 }` | The screen to black or white, or cleared. |
 | `flash`, `shake`, `shake_face`, `shake_portrait` | `{ "shake": true }` | A flash, or a shake (`mode`). |
-| `music`, `sound`, `jingle` | `{ "music": 93 }` | Music by number (`effect`, `time` for its fade), a sound, a jingle (`wait`). |
+| `music`, `sound`, `jingle` | `{ "music": 93 }` | Music by number (`effect`, `time` for its fade), until the scene ends: then the track before it comes back. A sound, a jingle (`wait`). |
 | `wait_click` | `{ "wait_click": true }` | Waits for a click. |
 | `world_map` | `{ "world_map": 1 }` | The game's world map with a place's tag, as a quest's start shows it: a place of the game's (1 to 40; 1 is Cidade), or a point of the mod's own, `{ "x": 640, "y": 300, "name": "Our Camp" }`. A click goes on, and the pictures and the message window are cleared after it. Since RQ MOD 2.62.0. |
 | `choice` | [Choices](#choices) | The game's choice menu. |

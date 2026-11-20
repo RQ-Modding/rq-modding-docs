@@ -5,6 +5,13 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.62.2
+
+A scene's music ends with the scene.
+- `rq.scene.play` (and `once`, `start` and a scene file) puts back the track that played before the scene when the scene changed it, or stops the music when none played. The game plays a screen's music only as the screen starts, so a scene's track went on over the hub until the player went elsewhere: Pluepet Rare Contract's delivery in Rance's Room kept its track, and so did a scene file played from the editor at the hub. A scene inside another one leaves it to the outer one, and a scene that ends at the title leaves the music to the title. To keep a track on after a scene, play it once the scene has ended.
+- The Lab: `scene-files` checks the track before, during and after a scene file with `music`.
+- RQ Scene Editor 1.0.0 in the package: the "+" at a hovered step's foot adds a step after it again (the click was lost), and ▶ and Play from here make the game's sounds as a line's letters come in, each face's pair from the game's own table (a picture of the mod's gets the game's default pair, as in the game), only inside quotes and none for narration.
+
 ## 2.62.1
 
 For a scene editor and an agent that talk to the game at the same time.

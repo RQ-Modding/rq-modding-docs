@@ -107,7 +107,7 @@ end)
 rq.scene.play(fn, ...) -> any
 ```
 
-`since 0.18.0` `changed 2.50.0` `changed 2.60.0`
+`since 0.18.0` `changed 2.50.0` `changed 2.60.0` `changed 2.62.2`
 
 Opens a scene, runs `fn(s, ...)`, then clears the text and closes it.
 
@@ -117,6 +117,11 @@ background and pictures go too; `rq.scene.start` waits for a game scene to end i
 
 The vault's and Frostbuy's item window (a rack of the shop, the vault's list) is drawn over the
 message window, so the scene hides it and shows it again at its end.
+
+The music the scene plays (`rq.scene.music`, a file's `music`) ends with it: at its end the track
+that played before it comes back (or none, if none played), as the game plays a screen's music only
+when the screen starts. A scene inside another one leaves that to the outer one. To keep a track on
+after the scene, play it once the scene has ended.
 
 Raises the error "rq: the game went to the title" again when the player went to the title.
 
@@ -135,6 +140,8 @@ logs them and opens no scene. Its `once` flag, when it has one, is checked and s
 > Changed in 2.50.0: Hides the vault's and the shop's item window while it plays.
 
 > Changed in 2.60.0: Plays a scene file, and returns its `end` value.
+
+> Changed in 2.62.2: Puts back the track that played before the scene; a scene's music went on over the hub after it.
 
 ### rq.scene.once
 
@@ -777,15 +784,20 @@ Shakes the standing picture (`立ち絵揺れ`).
 rq.scene.music(no, effect, time)
 ```
 
-`since 0.18.0`
+`since 0.18.0` `changed 2.62.2`
 
 Plays a game music track (`音楽`).
+
+In a scene (`rq.scene.play`), the track lasts until the scene ends; then the one that played
+before it comes back.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `no` | `integer` | The music number. |
 | `effect` *(optional)* | `integer` | The fade type; -1 is the game's default. Default -1. |
 | `time` *(optional)* | `integer` | The fade time; -1 is the game's default. Default -1. |
+
+> Changed in 2.62.2: In a scene, the track ends with the scene.
 
 ### rq.scene.sound
 
