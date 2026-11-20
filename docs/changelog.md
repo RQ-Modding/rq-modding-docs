@@ -5,6 +5,13 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.62.0
+
+The game's world map in a scene, as almost every quest of the game starts.
+- `rq.scene.world_map(place)` and `rq.scene.world_map(x, y, name)`: the game's jingle, the map faded in, a tag that points at the place with its name, until a click; then the screen goes black, with the pictures and the message window cleared. `place` is one of the game's 40 places (1 is Cidade), each with the name and the point the game gives it; `x`, `y` and `name` are a point of the mod's own on the game's 1024 by 768 screen and the name on its tag. A place out of 1 to 40, or a point that is not two whole numbers and a text, raises an error.
+- A scene file's step `world_map`: `{ "world_map": 1 }` or `{ "world_map": { "x": 640, "y": 300, "name": "Our Camp" } }`, checked as the call is (a place from 1 to 40; x from 0 to 1023, y from 0 to 767, a name that is not empty, no other field). Before it, a file reached the map only through `cmd` and the game's own function's name.
+- The Lab: `scene-files` checks the step's problems and the call's refusals, and plays a file with a place of the game's and a point of its own, with a shot of each map while its tag waits.
+
 ## 2.61.0
 
 What a scene editor needs from the game to play the step it shows, with the values it shows.

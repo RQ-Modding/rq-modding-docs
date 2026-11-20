@@ -91,6 +91,7 @@ end)
 | [`rq.scene.music`](#rqscenemusic) | Plays a game music track (`音楽`). |
 | [`rq.scene.sound`](#rqscenesound) | Plays a game sound effect by number (`効果音`). |
 | [`rq.scene.jingle`](#rqscenejingle) | Plays a jingle (`Ｒ８ジングル`). |
+| [`rq.scene.world_map`](#rqsceneworld_map) | Shows the game's world map with a place's tag, as a quest's start does (`地図点滅`). |
 | [`rq.scene.clear`](#rqsceneclear) | Clears the scene's pictures (`画面消去`). |
 | [`rq.scene.wait_click`](#rqscenewait_click) | Waits for a click (`キー待ち_クリック`). |
 | [`rq.scene.register_face`](#rqsceneregister_face) | Sets the name plate for one of the game's face numbers (`顔登録`). |
@@ -221,7 +222,7 @@ Returns whether a mod scene plays, or `rq.scene.start` waits to play one.
 rq.scene.file(path, opts) -> rq.SceneFile
 ```
 
-`since 2.60.0` `changed 2.61.0`
+`since 2.60.0` `changed 2.61.0` `changed 2.62.0`
 
 Returns a scene file of the mod: a scene written as JSON, for `rq.scene.play`, `once` and `start`.
 
@@ -231,6 +232,7 @@ completes it): `format` (1), `steps`, and optionally `once` (an event flag: the 
 save) and `cast` (names for faces, with their name plates). Each step is an object named by its one
 step key, with its options beside it, such as `{ "say": "pluepet", "text": "\"Hello!\"" }`: lines
 (`say`, `think`, `narrate`, with a list of pages), pictures, music and sounds, the screen's effects,
+`world_map` (the game's map at a place, as a quest's start shows it, `rq.scene.world_map`),
 `choice`, `if`, `flag`, `unflag`, `call` (a function the mod names with `rq.scene.functions`),
 `label`, `goto`, `end` and `cmd`. `{name}` in a line takes a variable: one set by `into` (a
 choice's pick, a call's result) or given in `opts.vars`.
@@ -280,6 +282,8 @@ end })
 | `file` | [`rq.SceneFile`](../types/rq.SceneFile.md) | The scene file, for `play`, `once`, `start`, or a call in a scene. |
 
 > Changed in 2.61.0: `from` takes a step's place as well as a label.
+
+> Changed in 2.62.0: The `world_map` step.
 
 See also: [`rq.scene.check`](rq.scene.md#rqscenecheck), [`rq.scene.functions`](rq.scene.md#rqscenefunctions)
 
@@ -810,6 +814,43 @@ Plays a jingle (`Ｒ８ジングル`).
 | --- | --- | --- |
 | `no` | `integer` | The sound number. |
 | `wait` *(optional)* | `boolean` | true waits for it to end. Default false. |
+
+### rq.scene.world_map
+
+```lua
+rq.scene.world_map(place, y, name)
+```
+
+`since 2.62.0`
+
+Shows the game's world map with a place's tag, as a quest's start does (`地図点滅`).
+
+The game's jingle 407 plays, the pictures and the message box are cleared, and the map (CG 5530)
+fades in over a second. A tag points at the place with its name in it, until a click; then the
+screen goes black, with the pictures and the message box cleared, so the scene shows its next
+pictures after it.
+
+`place` is one of the game's places, 1 to 40, each with the name and the point the game gives it
+(1 is Cidade). With `y` and `name`, the first value is instead the x of a point of the mod's own on
+the game's 1024 by 768 screen, and `name` is the text on its tag. The tag opens to the right of a
+point left of x 512, and to the left of one right of it.
+
+Raises an error for a place out of 1 to 40, or a point whose x or y is not a whole number or
+whose name is not a text.
+
+```lua
+rq.scene.play(function(s)
+  s.world_map(1)                    -- the game's Cidade
+  s.world_map(640, 300, "Our Camp") -- a point of the mod's own
+  s.background(5280)
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `place` | `integer` | A place of the game's, 1 to 40; with `y` and `name`, a point's x, 0 to 1023. |
+| `y` *(optional)* | `integer` | The point's y, 0 to 767. |
+| `name` *(optional)* | `string` | The name on the point's tag. |
 
 ### rq.scene.clear
 

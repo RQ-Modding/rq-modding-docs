@@ -234,6 +234,7 @@
         { "$ref": "#/$defs/step_sound" },
         { "$ref": "#/$defs/step_jingle" },
         { "$ref": "#/$defs/step_bare" },
+        { "$ref": "#/$defs/step_world_map" },
         { "$ref": "#/$defs/step_choice" },
         { "$ref": "#/$defs/step_if" },
         { "$ref": "#/$defs/step_flag" },
@@ -396,6 +397,26 @@
       "description": "wait_click: waits for a click.",
       "type": "object", "required": ["wait_click"], "additionalProperties": false,
       "properties": { "wait_click": { "$ref": "#/$defs/on" } }
+    },
+    "step_world_map": {
+      "description": "The game's world map with a place's tag, as a quest's start shows it; a click goes on, and the pictures and the message box are cleared after it (rq.scene.world_map; RQ MOD 2.62.0).",
+      "type": "object", "required": ["world_map"], "additionalProperties": false,
+      "properties": {
+        "world_map": {
+          "anyOf": [
+            { "type": "integer", "minimum": 1, "maximum": 40, "description": "A place of the game's, 1 to 40, with the name and the point the game gives it (1 is Cidade)." },
+            {
+              "type": "object", "required": ["x", "y", "name"], "additionalProperties": false,
+              "description": "A point of the mod's own on the game's 1024 by 768 screen, and the name on its tag.",
+              "properties": {
+                "x": { "type": "integer", "minimum": 0, "maximum": 1023 },
+                "y": { "type": "integer", "minimum": 0, "maximum": 767 },
+                "name": { "type": "string", "minLength": 1 }
+              }
+            }
+          ]
+        }
+      }
     },
     "step_choice": {
       "description": "The game's choice menu. Each row may hold its own steps, a goto or an end.",
