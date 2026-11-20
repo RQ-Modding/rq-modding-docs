@@ -11,6 +11,8 @@ For a scene editor and an agent that talk to the game at the same time.
 - `rqmod-ctl` waits its turn when the game's pipe is busy with another program (the game answers one at a time), up to 10 s, instead of failing at once with "cannot open"; after 10 s it says the pipe stayed busy. A game that is not running is still told at once.
 - `rqmod-ctl playscene`: a value in single quotes is the text inside them, as written: `n='5'` gives the text "5", where `n=5` gives the number, and `"who='Lady Magic'"` the text with its space. A text that itself starts and ends with a single quote takes one more pair. Other values are typed as before.
 - The Lab: `check-playscene.py` checks a text in single quotes against the number, and `rqmod-ctl` waiting while the pipe is held busy.
+- RQ Scene Editor 1.0.0 comes in the package: `xsystem4\rq-scene-editor.exe`, a window that writes a mod's scene files without Lua and plays them in the running game (Play, Play from the selected step, Stop, a value for each `{name}`). It is built with this loader's own scene checker (`src/lua/scene_check.lua`), so the editor and the game find the same problems in a file, and it reads the game through Rance Browser's library. A program with [a repository of its own](https://github.com/RQ-Modding/rq-scene-editor), carried as the submodule `subprojects/rq-scene-editor`; the docs have its guide.
+- The package's note on LAME's license (`xsystem4/licenses/lame/README.txt`) names the LGPL 2.1 text the package has, libsndfile's; it named FFmpeg's copy, which left the package with FFmpeg in 2.59.2.
 
 ## 2.62.0
 

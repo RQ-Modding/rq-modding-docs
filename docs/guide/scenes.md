@@ -6,7 +6,8 @@ choices. A mod writes one in two ways:
 - **In Lua**, with [`rq.scene.play`](../reference/api/rq.scene.md) and the calls of the scene's
   `s` (since loader 0.18.0).
 - **As a file**, a JSON file in the mod's folder that RQ MOD plays (since loader 2.60.0). It needs
-  no code for the lines, other programs can read and write it, and the coming scene editor opens it.
+  no code for the lines, other programs can read and write it, and
+  [the scene editor](scene-editor.md) writes it in fields and plays it in the game.
   Its Lua calls only what only Lua knows, through functions the mod names.
 
 Both play the same way: over the current screen (the hub, a quest's map, the castle), taking the
@@ -274,10 +275,11 @@ once, each function named by `rq.scene.functions`, each game name, and each pict
 game, read anew, as `rq.scene.start` would: from FROM when given (a label or a step's place), with
 the file's values (`vars`) given as `name=value`, each a whole number, a number with a decimal
 point, `true`, `false`, or else the text as written (since 2.61.0); a value in single quotes is the
-text inside them, so `n='5'` gives the text "5" where `n=5` gives the number (since 2.62.1). It answers `ok`, `err busy`
-while a mod scene plays or waits to, or the file's problems, one per line. `rqmod-ctl playscene stop`
-ends it before its next step. The scene editor's Play button and agents use it; the file's functions
-run for real, so play on a save you can lose.
+text inside them, so `n='5'` gives the text "5" where `n=5` gives the number (since 2.62.1). It
+answers `ok`, `err busy` while a mod scene plays or waits to, or the file's problems, one per line.
+`rqmod-ctl playscene stop` ends it before its next step.
+[The scene editor's Play button](scene-editor.md#playing-it-in-the-game) and agents use it; the
+file's functions run for real, so play on a save you can lose.
 
 ```powershell
 .\xsystem4\rqmod-ctl.exe playscene mymod scenes/delivery.json
