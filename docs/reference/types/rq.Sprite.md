@@ -14,10 +14,10 @@ The methods that return the sprite can be chained.
 | [`rq.Sprite:get`](#rqspriteget) | Returns the sprite's options now. |
 | [`rq.Sprite:remove`](#rqspriteremove) | Removes the sprite. |
 | [`rq.Sprite:alive`](#rqspritealive) | Returns whether the sprite is still there. |
-| [`rq.Sprite:play`](#rqspriteplay) | Plays the sprite's GIF. |
-| [`rq.Sprite:stop`](#rqspritestop) | Holds the GIF on the frame it is on. |
-| [`rq.Sprite:frame`](#rqspriteframe) | Returns the GIF frame shown, or shows one and stops. |
-| [`rq.Sprite:playing`](#rqspriteplaying) | Returns whether the sprite's GIF is playing. |
+| [`rq.Sprite:play`](#rqspriteplay) | Plays the sprite's GIF or Flash file. |
+| [`rq.Sprite:stop`](#rqspritestop) | Holds the GIF or the Flash file on the frame it is on. |
+| [`rq.Sprite:frame`](#rqspriteframe) | Returns the frame shown, or shows one and stops. |
+| [`rq.Sprite:playing`](#rqspriteplaying) | Returns whether the sprite's GIF or Flash file is playing. |
 | [`rq.Sprite:to`](#rqspriteto) | Moves the sprite from the values it has now to new ones, over time. |
 | [`rq.Sprite:moving`](#rqspritemoving) | Returns whether a motion is waiting or moving. |
 | [`rq.Sprite:halt`](#rqspritehalt) | Stops the motion where it is, without its `on_end`. |
@@ -48,14 +48,15 @@ Raises an error for a bad option, or after the sprite was removed.
 rq.Sprite:get() -> table
 ```
 
-`since 1.9.0` `changed 1.10.0` `changed 1.11.0`
+`since 1.9.0` `changed 1.10.0` `changed 1.11.0` `changed 2.63.0`
 
 Returns the sprite's options now.
 
 Besides the options it has `id`, `mod`, `w` and `h` before the scale (the content's own size when
 not set), `origin` as `{x, y}`, `screen` (with `keep = "screen"`), `in_scene` (shown and drawn),
 `clock` and `moving`. A GIF sprite adds `gif`, `frame`, `frames`, `gif_ms` (one time through),
-`fps` and `playing`. An attached sprite adds `attach` and `drawn = {x, y, z}`, where it is drawn now.
+`fps` and `playing`; a Flash sprite `flash`, `frame`, `frames`, `fps`, `playing` and `sound`. An
+attached sprite adds `attach` and `drawn = {x, y, z}`, where it is drawn now.
 
 Raises an error after the sprite was removed.
 
@@ -66,6 +67,8 @@ Raises an error after the sprite was removed.
 > Changed in 1.10.0: Added the GIF and motion fields.
 
 > Changed in 1.11.0: Added `attach` and `drawn`.
+
+> Changed in 2.63.0: Added the Flash fields.
 
 ### rq.Sprite:remove
 
@@ -99,11 +102,15 @@ Returns whether the sprite is still there.
 rq.Sprite:play(opts) -> rq.Sprite
 ```
 
-`since 1.10.0`
+`since 1.10.0` `changed 2.63.0`
 
-Plays the sprite's GIF.
+Plays the sprite's GIF or Flash file.
 
-Raises an error for a sprite with no GIF, or a range outside its frames.
+A Flash file goes one frame on each 1/30 s, its tags walked in turn as the game walks them: a
+`gotoFrame` in it jumps, a stop ends the play as its last frame does, and each sound starts at its
+frame. Going back to `from` walks its frames again from the start, without their sounds.
+
+Raises an error for a sprite with no GIF or Flash file, or a range outside its frames.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -113,19 +120,23 @@ Raises an error for a sprite with no GIF, or a range outside its frames.
 | --- | --- | --- |
 | `self` | [`rq.Sprite`](rq.Sprite.md) | The sprite. |
 
+> Changed in 2.63.0: A Flash file.
+
 ### rq.Sprite:stop
 
 ```lua
 rq.Sprite:stop() -> rq.Sprite
 ```
 
-`since 1.10.0`
+`since 1.10.0` `changed 2.63.0`
 
-Holds the GIF on the frame it is on.
+Holds the GIF or the Flash file on the frame it is on.
 
 | Returns | Type | Description |
 | --- | --- | --- |
 | `self` | [`rq.Sprite`](rq.Sprite.md) | The sprite. |
+
+> Changed in 2.63.0: A Flash file.
 
 ### rq.Sprite:frame
 
@@ -133,11 +144,14 @@ Holds the GIF on the frame it is on.
 rq.Sprite:frame(n) -> integer|rq.Sprite, integer?
 ```
 
-`since 1.10.0`
+`since 1.10.0` `changed 2.63.0`
 
-Returns the GIF frame shown, or shows one and stops.
+Returns the frame shown, or shows one and stops.
 
-Raises an error for a frame outside the GIF.
+A Flash file walks its tags to frame `n`, so a jump in them may show another; the frame read after
+says which.
+
+Raises an error for a frame outside the GIF or the Flash file.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -148,19 +162,23 @@ Raises an error for a frame outside the GIF.
 | `frame` | `integer\|` [`rq.Sprite`](rq.Sprite.md) | Without `n`: the frame shown. With `n`: the sprite. |
 | `count` | `integer?` | Without `n`: how many frames there are. |
 
+> Changed in 2.63.0: A Flash file.
+
 ### rq.Sprite:playing
 
 ```lua
 rq.Sprite:playing() -> boolean
 ```
 
-`since 1.10.0`
+`since 1.10.0` `changed 2.63.0`
 
-Returns whether the sprite's GIF is playing.
+Returns whether the sprite's GIF or Flash file is playing.
 
 | Returns | Type | Description |
 | --- | --- | --- |
 | `playing` | `boolean` | true while it plays. |
+
+> Changed in 2.63.0: A Flash file.
 
 ### rq.Sprite:to
 
@@ -222,4 +240,4 @@ Stops the motion where it is, without its `on_end`.
 
 ## Used by
 
-[`rq.Sprite:frame`](rq.Sprite.md#rqspriteframe), [`rq.Sprite:halt`](rq.Sprite.md#rqspritehalt), [`rq.Sprite:play`](rq.Sprite.md#rqspriteplay), [`rq.Sprite:set`](rq.Sprite.md#rqspriteset), [`rq.Sprite:stop`](rq.Sprite.md#rqspritestop), [`rq.Sprite:to`](rq.Sprite.md#rqspriteto), [`rq.SpriteAttach`](rq.SpriteAttach.md), [`rq.SpriteMotion`](rq.SpriteMotion.md), [`rq.sprite.list`](../api/rq.sprite.md#rqspritelist), [`rq.sprite.new`](../api/rq.sprite.md#rqspritenew)
+[`rq.PlayFlashOpts`](rq.PlayFlashOpts.md), [`rq.Sprite:frame`](rq.Sprite.md#rqspriteframe), [`rq.Sprite:halt`](rq.Sprite.md#rqspritehalt), [`rq.Sprite:play`](rq.Sprite.md#rqspriteplay), [`rq.Sprite:set`](rq.Sprite.md#rqspriteset), [`rq.Sprite:stop`](rq.Sprite.md#rqspritestop), [`rq.Sprite:to`](rq.Sprite.md#rqspriteto), [`rq.SpriteAttach`](rq.SpriteAttach.md), [`rq.SpriteMotion`](rq.SpriteMotion.md), [`rq.image.play_flash`](../api/rq.image.md#rqimageplay_flash), [`rq.sprite.list`](../api/rq.sprite.md#rqspritelist), [`rq.sprite.new`](../api/rq.sprite.md#rqspritenew)

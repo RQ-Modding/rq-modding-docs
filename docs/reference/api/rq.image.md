@@ -1,6 +1,6 @@
 # rq.image
 
-`since 0.6.0` `changed 2.25.0`
+`since 0.6.0` `changed 2.25.0` `changed 2.63.0`
 
 Images from a mod's folder, shown by the game as CGs.
 
@@ -20,6 +20,12 @@ is. Up to 64 moving pictures, 1024 frames each and 64 million pixels in all.
 
 `flash_bitmap` puts a still picture on a bitmap inside one of the game's Flash files, such as a
 cut-in or a battle effect (2.25.0).
+
+A mod's own Flash animations (2.63.0): `add_flash` takes an `.aff` or a SWF from the mod's folder,
+under a game file's name to replace it (a skill's effect, a mark) or under a new one, and
+`play_flash` plays one on screen. `rqmod-aff build` (in the game's `xsystem4` folder) makes an
+`.aff` from PNG frames and WAV sounds, and `rqmod-aff check` says what in a file the game would not
+play.
 
 ```lua
 rq.chara.define({ id = "mymod:alice", name = "Alice", face = "faces/alice.png", class = 1 })
@@ -41,6 +47,10 @@ rq.image.replace(2000, "faces/rance.webp", { fit = "cover" })
 | [`rq.image.gif_info`](#rqimagegif_info) | Returns a GIF's size and length. |
 | [`rq.image.flash_bitmap`](#rqimageflash_bitmap) | Puts a picture from the mod's folder on one bitmap of a game Flash file. |
 | [`rq.image.flash_bitmaps`](#rqimageflash_bitmaps) | Lists the bitmaps of a game Flash file, as the game has them. |
+| [`rq.image.add_flash`](#rqimageadd_flash) | Serves a Flash file from the mod's folder as a game Flash file. |
+| [`rq.image.remove_flash`](#rqimageremove_flash) | Undoes `rq.image.add_flash`. New loads play the game's own file again, if there is one. |
+| [`rq.image.flash_info`](#rqimageflash_info) | Returns the size, length, pictures and sounds of the Flash file the game plays under a name. |
+| [`rq.image.play_flash`](#rqimageplay_flash) | Plays a Flash file once on screen, as the game plays its effects. |
 
 ### rq.image.add
 
@@ -261,7 +271,7 @@ Returns a GIF's size and length.
 rq.image.flash_bitmap(file, id, path, opts)
 ```
 
-`since 2.25.0`
+`since 2.25.0` `changed 2.63.0`
 
 Puts a picture from the mod's folder on one bitmap of a game Flash file.
 
@@ -269,13 +279,14 @@ The picture is fitted to the bitmap's size, so the file's placement, motion and 
 face in a cut-in moves as the old one did. `file` is named as in `add_gif`: a bare name is
 `Data/Flash/System/<name>.swf`, and a name with a slash is the full name. Still pictures only.
 New loads of the file show it; a Flash that is playing keeps its bitmap until it loads again. A file
-that `add_gif` or `rq.battle.set_mark` replaced plays the mod's file instead, with none of the
-game's bitmaps. `rqmod-ctl flashdump` saves a file's bitmaps with their ids. With `path` nil the
-bitmap is the game's again.
+that `add_gif`, `add_flash` or `rq.battle.set_mark` replaced plays the mod's file instead, with none
+of the game's bitmaps. A mod's file under a name the game does not have (`add_flash`) takes pictures
+on its own bitmaps. `rqmod-ctl flashdump` saves a file's bitmaps with their ids. With `path` nil the
+bitmap is the file's own again.
 
-Raises an error for a file the game does not have, an id that is no bitmap in it, a GIF or an
-animated WebP, a fit of "none", a picture as `add` does, or past 256 bitmaps or 32 million pixels
-in all.
+Raises an error for a file that is neither the game's nor added with `add_flash`, an id that is no
+bitmap in it, a GIF or an animated WebP, a fit of "none", a picture as `add` does, or past 256
+bitmaps or 32 million pixels in all.
 
 ```lua
 -- A new look for Chiha in her cut-in: her picture and her white silhouette.
@@ -290,19 +301,22 @@ rq.image.flash_bitmap("カットイン・チハ", 19, "cutin/chiha_white.png")
 | `path` | `string\|nil` | A still picture inside the mod's folder, or nil for the game's bitmap. |
 | `opts` *(optional)* | [`rq.FlashBitmapOpts`](../types/rq.FlashBitmapOpts.md) | The fit. |
 
+> Changed in 2.63.0: A mod's own file from `add_flash`.
+
 ### rq.image.flash_bitmaps
 
 ```lua
 rq.image.flash_bitmaps(file) -> rq.FlashBitmap[]
 ```
 
-`since 2.25.0`
+`since 2.25.0` `changed 2.63.0`
 
 Lists the bitmaps of a game Flash file, as the game has them.
 
-Read a bitmap's size here before drawing a picture for it.
+Read a bitmap's size here before drawing a picture for it. A mod's file under a name the game does
+not have (`add_flash`) is listed too.
 
-Raises an error for a file the game does not have.
+Raises an error for a file that is neither the game's nor added with `add_flash`.
 
 ```lua
 for _, b in ipairs(rq.image.flash_bitmaps("毒マーク")) do
@@ -317,3 +331,141 @@ end
 | Returns | Type | Description |
 | --- | --- | --- |
 | `bitmaps` | [`rq.FlashBitmap`](../types/rq.FlashBitmap.md) `[]` | In the file's order. |
+
+> Changed in 2.63.0: A mod's own file from `add_flash`.
+
+### rq.image.add_flash
+
+```lua
+rq.image.add_flash(key, path) -> string
+```
+
+`since 2.63.0`
+
+Serves a Flash file from the mod's folder as a game Flash file.
+
+`path` is an `.aff`, the game's own format, or a SWF, plain (FWS) or compressed with zlib (CWS).
+The key is named as in `add_gif`: a bare key means `Data/Flash/System/<key>.swf`, a key with a
+slash is the full name, and a key named like a game file replaces that file wherever the game plays
+it, such as a skill's effect (`"Data/Flash/Battle/<name>.swf"`, as Rance Browser's Flash tab names
+them). A new name plays through `play_flash` or `rq.sprite`'s `flash`. Adding a key again replaces
+its file.
+
+The file is checked first by the rules of the game's engine, the same as `rqmod-aff check`: 32-bit
+pictures, one picture per shape, uncompressed sound, and the placements, blends and actions the
+engine knows. A file the game would not play, or that would close it, is refused and nothing of it
+reaches the game; the error names the first problem, where it is, and how many more there are. A
+file that plays with warnings (a blend mode drawn as normal, say) is added, and the log says the
+first warning. The game plays every Flash file at 30 frames a second, whatever its header says.
+
+Up to 64 MB a file, as it is in the folder and uncompressed, 32 million pixels in its pictures, and
+256 MB for all the files added together; 1024 keys with the GIFs and the marks' pictures.
+
+Raises an error for a path outside the mod's folder, a missing or empty file, a key of more than
+103 bytes, a file the game would not play, or past the limits.
+
+```lua
+-- Made with: rqmod-aff build frames effects/pulse.aff --fps 15 --sound chime.wav
+rq.image.add_flash("mymod_pulse", "effects/pulse.aff")
+-- A skill's effect replaced, for every fight.
+rq.image.add_flash("Data/Flash/Battle/ファイヤーレーザー.swf", "effects/my_fire.aff")
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `key` | `string` | The Flash file's key. |
+| `path` | `string` | An .aff or .swf file in the mod's folder. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `key` | `string` | The key. |
+
+See also: [`rq.image.play_flash`](rq.image.md#rqimageplay_flash)
+
+### rq.image.remove_flash
+
+```lua
+rq.image.remove_flash(key) -> boolean
+```
+
+`since 2.63.0`
+
+Undoes `rq.image.add_flash`. New loads play the game's own file again, if there is one.
+
+A sprite showing the file keeps it until it is removed. A GIF that `add_gif` added under the key goes
+too.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `key` | `string` | The key. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `removed` | `boolean` | false when no file had that key. |
+
+### rq.image.flash_info
+
+```lua
+rq.image.flash_info(key) -> rq.FlashInfo|nil
+```
+
+`since 2.63.0`
+
+Returns the size, length, pictures and sounds of the Flash file the game plays under a name.
+
+It reads the file the game would load now: a mod's (`add_flash`, `add_gif`, or a mark from
+`rq.battle.set_mark`), else the game's own.
+
+```lua
+local info = rq.image.flash_info("Data/Flash/Battle/ファイヤーレーザー.swf")
+rq.log(("%dx%d, %d frames, %d ms"):format(info.w, info.h, info.frames, info.ms))
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `key` | `string` | The file, named as in `add_gif`. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `info` | [`rq.FlashInfo`](../types/rq.FlashInfo.md) `\|nil` | The file, or nil when the game has none of that name and no mod added one. |
+
+### rq.image.play_flash
+
+```lua
+rq.image.play_flash(key, opts) -> rq.Sprite
+```
+
+`since 2.63.0`
+
+Plays a Flash file once on screen, as the game plays its effects.
+
+It is a sprite (`rq.sprite.new` with `flash = key`) that plays from `from` to `to` at 30 frames a
+second on the game's clock, and is removed after its last frame has shown. The file's own actions
+act (a stop ends the play) and its sounds start at their frames. The key is an `add_flash` key or a
+game file's name, as in `add_gif`, so the game's own effects play too. The sprite is the calling
+mod's, as any sprite it makes: a load and the title remove it.
+
+Raises an error for a key that is no file, a sprite option as `rq.sprite.new` does, a range outside
+the frames, an `on_end` that is not a function, or `wait` outside a job.
+
+```lua
+rq.image.add_flash("mymod_pulse", "effects/pulse.aff")
+rq.battle.on_start(function()
+  rq.image.play_flash("mymod_pulse", { attach = { card = 11 }, z = 20 })  -- over the first enemy
+end)
+rq.spawn(function()
+  rq.image.play_flash("mymod_pulse", { x = 448, y = 320, z = "top", wait = true })
+  rq.log("the pulse ended")
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `key` | `string` | An `add_flash` key or a game Flash file's name. |
+| `opts` *(optional)* | [`rq.PlayFlashOpts`](../types/rq.PlayFlashOpts.md) | Where, and how it plays. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `sprite` | [`rq.Sprite`](../types/rq.Sprite.md) | The sprite that plays it, removed at the end unless `loop`. |
+
+See also: [`rq.image.add_flash`](rq.image.md#rqimageadd_flash)

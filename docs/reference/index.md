@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.62.2.
+Loader version 2.63.0.
 
 ## Namespaces
 
@@ -126,6 +126,7 @@ Loader version 2.62.2.
 | [`rq.FightResult`](types/rq.FightResult.md) | How a fight from `rq.battle.start` ended, its second value. |
 | [`rq.FlashBitmap`](types/rq.FlashBitmap.md) | One bitmap of a game Flash file, as `rq.image.flash_bitmaps` lists it. |
 | [`rq.FlashBitmapOpts`](types/rq.FlashBitmapOpts.md) | Options for `rq.image.flash_bitmap`. |
+| [`rq.FlashInfo`](types/rq.FlashInfo.md) | What `rq.image.flash_info` returns. |
 | [`rq.FlashSound`](types/rq.FlashSound.md) | A sound inside a Flash file, from `rq.sound.flash_info`. |
 | [`rq.ForgetCtx`](types/rq.ForgetCtx.md) | What `rq.chara.on_forget` gets. |
 | [`rq.GameButtonGroup`](types/rq.GameButtonGroup.md) | A group, from `rq.gamebutton.groups`. |
@@ -185,6 +186,7 @@ Loader version 2.62.2.
 | [`rq.OrderUnit`](types/rq.OrderUnit.md) | One unit of a fight, as `rq.battle.on_order` lists it. |
 | [`rq.PartyMember`](types/rq.PartyMember.md) | A recruited character, from `rq.party.roster`. |
 | [`rq.PhysicalCtx`](types/rq.PhysicalCtx.md) | What `rq.combat.on_physical` gets for one physical hit. |
+| [`rq.PlayFlashOpts`](types/rq.PlayFlashOpts.md) | Options for `rq.image.play_flash`: the sprite's (`rq.SpriteOpts`, such as `x`, `y`, `z`, `scale`, `attach` and `sound`) and the play's. |
 | [`rq.PoisonCtx`](types/rq.PoisonCtx.md) | What `rq.combat.on_poison` gets where the game works out a poison. |
 | [`rq.Quest`](types/rq.Quest.md) | A quest, from `rq.quests()`. |
 | [`rq.QuestArea`](types/rq.QuestArea.md) | An area of a mod's quest's map, in `rq.QuestMap.areas`. |

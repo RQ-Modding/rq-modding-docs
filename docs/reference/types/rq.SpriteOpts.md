@@ -4,16 +4,18 @@
 
 Options for `rq.sprite.new` and `Sprite:set`.
 
-`new` needs one of `gif`, `cg`, `fill` or `text`; `set` changes only the options given. A CG that
-`rq.image.replace` or `compose` changes is shown as it is now.
+`new` needs one of `gif`, `flash`, `cg`, `fill` or `text`; `set` changes only the options given. A
+CG that `rq.image.replace` or `compose` changes is shown as it is now.
 
 ## Fields
 
 | Name | Type | Description |
 | --- | --- | --- |
 | `gif` *(optional)* | `string` | A GIF file in the mod's folder, or an `rq.image.add_gif` key. It plays over and over from the start. Since 1.10.0. |
-| `fps` *(optional)* | `number` | Frames a second for the GIF, 0 to 240; 0 (default) uses the GIF's own delays. Since 1.10.0. |
-| `clock` *(optional)* | `"game"\|"real"` | GIFs and motion run on the game's clock, which follows `rq.speed` (default), or on real time. Since 1.10.0. |
+| `flash` *(optional)* | `string` | An `rq.image.add_flash` key, or a game Flash file's name as in `rq.image.add_gif`. It plays over and over from frame 1, at 30 frames a second, its actions and sounds as in the game; the stage is its size. Since 2.63.0. |
+| `sound` *(optional)* | `boolean` | false keeps a Flash file's sounds quiet. Default true. Since 2.63.0. |
+| `fps` *(optional)* | `number` | Frames a second for the GIF or the Flash file, 0 to 240; 0 (default) uses the GIF's own delays, and a Flash file's 30. Since 1.10.0; Flash since 2.63.0. |
+| `clock` *(optional)* | `"game"\|"real"` | GIFs, Flash files and motion run on the game's clock, which follows `rq.speed` (default), or on real time. Since 1.10.0. |
 | `cg` *(optional)* | `integer` | A CG number; `rq.image.add` gives one for a file in the mod. |
 | `src` *(optional)* | `{x: integer, y: integer, w: integer, h: integer}\|false` | A part of the CG; false for the whole again. |
 | `fill` *(optional)* | `{r: integer, g: integer, b: integer, a?: integer}` | A color; needs `w` and `h`. |
