@@ -351,6 +351,11 @@ it, such as a skill's effect (`"Data/Flash/Battle/<name>.swf"`, as Rance Browser
 them). A new name plays through `play_flash` or `rq.sprite`'s `flash`. Adding a key again replaces
 its file.
 
+A file in the place of one of the game's keeps that file's size (`flash_info` gives it): the game
+places its files by their own size, and a battle effect's stage, 400 by 400 for most, is placed
+over its target with the picture in its middle. A file of another size is drawn off that place, and
+the log says so; `rqmod-aff build --size 400x400` puts smaller frames in the middle of the stage.
+
 The file is checked first by the rules of the game's engine, the same as `rqmod-aff check`: 32-bit
 pictures, one picture per shape, uncompressed sound, and the placements, blends and actions the
 engine knows. A file the game would not play, or that would close it, is refused and nothing of it
@@ -367,7 +372,8 @@ Raises an error for a path outside the mod's folder, a missing or empty file, a 
 ```lua
 -- Made with: rqmod-aff build frames effects/pulse.aff --fps 15 --sound chime.wav
 rq.image.add_flash("mymod_pulse", "effects/pulse.aff")
--- A skill's effect replaced, for every fight.
+-- A skill's effect replaced, for every fight; made at the game file's 400 by 400:
+-- rqmod-aff build fire_frames effects/my_fire.aff --size 400x400
 rq.image.add_flash("Data/Flash/Battle/ファイヤーレーザー.swf", "effects/my_fire.aff")
 ```
 

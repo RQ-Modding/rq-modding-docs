@@ -23,7 +23,7 @@ rq.sound.stop(h, 500)
 | --- | --- |
 | [`rq.sound.play`](#rqsoundplay) | Plays a game sound or a sound file from the mod folder. |
 | [`rq.sound.play_flash`](#rqsoundplay_flash) | Plays a sound kept inside a Flash file. |
-| [`rq.sound.flash_info`](#rqsoundflash_info) | Lists the sounds in a Flash file. |
+| [`rq.sound.flash_info`](#rqsoundflash_info) | Lists the sounds in a Flash file: a mod's file under that key first (`rq.image.add_flash`), as for `play_flash`. |
 | [`rq.sound.stop`](#rqsoundstop) | Stops a sound, at once or with a fade out. |
 | [`rq.sound.playing`](#rqsoundplaying) | Returns whether a sound still plays. |
 | [`rq.sound.set_volume`](#rqsoundset_volume) | Changes a sound's volume, at once or over a fade. |
@@ -62,14 +62,20 @@ See also: [`rq.sound.stop`](rq.sound.md#rqsoundstop)
 rq.sound.play_flash(key, opts) -> integer|nil
 ```
 
-`since 1.4.0`
+`since 1.4.0` `changed 2.63.0`
 
 Plays a sound kept inside a Flash file.
 
 Some game sounds have no number, such as Berserk's in `Data/Flash/Battle/狂戦士発動.swf`. A bare key
-means `Data/Flash/System/<key>.swf`, as in `rq.image.add_gif`, and a GIF added under that key is
-looked at first. Only uncompressed (PCM) sounds play. Raises an error when the file or that sound
-is missing, the sound is compressed, `index` is below 1, or 32 mod sounds already play.
+means `Data/Flash/System/<key>.swf`, as in `rq.image.add_gif`, and a file a mod added under that
+key (`rq.image.add_flash`, or a GIF) is looked at first, as the game plays it. Only uncompressed
+(PCM) sounds play. Raises an error when the file or that sound is missing, the sound is
+compressed, `index` is below 1, or 32 mod sounds already play.
+
+A file's sound is read once and kept; it is read again after a mod adds, replaces or removes the
+file under that name.
+
+under its name changed (a bare key and the full path are one file).
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -80,6 +86,8 @@ is missing, the sound is compressed, `index` is below 1, or 32 mod sounds alread
 | --- | --- | --- |
 | `handle` | `integer\|nil` | The handle, or nil when the sound did not start. |
 
+> Changed in 2.63.0: A mod's own file from `rq.image.add_flash`, and a sound read again after the file
+
 See also: [`rq.sound.flash_info`](rq.sound.md#rqsoundflash_info)
 
 ### rq.sound.flash_info
@@ -88,9 +96,10 @@ See also: [`rq.sound.flash_info`](rq.sound.md#rqsoundflash_info)
 rq.sound.flash_info(key) -> rq.FlashSound[]|nil
 ```
 
-`since 1.4.0`
+`since 1.4.0` `changed 2.63.0`
 
-Lists the sounds in a Flash file.
+Lists the sounds in a Flash file: a mod's file under that key first (`rq.image.add_flash`), as
+for `play_flash`.
 
 ```lua
 for i, s in ipairs(rq.sound.flash_info("Data/Flash/Battle/狂戦士発動.swf") or {}) do
@@ -105,6 +114,8 @@ end
 | Returns | Type | Description |
 | --- | --- | --- |
 | `sounds` | [`rq.FlashSound`](../types/rq.FlashSound.md) `[]\|nil` | The sounds, in the order `index` counts them; nil when there is no such file. |
+
+> Changed in 2.63.0: A mod's own file from `rq.image.add_flash`.
 
 ### rq.sound.stop
 
