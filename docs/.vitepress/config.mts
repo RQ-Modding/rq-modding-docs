@@ -59,6 +59,8 @@ const guide: DefaultTheme.SidebarItem[] = [
       { text: "The game's own code", link: '/guide/game-code' },
       { text: 'Pictures', link: '/guide/pictures' },
       { text: 'Animations', link: '/guide/animations' },
+      { text: 'Learning 3D', link: '/guide/learning-3d' },
+      { text: 'Game models in Blender', link: '/guide/game-models' },
       { text: 'Replacing music', link: '/guide/music' },
       { text: 'Battle states', link: '/guide/states' },
       { text: 'Combat rules', link: '/guide/combat' },

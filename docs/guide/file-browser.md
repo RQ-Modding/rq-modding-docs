@@ -1,13 +1,13 @@
 # Looking through the game's files
 
 Rance Browser (`rance-browser.exe`) is a window over the game's own files: its pictures, Flash
-files, music, sounds and 3D textures, and the names `rq.ids` gives. Find what you want to change,
-read its number, copy the Lua line that replaces or plays it, and save the file to look at or draw
-over.
+files, music, sounds, 3D models and their textures, and the names `rq.ids` gives. Find what you
+want to change, read its number, copy the Lua line that replaces or plays it, and save the file to
+look at or draw over.
 
 It came with loader 2.43.0 as RQ Browser (`rq-browser.exe`). Since 2.55.1 it is Rance Browser, a
 program with [a repository of its own](https://github.com/RQ-Modding/rance-browser) that RQ MOD's
-package carries; its version (1.0.0 in loader 2.55.1, 1.1.0 in 2.63.0) shows in its title bar.
+package carries; its version (1.0.0 in loader 2.55.1, 1.2.0 in 2.63.0) shows in its title bar.
 
 ![The CGs tab: Rance's face, CG 2000, with its details and the Lua line that replaces it](/browser/cgs.png)
 
@@ -40,6 +40,7 @@ rance-browser.exe --scale 1.25
 | Flash | The 412 Flash files (battle effects, monster attacks, cut-ins, the interface), played as the game plays them, each with its pictures and sounds; a `.swf` or `.aff` from disk too | `rq.image.add_flash(key, path)`, `rq.image.play_flash(key, opts)`, `rq.image.flash_bitmap(file, id, path)`, `rq.image.flash_bitmaps(file)`, `rq.sound.play_flash(file, { index = n })` |
 | Music | The 72 tracks with the game's names, played with their loops | `rq.music.replace(no, "music/no.ogg")`, `rq.music.play(no)` |
 | Sounds | The 140 sound effects | `rq.sound.play(no)` |
+| 3D models | The 647 models (monsters and the party's figures, dungeon rooms, fight backgrounds, the map's props), drawn as the game draws them, with their motions; each exported as a `.glb` for Blender | `rq.monster.model({ id = ..., base = model })`, `rq.battle.start({ ..., background = ... })`, `rq.dungeon.place("custom", x, z, { look = ... })` |
 | 3D textures | The 5,351 textures of the 3D models: characters, map rooms, backgrounds | none yet |
 | Names | Every `rq.ids` list, with each name's key and the game's picture for it | `rq.ids.chara.RANCE` and so on |
 
@@ -82,8 +83,19 @@ others). Its sounds play when the file stores them plainly; a compressed one is 
 or its path on the command line opens a Flash file of your own, to watch it and check it before it
 goes into a mod ([Animations](./animations)).
 
+**3D models.** The 3D models tab draws each of the game's models with the game's own renderer:
+its motions at 30 frames a second with the frames the game plays, its bones, a room's walk mesh,
+a monster on a fight background with its shadow and the fight's camera. **Save this frame as
+PNG...** saves the view, and **Export the model as glTF (.glb)...** writes the model for Blender
+and other 3D programs. [Game models in Blender](./game-models) goes through the tab and the export
+step by step, and [Learning 3D](./learning-3d) explains the words. Exported models are for your
+own use, as below.
+
+![The 3D models tab: Rance's figure standing, its motions, its details and the Lua lines that use it](/3d/tab.png)
+
 **Names.** The Names tab lists each `rq.ids` kind with its numbers, keys and details. A character
-shows its face, an item its icon; **Open in the CGs tab** goes to that picture.
+shows its face, an item its icon, a monster its model; **Open in the CGs tab** goes to that picture,
+and **Open in the 3D tab** to that model with the monster's own motions.
 
 ![The Names tab: the characters with their faces](/browser/names.png)
 
@@ -96,6 +108,7 @@ shows its face, an item its icon; **Open in the CGs tab** goes to that picture.
   `folder\model\name.png`.
 - **Save all N pictures** in the Flash tab saves a file's pictures as `<id>_<w>x<h>.png`, the names
   [`rqmod-ctl flashdump`](./pictures#pictures-inside-the-games-flash-files) uses.
+- **Save this frame as PNG...** and **Export the model as glTF (.glb)...** in the 3D models tab.
 
 The game's files belong to AliceSoft. Keep the saved copies for your own work, and share only what
 you made.
@@ -106,17 +119,27 @@ you made.
 rance-browser.exe --check [--out report.json]
 rance-browser.exe --shot cgs shot.png [--select 2000] [--grid]
 rance-browser.exe --shot flash shot.png --file my_effect.aff --frame 12
+rance-browser.exe --shot 3d shot.png --select gokiburi [--motion gokiburi_kougeki] [--frame 10]
+rance-browser.exe --shot 3d shot.png --select gokiburi --fight bgA_00_douk --fight-camera
+rance-browser.exe --export gokiburi.glb --select gokiburi
+rance-browser.exe --export models --kind chara
 rance-browser.exe my_effect.aff
 rance-browser.exe --help
 ```
 
 `--check` opens every archive, decodes some of each kind, reads every track's loop and every
-sound, checks every Flash file and plays it to its end, and prints a report in JSON; it ends with 0
-when all went well. `--shot` saves one tab (`cgs`, `flash`, `music`, `sounds`, `textures` or `names`)
-as a PNG, with `--select` choosing the number, row or kind shown (in the Flash tab also a file's
-name), `--grid` the pictures' grid, `--frame` a Flash file's frame, `--file` a Flash file from disk,
-`--size WxH` the picture's size and `--scale` the layout's (1 unless given). A `.swf` or `.aff` path
-alone opens that file in the Flash tab.
+sound, checks every Flash file and plays it to its end, draws every 3D model and plays every
+motion, and prints a report in JSON; it ends with 0 when all went well. `--shot` saves one tab
+(`cgs`, `flash`, `music`, `sounds`, `3d`, `textures` or `names`) as a PNG, with `--select` choosing
+the number, row or kind shown (in the Flash tab also a file's name; in the 3D tab a model's folder,
+`Kind/folder` such as `Etc/takarabako`, or a model number such as 100122), `--grid` the pictures'
+grid, `--frame` a Flash file's frame or a motion's, `--file` a Flash file from disk, `--size WxH`
+the picture's size and `--scale` the layout's (1 unless given). In the 3D tab, `--motion` picks a
+MOT of the model's folder (or `none`), `--bones` and `--walk` draw the skeleton and the walk mesh,
+and `--fight` puts a monster on a fight background, with `--fight-camera` for the game's camera.
+`--export` writes one model as a `.glb`, or with a folder, every model of a kind (`--kind chara`,
+`map`, `bg` or `etc`) or `--all`, with a report `export.json`. A `.swf` or `.aff` path alone opens
+that file in the Flash tab.
 
 ## Other games
 

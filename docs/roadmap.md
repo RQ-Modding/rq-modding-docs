@@ -66,9 +66,10 @@ When a mod asks for it, or at low priority.
   Browser until 2.55.1, now in its own repository) shows the game's CGs, Flash files, music, sounds,
   3D textures and the names of `rq.ids` with their pictures, gives the Lua line that replaces or
   plays each, and saves them. Since 2.55.1 it also opens Rance VI and other System 4 games for the
-  wiki, and since 2.63.0 (Rance Browser 1.1.0) it plays a Flash file as the game does, checks it by
-  the engine's rules and opens one from disk. Later: the pictures and music the installed mods put
-  in place, the game's text, and Escape to close a dropdown.
+  wiki, and since 2.63.0 (Rance Browser 1.2.0) it plays a Flash file as the game does, checks it by
+  the engine's rules and opens one from disk, and draws the game's 3D models with their motions.
+  Later: the pictures and music the installed mods put in place, the game's text, and Escape to
+  close a dropdown.
 - **Scenes as files, and a scene editor.** Scenes written as JSON files, played by a mod or from
   outside the game (`rqmod-ctl playscene`), came in 2.60.0 ([Scenes](guide/scenes.md#a-scene-as-a-file)).
   RQ Scene Editor, a program of its own in RQ MOD's package since 2.62.1, writes them, checks them
@@ -80,4 +81,6 @@ When a mod asks for it, or at low priority.
   for people new to 3D: the game's models and animations shown in the browser and exported to glTF for
   Blender; a mod's own textures on the game's models; a mod's own models and animations, read from the
   mod's `.glb` and checked against what the engine can draw; rooms of a mod's own; fight backgrounds
-  and effects.
+  and effects. The first step came with 2.63.0: Rance Browser 1.2.0's 3D models tab draws each of
+  the game's 647 models as the game does and exports it as a `.glb`, every one checked by opening it
+  in Blender ([Learning 3D](guide/learning-3d.md), [Game models in Blender](guide/game-models.md)).
