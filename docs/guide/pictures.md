@@ -96,6 +96,10 @@ has five). Replace each of them.
 The game loads a Flash file when it plays it, so the next time the cut-in or mark plays it shows
 yours. `rq.image.flash_bitmap(file, id, nil)` gives the game's picture back.
 
+To change the motion itself, or to make an animation of your own from frames, see
+[Animations](./animations): since loader 2.63.0 a mod can put a whole Flash file of its own in place
+of the game's, or play one anywhere.
+
 ## Things to know
 
 - **A moving picture is still** where the game copies part of the picture or draws on it, such as
@@ -103,9 +107,10 @@ yours. `rq.image.flash_bitmap(file, id, nil)` gives the game's picture back.
   `rq.sprite`'s `gif` plays a file on a mod's own sprite.
 - **Fight cards** take a face per fight with `rq.battle.set_face`, which wins over the character's
   moving face while it is set.
-- **Flash pictures are still pictures.** A GIF for a whole Flash file goes through
-  `rq.image.add_gif`, and a mark with `rq.battle.set_mark`; then the game's file, and the pictures you
-  put in it, are not played.
+- **Flash pictures are still pictures.** A whole Flash file of your own goes through
+  `rq.image.add_flash` ([Animations](./animations)), a GIF in its place through `rq.image.add_gif`,
+  and a mark with `rq.battle.set_mark`; then the game's file, and the pictures you put in it, are not
+  played.
 - **Enemies and fight backgrounds** are 3D models, not pictures by number. `rq.image` cannot reach them.
 - **Limits:** 256 mod pictures; 64 moving pictures, with 1024 frames each and 64 million pixels in
   all; a GIF up to 1024 pixels a side and a WebP up to 4096; 256 Flash pictures and 32 million pixels.

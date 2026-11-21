@@ -7,7 +7,7 @@ over.
 
 It came with loader 2.43.0 as RQ Browser (`rq-browser.exe`). Since 2.55.1 it is Rance Browser, a
 program with [a repository of its own](https://github.com/RQ-Modding/rance-browser) that RQ MOD's
-package carries; its version (1.0.0 in loader 2.55.1) shows in its title bar.
+package carries; its version (1.0.0 in loader 2.55.1, 1.1.0 in 2.63.0) shows in its title bar.
 
 ![The CGs tab: Rance's face, CG 2000, with its details and the Lua line that replaces it](/browser/cgs.png)
 
@@ -37,7 +37,7 @@ rance-browser.exe --scale 1.25
 | Tab | What it lists | The Lua line it gives |
 | --- | --- | --- |
 | CGs | The 2,315 pictures by CG number, in the game's folders: faces, standing pictures, scene CGs, backgrounds, the interface | `rq.image.replace(no, "pictures/no.png")` |
-| Flash | The 412 Flash files (battle effects, monster attacks, cut-ins, the interface), each with its pictures and sounds | `rq.image.flash_bitmap(file, id, path)`, `rq.image.flash_bitmaps(file)`, `rq.sound.play_flash(file, { index = n })` |
+| Flash | The 412 Flash files (battle effects, monster attacks, cut-ins, the interface), played as the game plays them, each with its pictures and sounds; a `.swf` or `.aff` from disk too | `rq.image.add_flash(key, path)`, `rq.image.play_flash(key, opts)`, `rq.image.flash_bitmap(file, id, path)`, `rq.image.flash_bitmaps(file)`, `rq.sound.play_flash(file, { index = n })` |
 | Music | The 72 tracks with the game's names, played with their loops | `rq.music.replace(no, "music/no.ogg")`, `rq.music.play(no)` |
 | Sounds | The 140 sound effects | `rq.sound.play(no)` |
 | 3D textures | The 5,351 textures of the 3D models: characters, map rooms, backgrounds | none yet |
@@ -63,11 +63,24 @@ Opening another tab stops what plays.
 
 ![The Music tab: track 3 with its loop on the seek bar and its Lua lines](/browser/music.png)
 
-**Flash files.** A Flash file's pictures have ids; the tab shows each one with its id and size,
-which is what [`rq.image.flash_bitmap`](./pictures#pictures-inside-the-game-s-flash-files) needs, and
-the file's key as the Lua calls take it (a bare name for a file in `System`, the full path for the
-others). Its sounds play when the file stores them plainly; a compressed one is marked so. The
-motion itself is not played.
+**Flash files.** The Flash tab plays a file as the game plays it: at 30 frames a second (the game
+plays every Flash file at 30, whatever the file says), with its actions, its sounds at their frames
+and its blend modes. **Play** (Space), the first and last frame, a frame back or on (Comma and
+Period), the frame slider, **Loop**, **Sounds**, the speed, what lies under it (squares, black or
+white) and the zoom. **What the game makes of it**, on the right, checks the file by the engine's
+rules: whether the game plays it, with each problem's frame and what to do, and what the file holds.
+**Save this frame as PNG...** saves the frame shown.
+
+![The Flash tab: Fire Laser at frame 12, with what the game makes of it and its Lua lines](/browser/flash.png)
+
+**Its pictures** shows the file's pictures with their ids and sizes, which is what
+[`rq.image.flash_bitmap`](./pictures#pictures-inside-the-games-flash-files) needs, and the Lua lines
+name the file as the calls take it (a bare name for a file in `System`, the full path for the
+others). Its sounds play when the file stores them plainly; a compressed one is marked so.
+
+**A file from disk.** **Open a .swf or .aff file...** above the list, a file dropped on the window,
+or its path on the command line opens a Flash file of your own, to watch it and check it before it
+goes into a mod ([Animations](./animations)).
 
 **Names.** The Names tab lists each `rq.ids` kind with its numbers, keys and details. A character
 shows its face, an item its icon; **Open in the CGs tab** goes to that picture.
@@ -82,7 +95,7 @@ shows its face, an item its icon; **Open in the CGs tab** goes to that picture.
   progress bar and Cancel. Narrow the list first: a folder, or a search. Textures go into
   `folder\model\name.png`.
 - **Save all N pictures** in the Flash tab saves a file's pictures as `<id>_<w>x<h>.png`, the names
-  [`rqmod-ctl flashdump`](./pictures#pictures-inside-the-game-s-flash-files) uses.
+  [`rqmod-ctl flashdump`](./pictures#pictures-inside-the-games-flash-files) uses.
 
 The game's files belong to AliceSoft. Keep the saved copies for your own work, and share only what
 you made.
@@ -92,14 +105,18 @@ you made.
 ```
 rance-browser.exe --check [--out report.json]
 rance-browser.exe --shot cgs shot.png [--select 2000] [--grid]
+rance-browser.exe --shot flash shot.png --file my_effect.aff --frame 12
+rance-browser.exe my_effect.aff
 rance-browser.exe --help
 ```
 
 `--check` opens every archive, decodes some of each kind, reads every track's loop and every
-sound, and prints a report in JSON; it ends with 0 when all went well. `--shot` saves one tab
-(`cgs`, `flash`, `music`, `sounds`, `textures` or `names`) as a PNG, with `--select` choosing the
-number, row or kind shown, `--grid` the pictures' grid, `--size WxH` the picture's size and `--scale`
-the layout's (1 unless given).
+sound, checks every Flash file and plays it to its end, and prints a report in JSON; it ends with 0
+when all went well. `--shot` saves one tab (`cgs`, `flash`, `music`, `sounds`, `textures` or `names`)
+as a PNG, with `--select` choosing the number, row or kind shown (in the Flash tab also a file's
+name), `--grid` the pictures' grid, `--frame` a Flash file's frame, `--file` a Flash file from disk,
+`--size WxH` the picture's size and `--scale` the layout's (1 unless given). A `.swf` or `.aff` path
+alone opens that file in the Flash tab.
 
 ## Other games
 

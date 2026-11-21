@@ -58,6 +58,7 @@ const guide: DefaultTheme.SidebarItem[] = [
       { text: 'Data that follows the save', link: '/guide/save-data' },
       { text: "The game's own code", link: '/guide/game-code' },
       { text: 'Pictures', link: '/guide/pictures' },
+      { text: 'Animations', link: '/guide/animations' },
       { text: 'Replacing music', link: '/guide/music' },
       { text: 'Battle states', link: '/guide/states' },
       { text: 'Combat rules', link: '/guide/combat' },

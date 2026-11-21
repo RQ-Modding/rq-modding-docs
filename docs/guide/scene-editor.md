@@ -115,7 +115,7 @@ The editor runs RQ MOD's own checker on the file as you type, the one the game r
 scene, so its problems are the game's, in the game's words, with the game's names of quests,
 characters and items. A file with a problem does not play in the game. Click a problem to go to its
 step, row or cast entry. With the game running the mod, a call to a function the mod does not name
-with [`rq.scene.functions`](scenes.md#the-mod-s-functions) is a problem too, as in the game.
+with [`rq.scene.functions`](scenes.md#the-mods-functions) is a problem too, as in the game.
 
 **Game log** shows the lines the game writes in `logs\rqmod.log` for the open mod, as they come; a line
 that names a place of a scene file opens that file there. **Find** (Ctrl+F) looks for a text in every
