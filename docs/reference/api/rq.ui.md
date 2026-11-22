@@ -188,7 +188,7 @@ end)
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `path` | `string` | A path inside the mod's folder, in ASCII. |
+| `path` | `string` | A path inside the mod's folder. |
 
 See also: [`rq.ui.shot_result`](rq.ui.md#rquishot_result)
 

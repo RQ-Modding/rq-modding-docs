@@ -79,8 +79,8 @@ end)
 | Name | Type | Description |
 | --- | --- | --- |
 | `version` | `string` | The loader version, such as "1.16.0". A mod whose `mod.json` asks for a newer `loader` is not loaded. |
-| `game_dir` | `string` | The game folder (where the AIN is). |
-| `mods_dir` | `string` | The `mods` folder, ending in a backslash. |
+| `game_dir` | `string` | The game folder (where the AIN is), in UTF-8 as every path the loader gives. |
+| `mods_dir` | `string` | The `mods` folder, in UTF-8, with no backslash at the end. |
 
 ## Functions
 
