@@ -82,8 +82,8 @@ game may have it on.
 The game is drawn at 1024 by 768. In a larger window or in full screen it is scaled up with a filter,
 which you pick in Config, **Other 2**, under **Magnification**: Standard (the game's own), Bicubic,
 Nearest (square pixels), Lanczos or xBRZ (for pixel art). Each row's tip says how it looks. The same
-five are in the menu of the window's title bar (a right click on it). The Window tab has the game's
-two, Standard and Bicubic.
+five are in the menu of the window's title bar (a right click on it), with a mark on the one in use.
+The Window tab has the game's two, Standard and Bicubic.
 
 ## A gamepad
 

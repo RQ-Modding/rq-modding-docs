@@ -10,6 +10,7 @@ A patch version fixes or adjusts behavior, a minor version adds calls or fields,
 The window's magnification filter in Config. The Window tab's Magnification has the game's two filters, Standard and Bicubic; RQ MOD's other three, Nearest, Lanczos and xBRZ, were only in the menu of the window's title bar (a right click on it).
 - Config's Other 2 tab shows all five under its checkboxes, as one choice: Standard (bilinear), Bicubic, Nearest (pixel), Lanczos and xBRZ, each with a tip. It is RQ MOD's own and shows with or without mods. A choice takes effect at once and is kept, as the title bar's menu keeps it. The keys reach it: Down from the last checkbox, Up from the buttons at the bottom. Agents see its rows as `check-magnification-standard`, `-bicubic`, `-nearest`, `-lanczos` and `-xbrz`.
 - The Window tab ticked Standard while one of the other three was in use, and kept Standard from being clicked. Neither is ticked then now, and both can be clicked.
+- The title bar's menu marks the filter in use, wherever it was chosen: in the menu, on Other 2 or on the Window tab.
 - No `rq.*` call changed.
 - The Lab: `config-filter` picks each filter on Other 2 as an agent presses and with the keys, checks the Window tab with one of RQ MOD's filters and with the game's, and goes to the title from Other 2 (no rows there, and Other 2 with its rows again after it).
 
