@@ -5,6 +5,14 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.65.2
+
+The window's magnification filter in Config. The Window tab's Magnification has the game's two filters, Standard and Bicubic; RQ MOD's other three, Nearest, Lanczos and xBRZ, were only in the menu of the window's title bar (a right click on it).
+- Config's Other 2 tab shows all five under its checkboxes, as one choice: Standard (bilinear), Bicubic, Nearest (pixel), Lanczos and xBRZ, each with a tip. It is RQ MOD's own and shows with or without mods. A choice takes effect at once and is kept, as the title bar's menu keeps it. The keys reach it: Down from the last checkbox, Up from the buttons at the bottom. Agents see its rows as `check-magnification-standard`, `-bicubic`, `-nearest`, `-lanczos` and `-xbrz`.
+- The Window tab ticked Standard while one of the other three was in use, and kept Standard from being clicked. Neither is ticked then now, and both can be clicked.
+- No `rq.*` call changed.
+- The Lab: `config-filter` picks each filter on Other 2 as an agent presses and with the keys, checks the Window tab with one of RQ MOD's filters and with the game's, and goes to the title from Other 2 (no rows there, and Other 2 with its rows again after it).
+
 ## 2.65.1
 
 A mod's item keeps its description when the game builds it again. The game writes an item's description from its kind, its rank and its effects when it appraises the item (the appraisal after a quest, and `rq.item.appraise`), when gear grows, in a fight for a familiar that grows or armour that wears, and on the move to the third world for each item that could not be taken off. Its own items keep a fixed text there, a mod's did not: an item a mod defined, dropped unidentified from a chest and appraised at the quest's end, read " |C| : " (Binoculars, for one).
