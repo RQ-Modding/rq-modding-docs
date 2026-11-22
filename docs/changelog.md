@@ -5,6 +5,14 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.65.3
+
+The game's 3D anti-aliasing. Config's 3D tab has Anti-Aliasing (Disabled, 2X, 4X, 8X), and the highest of its four quality levels sets 4X, but the engine kept the setting and drew the 3D without it.
+- The 3D scene (a fight, a quest's map and the game's other 3D views) is drawn with 2, 4 or 8 samples a pixel, as chosen: the edges of the models, of the background's polygons and of the outlines are smooth instead of stepped. Lines inside a texture, and the 2D pictures and text over the 3D, are as before.
+- A change on the 3D tab shows at once, as the game loads its 3D settings again; the log says `3D anti-aliasing: 4x` (or `off`, `2x`, `8x`) when the setting changes. A count the graphics driver cannot give is drawn without anti-aliasing, as before.
+- No `rq.*` call changed.
+- The Lab: `anti-aliasing` holds a fight at its first turn and shoots it with each value, set through the game's own reload of its 3D settings; its checker finds the background's edges smoother with each value, and the two shots without it the same.
+
 ## 2.65.2
 
 The window's magnification filter in Config. The Window tab's Magnification has the game's two filters, Standard and Bicubic; RQ MOD's other three, Nearest, Lanczos and xBRZ, were only in the menu of the window's title bar (a right click on it).

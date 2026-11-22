@@ -85,6 +85,13 @@ Nearest (square pixels), Lanczos or xBRZ (for pixel art). Each row's tip says ho
 five are in the menu of the window's title bar (a right click on it), with a mark on the one in use.
 The Window tab has the game's two, Standard and Bicubic.
 
+## Smoother 3D
+
+The fights and the quests' maps are drawn in 3D. To smooth the stepped edges of their models, pick
+**Anti-Aliasing** on Config's **3D** tab: 2X, 4X or 8X (the 3D tab's highest quality level sets 4X).
+It shows at once. It smooths the edges of the shapes, not lines inside their pictures, and leaves the
+2D pictures and text as they are.
+
 ## A gamepad
 
 A gamepad does nothing in RQ MOD yet: Rance Quest reads the pad through a part of the engine that is
