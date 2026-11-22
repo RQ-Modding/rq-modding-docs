@@ -1,7 +1,7 @@
 {
   "$schema": "https://rq-modding.github.io/rq-modding-docs/schemas/catalog.schema.json",
   "format": 1,
-  "generated": "2026-11-20",
+  "generated": "2026-11-22",
   "manager": {
     "version": "1.0.0",
     "tag": "v1.0.0",
@@ -15,16 +15,16 @@
     }
   },
   "engine": {
-    "version": "2.62.2",
+    "version": "2.64.0",
     "stage": "Public Beta",
-    "tag": "v2.62.2",
-    "published": "2026-11-20",
-    "notes": "https://github.com/RQ-Modding/RQ-Mod/releases/tag/v2.62.2",
+    "tag": "v2.64.0",
+    "published": "2026-11-22",
+    "notes": "https://github.com/RQ-Modding/RQ-Mod/releases/tag/v2.64.0",
     "zip": {
-      "name": "RQ-MOD-2.62.2-windows.zip",
-      "url": "https://github.com/RQ-Modding/RQ-Mod/releases/download/v2.62.2/RQ-MOD-2.62.2-windows.zip",
-      "size": 34691101,
-      "sha256": "c2eb2a5fa6ef65bedfa6397d5e173f91c7b04a56ade698446d73ce509c334ed6"
+      "name": "RQ-MOD-2.64.0-windows.zip",
+      "url": "https://github.com/RQ-Modding/RQ-Mod/releases/download/v2.64.0/RQ-MOD-2.64.0-windows.zip",
+      "size": 35330659,
+      "sha256": "d87ffe57fa094f2d8bf7324a91664368c568a8bbc7388faf0ef74d6895a01081"
     }
   },
   "mods": [

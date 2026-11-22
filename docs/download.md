@@ -35,7 +35,7 @@ details: where RQ MOD saves, the game's network box, and what to send when somet
 | --- | --- |
 | `xsystem4\xsystem4.exe` | The game's engine with the mod loader. Start the game with it. |
 | `mods\` | Empty: put mods here, one folder each. |
-| `xsystem4\rance-browser.exe` | [Rance Browser](guide/file-browser.md), a window over the game's pictures, animations, music and sounds. |
+| `xsystem4\rance-browser.exe` | [Rance Browser](guide/file-browser.md), a window over the game's pictures, animations, 3D models, music and sounds. |
 | `xsystem4\rq-scene-editor.exe` | [RQ Scene Editor](guide/scene-editor.md), a window that writes a mod's scene files and plays them in the game. |
 | `xsystem4\rqmod-aff.exe` | Makes an animation the game plays from PNG frames, and checks a Flash file ([Animations](guide/animations.md)). On the command line. |
 | `xsystem4\api.html` | The API reference, offline. |
