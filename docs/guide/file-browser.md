@@ -152,7 +152,8 @@ that file in the Flash tab.
 ## Other games
 
 Rance Browser also opens other AliceSoft games on the same engine (System 4), for players and wiki
-writers: **Open another game...** at the bottom picks one. Rance VI - Collapse of Zeth is tested;
-the others open marked "not tested". There the Names tab and the Lua lines are gone, since RQ MOD's
+writers: **Open another game...** at the bottom picks one. Rance VI - Collapse of Zeth, Sengoku
+Rance, Rance 01, Rance 02 and Rance 03 are tested, each with English labels for its CG groups; the
+others open marked "not tested". There the Names tab and the Lua lines are gone, since RQ MOD's
 calls work in Rance Quest Magnum only, and other tabs appear when a game has those files (Rance VI's
-dungeon textures, for one). Its README lists the games and what each shows.
+dungeon textures, Rance 03's voices). Its README lists the games and what each shows.

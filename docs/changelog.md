@@ -11,6 +11,7 @@ The game's 3D anti-aliasing. Config's 3D tab has Anti-Aliasing (Disabled, 2X, 4X
 - The 3D scene (a fight, a quest's map and the game's other 3D views) is drawn with 2, 4 or 8 samples a pixel, as chosen: the edges of the models, of the background's polygons and of the outlines are smooth instead of stepped. Lines inside a texture, and the 2D pictures and text over the 3D, are as before.
 - A change on the 3D tab shows at once, as the game loads its 3D settings again; the log says `3D anti-aliasing: 4x` (or `off`, `2x`, `8x`) when the setting changes. A count the graphics driver cannot give is drawn without anti-aliasing, as before.
 - No `rq.*` call changed.
+- Rance Browser 1.4.0 in the package: Sengoku Rance, Rance 01, Rance 02 and Rance 03 are tested, each with English labels for its CG groups; the newer games' archives are read by their folders, Rance 03's music is found in its sound archive with each track's loop, and its voices have a tab of their own (`--shot voices`).
 - The Lab: `anti-aliasing` holds a fight at its first turn and shoots it with each value, set through the game's own reload of its 3D settings; its checker finds the background's edges smoother with each value, and the two shots without it the same.
 
 ## 2.65.2
