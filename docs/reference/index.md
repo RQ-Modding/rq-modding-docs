@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.64.0.
+Loader version 2.65.0.
 
 ## Namespaces
 
@@ -210,6 +210,7 @@ Loader version 2.64.0.
 | [`rq.RewardAlly`](types/rq.RewardAlly.md) | One ally in `rq.battle.on_reward`'s `ctx.allies`. |
 | [`rq.RewardCtx`](types/rq.RewardCtx.md) | What `rq.battle.on_reward` callbacks get. Fields marked writable change what the game gives. |
 | [`rq.SaveCtx`](types/rq.SaveCtx.md) | What `rq.saves.on_save` and `on_load` callbacks get. |
+| [`rq.SaveFaces`](types/rq.SaveFaces.md) | What `rq.saves.faces` returns: the folders of the character creator's faces. |
 | [`rq.SaveMod`](types/rq.SaveMod.md) | A mod, as a profile records it. |
 | [`rq.SaveProfile`](types/rq.SaveProfile.md) | A save profile, from `rq.saves.list`. |
 | [`rq.SaveSummary`](types/rq.SaveSummary.md) | What a profile's save holds, read from its file. |

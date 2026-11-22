@@ -5,6 +5,14 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.65.0
+
+The character creator's faces in a save profile. The game reads them from the `Face CG` folder of the save in use, so a profile's own, while its face screen names the vanilla game's folder in Documents (that text is part of the screen's picture). Under RQ MOD the base save is not in Documents either.
+- `rq.saves.faces()`: the `Face CG` folder the game reads now and how many pictures it holds, the vanilla game's folder when there is one, and how many of its pictures the save's folder lacks.
+- `rq.saves.import_faces()`: copies those into the save's folder, never overwriting or removing a file; the vanilla folder is only read.
+- `rq.saves.open_folder("faces")` (or `"save"`): opens that folder in the system's file window for the player, one window a second at most. Windows only.
+- The Lab: `save-profiles` opens the face screen and checks the calls, the copy and Save Profiles 1.3.0's box on it.
+
 ## 2.64.0
 
 A mod's pictures on the game's 3D models: a monster, a prop, a room or a fight background in new colours.

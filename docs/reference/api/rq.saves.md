@@ -36,6 +36,9 @@ if id then rq.saves.switch(id) end
 | [`rq.saves.rename`](#rqsavesrename) | Renames a profile. |
 | [`rq.saves.delete`](#rqsavesdelete) | Deletes a profile. |
 | [`rq.saves.switch`](#rqsavesswitch) | Makes a profile active and restarts the game on it. |
+| [`rq.saves.faces`](#rqsavesfaces) | Returns where the game reads the character creator's faces, and the vanilla game's. |
+| [`rq.saves.import_faces`](#rqsavesimport_faces) | Copies the vanilla game's faces into the `Face CG` folder of the save in use. |
+| [`rq.saves.open_folder`](#rqsavesopen_folder) | Opens a folder of the save in use in the system's file window. |
 | [`rq.saves.autosave`](#rqsavesautosave) | Saves to the game's autosave slot now, as the game does when a quest is taken and when it ends. |
 
 ### rq.saves.install
@@ -251,6 +254,96 @@ It records the choice, starts a new process (which waits for this one to exit) a
 | --- | --- | --- |
 | `ok` | `nil` | Nothing: on success it does not return. |
 | `err` | `string?` | Why the choice could not be recorded. |
+
+### rq.saves.faces
+
+```lua
+rq.saves.faces() -> rq.SaveFaces|nil, string?
+```
+
+`since 2.65.0`
+
+Returns where the game reads the character creator's faces, and the vanilla game's.
+
+The character creator lists the pictures in the `Face CG` folder of the save in use, and the
+game's own text on its face screen names the vanilla game's folder in Documents instead. Each
+profile has its own folder: a face added to one is not in the others. The vanilla folder is only
+read. It lists the folders, so call it when a screen opens, not every frame.
+
+```lua
+local f = rq.saves.faces()
+rq.log("faces in " .. f.path .. ": " .. f.count)
+if f.missing > 0 then rq.log(f.missing .. " more in the vanilla game's folder") end
+```
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `faces` | [`rq.SaveFaces`](../types/rq.SaveFaces.md) `\|nil` | The folders, or nil. |
+| `err` | `string?` | Why: no save folder. |
+
+See also: [`rq.saves.import_faces`](rq.saves.md#rqsavesimport_faces), [`rq.saves.open_folder`](rq.saves.md#rqsavesopen_folder)
+
+### rq.saves.import_faces
+
+```lua
+rq.saves.import_faces() -> integer|nil, string?
+```
+
+`since 2.65.0`
+
+Copies the vanilla game's faces into the `Face CG` folder of the save in use.
+
+It copies the `.png` and `.bmp` files the save's folder has no file of that name for (the
+`missing` of `rq.saves.faces`), and never overwrites or removes one, so a face changed in the
+save stays. The vanilla folder is only read. The save's folder is made when it is missing; the
+game copies its own faces only into a folder it does not find at its start, so call it after the
+game started (on the title screen or later). The character creator reads the folder each time its
+face screen opens, so a copy shows from the next one.
+
+```lua
+local n, err = rq.saves.import_faces()
+if n then rq.log(n .. " faces copied") else rq.log(err) end
+```
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `copied` | `integer\|nil` | How many files were copied (0 when none was missing), or nil. |
+| `err` | `string?` | Why: no vanilla `Face CG` folder, the save's folder could not be made, or how many files could not be copied (those copied stay). |
+
+See also: [`rq.saves.faces`](rq.saves.md#rqsavesfaces)
+
+### rq.saves.open_folder
+
+```lua
+rq.saves.open_folder(which) -> boolean|nil, string?
+```
+
+`since 2.65.0`
+
+Opens a folder of the save in use in the system's file window.
+
+For the player, who puts the pictures of their own characters in `"faces"`. It opens one window a
+second at most: a second call within a second fails. Windows only.
+
+```lua
+rq.on_frame(function()
+  if rq.uikit.button("Open folder", { x = 512, y = 722, w = 130, id = "faces-open" }) then
+    local ok, err = rq.saves.open_folder("faces")
+    if not ok then rq.log(err) end
+  end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `which` | `"faces"\|"save"` | `"faces"`: the `Face CG` folder of the save in use (`rq.saves.faces().path`); `"save"`: the save folder itself. Another value raises an error. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `ok` | `boolean\|nil` | true when the window was asked for, or nil. |
+| `err` | `string?` | Why: the folder does not exist, a folder was opened less than a second ago, or the system refused. |
+
+See also: [`rq.saves.faces`](rq.saves.md#rqsavesfaces)
 
 ### rq.saves.autosave
 
