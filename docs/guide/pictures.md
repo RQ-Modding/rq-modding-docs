@@ -111,7 +111,12 @@ of the game's, or play one anywhere.
   `rq.image.add_flash` ([Animations](./animations)), a GIF in its place through `rq.image.add_gif`,
   and a mark with `rq.battle.set_mark`; then the game's file, and the pictures you put in it, are not
   played.
-- **Enemies and fight backgrounds** are 3D models, not pictures by number. `rq.image` cannot reach them.
+- **Enemies and fight backgrounds** are 3D models, not pictures by number: their pictures are
+  textures, which `rq.image.texture` changes ([A monster in new colours](./model-textures), since
+  loader 2.64.0).
+- **Every kind of PNG** works since loader 2.64.0: 8 or 16 bits, grey, a palette, interlaced, a
+  transparent colour. A broken or cut-off file is refused with the reason, and a picture over 16384
+  pixels a side is refused before it is read.
 - **Limits:** 256 mod pictures; 64 moving pictures, with 1024 frames each and 64 million pixels in
   all; a GIF up to 1024 pixels a side and a WebP up to 4096; 256 Flash pictures and 32 million pixels.
   Past a limit the call raises an error, as it does for a file it cannot read, so you see it when the

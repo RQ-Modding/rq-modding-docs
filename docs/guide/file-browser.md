@@ -7,7 +7,7 @@ look at or draw over.
 
 It came with loader 2.43.0 as RQ Browser (`rq-browser.exe`). Since 2.55.1 it is Rance Browser, a
 program with [a repository of its own](https://github.com/RQ-Modding/rance-browser) that RQ MOD's
-package carries; its version (1.0.0 in loader 2.55.1, 1.2.0 in 2.63.0) shows in its title bar.
+package carries; its version (1.0.0 in loader 2.55.1, 1.2.0 in 2.63.0, 1.3.0 in 2.64.0) shows in its title bar.
 
 ![The CGs tab: Rance's face, CG 2000, with its details and the Lua line that replaces it](/browser/cgs.png)
 
@@ -40,8 +40,8 @@ rance-browser.exe --scale 1.25
 | Flash | The 412 Flash files (battle effects, monster attacks, cut-ins, the interface), played as the game plays them, each with its pictures and sounds; a `.swf` or `.aff` from disk too | `rq.image.add_flash(key, path)`, `rq.image.play_flash(key, opts)`, `rq.image.flash_bitmap(file, id, path)`, `rq.image.flash_bitmaps(file)`, `rq.sound.play_flash(file, { index = n })` |
 | Music | The 72 tracks with the game's names, played with their loops | `rq.music.replace(no, "music/no.ogg")`, `rq.music.play(no)` |
 | Sounds | The 140 sound effects | `rq.sound.play(no)` |
-| 3D models | The 647 models (monsters and the party's figures, dungeon rooms, fight backgrounds, the map's props), drawn as the game draws them, with their motions; each exported as a `.glb` for Blender | `rq.monster.model({ id = ..., base = model })`, `rq.battle.start({ ..., background = ... })`, `rq.dungeon.place("custom", x, z, { look = ... })` |
-| 3D textures | The 5,351 textures of the 3D models: characters, map rooms, backgrounds | none yet |
+| 3D models | The 647 models (monsters and the party's figures, dungeon rooms, fight backgrounds, the map's props), drawn as the game draws them, with their motions; each exported as a `.glb` for Blender; a PNG or colours tried on a texture, its UV map | `rq.monster.model({ id = ..., base = model })`, `rq.image.texture(path, "textures/name.png")`, `rq.battle.start({ ..., background = ... })`, `rq.dungeon.place("custom", x, z, { look = ... })` |
+| 3D textures | The 5,351 textures of the 3D models: characters, map rooms, backgrounds | `rq.image.texture(path, "textures/name.png")` |
 | Names | Every `rq.ids` list, with each name's key and the game's picture for it | `rq.ids.chara.RANCE` and so on |
 
 Each Lua line has a **Copy** button. The paths in it are examples: put your file where the path
@@ -91,6 +91,13 @@ and other 3D programs. [Game models in Blender](./game-models) goes through the 
 step by step, and [Learning 3D](./learning-3d) explains the words. Exported models are for your
 own use, as below.
 
+**Its textures**, in the 3D models tab, lists the model's pictures with their kind, size, frames
+and alpha. By each one, **Save as PNG...** and **Save the UV map...** save the picture and where the
+model's triangles lie on it, **Try a PNG...** and **Colours...** show the model with your picture or
+with its colours turned by numbers, as RQ MOD draws it, and **The game's** takes that off; the Lua
+line is under **What is tried, from a mod**. [A monster in new colours](./model-textures) goes
+through it.
+
 ![The 3D models tab: Rance's figure standing, its motions, its details and the Lua lines that use it](/3d/tab.png)
 
 **Names.** The Names tab lists each `rq.ids` kind with its numbers, keys and details. A character
@@ -108,7 +115,8 @@ and **Open in the 3D tab** to that model with the monster's own motions.
   `folder\model\name.png`.
 - **Save all N pictures** in the Flash tab saves a file's pictures as `<id>_<w>x<h>.png`, the names
   [`rqmod-ctl flashdump`](./pictures#pictures-inside-the-games-flash-files) uses.
-- **Save this frame as PNG...** and **Export the model as glTF (.glb)...** in the 3D models tab.
+- **Save this frame as PNG...** and **Export the model as glTF (.glb)...** in the 3D models tab, and
+  **Save the UV map...** by a texture under **Its textures**.
 
 The game's files belong to AliceSoft. Keep the saved copies for your own work, and share only what
 you made.

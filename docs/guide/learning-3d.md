@@ -34,6 +34,8 @@ points' UVs cut out, stretched over it.
   one in the 3D textures tab.
 - **In Blender:** the **UV Editing** workspace (the tabs at the top): the picture on the left with
   the UVs of the mesh in Edit Mode, the model on the right.
+- **In a mod:** `rq.image.texture` puts a picture of yours, or new colours, in the place of a game
+  model's texture ([A monster in new colours](./model-textures)).
 
 ## Material
 

@@ -1,6 +1,6 @@
 # rq.monster
 
-`since 2.36.0` `changed 2.40.0`
+`since 2.36.0` `changed 2.40.0` `changed 2.64.0`
 
 The game's list of monsters: read a monster's data, change it each time the game builds it, and
 change each enemy a fight builds. A mod's own monsters, enemy groups and models.
@@ -17,6 +17,11 @@ or fought through `rq.battle.start`'s `group`. A save that holds the number of a
 longer loaded still works: an unknown monster is built as the game's Data-less Ghost, and an
 unknown group in an area's list becomes the area's first game group (group 135 when it has none),
 each with a line in the log.
+
+A mod's model (`model`) may have textures of its own (2.64.0): the game keeps it apart from its
+base, so the base and the game's monsters on it keep their pictures. A mod's model draws its
+base's attack effects, unless the game's effect table has a row for its own number, and waits for
+its hits as its base does.
 
 ```lua
 rq.monster.edit(rq.ids.monster.COCKROACH, { name = "Big Cockroach", hp = 200 })
@@ -226,7 +231,7 @@ rq.dungeon.on_area(function() rq.encounters.set_groups({ ROACHES, 12 }) end)
 rq.monster.models() -> rq.ModelInfo[]
 ```
 
-`since 2.40.0`
+`since 2.40.0` `changed 2.64.0`
 
 Lists the game's model table, with the models mods made after it.
 
@@ -240,13 +245,15 @@ for _, m in ipairs(rq.monster.models()) do rq.log(m.model, m.name, m.scale) end
 | --- | --- | --- |
 | `models` | [`rq.ModelInfo`](../types/rq.ModelInfo.md) `[]` | In the table's order. |
 
+> Changed in 2.64.0: `textures` on a mod's model with textures of its own.
+
 ### rq.monster.model
 
 ```lua
 rq.monster.model(def) -> integer
 ```
 
-`since 2.40.0`
+`since 2.40.0` `changed 2.64.0`
 
 Makes a model of the game's at another size or place, for a monster's `model` field.
 
@@ -254,17 +261,39 @@ It adds an entry after the game's model table, with the base's 3D file and motio
 number; the table is built again with it each time the game reads it. The number comes from the
 order of the calls in a run, so give it to a monster (`rq.monster.define` or `edit`) at the top
 level of the mod and do not keep it in a save. The mod that made an id may call again, which
-changes the same model.
+changes the same model: give every field again, as an omitted one goes back to the base's (and
+without `textures` the model has the base's pictures again).
+
+With `textures`, the model has pictures of its own: the game loads it apart from its base, so the
+base and the game's other monsters on it keep theirs. Its own textures win over `rq.image.texture`
+on the same path; the names it does not give follow `rq.image.texture`, then the game. Colors start
+from the game's own picture. A change shows as `rq.image.texture`'s does: at the next load of the
+model while the game holds no copy of it. An empty table is no textures.
+
+A mod's model, with textures or not, plays its base's attack effects and waits for its hits as its
+base does: the game's tables of both know the game's model numbers only. The effect table is read
+for the base's number unless it has a row for the model's own number (a mod may add one); the hit
+timing is always the base's. A mod's `rq.ain.hook` on `T_BattleEffectDataManager@search` or
+`戦闘_敵モーション当たり待ち率` sees the number the game then uses.
 
 Raises an error for a `def` that is not a table, an `id` that is not a text, an unknown field, a
 `base` that is not a game model, a `scale` that is not above 0 and at most 50, an offset that is
-not a number, an id another mod made, or when the table cannot be read.
+not a number, an id another mod made, or when the table cannot be read; for `textures` that are
+not a table, a key that is not a texture's name, "*" given anything but colors, "*" on a base
+with no model or no colour texture, or an entry `rq.image.texture` would refuse, each with the
+call's id. A call that raises an error changes nothing.
 
 ```lua
 local ROACH_MODEL = 100122  -- rq.monster.get(rq.ids.monster.COCKROACH).model
 local BIG = rq.monster.model({ id = "mymod:big_roach", base = ROACH_MODEL, scale = 2 })
 rq.monster.define({ id = "mymod:big_roach", base = rq.ids.monster.COCKROACH, name = "Big Roach",
   model = BIG, hp = 1200 })
+-- A blue Cockroach of its own, painted: the game's Cockroaches keep their picture.
+local BLUE = rq.monster.model({ id = "mymod:blue_roach", base = ROACH_MODEL,
+  textures = { ["gokiburi.png"] = "textures/roach-blue.png" } })
+-- A cyan goldfish of its own, by numbers (the Cockroach is grey, which numbers leave grey).
+local CYAN_FISH = rq.monster.model({ id = "mymod:cyan_fish", base = 100131,
+  textures = { ["*"] = { hue = 170 } } })
 ```
 
 | Parameter | Type | Description |
@@ -274,6 +303,8 @@ rq.monster.define({ id = "mymod:big_roach", base = rq.ids.monster.COCKROACH, nam
 | Returns | Type | Description |
 | --- | --- | --- |
 | `model` | `integer` | The model number. |
+
+> Changed in 2.64.0: `textures`; the base's attack effects and hit timing.
 
 ## Events
 

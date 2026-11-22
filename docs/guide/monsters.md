@@ -8,7 +8,8 @@ own for random fights (`rq.monster.group`, `rq.encounters.set_groups`) and for a
 `2.36.0` in its `mod.json` for the first section, `2.40.0` for the rest.
 
 New monsters are built from the game's own pieces: each one wears a game monster's 3D model, at its
-size or another (`rq.monster.model`). New models are not part of this.
+size or another (`rq.monster.model`), and since 2.64.0 in pictures of its own
+([A monster in new colours](./model-textures)). New models are not part of this.
 
 ## The game's monsters
 
@@ -173,6 +174,11 @@ rq.monster.define({ id = "mymod:big_roach", base = ROACH, name = "Giant Roach", 
 
 The number `model` returns comes from the order of the calls in a run: give it to a monster, but
 do not keep it in a save.
+
+Since loader 2.64.0 a model of a mod's own may have pictures of its own (`textures`), so a monster
+can look different from the game's while the game's keep their look: see
+[One monster only](./model-textures#one-monster-only). A mod's model, with pictures or not, plays
+its base's attack effects and waits for its hits as its base does.
 
 ## When a mod is gone
 

@@ -15,6 +15,7 @@ A model in the game's model table, as `rq.monster.models` lists it.
 | `z` | `number` | Its offset in depth. |
 | `motions` | `integer` | How many motions it has. |
 | `id` *(optional)* | `string` | The text id, for a model a mod made (`rq.monster.model`). |
+| `textures` *(optional)* | `table<string, string\|string[]\|` [`rq.TextureColors`](rq.TextureColors.md) `>` | For a mod's model with textures of its own: a copy of the `textures` it was given. `poly` stays the folder it draws. |
 
 ## Used by
 

@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.63.0.
+Loader version 2.64.0.
 
 ## Namespaces
 
@@ -245,6 +245,8 @@ Loader version 2.63.0.
 | [`rq.StudyCtx`](types/rq.StudyCtx.md) | What `rq.battle.on_study` gets for one Study that fired. |
 | [`rq.StunCtx`](types/rq.StunCtx.md) | What `rq.combat.on_stun` gets where the game works out a stun. |
 | [`rq.TakeContext`](types/rq.TakeContext.md) | What an `rq.quests.on_take` callback gets. |
+| [`rq.TextureColors`](types/rq.TextureColors.md) | Colors by numbers on a texture, as `rq.image.texture` takes them. At least one field. |
+| [`rq.TextureInfo`](types/rq.TextureInfo.md) | One texture of a game model, as `rq.image.textures` lists it. |
 | [`rq.TransferContext`](types/rq.TransferContext.md) | What `rq.world.on_transfer` and `on_transfer_after` callbacks get. |
 | [`rq.TrapCtx`](types/rq.TrapCtx.md) | What an `rq.dungeon.on_trap` callback gets. |
 | [`rq.TrapWeights`](types/rq.TrapWeights.md) | The weights of the trap kinds, from `rq.dungeon.traps()`: each 0 to 10. |

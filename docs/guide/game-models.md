@@ -8,7 +8,8 @@ are explained in [Learning 3D](./learning-3d).
 The 3D models tab came with Rance Browser 1.2.0, in RQ MOD's package from loader 2.63.0.
 
 Exported game models are for your own use, to learn from and to work beside. They belong to
-AliceSoft: a mod ships its own work, never the game's files.
+AliceSoft: a mod ships its own work, never the game's files. To give a game model new colours or
+pictures of your own from a mod, see [A monster in new colours](./model-textures).
 
 ## 1. Find the model
 

@@ -1,6 +1,6 @@
 # rq.image
 
-`since 0.6.0` `changed 2.25.0` `changed 2.63.0`
+`since 0.6.0` `changed 2.25.0` `changed 2.63.0` `changed 2.64.0`
 
 Images from a mod's folder, shown by the game as CGs.
 
@@ -27,6 +27,13 @@ under a game file's name to replace it (a skill's effect, a mark) or under a new
 `.aff` from PNG frames and WAV sounds, and `rqmod-aff check` says what in a file the game would not
 play.
 
+`texture` puts a PNG, or colors by numbers, on one of the game's 3D textures, wherever a model
+uses it: a monster, a prop, a room or a fight background in new colours (2.64.0). `textures` lists
+a model's textures.
+
+A PNG of any kind works in every call: 16-bit, grey, a palette, 1 to 4 bits, a see-through colour
+(`tRNS`) and interlaced files. A broken one is refused with a reason (2.64.0).
+
 ```lua
 rq.chara.define({ id = "mymod:alice", name = "Alice", face = "faces/alice.png", class = 1 })
 rq.chara.edit(52, { face = "faces/kaoru.gif" })  -- a new, moving face for Kaoru
@@ -47,6 +54,8 @@ rq.image.replace(2000, "faces/rance.webp", { fit = "cover" })
 | [`rq.image.gif_info`](#rqimagegif_info) | Returns a GIF's size and length. |
 | [`rq.image.flash_bitmap`](#rqimageflash_bitmap) | Puts a picture from the mod's folder on one bitmap of a game Flash file. |
 | [`rq.image.flash_bitmaps`](#rqimageflash_bitmaps) | Lists the bitmaps of a game Flash file, as the game has them. |
+| [`rq.image.texture`](#rqimagetexture) | Puts a PNG from the mod's folder, or colors by numbers, on one of the game's 3D textures, wherever a model uses it. |
+| [`rq.image.textures`](#rqimagetextures) | Lists the textures a game model uses, as the game has them, with what mods put there. |
 | [`rq.image.add_flash`](#rqimageadd_flash) | Serves a Flash file from the mod's folder as a game Flash file. |
 | [`rq.image.remove_flash`](#rqimageremove_flash) | Undoes `rq.image.add_flash`. New loads play the game's own file again, if there is one. |
 | [`rq.image.flash_info`](#rqimageflash_info) | Returns the size, length, pictures and sounds of the Flash file the game plays under a name. |
@@ -58,7 +67,7 @@ rq.image.replace(2000, "faces/rance.webp", { fit = "cover" })
 rq.image.add(key, path, opts) -> integer
 ```
 
-`since 0.6.0` `changed 2.25.0`
+`since 0.6.0` `changed 2.25.0` `changed 2.64.0`
 
 Registers a file from the mod's folder as a new CG number.
 
@@ -71,6 +80,10 @@ key, a key whose number another key has, or past 256 mod images; for a moving pi
 `fps` or `clock`, a file it cannot read, a GIF over 1024 pixels a side or a WebP over 4096, and the
 limits in `rq.image`. A call that raises an error adds nothing, except that a moving picture that
 cannot be read takes away the image the key had.
+
+A still picture is read at its first use. Any kind of PNG works (see `rq.image`); a PNG with a
+see-through colour (`tRNS`) shows it see-through. A still picture that cannot be read then, or one
+over 16384 pixels a side, is not drawn and the log says why.
 
 ```lua
 local ICON = rq.image.add("mymod:icon", "icons/star.png", { fit = "contain", w = 56, h = 56 })
@@ -89,20 +102,22 @@ local SEA = rq.image.add("mymod:sea", "bg/sea.webp", { fps = 12 })  -- a moving 
 
 > Changed in 2.25.0: A GIF or an animated WebP is a moving picture; `opts.fps` and `opts.clock`.
 
+> Changed in 2.64.0: Every kind of PNG; a see-through colour; at most 16384 pixels a side.
+
 ### rq.image.replace
 
 ```lua
 rq.image.replace(cg, path, opts)
 ```
 
-`since 0.6.0` `changed 2.25.0`
+`since 0.6.0` `changed 2.25.0` `changed 2.64.0`
 
 Shows a file wherever the game uses one of its CG numbers.
 
 The file is scaled to the game CG's size. Screens already built show it when they next load the CG.
 A GIF or an animated WebP is a moving picture, as in `add`.
 
-Raises an error as `rq.image.add` does.
+Raises an error as `rq.image.add` does, and reads the picture as `add` does.
 
 ```lua
 rq.image.replace(10011, "bg/castle_night.gif", { fit = "cover", clock = "real" })
@@ -115,6 +130,8 @@ rq.image.replace(10011, "bg/castle_night.gif", { fit = "cover", clock = "real" }
 | `opts` *(optional)* | [`rq.ImageOpts`](../types/rq.ImageOpts.md) | Fit (default "stretch") and size. |
 
 > Changed in 2.25.0: A GIF or an animated WebP is a moving picture.
+
+> Changed in 2.64.0: Every kind of PNG; a see-through colour; at most 16384 pixels a side.
 
 See also: [`rq.image.restore`](rq.image.md#rqimagerestore)
 
@@ -271,7 +288,7 @@ Returns a GIF's size and length.
 rq.image.flash_bitmap(file, id, path, opts)
 ```
 
-`since 2.25.0` `changed 2.63.0`
+`since 2.25.0` `changed 2.63.0` `changed 2.64.0`
 
 Puts a picture from the mod's folder on one bitmap of a game Flash file.
 
@@ -285,8 +302,9 @@ on its own bitmaps. `rqmod-ctl flashdump` saves a file's bitmaps with their ids.
 bitmap is the file's own again.
 
 Raises an error for a file that is neither the game's nor added with `add_flash`, an id that is no
-bitmap in it, a GIF or an animated WebP, a fit of "none", a picture as `add` does, or past 256
-bitmaps or 32 million pixels in all.
+bitmap in it, a GIF or an animated WebP, a fit of "none", a picture as `add` does, a picture that
+cannot be read (with the reason) or over 16384 pixels a side, or past 256 bitmaps or 32 million
+pixels in all.
 
 ```lua
 -- A new look for Chiha in her cut-in: her picture and her white silhouette.
@@ -302,6 +320,8 @@ rq.image.flash_bitmap("カットイン・チハ", 19, "cutin/chiha_white.png")
 | `opts` *(optional)* | [`rq.FlashBitmapOpts`](../types/rq.FlashBitmapOpts.md) | The fit. |
 
 > Changed in 2.63.0: A mod's own file from `add_flash`.
+
+> Changed in 2.64.0: Every kind of PNG; a picture that cannot be read is refused with its reason.
 
 ### rq.image.flash_bitmaps
 
@@ -333,6 +353,107 @@ end
 | `bitmaps` | [`rq.FlashBitmap`](../types/rq.FlashBitmap.md) `[]` | In the file's order. |
 
 > Changed in 2.63.0: A mod's own file from `add_flash`.
+
+### rq.image.texture
+
+```lua
+rq.image.texture(texture, picture)
+```
+
+`since 2.64.0`
+
+Puts a PNG from the mod's folder, or colors by numbers, on one of the game's 3D textures, wherever
+a model uses it.
+
+`texture` is the texture's path in the game's archive, as Rance Browser's 3D tab and
+`rq.image.textures` show it: "Data/PolyData/Chara/gokiburi/gokiburi.png". Slashes either way and
+any ASCII case work. It must be a texture its folder's model names, by its base name (a frame such
+as `face[1].png` is given in a list on `face.png`), and a file the game has. The folders hold what
+the game draws in 3D: `Chara` the fight monsters, the gold bags, the map's player figure and the
+girls' room, `Etc` the map's props, `Map` the rooms and `BG` the fight backgrounds.
+
+`picture` is a PNG inside the mod's folder, or, for a colour texture the game animates, a list of
+PNGs, one per frame, as many as the game has (`rq.image.textures`' `frames`). Any kind of PNG
+works, up to 4096 pixels a side. A picture of another size than the game's is drawn over the same
+UVs, so keep the proportions. The game's alpha kind stays: on a texture the game draws solid the
+picture is drawn solid, and a picture without alpha on a texture with alpha takes the game's alpha,
+so the model's see-through parts stay where they were.
+
+`picture` may also be colors by numbers, `{ hue = 200, saturation = 1.1, lightness = 0.9 }`: the
+game's own picture, every frame, with its colors changed in HSL. Grey, white and black stay grey:
+hue and saturation move coloured points only, and lightness scales every point; to colour a grey
+monster, paint a picture. Colors change colour textures only. With `picture` nil the texture is the
+game's own again, whichever mod changed it.
+
+On one path the last call wins, whichever mod made it, and a mod's model's own textures
+(`rq.monster.model`'s `textures`) stay over it. The log names each change. A change made at a mod's
+top level shows from the first load. A change made while the game runs shows the next time the game
+loads a model with that texture and holds no copy of the model: in a fight, from the next fight's
+monsters; on a quest's map, from the next area (an area loads every prop on it with the area, seen
+or not); in the girls' room, at the next visit. A copy loaded meanwhile beside one the game holds,
+such as a chest placed beside another, has the old pictures too. A fight background keeps its
+pictures while fights follow on it, until a fight on another background, the quest's end, a load or
+a restart. Only the file's name is kept: each load reads the file again, and a file gone or broken
+by then logs a warning and the game's picture is drawn.
+
+Raises an error for a path that is not a text or holds a `*`, a folder with no model, a name that is
+not one of its model's textures, a frame's name, a file the game lacks, a picture that is neither a
+PNG's path, a list of them nor colors, a list with a hole or an item that is not a text, a number of
+pictures other than the texture's frames, a picture outside the mod's folder, not found, not a PNG,
+that cannot be read or over 4096 pixels a side, colors out of range, an unknown field or none, colors
+on a texture that is not a colour texture, or past 4096 changed textures in all (a list counts each
+frame, colors count one). A call that raises an error changes nothing.
+
+```lua
+-- The Cockroach in the mod's own colours, wherever the game draws it.
+rq.image.texture("Data/PolyData/Chara/gokiburi/gokiburi.png", "textures/roach.png")
+-- The goldfish's body in blue, by numbers.
+rq.image.texture("Data/PolyData/Chara/kingyo/karada.png", { hue = 180 })
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `texture` | `string` | The texture's path in the game's archive. |
+| `picture` | `string\|string[]\|` [`rq.TextureColors`](../types/rq.TextureColors.md) `\|nil` | A PNG inside the mod's folder, a list of PNGs for a texture with frames, colors by numbers, or nil for the game's own. |
+
+### rq.image.textures
+
+```lua
+rq.image.textures(model) -> rq.TextureInfo[]|nil
+```
+
+`since 2.64.0`
+
+Lists the textures a game model uses, as the game has them, with what mods put there.
+
+`model` is a folder in the game's archive, such as "Data/PolyData/Map/dk_a01", or a monster model
+number from `rq.monster.models` (100122 is the Cockroach, in `Data/PolyData/Chara/gokiburi`). A
+mod's model number gives its base's textures with the model's own over them. The rows come in the
+model's order, one per texture, a texture's frames folded into it. For a row without `own`,
+`rq.image.texture(r.path, r.picture or r.colors)` makes its change again; an `own` row's change is
+made again through `rq.monster.model`, with `textures[r.name] = r.picture or r.colors` in its
+model's definition.
+
+Returns nil for a folder or a number with no model, so a loop over `rq.monster.models()` works.
+Raises an error for a model that is neither a text nor a whole number, or a path that holds a `*`.
+
+```lua
+for _, t in ipairs(rq.image.textures(100122) or {}) do
+  rq.log(("%s %s %dx%d%s"):format(t.name, t.kind, t.w or 0, t.h or 0, t.mod and (" by " .. t.mod) or ""))
+end
+-- New colours on every colour texture of a model, wherever the game draws it.
+for _, t in ipairs(rq.image.textures("Data/PolyData/Chara/kingyo") or {}) do
+  if t.kind == "color" and not t.missing then rq.image.texture(t.path, { hue = 180 }) end
+end
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `model` | `string\|integer` | A folder in the game's archive, or a monster model number. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `textures` | [`rq.TextureInfo`](../types/rq.TextureInfo.md) `[]\|nil` | The model's textures, or nil when there is no model. |
 
 ### rq.image.add_flash
 

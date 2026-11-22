@@ -61,6 +61,7 @@ const guide: DefaultTheme.SidebarItem[] = [
       { text: 'Animations', link: '/guide/animations' },
       { text: 'Learning 3D', link: '/guide/learning-3d' },
       { text: 'Game models in Blender', link: '/guide/game-models' },
+      { text: 'A monster in new colours', link: '/guide/model-textures' },
       { text: 'Replacing music', link: '/guide/music' },
       { text: 'Battle states', link: '/guide/states' },
       { text: 'Combat rules', link: '/guide/combat' },
