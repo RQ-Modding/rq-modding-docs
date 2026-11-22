@@ -32,7 +32,7 @@
     { "repo": "RQ-Modding/recovery-orb-upgrade", "version": "1.0.0", "tags": ["dungeons"], "save": "none" },
     { "repo": "RQ-Modding/return-bonsai", "version": "1.2.1", "tags": ["items", "quests"], "save": "stays" },
     { "repo": "RQ-Modding/rocky-chunk-indicator", "version": "1.0.0", "tags": ["items", "interface"], "save": "none" },
-    { "repo": "RQ-Modding/save-profiles", "version": "1.2.0", "tags": ["saves"], "save": "stays" },
+    { "repo": "RQ-Modding/save-profiles", "version": "1.3.0", "tags": ["saves"], "save": "stays" },
     { "repo": "RQ-Modding/skill-again-in-shop", "version": "1.0.1", "tags": ["shops", "skills"], "save": "none" },
     { "repo": "RQ-Modding/skill-removal-payback", "version": "1.3.0", "tags": ["skills"], "save": "none" },
     { "repo": "RQ-Modding/skip-network-popup", "version": "1.0.1", "tags": ["fixes"], "save": "none" },
