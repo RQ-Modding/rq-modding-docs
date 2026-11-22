@@ -5,6 +5,12 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.65.1
+
+A mod's item keeps its description when the game builds it again. The game writes an item's description from its kind, its rank and its effects when it appraises the item (the appraisal after a quest, and `rq.item.appraise`), when gear grows, in a fight for a familiar that grows or armour that wears, and on the move to the third world for each item that could not be taken off. Its own items keep a fixed text there, a mod's did not: an item a mod defined, dropped unidentified from a chest and appraised at the quest's end, read " |C| : " (Binoculars, for one).
+- The description the mod gave the item number is used instead: the last `rq.item.edit` patch with an `info`, else the `info` of `rq.item.define`, as a new instance gets it. A text one instance got from `rq.item.set` is not kept there.
+- The Lab: `items` appraises an item a mod defined and one a mod's patch gives a description, and checks both texts.
+
 ## 2.65.0
 
 The character creator's faces in a save profile. The game reads them from the `Face CG` folder of the save in use, so a profile's own, while its face screen names the vanilla game's folder in Documents (that text is part of the screen's picture). Under RQ MOD the base save is not in Documents either.

@@ -18,7 +18,7 @@ An item template for `rq.item.define`.
 | `classes` *(optional)* | `integer[]` | The classes that may equip it, 1 to 8. Default: all. |
 | `characters` *(optional)* | `integer[]` | The characters that may equip it (`装備キャラ`). |
 | `effects` *(optional)* | [`rq.ItemEffect`](rq.ItemEffect.md) `[]` | Up to five effects. |
-| `info` *(optional)* | `string` | The description; `$` is a line break. |
+| `info` *(optional)* | `string` | The description; `$` is a line break. It stays when the game builds an item's description again from its kind and effects (its appraisal after a quest, gear that grows, the move to the third world); since 2.65.1, an appraised item of a mod had " \|C\| : " instead. |
 | `locked` *(optional)* | `boolean` | Cannot be taken off (`外せません`). |
 | `vanishes` *(optional)* | `boolean` | Vanishes (`消滅します`). |
 | `keep` *(optional)* | `boolean` | The player cannot get rid of it: the vault's DISCARD, SELL and DONATE refuse it, as the game does for Chaos the Darksword (`アイテム_破棄可能` says false). `rq.item.remove` still removes it. Default false. Since 2.50.0. |

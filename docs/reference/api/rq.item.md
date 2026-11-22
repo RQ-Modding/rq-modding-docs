@@ -118,7 +118,7 @@ Returns an instance's fields.
 rq.item.appraise(ii, opts) -> boolean
 ```
 
-`since 2.47.0`
+`since 2.47.0` `changed 2.65.1`
 
 Appraises an unidentified item for free, as the game's appraisal does.
 
@@ -144,6 +144,8 @@ end
 | Returns | Type | Description |
 | --- | --- | --- |
 | `appraised` | `boolean` | true when it was unidentified and is now identified; false for no such instance, or one already identified. |
+
+> Changed in 2.65.1: A mod's item gets the description its mod gave the number (it got " |C| : ").
 
 ### rq.item.set
 
@@ -193,7 +195,7 @@ Name, price, effects and description change, as for a "broken" version of an ite
 rq.item.edit(who, patch)
 ```
 
-`since 0.8.0` `changed 0.15.0`
+`since 0.8.0` `changed 0.15.0` `changed 2.65.1`
 
 Patches an item number, for every new instance and the ones in the save.
 
@@ -202,12 +204,18 @@ already in the save after each load, or on the next frame when called later (all
 and `no`; an equipped item recalculates its owner). The save then keeps those values, also when the
 mod is removed. Each mod keeps one patch per item.
 
+A patch's `info` stays when the game builds an item's description again from its kind and effects
+(its appraisal after a quest, gear that grows, the move to the third world); with several patches,
+the last one with an `info` gives it.
+
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `who` | `string\|integer` | An item number or text id. |
 | `patch` | `table` | The fields to set. |
 
 > Changed in 0.15.0: Reaches instances already in the save.
+
+> Changed in 2.65.1: A patch's `info` stays through the game's own description.
 
 ### rq.item.equip
 

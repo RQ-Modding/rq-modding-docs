@@ -442,8 +442,10 @@ An item found on a quest is often unidentified: `rq.item.get(ii).identified` is 
 and its name, icon and text are the game's "Unidentified item". The game appraises the quest
 storage's items after a quest's success, for a price. [`rq.item.appraise`](../reference/api/rq.item.md#rqitemappraise)
 (2.47.0) does it at once and for free, wherever the item is: the game's own appraisal, with a rare
-item's quest bonuses. Return Bonsai keeps items in the storage during a quest and appraises them
-at its end:
+item's quest bonuses. The appraisal gives back the name, the icon and the description of the item
+number. An item a mod defined or patched gets the mod's `info`: the last `rq.item.edit` patch with
+one, else the one of `rq.item.define` (before 2.65.1 a mod's item read " |C| : "). Return Bonsai keeps items in the storage during a
+quest and appraises them at its end:
 
 ```lua
 rq.quests.on_end(function(ctx)
