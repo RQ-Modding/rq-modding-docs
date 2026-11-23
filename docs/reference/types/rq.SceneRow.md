@@ -1,6 +1,6 @@
 # rq.SceneRow
 
-`since 1.9.0`
+`since 1.9.0` `changed 2.67.0`
 
 One row of `rq.sprite.scene`.
 
@@ -19,6 +19,7 @@ One row of `rq.sprite.scene`.
 | `cg` | `integer` | The CG it shows; 0 for none. |
 | `part` *(optional)* | `string` | A part's kind: cg, text, flash and so on. |
 | `mod` *(optional)* | `string` | The mod of a mod sprite. |
+| `plugin` *(optional)* | `string` | What draws a game sprite's picture, when it is not a CG: "ReignEngine" for a 3D view. |
 
 ## Used by
 

@@ -90,6 +90,11 @@ laptops), the window keeps the size Windows gives it there, and the game is draw
 own pixels with the filter you picked, so it is larger than 1024 by 768 there too: Lanczos or xBRZ
 keep it sharpest.
 
+The 3D (a fight's monsters, a quest's map) is drawn at the window's own pixels when the window is
+larger than 1024 by 768, so it is as sharp as the window allows, while the rest is scaled up with the
+filter. To scale it up with the rest instead, untick **3D at the window's size** under the filters on
+**Other 2**, or in the title bar's menu.
+
 ## Smoother 3D
 
 The fights and the quests' maps are drawn in 3D. To smooth the stepped edges of their models, pick

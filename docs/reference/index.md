@@ -1,6 +1,6 @@
 # API reference
 
-Loader version 2.66.2.
+Loader version 2.67.0.
 
 ## Namespaces
 
@@ -271,11 +271,13 @@ Loader version 2.66.2.
 | [`rq.UiQuestStorage`](types/rq.UiQuestStorage.md) | What `rq.ui.quest_storage` returns. |
 | [`rq.UiQuestStorageTile`](types/rq.UiQuestStorageTile.md) | A tile of the game's Quest Storage window, from `rq.ui.quest_storage`. |
 | [`rq.UiScrollPieces`](types/rq.UiScrollPieces.md) | The pieces of the game's scroll bar. |
+| [`rq.UiShotOpts`](types/rq.UiShotOpts.md) | Options of `rq.ui.shot`. |
 | [`rq.UiSkillOpts`](types/rq.UiSkillOpts.md) | What `rq.uikit.skill_button` takes. |
 | [`rq.UiStepperOpts`](types/rq.UiStepperOpts.md) | What `rq.uikit.stepper` takes. |
 | [`rq.UiTabsStyle`](types/rq.UiTabsStyle.md) | A tabs style of the hub theme. |
 | [`rq.UiTheme`](types/rq.UiTheme.md) | A look for the kit: pieces, text styles, colors and sounds. |
 | [`rq.UiTip`](types/rq.UiTip.md) | A widget's tip: what `rq.uikit.comment` shows, and where. |
+| [`rq.UiWindow`](types/rq.UiWindow.md) | What `rq.ui.window` returns. |
 | [`rq.UnequipCtx`](types/rq.UnequipCtx.md) | What `rq.item.on_unequip` gets. |
 | [`rq.Unit`](types/rq.Unit.md) | A recruited character, from `rq.units()`. |
 | [`rq.VanillaSave`](types/rq.VanillaSave.md) | What `rq.saves.vanilla` returns. |

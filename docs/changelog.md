@@ -5,6 +5,19 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.67.0
+
+The 3D at the window's size. The game draws a picture of 1024 by 768, which the window shows enlarged by the filter chosen on Config's Other 2: on a larger window, in full screen or on a monitor scaled above 100%, the 3D was enlarged with everything else, so a fight's monsters and a quest's map were as soft as an enlarged picture. They are now drawn at the window's own pixels, as sharp as the window allows, and the 2D (cards, menus, text) is enlarged by the filter as before.
+- The scene is drawn twice, with the 3D view's picture once black and once white, which gives for each pixel what the 2D adds over the 3D and how much of the 3D shows through; the window shows the 3D drawn at its size through that. The cards, windows, effects and fades over the 3D, with their blends, cover it as before. The game's own picture (shots, transitions, the game's copies of the screen) is the same as before.
+- It works when the window is larger than the game's picture, one 3D view is drawn, and no transition or movie is playing; otherwise the frame is drawn as before. A graphics driver that cannot draw it (no float pictures) draws as before, with a line in the log.
+- A setting, on by default: "3D at the window's size", a checkbox under the filters on Config's Other 2 (agents see `check-sharp-3d`) and an entry of the title bar's menu. It is kept in `WindowSetting.json` as `sharp_3d`. The log says `3D at the window's size: 2048x756 (scale 2.00)` when the 3D's picture changes size, and `on` or `off` when the setting changes.
+- `rq.ui.window()`: the window's size in points and pixels, where the game's picture is, its scale, full screen, the setting and whether the last frame showed the 3D at the window's size, with that picture's size.
+- `rq.ui.set_window_size(w, h)`: the window's size, for agents and tests.
+- `rq.ui.shot(path, { window = true })` and `rqmod-ctl shot PATH window`: the window as shown, at its own pixels. Without it a shot is the game's picture, as before.
+- `rq.sprite.scene`'s rows (and the pipe's `scene`) have `plugin`: `"ReignEngine"` for a 3D view.
+- Rance Browser's copy of the renderer has the change, which its views do not use.
+- The Lab: `window-3d` sets the window to twice the game's picture and shoots a quest's map with the setting on and off (from Config's Other 2, as an agent presses it) and a fight; its checker finds twice the detail in the map's 3D with it on, the 2D and the game's own picture the same both ways and no seam along the 3D's edges. `config-filter` goes through the new row with the keys.
+
 ## 2.66.2
 
 The game's shadow settings, smooth cut-out edges under anti-aliasing, and better first settings for a new player.

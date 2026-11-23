@@ -13,6 +13,8 @@ Reads what is on the screen and saves screenshots.
 | [`rq.ui.get`](#rquiget) | Returns what is on the screen. |
 | [`rq.ui.aim`](#rquiaim) | Returns the point a click on a control should land on. |
 | [`rq.ui.shot`](#rquishot) | Saves what the game draws as a PNG at the next drawn frame. |
+| [`rq.ui.window`](#rquiwindow) | Returns the window's size, the game's picture in it, and how the 3D is drawn. |
+| [`rq.ui.set_window_size`](#rquiset_window_size) | Sets the window's inside size, in points, out of full screen. |
 | [`rq.ui.shot_result`](#rquishot_result) | Returns how the last `rq.ui.shot` ended, once. |
 | [`rq.ui.choose`](#rquichoose) | Opens the game's own choice menu outside a scene, on the hub or any of the game's screens, and calls `fn` with the row the player picks. |
 | [`rq.ui.choosing`](#rquichoosing) | Says whether the game's choice menu shows: one of the game's own, `rq.scene.choice` or `rq.ui.choose`. |
@@ -165,15 +167,21 @@ away from the kit's widgets over it. It builds the list when nothing did during 
 ### rq.ui.shot
 
 ```lua
-rq.ui.shot(path)
+rq.ui.shot(path, opts)
 ```
 
-`since 0.21.0`
+`since 0.21.0` `changed 2.67.0`
 
 Saves what the game draws as a PNG at the next drawn frame.
 
 The shot is taken later, so poll `rq.ui.shot_result` from `rq.on_frame` or a coroutine. The folders
 in the path must already exist.
+
+By default the shot is the game's picture, 1024 by 768, whatever the window's size. With
+`window = true` it is the window as shown, at its own pixels: the picture enlarged by the chosen
+filter, the 3D drawn at the window's size when that setting is on (`rq.ui.window`), without the
+bars around it in full screen. While the game is paused from the pipe the window shot is the frame
+on screen.
 
 Raises an error before the game runs, when the path leaves the mod's folder, or while another shot
 is still waiting.
@@ -189,8 +197,70 @@ end)
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `path` | `string` | A path inside the mod's folder. |
+| `opts` *(optional)* | [`rq.UiShotOpts`](../types/rq.UiShotOpts.md) | How to take it. Default: the game's picture. |
 
-See also: [`rq.ui.shot_result`](rq.ui.md#rquishot_result)
+> Changed in 2.67.0: `opts.window`.
+
+See also: [`rq.ui.shot_result`](rq.ui.md#rquishot_result), [`rq.ui.window`](rq.ui.md#rquiwindow)
+
+### rq.ui.window
+
+```lua
+rq.ui.window() -> rq.UiWindow
+```
+
+`since 2.67.0`
+
+Returns the window's size, the game's picture in it, and how the 3D is drawn.
+
+The game draws a 1024 by 768 picture, which the window shows enlarged by the filter chosen on
+Config's Other 2. The 3D (a fight's field, a quest's map) is drawn at the window's own pixels when
+the window is larger than the game's picture and the setting "3D at the window's size" is on
+(Config's Other 2 and the title bar's menu; on by default): `sharp_3d_shown` says whether the last
+frame showed it so. It is not when the window is no larger, two 3D views show at once, or a
+transition or a movie is drawn.
+
+```lua
+local w = rq.ui.window()
+rq.log(("window %dx%d, scale %.2f, sharp 3D %s"):format(w.pixels_w, w.pixels_h, w.scale,
+  tostring(w.sharp_3d_shown)))
+```
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `window` | [`rq.UiWindow`](../types/rq.UiWindow.md) | The window now. |
+
+See also: [`rq.ui.set_window_size`](rq.ui.md#rquiset_window_size)
+
+### rq.ui.set_window_size
+
+```lua
+rq.ui.set_window_size(w, h) -> boolean
+```
+
+`since 2.67.0`
+
+Sets the window's inside size, in points, out of full screen.
+
+The game's picture is fitted again at the next frame. The window may be larger than the screen.
+For agents and tests: a mod should leave the window's size to the player.
+
+Raises an error for a size under 64 by 48 or over 16384.
+
+```lua
+rq.ui.set_window_size(2048, 1536)  -- twice the game's picture on a monitor at 100%
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `w` | `integer` | Width in points. |
+| `h` | `integer` | Height in points. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `ok` | `boolean` | false when there is no window yet. |
+
+See also: [`rq.ui.window`](rq.ui.md#rquiwindow)
 
 ### rq.ui.shot_result
 
