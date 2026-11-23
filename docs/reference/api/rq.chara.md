@@ -945,10 +945,10 @@ local spent = rq.chara.skill_points_max(iic) - rq.chara.skill_points(iic)
 ### rq.chara.learnable
 
 ```lua
-rq.chara.learnable(iic, opts) -> rq.LearnableRow[]?, integer
+rq.chara.learnable(iic, opts) -> rq.LearnableRow[]?, integer, rq.CharaSlot[]?
 ```
 
-`since 2.45.0` `changed 2.48.0`
+`since 2.45.0` `changed 2.48.0` `changed 2.66.0`
 
 Returns the skill buy list the game would make for a character, without opening the window.
 
@@ -965,16 +965,23 @@ first.
 character before the list is made and undone after: the list as it would be after those
 purchases or erasures, as Healing 3 for sale once Healing 2 is at 3, or Healing 2 off sale once
 Healing 1 is erased. A step sets the level as it is, with no price and none of the game's
-checks; a Boost set to rank 4 is kept as the game's recalculation would keep it
-(`rq.chara.boosts`). When a step needs a new row and none is left, the call returns nil and the
-step's index.
+checks; then the game recalculates the character, as the skill window does after each purchase,
+so what a recalculation does follows: a Boost at rank 4 is kept (`rq.chara.boosts`), Melee Attack
+becomes Thrust Attack, a mod's `on_recalc` swaps its rows (with `preview` true). The
+recalculation follows each step of a ranked skill and each erasure; steps of uses, which change
+no form, have one recalculation after them, before the list. A step for a
+skill whose form the character holds sets that row (`rq.chara.SkillStep`). When a step needs a new
+row and none is left, the call returns nil and the step's index.
 
-The second value is the free skill rows after the steps, as `rq.chara.skill_room` counts them.
+The second value is the free skill rows after the steps, as `rq.chara.skill_room` counts them; the
+third, the character's rows after them, as `rq.chara.slots` gives them: where a recalculation put
+a form, and each row's level.
 
 Raises an error for a slot with no character, an `after` that is not a list, or a step that is
 not `{ skill = number, n = level from 0 }`.
 
 and `level`.
+a step reaches the row of a form; the rows as a third value.
 
 ```lua
 for _, row in ipairs(rq.chara.learnable(iic)) do
@@ -996,8 +1003,11 @@ end
 | --- | --- | --- |
 | `rows` | [`rq.LearnableRow`](../types/rq.LearnableRow.md) `[]?` | The list, in the game's order; nil when a step found no free row. |
 | `room` | `integer` | The free skill rows after the steps; with nil rows, the index of the step that found none. |
+| `slots` | [`rq.CharaSlot`](../types/rq.CharaSlot.md) `[]?` | The character's rows after the steps (since 2.66.0); nil with nil rows. |
 
 > Changed in 2.48.0: `opts.after`, the free rows as a second value, and each row's `step`, `needs`
+
+> Changed in 2.66.0: The game's recalculation after each step (before, only a Boost's mark was set);
 
 See also: [`rq.chara.price`](rq.chara.md#rqcharaprice)
 
@@ -1044,16 +1054,18 @@ See also: [`rq.chara.on_forget`](rq.chara.md#rqcharaon_forget)
 rq.chara.price(iic, skill, from, to) -> integer?, string?, string?
 ```
 
-`since 2.45.0`
+`since 2.45.0` `changed 2.66.0`
 
 Returns what the game charges a character for a skill from one level to another.
 
 Each step is priced as the buy list prices it at that step: the skill is set to the step on the
-character, the game fills its list, and the step's price is read; the character and the list are
-put back before the call returns. So the game's rules hold: one more point at 3, 5 and 7 most
-uses, the prices that change with the skill (Rance's 147), and a mod's `rq.chara.on_offer`.
-A level is most uses for a use skill (type 10), the rank for a ranked one (20, 30). Skill 384
-goes 3 uses a step, as the game sells it.
+character, the game recalculates it and fills its list, and the step's price is read; the
+character and the list are put back before the call returns. So the game's rules hold: one more
+point at 3, 5 and 7 most uses, the prices that change with the skill (Rance's 147), and a mod's
+`rq.chara.on_offer`. A level is most uses for a use skill (type 10), the rank for a ranked one
+(20, 30). Skill 384 goes 3 uses a step, as the game sells it. When the list sells a form of the
+skill (`rq.skill.form_of`) and not the skill, that form is priced, on the row of the form the
+character holds.
 
 It returns nil and why when a step is not for sale: `"not sold"` (the character's list does not
 have it, or the skill cannot be bought), `"condition"` with the game's text (a level it lacks),
@@ -1080,6 +1092,8 @@ local points = rq.chara.price(iic, 100, 0, 3) or 1
 | `why` | `string?` | `"not sold"`, `"condition"`, `"max"` or `"room"`. |
 | `text` | `string?` | The game's reason, for `"condition"`. |
 
+> Changed in 2.66.0: The game's recalculation at each step; a skill's forms.
+
 See also: [`rq.chara.learnable`](rq.chara.md#rqcharalearnable)
 
 ### rq.chara.learn
@@ -1088,15 +1102,17 @@ See also: [`rq.chara.learnable`](rq.chara.md#rqcharalearnable)
 rq.chara.learn(iic, skill, opts) -> boolean, integer|string, integer|string?
 ```
 
-`since 2.45.0`
+`since 2.45.0` `changed 2.66.0`
 
 Buys a skill for a character as the skill window does, without its questions.
 
 Each step goes through the game's own buy (`キャラスキル_新規追加`) or upgrade
 (`キャラスキル_更新`) at the list's price, with the game's "Learn ...?" answered Yes, then the
-character is recalculated (and refilled outside a quest, as the window does). The purchase
-record grows and `rq.chara.on_learn` runs for each step. Before buying anything it checks the
-whole price, the free points and a free skill row, and refuses with the reason:
+character is recalculated (and refilled outside a quest), as the window does after each purchase.
+The purchase record grows and `rq.chara.on_learn` runs for each step. When the character holds a
+form of the skill (`rq.skill.form_of`), that row is raised, as the form the list sells. Before
+buying anything it checks the whole price, the free points and a free skill row, and refuses with
+the reason:
 
 - `"points"`, with how many points are missing
 - `"room"`: no free skill row for a new skill
@@ -1122,6 +1138,8 @@ if not ok and why == "points" then rq.log(detail .. " more points needed") end
 | `ok` | `boolean` | true when the skill reached `to`. |
 | `spent_or_why` | `integer\|string` | The points paid when ok; otherwise the reason. |
 | `detail` | `integer\|string?` | The missing points for `"points"`, the game's text for `"condition"`. |
+
+> Changed in 2.66.0: The recalculation after each purchase (before, once after the last); a skill's forms.
 
 See also: [`rq.chara.price`](rq.chara.md#rqcharaprice)
 
@@ -1249,21 +1267,25 @@ See also: [`rq.chara.add_exp`](rq.chara.md#rqcharaadd_exp)
 rq.chara.on_recalc(fn) -> fun()
 ```
 
-`since 0.2.0` `changed 0.14.0` `changed 0.23.0` `changed 2.35.0`
+`since 0.2.0` `changed 0.14.0` `changed 0.23.0` `changed 2.35.0` `changed 2.66.0`
 
 Calls `fn` after the game recalculates a character (`Ｃ再計算`).
 
 Up to 16 callbacks in all.
 
+The loader also recalculates inside its tries (`rq.chara.learnable`'s `after`, `rq.chara.price`),
+on a character it puts back after: `preview` is true there. Whatever `fn` changes on the character
+is undone with it; a callback that writes elsewhere (`rq.store`, a log) can skip a preview.
+
 ```lua
-rq.chara.on_recalc(function(iic)
+rq.chara.on_recalc(function(iic, preview)
   if rq.chara.weapon_detail(iic) == 7 then rq.chara.apply_mod(iic, 8, 10) end  -- spear: accuracy
 end)
 ```
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `fn` | `fun(iic: integer)` | Gets the character's roster slot. |
+| `fn` | `fun(iic: integer, preview: boolean)` | Gets the character's roster slot, and whether it runs inside a try. |
 
 | Returns | Type | Description |
 | --- | --- | --- |
@@ -1275,18 +1297,21 @@ end)
 
 > Changed in 2.35.0: Places its hook itself; before, it needed `rq.chara.install`.
 
+> Changed in 2.66.0: The second argument, `preview`.
+
 ### rq.chara.on_offer
 
 ```lua
 rq.chara.on_offer(fn) -> fun()
 ```
 
-`since 0.2.0` `changed 0.13.0` `changed 0.23.0`
+`since 0.2.0` `changed 0.13.0` `changed 0.23.0` `changed 2.66.0`
 
 Calls `fn` after the game filled a character's skill buy list, to add rows.
 
 `fn` returns nil, one `rq.Offer`, or a list of them. Each row goes through the game's own level
 check (`スキルレベル制限表示`). Up to 16 callbacks in all. Since 2.35.0 it places its hook itself.
+A list made inside one of the loader's tries has `ctx.preview` true.
 
 ```lua
 rq.chara.on_offer(function(ctx)
@@ -1305,6 +1330,8 @@ end)
 > Changed in 0.13.0: Every mod's callback runs (before, the last one won); a list adds several rows; added `points`.
 
 > Changed in 0.23.0: Returns a remover.
+
+> Changed in 2.66.0: `ctx.preview`.
 
 ### rq.chara.on_create
 

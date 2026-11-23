@@ -16,4 +16,4 @@ One row of a character's skill list, from `rq.chara.slots`.
 
 ## Used by
 
-[`rq.chara.slots`](../api/rq.chara.md#rqcharaslots)
+[`rq.chara.learnable`](../api/rq.chara.md#rqcharalearnable), [`rq.chara.slots`](../api/rq.chara.md#rqcharaslots)

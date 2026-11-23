@@ -323,6 +323,42 @@ character keeps, and `on_forget`'s `kept` tells it of the skill being erased: Sk
 Payback gives nothing back for such a Boost unless its setting says so. Set `loader` to `2.48.0`
 for these.
 
+### Forms of a skill
+
+Some skills take each other's place in one row. The game's recalculation turns Melee Attack N into
+Thrust Attack N when the character has Spear Knowledge ★★ and holds a spear, and back with another
+weapon: the row keeps its uses, its purchase record and its hotbar place, and only the number
+changes. A mod that swaps a row for its own skill in `rq.chara.on_recalc` (with
+`rq.chara.set_slot`) does the same. Since 2.66.0 it declares that skill a form of the one it
+replaces with [`rq.skill.form_of`](../reference/api/rq.skill.md#rqskillform_of), and the loader
+follows the row:
+
+```lua
+local THRUST = rq.skill.define({ id = "mymod:magic_thrust", kind = "physical", name = "Magic Thrust" })
+rq.skill.form_of(THRUST, rq.ids.skill.MELEE_ATTACK_1)
+```
+
+- The buy list sells the form the character holds, priced from its row (one more point at 3, 5 and
+  7 uses), and buying raises that row: no list sells a second row of one family.
+- `learnable`'s steps, `price` and `learn` reach a skill through the row of a form the character
+  holds, and `learnable`'s third value is the rows after the steps, so a planner sees which form
+  each row shows. Loadouts follows a build's attacks this way, whatever weapon the character holds.
+- The tries run the game's recalculation, as the skill window does after each purchase (`price`
+  after each step, `learnable` after each step of a ranked skill or an erasure and once before the
+  list), so the list they read shows the forms the game and the mods pick. A try's character is
+  put back after: `on_recalc` gets `preview` true there (and `on_offer`'s ctx `preview`), so a
+  callback that writes anything else, such as a store or a log, skips it.
+
+```lua
+rq.chara.on_recalc(function(iic, preview)
+  -- swap the rows here, as always; count or log only when preview is false
+end)
+```
+
+[`rq.skill.forms`](../reference/api/rq.skill.md#rqskillforms) gives a family, lowest number first.
+The game's checks for a skill (`rq.chara.rank`, `max_uses`, `on_has_skill`) still go by number. Set
+`loader` to `2.66.0` for these.
+
 ### A skill kept, its effect not
 
 Every check the game makes for a skill (the stats, a fight, a scene's condition) goes through one

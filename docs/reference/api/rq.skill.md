@@ -20,6 +20,8 @@ Since 2.35.0 each call places the hooks it needs the first time (`rq.skill.insta
 | [`rq.skill.define`](#rqskilldefine) | Defines a new skill. |
 | [`rq.skill.patch`](#rqskillpatch) | Changes an existing skill, field by field. |
 | [`rq.skill.sort_as`](#rqskillsort_as) | Sorts a skill in the known and potential lists as if it were another. |
+| [`rq.skill.form_of`](#rqskillform_of) | Declares that two skills are forms of one skill: one takes the other's place in a character's row, keeping its uses or rank, its purchase record and its hotbar place. |
+| [`rq.skill.forms`](#rqskillforms) | Returns a skill's forms (`rq.skill.form_of`): the skills that take each other's place in a row. |
 
 ### rq.skill.install
 
@@ -135,6 +137,83 @@ It wraps `compSkill`.
 | `ok` | `boolean` | false when the compare hook is missing. |
 
 > Changed in 0.5.0: Takes text ids.
+
+### rq.skill.form_of
+
+```lua
+rq.skill.form_of(skill, base)
+```
+
+`since 2.66.0`
+
+Declares that two skills are forms of one skill: one takes the other's place in a character's
+row, keeping its uses or rank, its purchase record and its hotbar place.
+
+The game has five such families: its recalculation (`Ｃ再計算`) turns Melee Attack N into Thrust
+Attack N with Spear Knowledge ★★ and a spear, and back with another weapon (100 and 101, 102 and
+103, 104 and 105, 106 and 107, 578 and 579). They are built in. A mod whose `rq.chara.on_recalc`
+swaps a row for its own skill (`rq.chara.set_slot`) declares that skill a form of the one it
+replaces. Families join: declaring A with B and C with B makes one family of A, B and C.
+
+The loader reads the families where a row is matched to a skill:
+
+- the buy list sells the form a character holds: for a skill it does not hold while it holds a form
+  of it, the list shows that form, priced from the held row (one more point at 3, 5 and 7 uses), and
+  buying raises that row. No list sells a second row of one family.
+- `rq.chara.learnable`'s steps, `rq.chara.price` and `rq.chara.learn` reach a skill through the
+  row of a form the character holds.
+
+Which form a row shows stays the recalculation's choice (the game's and the mods' `on_recalc`).
+The game's checks for a skill (`rq.chara.rank`, `max_uses`, `on_has_skill`) still go by number.
+
+Raises an error for a number outside 1 to 1000, or a skill given as a form of itself. While the mods
+load the game's skill table is empty, so only the range is checked; a mod's skill is the number
+`rq.skill.define` returned.
+
+```lua
+local THRUST = rq.skill.define({ id = "mymod:magic_thrust", kind = "physical", name = "Magic Thrust" })
+rq.skill.form_of(THRUST, rq.ids.skill.MELEE_ATTACK_1)
+rq.chara.on_recalc(function(iic)
+  for _, s in ipairs(rq.chara.slots(iic)) do
+    if s.skill == rq.ids.skill.MELEE_ATTACK_1 and rq.chara.weapon_detail(iic) == 2 then
+      rq.chara.set_slot(iic, s.slot, THRUST)
+      rq.chara.set_flavor(iic, s.slot)
+    end
+  end
+end)
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `skill` | `integer` | The skill number of the form. |
+| `base` | `integer` | The skill number whose place it takes. |
+
+See also: [`rq.skill.forms`](rq.skill.md#rqskillforms)
+
+### rq.skill.forms
+
+```lua
+rq.skill.forms(skill) -> integer[]
+```
+
+`since 2.66.0`
+
+Returns a skill's forms (`rq.skill.form_of`): the skills that take each other's place in a row.
+
+Raises an error for a number outside 1 to 1000.
+
+```lua
+local family = rq.skill.forms(rq.ids.skill.MELEE_ATTACK_1)  -- { 100, 101 } in the base game
+local key = family[1]  -- the lowest number: one key for the whole family
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `skill` | `integer` | The skill number. |
+
+| Returns | Type | Description |
+| --- | --- | --- |
+| `forms` | `integer[]` | The family, lowest number first, `skill` included; `{ skill }` when it has no forms. |
 
 ## Events
 
