@@ -85,12 +85,22 @@ Nearest (square pixels), Lanczos or xBRZ (for pixel art). Each row's tip says ho
 five are in the menu of the window's title bar (a right click on it), with a mark on the one in use.
 The Window tab has the game's two, Standard and Bicubic.
 
+On a monitor that Windows scales above 100% (Settings, System, Display, Scale; 125% is common on
+laptops), the window keeps the size Windows gives it there, and the game is drawn into the screen's
+own pixels with the filter you picked, so it is larger than 1024 by 768 there too: Lanczos or xBRZ
+keep it sharpest.
+
 ## Smoother 3D
 
 The fights and the quests' maps are drawn in 3D. To smooth the stepped edges of their models, pick
 **Anti-Aliasing** on Config's **3D** tab: 2X, 4X or 8X (the 3D tab's highest quality level sets 4X).
 It shows at once. It smooths the edges of the shapes, not lines inside their pictures, and leaves the
 2D pictures and text as they are.
+
+To keep the floors sharp into the distance, pick **Texture Filtering** on the same tab: 4X, 8X or 16X
+Anisotropic (16X is the sharpest; the highest quality level sets 4X). Bilinear blurs a floor as it
+goes away from the camera, and Point-sampling (the lowest quality level's) draws the pictures' pixels
+as square blocks.
 
 ## A gamepad
 

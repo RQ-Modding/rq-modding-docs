@@ -5,6 +5,14 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.66.1
+
+The game's 3D texture filtering, and a sharp window on a scaled monitor.
+- Config's 3D tab has Texture Filtering (Point-sampling, Bilinear, 4X, 8X and 16X Anisotropic), but the engine kept the setting and filtered every texture the same way. The models' textures are now filtered as chosen: anisotropic filtering keeps a surface seen at a slant, such as a quest's floor or a fight's ground, sharp into the distance, where it blurred; point sampling draws a texture's pixels as they are, without smoothing. Bilinear looks as before. A change on the 3D tab shows at once, as the game loads its 3D settings again; the log says `3D texture filtering: anisotropic 16x` (or `point sampling`, `bilinear`, `anisotropic 4x`, `anisotropic 8x`) when the setting changes. A graphics driver that allows less anisotropy than chosen uses its most.
+- On a monitor that Windows scales above 100% (125% is the default on many laptops), Windows drew the game's window as if at 100% and stretched the picture by the scale, which blurred everything, the text and the 3D too. The game now tells Windows that it knows the scale: the window keeps its size on the screen, and the game is drawn into the screen's own pixels, enlarged by the filter chosen in Config ("Other 2"; Lanczos or xBRZ keep it sharpest). Moved to a monitor with another scale, the window takes the size it should have there. The mouse, full screen and `rqmod-ctl`'s moves follow. Window sizes the game keeps have the same meaning as before.
+- No `rq.*` call changed.
+- The Lab: `texture-filter` holds a fight at its first turn and shoots it with each value, set through the game's own reload of its 3D settings; its checker finds more detail in the far floor with anisotropic filtering, 16X at least as much as 4X, the two bilinear shots the same and point sampling drawn otherwise.
+
 ## 2.66.0
 
 Skill forms: several skills that take each other's place in one skill row. The game turns Melee Attack into Thrust Attack, keeping the row's uses and its place on the hotbar, when a character has Spear Knowledge ★★ and holds a spear, and back with another weapon; mods do the same with their own skills. The loader matched rows by skill number only, so a planner such as Loadouts lost the row once it changed (a build with Spellblade Knowledge's Magic Thrust could not be loaded), and its tries never ran the game's recalculation that makes the change.
