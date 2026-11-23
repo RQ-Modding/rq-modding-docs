@@ -83,7 +83,7 @@ The game is drawn at 1024 by 768. In a larger window or in full screen it is sca
 which you pick in Config, **Other 2**, under **Magnification**: Standard (the game's own), Bicubic,
 Nearest (square pixels), Lanczos or xBRZ (for pixel art). Each row's tip says how it looks. The same
 five are in the menu of the window's title bar (a right click on it), with a mark on the one in use.
-The Window tab has the game's two, Standard and Bicubic.
+The Window tab has the game's two, Standard and Bicubic. Until you pick one, the game uses Lanczos.
 
 On a monitor that Windows scales above 100% (Settings, System, Display, Scale; 125% is common on
 laptops), the window keeps the size Windows gives it there, and the game is drawn into the screen's
@@ -101,6 +101,14 @@ To keep the floors sharp into the distance, pick **Texture Filtering** on the sa
 Anisotropic (16X is the sharpest; the highest quality level sets 4X). Bilinear blurs a floor as it
 goes away from the camera, and Point-sampling (the lowest quality level's) draws the pictures' pixels
 as square blocks.
+
+With anti-aliasing on, the edges of the shapes cut out of their pictures, such as leaves, grass and
+hair, are smoothed too. **Shadow Map Resolution** sets how closely a shadow follows its model (High
+shows the legs' shadows under a monster) and **Shadows** how soft its edge is: Low hard, Medium soft,
+High softer.
+
+The first time the game starts, it picks the highest quality level with 16X texture filtering
+(shown as a custom level). Settings you saved before stay as they are.
 
 ## A gamepad
 

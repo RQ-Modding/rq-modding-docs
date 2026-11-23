@@ -5,6 +5,17 @@
 Each version is the loader version mods see as `rq.version` and declare as `loader` in `mod.json`.
 A patch version fixes or adjusts behavior, a minor version adds calls or fields, a major version removes, renames or changes the meaning of a call.
 
+## 2.66.2
+
+The game's shadow settings, smooth cut-out edges under anti-aliasing, and better first settings for a new player.
+- Config's 3D tab has Shadows (Low, Medium, High) and Shadow Map Resolution (Low, Medium, High), but the engine drew every shadow the same way: a map of 512 by 512 with a softened edge. Shadow Map Resolution now sets the map's size, 512, 1024 or 2048, so a shadow follows its model's shape more closely (High shows the legs' shadows under a monster); Shadows sets its edge: Low hard, Medium softened as before, High softened over a wider band, smoothly. The log says `3D shadows: high` and `3D shadow map: 2048` (or the other values) when a setting changes. The game's highest quality level sets High and High.
+- With anti-aliasing on, the edges of the shapes cut out of their pictures, such as leaves, grass, hair, fur and fences, are smoothed too: they were drawn with a hard step whatever the setting, as anti-aliasing smooths only the edges of the polygons. They blend over the pixel's samples now. Without anti-aliasing they are as before.
+- A new player's first 3D settings: with no 3D level saved, the game chose its middle level (bilinear filtering, no anti-aliasing, medium shadows). It now saves the highest level's settings (4X anti-aliasing, high shadows on the largest map, the edge outlines) with 16X anisotropic filtering instead of 4X, as the custom level. A player who saved 3D settings keeps them.
+- The window's filter is Lanczos until the player picks one; it was Standard. A filter already saved stays.
+- No `rq.*` call changed.
+- Rance Browser's copy of the renderer has the change; its 3D views keep medium shadows on a map of 512 and no anti-aliasing, so they look as before.
+- The Lab: `shadows-edges` shoots a fight with each pair of shadow values, set through the game's own reload of its 3D settings, and a forest fight with anti-aliasing off and at 4X, whose checker finds the leaves against the sky smoothed; it also runs the game's first save of the 3D settings with no level saved (the file's writing skipped) and with one saved, and checks the values it saves.
+
 ## 2.66.1
 
 The game's 3D texture filtering, and a sharp window on a scaled monitor.
