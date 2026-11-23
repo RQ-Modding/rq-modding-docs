@@ -4,7 +4,7 @@
   "manager": "RQ-Modding/rq-manager",
   "mods": [
     { "repo": "RQ-Modding/aten-gnu-qol", "version": "1.0.0", "tags": ["characters"], "save": "stays" },
-    { "repo": "RQ-Modding/athena-qol", "version": "1.0.1", "tags": ["characters", "skills"], "save": "stays" },
+    { "repo": "RQ-Modding/athena-qol", "version": "1.1.0", "tags": ["characters", "skills"], "save": "stays" },
     { "repo": "RQ-Modding/better-elemental-knowledge", "version": "1.0.0", "tags": ["skills"], "save": "stays" },
     { "repo": "RQ-Modding/better-explained", "version": "1.1.0", "tags": ["skills", "interface"], "save": "none" },
     { "repo": "RQ-Modding/binoculars", "version": "1.2.4", "tags": ["items", "dungeons"], "save": "stays" },
@@ -20,7 +20,7 @@
     { "repo": "RQ-Modding/kaoru-quincy-qol", "version": "1.3.1", "tags": ["characters", "skills"], "save": "stays" },
     { "repo": "RQ-Modding/keep-donations", "version": "1.2.0", "tags": ["shops"], "save": "stays" },
     { "repo": "RQ-Modding/known-skill-pages", "version": "1.0.0", "tags": ["skills", "interface"], "save": "stays" },
-    { "repo": "RQ-Modding/loadouts", "version": "1.3.0", "tags": ["skills", "interface"], "save": "none" },
+    { "repo": "RQ-Modding/loadouts", "version": "1.4.0", "tags": ["skills", "interface"], "save": "none" },
     { "repo": "RQ-Modding/loot-preview", "version": "1.2.0", "tags": ["dungeons", "interface"], "save": "none" },
     { "repo": "RQ-Modding/moru-mode", "version": "1.0.0", "tags": ["modes"], "save": "none" },
     { "repo": "RQ-Modding/morurun-items", "version": "1.4.0", "tags": ["items", "characters"], "save": "stays" },
@@ -37,7 +37,7 @@
     { "repo": "RQ-Modding/skill-removal-payback", "version": "1.3.0", "tags": ["skills"], "save": "none" },
     { "repo": "RQ-Modding/skip-network-popup", "version": "1.0.1", "tags": ["fixes"], "save": "none" },
     { "repo": "RQ-Modding/space-standby", "version": "1.0.1", "tags": ["battle", "interface"], "save": "none" },
-    { "repo": "RQ-Modding/spellblade-knowledge", "version": "1.2.3", "tags": ["characters", "skills"], "save": "stays" },
+    { "repo": "RQ-Modding/spellblade-knowledge", "version": "1.3.0", "tags": ["characters", "skills"], "save": "stays" },
     { "repo": "RQ-Modding/states-at-once", "version": "1.0.0", "tags": ["battle"], "save": "none" },
     { "repo": "RQ-Modding/world3-no-cap", "version": "1.0.0", "tags": ["characters"], "save": "none" }
   ]
